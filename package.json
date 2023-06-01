@@ -16,7 +16,7 @@
     "@trpc/server": "^10.28.1",
     "element-plus": "^2.3.5",
     "superjson": "^1.12.3",
-    "vue": "^3.2.47",
+    "vue": "^3.3.4",
     "vue-router": "^4.2.1",
     "vuex": "^4.1.0"
   },
