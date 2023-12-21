@@ -9,7 +9,7 @@ const dbCredentials = (() => {
 })()
 
 export default {
-  schema: './src/db/schema/*',
+  schema: './server/db/schema/*',
   out: './drizzle',
   driver: 'turso',
   dbCredentials,

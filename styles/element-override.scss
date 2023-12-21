@@ -1,0 +1,310 @@
+// import
+@import "color.scss";
+@import "mixins.scss";
+@import "variable.scss";
+
+// menu
+.el-menu {
+    padding-bottom: 10px;
+}
+
+.el-menu--horizontal.el-menu {
+    height: 65px !important;
+}
+
+.el-menu-item,
+.el-sub-menu__title {
+    margin: 10px 0 0 10px !important;
+    height: 45px !important;
+    border: none !important;
+    border-radius: $border-radius !important;
+}
+
+.el-sub-menu__title:hover,
+.el-menu-item.is-active {
+    background-color: var(--el-menu-hover-bg-color) !important;
+}
+
+.el-menu--popup {
+    border-radius: $border-radius !important;
+    padding: 0 10px 10px 0 !important;
+}
+
+.el-menu--popup-container {
+    margin-top: 12px;
+    border-bottom: none !important;
+}
+
+.el-popper.is-light:not(.el-select__popper):not(.el-popover) {
+    border: none !important;
+    background: none !important;
+}
+
+.el-menu--vertical {
+    padding-right: 10px;
+}
+
+// Input
+.el-input {
+    height: 45px !important;
+    border: 3px !important;
+    font-size: 16px !important;
+}
+
+.el-textarea__inner {
+    min-height: 45px !important;
+    font-size: 16px !important;
+    border: 2px solid var(--el-border-color) !important;
+    border-radius: $border-radius !important;
+    box-shadow: none !important;
+}
+
+.el-input__wrapper {
+    border-radius: $border-radius !important;
+    box-shadow: none !important;
+    border: 2px solid var(--el-border-color);
+}
+
+.el-input__inner {
+    padding-left: 5px !important;
+}
+
+.el-select .el-input.is-focus .el-input__wrapper {
+    box-shadow: none !important;
+}
+
+.el-input-group--prepend>.el-input__wrapper {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+.el-input-group__prepend {
+    border-top-left-radius: 10px !important;
+    border-bottom-left-radius: 10px !important;
+    border-left: 2px solid var(--el-border-color) !important;
+}
+
+.el-input-group--append>.el-input__wrapper {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.el-input-group__append {
+    border-top-right-radius: 10px !important;
+    border-bottom-right-radius: 10px !important;
+    border-right: 2px solid var(--el-border-color) !important;
+}
+
+.el-input-group__append,
+.el-input-group__prepend {
+    border-width: 2px 0 2px 0;
+    border-top: 2px solid var(--el-border-color) !important;
+    border-bottom: 2px solid var(--el-border-color) !important;
+    box-sizing: border-box;
+    box-shadow: none !important;
+}
+
+// Select
+.el-select__popper {
+    border-radius: $border-radius !important;
+}
+
+.el-select-dropdown__list {
+    margin: 0 !important;
+    padding-right: 10px !important;
+    padding-bottom: 10px !important;
+    background: #fff;
+    border-radius: 10px !important;
+}
+
+.el-select-dropdown__item {
+    margin: 10px 0 0 10px;
+    border-radius: $border-radius !important;
+    height: 35px !important;
+}
+
+.el-select-dropdown__item.selected {
+    color: $color-primary-0 !important;
+}
+
+// Button
+.el-button {
+    border-width: 2px !important;
+    border-radius: $border-radius !important;
+}
+
+.el-button:not(.el-button--small) {
+    height: 45px !important;
+    padding: 8px 20px !important;
+}
+
+.el-button--small {
+    height: 30px !important;
+    padding: 8px 20px !important;
+}
+
+// Card
+.el-card {
+    border-radius: $border-radius !important;
+    box-shadow: none !important;
+    border: none !important;
+    @include border-normal();
+}
+
+.el-card__header {
+    border-bottom-width: 2px !important;
+}
+
+// Alert
+.el-alert {
+    height: 45px !important;
+    box-shadow: none !important;
+    border-radius: $border-radius !important;
+}
+
+// Carousel
+.el-carousel {
+    border-radius: $border-radius !important;
+}
+
+// Pagination
+.el-pagination>.btn-next,
+.el-pagination>.btn-prev,
+.el-pager>.number,
+.el-pager>.more {
+    height: 45px !important;
+    width: 45px !important;
+    font-size: 15px !important;
+    border-radius: $border-radius !important;
+}
+
+.el-pagination>.btn-next:hover,
+.el-pagination>.btn-prev:hover,
+.el-pager>.number:not(.is-active):hover,
+.el-pager>.more:hover {
+    font-weight: bold;
+    color: $color-primary-0 !important;
+}
+
+.el-pager>.is-active {
+    background-color: $color-primary-0 !important;
+}
+
+// Upload
+.el-upload-dragger {
+    border-radius: $border-radius !important;
+    border-width: 3px !important;
+    border-style: dotted !important;
+}
+
+.el-upload-dragger:hover {
+    border-color: $color-primary-0 !important;
+}
+
+// Step
+.el-step__title.is-finish,
+.el-step__head.is-finish {
+    color: $color-primary-0 !important;
+}
+
+// Tabs
+.el-tabs__item.is-active,
+.el-tabs__item:hover {
+    color: $color-primary-0 !important;
+}
+
+.el-tabs--border-card>.el-tabs__header {
+    border-bottom-width: 2px !important;
+}
+
+.el-tabs--border-card {
+    border: 2px solid $light-border !important;
+    border-radius: $border-radius !important;
+}
+
+.el-tabs__header {
+    border-radius: 10px 10px 0 0 !important;
+}
+
+#tab-first,
+.el-tabs__nav-scroll {
+    border-top-left-radius: 10px !important;
+}
+
+.el-tabs--left .el-tabs__item.is-left {
+    height: 50px !important;
+}
+
+.el-tabs__active-bar {
+    background-color: $color-primary-0 !important;
+    border-radius: 1000px;
+}
+
+// Collapse
+.el-collapse {
+    border-top-width: 2px !important;
+}
+
+.el-collapse-item__header {
+    border-bottom-width: 2px !important;
+}
+
+// Link
+.el-link--primary {
+    color: $color-primary-0 !important;
+}
+
+.el-link--primary:hover::after {
+    border-color: $color-primary-0 !important;
+}
+
+// Dialog
+.el-dialog {
+    border-radius: $border-radius !important;
+}
+
+.el-dialog__header {
+    border-bottom: 2px solid $light-border;
+    margin-right: 0 !important;
+}
+
+// Back to top
+.el-backtop {
+    box-sizing: border-box;
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: $border-radius !important;
+    background-color: rgb(232, 241, 236) !important;
+    color: $color-primary-0 !important;
+}
+
+// Message
+.el-message {
+    border-radius: $border-radius !important;
+    height: 60px;
+    border-width: 2px !important;
+}
+
+.el-message__content {
+    font-size: 16px !important;
+}
+
+// Date Picker
+.el-date-editor {
+    height: 45px !important;
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+.el-picker__popper {
+    border-radius: $border-radius !important;
+}
+
+.el-date-range-picker {
+    border-radius: $border-radius !important;
+}
+
+.el-picker-panel__sidebar {
+    border-top-left-radius: $border-radius !important;
+    border-bottom-left-radius: $border-radius !important;
+}
