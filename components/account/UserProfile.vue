@@ -40,9 +40,7 @@
               班级
             </div>
           </template>
-          <span class="cell-item">
-            {{ className }}
-          </span>
+          <span class="cell-item" />
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -98,13 +96,6 @@ const info = ref<TUserProfileOutput>();
 const papers = ref<TPaperListOutput>([]);
 const contentLoading = ref(true);
 const paperLoading = ref(true);
-const className = ref('');
-
-async function getClass(id?: string) {
-  if (!id)
-    return '';
-
-}
 
 onMounted(async () => {
   try {
@@ -117,11 +108,6 @@ onMounted(async () => {
     for (const paper of paperIds)
       papers.value.push(await $api.paper.content.query({ id: paper }));
     paperLoading.value = false;
-
-    if (info.value.classIds.length) {
-      const res = await $api.class.content.query({ id: info.value.classIds[0] });
-      className.value = `${res.enterYear}级 ${res.index}班`;
-    }
   } catch (err) {
     useErrorHandler(err);
   }

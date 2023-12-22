@@ -1,10 +1,12 @@
 <template>
-  <el-menu class="left-menu h-full" background-color="#f3f5f7" active-text-color="#4d4d4d" :router="true"
-    :default-active="$route.path">
+  <el-menu
+    class="left-menu h-full" background-color="#f3f5f7" active-text-color="#4d4d4d" :router="true"
+    :default-active="$route.path"
+  >
     <el-sub-menu index="1">
       <template #title>
         <el-icon>
-            <ElIconCirclePlus />
+          <ElIconCirclePlus />
         </el-icon>
         <span>创建</span>
       </template>
