@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     '@pinia-plugin-persistedstate/nuxt',
     '@element-plus/nuxt',
     '@vueuse/nuxt',
+    '@nuxt/image',
   ],
   components: [
     {

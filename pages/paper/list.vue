@@ -71,6 +71,7 @@
 import { useFuse } from '@vueuse/integrations/useFuse';
 import type { TPaperListOutput, TPaperListOutputItem } from '~/types/index';
 import type { TSearchOption } from '~/components/paper/SearchOptions.vue';
+import { vOnClickOutside } from '@vueuse/components';
 const { $api } = useNuxtApp();
 
 const isSmallScreen = useWindowWidth();

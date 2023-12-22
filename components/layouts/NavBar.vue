@@ -4,7 +4,7 @@
     <el-menu class="menu" :ellipsis="false" mode="horizontal" background-color="#146E3C" text-color="#FFFFFF"
       active-text-color="#FFFFFF" :router="true" :default-active="$route.path">
       <el-menu-item disabled class="logo">
-        <img src="~/public/logo.png" style="height: 30px;" />
+        <NuxtImg preload src="/logo.png" class="h-[30px]" />
       </el-menu-item>
       <template v-if="!isSmallScreen">
         <el-menu-item index="/">首页</el-menu-item>
