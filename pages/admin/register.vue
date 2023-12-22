@@ -1,6 +1,6 @@
 <template>
   <el-card>
-    <el-form label-position="top" class="register-form mx-auto py-5" :model="form" :rules="rules" ref="formRef">
+    <el-form ref="formRef" label-position="top" class="register-form mx-auto py-5" :model="form" :rules="rules">
       <el-form-item prop="id">
         <div class="icon-label">
           <el-icon :size="15">
@@ -26,7 +26,7 @@
           </el-icon>
           密码
         </div>
-        <el-input type="text" v-model="form.password" />
+        <el-input v-model="form.password" type="text" />
       </el-form-item>
       <el-form-item>
         <div>
@@ -53,6 +53,7 @@
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus';
 import type { TRegisterInput } from '~/types/index';
+
 const { $api } = useNuxtApp();
 
 const formRef = ref<FormInstance>();
@@ -74,18 +75,17 @@ const rules = reactive<FormRules<TRegisterInput>>({
   ],
   password: [
     { required: true, message: '密码不能为空', trigger: 'blur' },
-    { min: 8, message: '密码至少 8 位', trigger: 'blur' }
+    { min: 8, message: '密码至少 8 位', trigger: 'blur' },
   ],
 });
 
 const buttonLoading = ref(false);
 
-const register = async (submittedForm: FormInstance | undefined) => {
-  if (!submittedForm) {
+async function register(submittedForm: FormInstance | undefined) {
+  if (!submittedForm)
     return;
-  }
 
-  await submittedForm.validate(async valid => {
+  await submittedForm.validate(async (valid) => {
     if (valid) {
       buttonLoading.value = true;
 
@@ -105,7 +105,7 @@ const register = async (submittedForm: FormInstance | undefined) => {
       }
     }
   });
-};
+}
 </script>
 
 <style scoped lang="scss">

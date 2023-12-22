@@ -6,7 +6,7 @@ import {
   presetUno,
   presetWebFonts,
   transformerDirectives,
-} from 'unocss'
+} from 'unocss';
 
 export default defineConfig({
   transformers: [transformerDirectives()],
@@ -33,4 +33,4 @@ export default defineConfig({
     presetTypography(),
     presetWebFonts({}),
   ],
-})
+});

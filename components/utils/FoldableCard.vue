@@ -1,7 +1,7 @@
 <template>
   <el-card v-if="canFold">
     <div class="card-header">
-      <slot name="header"></slot>
+      <slot name="header" />
       <el-button style="height: 30px !important; width: 30px !important;" text bg @click="showContent = !showContent">
         <el-icon color="#909399">
           <ElIconArrowUpBold v-if="showContent" />
@@ -10,21 +10,21 @@
       </el-button>
     </div>
     <div v-if="showContent" class="mt-3.5">
-      <slot></slot>
+      <slot />
     </div>
   </el-card>
   <el-card v-else>
     <template #header>
-      <slot name="header"></slot>
+      <slot name="header" />
     </template>
-    <slot></slot>
+    <slot />
   </el-card>
 </template>
 
 <script setup lang="ts">
 withDefaults(defineProps<{
-  canFold?: boolean;
-  defaultPosition?: 'folded' | 'unfolded';
+  canFold?: boolean
+  defaultPosition?: 'folded' | 'unfolded'
 }>(), {
   canFold: true,
   defaultPosition: 'unfolded',

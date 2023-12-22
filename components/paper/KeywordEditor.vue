@@ -1,16 +1,22 @@
 <template>
   <div style="width: 100%;">
-    <el-tag v-for="tag in modelValue" :key="tag" size="large" effect="plain" class="mx-1" closable type="info"
-      :disable-transitions="false" @close="handleClose(tag)">
+    <el-tag
+      v-for="tag in modelValue" :key="tag" size="large" effect="plain" class="mx-1" closable type="info"
+      :disable-transitions="false" @close="handleClose(tag)"
+    >
       {{ tag }}
     </el-tag>
 
-    <el-input v-if="inputVisible" ref="InputRef" v-model="inputValue" :maxlength="contentMaxLength" show-word-limit
-      class="same-size tag-input mx-1" size="small" @keyup.enter="handleInputConfirm" @blur="handleInputConfirm" />
+    <ElInput
+      v-if="inputVisible" ref="InputRef" v-model="inputValue" :maxlength="contentMaxLength" show-word-limit
+      class="same-size tag-input mx-1" size="small" @keyup.enter="handleInputConfirm" @blur="handleInputConfirm"
+    />
     <el-tooltip v-else :visible="tooltipVisible" placement="top-start" content="最多添加 8 个关键词">
-      <el-button class="same-size mx-1" size="small" color="#146E3C" plain @click="showInput"
-        :disabled="modelValue.length >= 8" @mouseenter="tooltipVisible = modelValue.length >= 8"
-        @mouseleave="tooltipVisible = false">
+      <el-button
+        class="same-size mx-1" size="small" color="#146E3C" plain :disabled="modelValue.length >= 8"
+        @click="showInput" @mouseenter="tooltipVisible = modelValue.length >= 8"
+        @mouseleave="tooltipVisible = false"
+      >
         + 添加关键词
       </el-button>
     </el-tooltip>
@@ -21,9 +27,9 @@
 import { ElInput } from 'element-plus';
 
 const props = withDefaults(defineProps<{
-  modelValue: string[];
-  contentMaxLength?: number;
-  maxLength?: number;
+  modelValue: string[]
+  contentMaxLength?: number
+  maxLength?: number
 }>(), {
   contentMaxLength: 8,
   maxLength: 8,
@@ -37,26 +43,25 @@ const InputRef = ref<InstanceType<typeof ElInput>>();
 
 const tooltipVisible = ref(false);
 
-const handleClose = (tag: string) => {
+function handleClose(tag: string) {
   dynamicTags.value.splice(dynamicTags.value.indexOf(tag), 1);
-};
+}
 
-const showInput = () => {
+function showInput() {
   inputVisible.value = true;
   nextTick(() => {
     InputRef.value?.input?.focus();
   });
-};
+}
 
-const handleInputConfirm = () => {
-  if (inputValue.value && !dynamicTags.value.includes(inputValue.value)) {
+function handleInputConfirm() {
+  if (inputValue.value && !dynamicTags.value.includes(inputValue.value))
     dynamicTags.value.push(inputValue.value);
-  }
 
   inputVisible.value = false;
   inputValue.value = '';
   emit('update:modelValue', dynamicTags.value);
-};
+}
 </script>
 
 <style scoped lang="scss">

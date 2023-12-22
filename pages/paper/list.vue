@@ -7,9 +7,11 @@
         </div>
       </el-card>
     </el-col>
-    <el-col :span="isSmallScreen ? 24 : 18" v-on-click-outside="closeSearchOptions">
-      <el-input v-model="searchContent" placeholder="搜索论文" clearable class="mb-2.5" @change="updateUrl"
-        :suffix-icon="isSmallScreen ? ElIconSearch : ''">
+    <el-col v-on-click-outside="closeSearchOptions" :span="isSmallScreen ? 24 : 18">
+      <el-input
+        v-model="searchContent" placeholder="搜索论文" clearable class="mb-2.5" :suffix-icon="isSmallScreen ? ElIconSearch : ''"
+        @change="updateUrl"
+      >
         <template #prepend>
           <el-icon v-if="!isSmallScreen">
             <ElIconSearch />
@@ -35,15 +37,16 @@
             </el-card>
           </div>
           <div v-else>
-            <TransitionGroup name="list" tag="ul" v-infinite-scroll="load" class="infinite-list list-full-screen m-0 p-0"
-              infinite-scroll-immediate="false">
+            <TransitionGroup
+              v-infinite-scroll="load" name="list" tag="ul" class="infinite-list list-full-screen m-0 p-0"
+              infinite-scroll-immediate="false"
+            >
               <li v-for="(paper, index) in processedListData.slice(0, count)" :key="index">
                 <div class="list-full-screen-center mx-auto px-5">
                   <el-row :gutter="20">
-                    <el-col :span="6">
-                    </el-col>
+                    <el-col :span="6" />
                     <el-col :span="isSmallScreen ? 24 : 18">
-                      <PaperCard :paper="paper" :showAbstract="searchOptions.showAbstract" />
+                      <PaperCard :paper="paper" :show-abstract="searchOptions.showAbstract" />
                     </el-col>
                   </el-row>
                 </div>
@@ -51,8 +54,7 @@
               <li v-if="processedListData.length === 0" class="text-center">
                 <div class="list-full-screen-center mx-auto px-5">
                   <el-row :gutter="20">
-                    <el-col :span="6">
-                    </el-col>
+                    <el-col :span="6" />
                     <el-col :span="isSmallScreen ? 24 : 18">
                       <el-empty description="无结果，换个搜索条件试试？" />
                     </el-col>
@@ -69,9 +71,10 @@
 
 <script setup lang="ts">
 import { useFuse } from '@vueuse/integrations/useFuse';
+import { vOnClickOutside } from '@vueuse/components';
 import type { TPaperListOutput, TPaperListOutputItem } from '~/types/index';
 import type { TSearchOption } from '~/components/paper/SearchOptions.vue';
-import { vOnClickOutside } from '@vueuse/components';
+
 const { $api } = useNuxtApp();
 
 const isSmallScreen = useWindowWidth();
@@ -83,9 +86,9 @@ const count = ref(10);
 
 const searchContent = ref(route.query.search?.toString() ?? '');
 const showSearchOptions = ref(false);
-const closeSearchOptions = () => {
+function closeSearchOptions() {
   showSearchOptions.value = false;
-};
+}
 
 const listData = ref<TPaperListOutput>([]);
 const loading = ref(true);
@@ -101,9 +104,9 @@ const searchOptions = reactive<TSearchOption>({
   sortOption: 'default',
 });
 
-const updateUrl = () => {
+function updateUrl() {
   router.replace({ query: { search: searchContent.value } });
-};
+}
 
 const fuseOptions = computed(() => {
   return {
@@ -125,9 +128,9 @@ const processedListData = computed(() => {
         return false;
       if (searchOptions.filter.onlyFeatured && !o.isFeatured)
         return false;
-      if (searchOptions.filter.timeRange &&
-        (o.createdAt.getTime() < Date.parse(searchOptions.filter.timeRange[0]) ||
-          o.createdAt.getTime() > Date.parse(searchOptions.filter.timeRange[1]))
+      if (searchOptions.filter.timeRange
+        && (o.createdAt.getTime() < Date.parse(searchOptions.filter.timeRange[0])
+        || o.createdAt.getTime() > Date.parse(searchOptions.filter.timeRange[1]))
       )
         return false;
       return true;
@@ -145,9 +148,9 @@ const processedListData = computed(() => {
     });
 });
 
-const load = () => {
+function load() {
   count.value += Math.min(5, processedListData.value.length - count.value);
-};
+}
 
 onMounted(async () => {
   try {

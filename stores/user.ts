@@ -10,11 +10,11 @@ export const useUserStore = defineStore('user', () => {
   const isDefaultPassword = ref(true);
 
   const login = (data: {
-    accessToken: string;
-    refreshToken: string;
-    userId: string;
-    username: string;
-    role: 'admin' | 'student' | 'teacher';
+    accessToken: string
+    refreshToken: string
+    userId: string
+    username: string
+    role: 'admin' | 'student' | 'teacher'
   }) => {
     loggedIn.value = true;
 

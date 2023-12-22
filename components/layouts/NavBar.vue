@@ -1,25 +1,44 @@
-
 <template>
   <div class="top-nav">
-    <el-menu class="menu" :ellipsis="false" mode="horizontal" background-color="#146E3C" text-color="#FFFFFF"
-      active-text-color="#FFFFFF" :router="true" :default-active="$route.path">
+    <el-menu
+      class="menu" :ellipsis="false" mode="horizontal" background-color="#146E3C" text-color="#FFFFFF"
+      active-text-color="#FFFFFF" :router="true" :default-active="$route.path"
+    >
       <el-menu-item disabled class="logo">
         <NuxtImg preload src="/logo.png" class="h-[30px]" />
       </el-menu-item>
       <template v-if="!isSmallScreen">
-        <el-menu-item index="/">首页</el-menu-item>
-        <el-menu-item index="/paper/list">论文列表</el-menu-item>
-        <el-menu-item index="/group">小组作业</el-menu-item>
-        <el-menu-item v-if="userStore.role === 'admin' || userStore.role === 'teacher'"
-          index="/admin">管理</el-menu-item>
+        <el-menu-item index="/">
+          首页
+        </el-menu-item>
+        <el-menu-item index="/paper/list">
+          论文列表
+        </el-menu-item>
+        <el-menu-item index="/group">
+          小组作业
+        </el-menu-item>
+        <el-menu-item
+          v-if="userStore.role === 'admin' || userStore.role === 'teacher'"
+          index="/admin"
+        >
+          管理
+        </el-menu-item>
       </template>
       <div class="flex-grow" />
       <el-sub-menu v-if="userStore.loggedIn" index="4">
-        <template #title>{{ userStore.username }}</template>
-        <el-menu-item :index="`/user/${userStore.userId}`">主页</el-menu-item>
-        <el-menu-item @click="logout">登出</el-menu-item>
+        <template #title>
+          {{ userStore.username }}
+        </template>
+        <el-menu-item :index="`/user/${userStore.userId}`">
+          主页
+        </el-menu-item>
+        <el-menu-item @click="logout">
+          登出
+        </el-menu-item>
       </el-sub-menu>
-      <el-menu-item index="/user/login" v-else>登录</el-menu-item>
+      <el-menu-item v-else index="/user/login">
+        登录
+      </el-menu-item>
     </el-menu>
   </div>
 
@@ -52,15 +71,16 @@
 
 <script setup lang="ts">
 import { useUserStore } from '~/stores/user';
+
 const userStore = useUserStore();
 
 const isSmallScreen = useWindowWidth();
 
-const logout = () => {
+function logout() {
   userStore.logout();
   navigateTo('/');
   ElMessage({ message: '登出成功！', type: 'success' });
-};
+}
 </script>
 
 <style scoped lang="scss">

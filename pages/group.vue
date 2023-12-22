@@ -6,12 +6,9 @@
           <el-col :span="8">
             <el-card>
               <el-descriptions :column="2" :border="true">
-                <el-descriptions-item label="班级">
-                </el-descriptions-item>
-                <el-descriptions-item label="">
-                </el-descriptions-item>
-                <el-descriptions-item label="小组成员" :span="2">
-                </el-descriptions-item>
+                <el-descriptions-item label="班级" />
+                <el-descriptions-item label="" />
+                <el-descriptions-item label="小组成员" :span="2" />
               </el-descriptions>
             </el-card>
           </el-col>
@@ -24,10 +21,12 @@
           </el-col>
         </el-row>
 
-        <el-tabs type="border-card" v-model="activeTab">
+        <el-tabs v-model="activeTab" type="border-card">
           <el-tab-pane label="上传" name="first">
-            <el-upload multiple drag>
-              <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+            <el-upload drag multiple>
+              <el-icon class="el-icon--upload">
+                <upload-filled />
+              </el-icon>
               <div class="el-upload__text">
                 拖拽文件或 <em>点击这里上传</em>
               </div>

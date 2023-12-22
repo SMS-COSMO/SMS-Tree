@@ -1,17 +1,16 @@
 import { drizzle } from 'drizzle-orm/libsql';
 import { createClient } from '@libsql/client';
 import { env } from '../env';
-import type { refreshTokens } from './schema/user';
-import { users } from './schema/user';
+import type { refreshTokens, users } from './schema/user';
 import type { papers } from './schema/paper';
 import type { groups } from './schema/group';
-import { classes } from './schema/class';
+import type { classes } from './schema/class';
 
 const options = (() => {
-    switch (env.DATABASE_CONNECTION_TYPE) {
+  switch (env.DATABASE_CONNECTION_TYPE) {
     case 'local': return { url: 'file:local.sqlite' };
     case 'remote': return { url: env.DATABASE_URL, authToken: env.DATABASE_AUTH_TOKEN };
-    }
+  }
 })();
 
 const client = createClient(options);

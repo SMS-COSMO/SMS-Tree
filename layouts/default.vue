@@ -1,6 +1,6 @@
 <template>
   <NavBar />
-  <div class="max-w-[1300px] mx-auto px-5 mt-22">
+  <div class="mx-auto mt-22 max-w-[1300px] px-5">
     <slot />
   </div>
 </template>

@@ -8,7 +8,7 @@
           </el-icon>
           原密码
         </div>
-        <el-input type="password" v-model="form.oldPassword" show-password />
+        <el-input v-model="form.oldPassword" type="password" show-password />
       </el-form-item>
       <el-form-item>
         <div>
@@ -17,8 +17,10 @@
           </el-icon>
           新密码
         </div>
-        <el-input type="password" v-model="form.newPassword" show-password
-          @keyup.enter="form.oldPassword && form.newPassword ? modify() : () => { }" />
+        <el-input
+          v-model="form.newPassword" type="password" show-password
+          @keyup.enter="form.oldPassword && form.newPassword ? modify() : () => { }"
+        />
       </el-form-item>
       <el-form-item class="m-0">
         <el-button color="#146E3C" :loading="buttonLoading" @click="modify">
@@ -40,7 +42,7 @@ const form = reactive({
 });
 
 const buttonLoading = ref(false);
-const modify = async () => {
+async function modify() {
   buttonLoading.value = true;
   if (form.oldPassword === form.newPassword) {
     ElMessage({
@@ -66,5 +68,5 @@ const modify = async () => {
     useErrorHandler(err);
     buttonLoading.value = false;
   }
-};
+}
 </script>

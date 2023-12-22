@@ -1,10 +1,10 @@
 <template>
   <el-card>
-    <el-table :data="processedListData" v-loading="loading">
+    <el-table v-loading="loading" :data="processedListData">
       <el-table-column type="selection" width="55" />
       <el-table-column :width="150" show-overflow-tooltip prop="id" label="学号">
         <template #default="scope">
-          <span @click="visitProfile(scope.row.id)" style="cursor: pointer !important;">
+          <span style="cursor: pointer !important;" @click="visitProfile(scope.row.id)">
             {{ scope.row.id }}
           </span>
         </template>
@@ -17,11 +17,17 @@
           <el-input v-model="searchContent" placeholder="搜索学生" />
         </template>
         <template #default="scope">
-          <el-button size="small">修改</el-button>
-          <el-popconfirm title="确定要删除此用户吗？" confirm-button-text="是" cancel-button-text="否" width="220"
-            confirm-button-type="danger" @confirm="deleteUser(scope.row.id)">
+          <el-button size="small">
+            修改
+          </el-button>
+          <el-popconfirm
+            title="确定要删除此用户吗？" confirm-button-text="是" cancel-button-text="否" width="220"
+            confirm-button-type="danger" @confirm="deleteUser(scope.row.id)"
+          >
             <template #reference>
-              <el-button size="small" type="danger">删除</el-button>
+              <el-button size="small" type="danger">
+                删除
+              </el-button>
             </template>
           </el-popconfirm>
         </template>
@@ -33,6 +39,7 @@
 <script setup lang="ts">
 import { useFuse } from '@vueuse/integrations/useFuse';
 import type { TUserStudentListOutput } from '~/types/index';
+
 const { $api } = useNuxtApp();
 
 const listData = ref<TUserStudentListOutput>([]);
@@ -40,20 +47,20 @@ const loading = ref(true);
 
 const searchContent = ref('');
 
-const visitProfile = (id: string) => {
+function visitProfile(id: string) {
   navigateTo(`/user/${id}`);
-};
+}
 
-const deleteUser = (id: string) => {
+function deleteUser(id: string) {
   try {
     $api.user.remove.mutate({ id });
     listData.value.splice(listData.value.findIndex(e => e.id === id), 1);
   } catch (err) {
     useErrorHandler(err);
   }
-};
+}
 
-const fuseOptions = () => {
+function fuseOptions() {
   return {
     fuseOptions: {
       keys: ['id', 'username'],
@@ -61,10 +68,10 @@ const fuseOptions = () => {
     },
     matchAllWhenSearchEmpty: true,
   };
-};
+}
 const fuse = useFuse(searchContent, listData, fuseOptions);
 const processedListData = computed(() =>
-  fuse.results.value.map(e => e.item)
+  fuse.results.value.map(e => e.item),
 );
 
 onMounted(async () => {

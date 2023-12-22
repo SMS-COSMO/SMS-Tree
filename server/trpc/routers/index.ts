@@ -5,11 +5,11 @@ import { groupRouter } from './group';
 import { classRouter } from './class';
 
 export const appRouter = router({
-    status: publicProcedure.query(() => 'Hola! This is working'),
-    user: userRouter,
-    paper: paperRouter,
-    group: groupRouter,
-    class: classRouter,
+  status: publicProcedure.query(() => 'Hola! This is working'),
+  user: userRouter,
+  paper: paperRouter,
+  group: groupRouter,
+  class: classRouter,
 });
 
-export type AppRouter = typeof appRouter
+export type AppRouter = typeof appRouter;

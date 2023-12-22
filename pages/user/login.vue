@@ -1,7 +1,9 @@
 <template>
   <div class="top-margin middle mx-auto">
-    <el-alert v-if="userStore.isDefaultPassword" title="第一次登录完毕后请修改密码！" show-icon type="warning" effect="dark"
-      :closable="false" />
+    <el-alert
+      v-if="userStore.isDefaultPassword" title="第一次登录完毕后请修改密码！" show-icon type="warning" effect="dark"
+      :closable="false"
+    />
     <el-card class="mt-4">
       <template #header>
         登录
@@ -23,8 +25,10 @@
             </el-icon>
             密码
           </div>
-          <el-input type="password" v-model="form.password" show-password
-            @keyup.enter="form.userId && form.password ? login() : () => { }" />
+          <el-input
+            v-model="form.password" type="password" show-password
+            @keyup.enter="form.userId && form.password ? login() : () => { }"
+          />
         </el-form-item>
         <el-form-item class="m-0">
           <el-button class="ml-auto" color="#146E3C" :loading="buttonLoading" @click="login">
@@ -38,6 +42,7 @@
 
 <script lang="ts" setup>
 import { useUserStore } from '~/stores/user';
+
 const { $api } = useNuxtApp();
 const userStore = useUserStore();
 
@@ -50,7 +55,7 @@ const form = reactive({
   password: '',
 });
 
-const login = async () => {
+async function login() {
   buttonLoading.value = true;
 
   try {
@@ -75,7 +80,7 @@ const login = async () => {
     useErrorHandler(err);
     buttonLoading.value = false;
   }
-};
+}
 </script>
 
 <style scoped lang="scss">

@@ -2,25 +2,27 @@
   <el-col :span="6" @click="jump">
     <div class="bottom-nav-button" :class="isHighlight ? 'highlighted' : ''">
       <el-icon :size="18" color="#606266">
-        <slot name="icon"></slot>
+        <slot name="icon" />
       </el-icon>
       <br>
-      <el-text size="small">{{ label }}</el-text>
+      <el-text size="small">
+        {{ label }}
+      </el-text>
     </div>
   </el-col>
 </template>
 
 <script setup lang="ts">
 const props = defineProps<{
-  label: string,
-  href: string,
+  label: string
+  href: string
 }>();
 
 const route = useRoute();
 
-const jump = () => {
+function jump() {
   navigateTo(props.href);
-};
+}
 
 const isHighlight = computed(() => route.fullPath === props.href);
 </script>

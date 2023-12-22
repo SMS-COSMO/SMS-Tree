@@ -3,7 +3,9 @@
     <div class="w-full">
       <el-carousel trigger="click" height="250px">
         <el-carousel-item v-for="item in 4" :key="item">
-          <h3 class="small justify-center" text="2xl">{{ item }}</h3>
+          <h3 class="small justify-center" text="2xl">
+            {{ item }}
+          </h3>
         </el-carousel-item>
       </el-carousel>
     </div>
@@ -16,7 +18,7 @@
           </template>
           <el-row :gutter="10">
             <el-col :span="16">
-              <el-input v-model="quickSearchContent" @keyup.enter="quickSearch" clearable />
+              <el-input v-model="quickSearchContent" clearable @keyup.enter="quickSearch" />
             </el-col>
             <el-col :span="8">
               <el-button class="w-full" color="#146E3C" plain @click="quickSearch">
@@ -29,7 +31,7 @@
           </el-row>
         </el-card>
       </el-col>
-      <el-col :span="isSmallScreen ? 24 : 17" class="mt-4 desktop:mt-0">
+      <el-col :span="isSmallScreen ? 24 : 17" class="desktop:mt-0 mt-4">
         <el-card>
           <template #header>
             作业进度
@@ -46,14 +48,14 @@ const isSmallScreen = useWindowWidth();
 
 const quickSearchContent = ref('');
 
-const quickSearch = () => {
+function quickSearch() {
   navigateTo({
     path: '/paper/list',
     query: {
-      search: quickSearchContent.value
+      search: quickSearchContent.value,
     },
   });
-};
+}
 </script>
 
 <style scoped lang="scss">

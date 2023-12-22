@@ -28,3 +28,5 @@ drizzle/
 
 # local sqlite file
 local.sqlite
+
+.vscode/

@@ -40,8 +40,7 @@
               班级
             </div>
           </template>
-          <span class="cell-item">
-          </span>
+          <span class="cell-item" />
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -52,7 +51,9 @@
               账号权限
             </div>
           </template>
-          <el-tag size="small">{{ roleName[info?.role ?? 'student'] }}</el-tag>
+          <el-tag size="small">
+            {{ roleName[info?.role ?? 'student'] }}
+          </el-tag>
         </el-descriptions-item>
       </el-descriptions>
     </el-skeleton>
@@ -64,7 +65,7 @@
     <el-skeleton :rows="10" :loading="paperLoading" animated>
       <div class="desktop:columns-2">
         <div v-for="(paper, index) in papers" :key="index">
-          <PaperCard :paper="paper" showAbstract />
+          <PaperCard :paper="paper" show-abstract />
         </div>
       </div>
       <div v-if="!papers.length">
@@ -75,19 +76,20 @@
 </template>
 
 <script lang="ts" setup>
-import type { TUserProfileOutput, TPaperListOutput } from '~/types/index';
+import type { TPaperListOutput, TUserProfileOutput } from '~/types/index';
+
+const props = defineProps<{
+  userId: string
+}>();
+
 const { $api } = useNuxtApp();
 
 const isSmallScreen = useWindowWidth();
 
-const props = defineProps<{
-  userId: string;
-}>();
-
 const roleName = {
-  'student': '学生',
-  'teacher': '老师',
-  'admin': '管理员',
+  student: '学生',
+  teacher: '老师',
+  admin: '管理员',
 };
 
 const info = ref<TUserProfileOutput>();
@@ -101,9 +103,9 @@ onMounted(async () => {
     contentLoading.value = false;
 
     let paperIds: string[] = [];
-    for (let group of info.value.groupIds)
+    for (const group of info.value.groupIds)
       paperIds = paperIds.concat((await $api.group.content.query({ id: group })).papers);
-    for (let paper of paperIds)
+    for (const paper of paperIds)
       papers.value.push(await $api.paper.content.query({ id: paper }));
     paperLoading.value = false;
   } catch (err) {

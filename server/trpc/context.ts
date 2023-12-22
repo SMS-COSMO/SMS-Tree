@@ -9,10 +9,10 @@ import { GroupController } from './controllers/group';
 import { ClassController } from './controllers/class';
 
 const newGlobal = globalThis as unknown as {
-    userController: UserController | undefined
-    paperController: PaperController | undefined
-    groupController: GroupController | undefined
-    classController: ClassController | undefined
+  userController: UserController | undefined
+  paperController: PaperController | undefined
+  groupController: GroupController | undefined
+  classController: ClassController | undefined
 };
 
 const userController = newGlobal.userController ?? new UserController();
@@ -21,14 +21,14 @@ const groupController = newGlobal.groupController ?? new GroupController();
 const classController = newGlobal.classController ?? new ClassController();
 
 if (process.env.NODE_ENV !== 'production') {
-    newGlobal.userController = userController;
-    newGlobal.paperController = paperController;
-    newGlobal.groupController = groupController;
-    newGlobal.classController = classController;
+  newGlobal.userController = userController;
+  newGlobal.paperController = paperController;
+  newGlobal.groupController = groupController;
+  newGlobal.classController = classController;
 }
 
 interface CreateContextOptions {
-    user?: TRawUser
+  user?: TRawUser
 }
 
 /**
@@ -37,15 +37,15 @@ interface CreateContextOptions {
  * @credits https://create.t3.gg/en/usage/trpc#-servertrpccontextts'
  */
 export function createInnerContext(opts: CreateContextOptions) {
-    return {
-        user: opts.user,
-        db,
-        userController,
-        s3,
-        paperController,
-        groupController,
-        classController,
-    };
+  return {
+    user: opts.user,
+    db,
+    userController,
+    s3,
+    paperController,
+    groupController,
+    classController,
+  };
 }
 
 /**
@@ -54,9 +54,9 @@ export function createInnerContext(opts: CreateContextOptions) {
  * @link https://trpc.io/docs/context
  */
 export async function createContext(opts: trpcExpress.CreateExpressContextOptions) {
-    const { req } = opts;
-    const user = await userController.getUserFromHeader(req);
-    return createInnerContext({ user });
+  const { req } = opts;
+  const user = await userController.getUserFromHeader(req);
+  return createInnerContext({ user });
 }
 
-export type Context = inferAsyncReturnType<typeof createContext>
+export type Context = inferAsyncReturnType<typeof createContext>;

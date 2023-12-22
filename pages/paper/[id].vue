@@ -4,7 +4,7 @@
   <div class="title-holder mb-3">
     <h1 class="title">
       <el-skeleton animated :rows="0" :loading="contentLoading">
-        <el-tag type="success" size="large" v-if="content?.isFeatured">
+        <el-tag v-if="content?.isFeatured" type="success" size="large">
           <el-text style="color: var(--el-color-success);">
             <el-icon>
               <ElIconStar />
@@ -22,7 +22,7 @@
             分数
           </template>
         </el-statistic>
-        <el-divider direction="vertical" style="height: 40px;"></el-divider>
+        <el-divider direction="vertical" style="height: 40px;" />
         <el-statistic :value="content?.downloadCount">
           <template #title>
             下载次数
@@ -34,21 +34,23 @@
 
   <el-row :gutter="20">
     <el-col :span="isSmallScreen ? 24 : 6">
-      <FoldableCard :canFold="isSmallScreen">
+      <FoldableCard :can-fold="isSmallScreen">
         <template #header>
           论文信息
         </template>
         <el-skeleton animated :rows="4" :loading="contentLoading">
           <el-descriptions title="" :column="1">
             <el-descriptions-item label="作者">
-              <GroupMembers :groupId="content?.groupId" type="link" class="inline" />
+              <GroupMembers :group-id="content?.groupId" type="link" class="inline" />
             </el-descriptions-item>
             <el-descriptions-item label="发布时间">
               {{ content?.createdAt.toLocaleDateString('zh-CN') }}
             </el-descriptions-item>
             <el-descriptions-item label="关键词">
-              <el-tag v-for="(keyword, index) in content?.keywords" :key="index" class="clickable m-0.75" type="info"
-                effect="plain" @click="searchTag(keyword)">
+              <el-tag
+                v-for="(keyword, index) in content?.keywords" :key="index" class="clickable m-0.75" type="info"
+                effect="plain" @click="searchTag(keyword)"
+              >
                 {{ keyword }}
               </el-tag>
             </el-descriptions-item>
@@ -60,7 +62,7 @@
             </el-descriptions-item>
           </el-descriptions>
         </el-skeleton>
-        <el-button color="#146E3C" class="mt-1 w-full" plain @click="downloadDialog = true;" v-if="content?.canDownload">
+        <el-button v-if="content?.canDownload" color="#146E3C" class="mt-1 w-full" plain @click="downloadDialog = true;">
           下载
         </el-button>
         <el-dialog v-model="downloadDialog" title="文件下载" class="download-dialog">
@@ -73,7 +75,7 @@
       </FoldableCard>
     </el-col>
     <el-col :span="isSmallScreen ? 24 : 18" :class="isSmallScreen ? 'mt-4' : ''">
-      <FoldableCard :canFold="isSmallScreen">
+      <FoldableCard :can-fold="isSmallScreen">
         <template #header>
           摘要
         </template>
@@ -103,6 +105,7 @@
 
 <script setup lang="ts">
 import type { TPaperContentOutput } from '~/types/index';
+
 const { $api } = useNuxtApp();
 const route = useRoute();
 
@@ -114,14 +117,14 @@ const contentLoading = ref(true);
 
 const content = ref<TPaperContentOutput>();
 
-const searchTag = (keyword: string) => {
+function searchTag(keyword: string) {
   navigateTo({
     path: '/paper/list',
     query: {
-      search: keyword
+      search: keyword,
     },
   });
-};
+}
 
 onMounted(async () => {
   try {
