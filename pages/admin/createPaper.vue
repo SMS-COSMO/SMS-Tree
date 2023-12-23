@@ -40,8 +40,8 @@ import type { FormInstance, FormRules } from 'element-plus';
 import type { TCreatePaperInput } from '~/types/index';
 
 useHeadSafe({
-  title: '创建论文'
-})
+  title: '创建论文',
+});
 
 const formRef = ref<FormInstance>();
 const form = reactive<TCreatePaperInput>({

@@ -107,8 +107,8 @@
 import type { TPaperContentOutput } from '~/types/index';
 
 useHeadSafe({
-  title: '论文信息'
-})
+  title: '论文信息',
+});
 
 const { $api } = useNuxtApp();
 const route = useRoute();

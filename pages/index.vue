@@ -45,8 +45,8 @@
 
 <script setup lang="ts">
 useHeadSafe({
-  title: '首页'
-})
+  title: '首页',
+});
 
 const isSmallScreen = useWindowWidth();
 

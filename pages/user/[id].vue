@@ -16,8 +16,8 @@
 import { useUserStore } from '~/stores/user';
 
 useHeadSafe({
-  title: '用户信息'
-})
+  title: '用户信息',
+});
 
 const isSmallScreen = useWindowWidth();
 

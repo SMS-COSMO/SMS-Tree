@@ -44,8 +44,8 @@
 import { useUserStore } from '~/stores/user';
 
 useHeadSafe({
-  title: '登录'
-})
+  title: '登录',
+});
 
 const { $api } = useNuxtApp();
 const userStore = useUserStore();

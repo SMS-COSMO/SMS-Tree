@@ -41,8 +41,8 @@ import { useFuse } from '@vueuse/integrations/useFuse';
 import type { TUserStudentListOutput } from '~/types/index';
 
 useHeadSafe({
-  title: '学生列表'
-})
+  title: '学生列表',
+});
 
 const { $api } = useNuxtApp();
 

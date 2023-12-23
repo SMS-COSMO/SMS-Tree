@@ -76,8 +76,8 @@ import type { TPaperListOutput, TPaperListOutputItem } from '~/types/index';
 import type { TSearchOption } from '~/components/paper/SearchOptions.vue';
 
 useHeadSafe({
-  title: '论文列表'
-})
+  title: '论文列表',
+});
 
 const { $api } = useNuxtApp();
 
