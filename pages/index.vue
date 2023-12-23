@@ -44,6 +44,10 @@
 </template>
 
 <script setup lang="ts">
+useHeadSafe({
+  title: '首页'
+})
+
 const isSmallScreen = useWindowWidth();
 
 const quickSearchContent = ref('');

@@ -54,6 +54,10 @@
 import type { FormInstance, FormRules } from 'element-plus';
 import type { TRegisterInput } from '~/types/index';
 
+useHeadSafe({
+  title: '创建用户'
+})
+
 const { $api } = useNuxtApp();
 
 const formRef = ref<FormInstance>();
