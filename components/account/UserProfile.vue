@@ -76,7 +76,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { TPaperListOutput, TUserProfileOutput } from '~/types/index';
+import type { TPaperListWithAuthorOutput, TUserProfileOutput } from '~/types/index';
 
 const props = defineProps<{
   userId: string
@@ -93,7 +93,7 @@ const roleName = {
 };
 
 const info = ref<TUserProfileOutput>();
-const papers = ref<TPaperListOutput>([]);
+const papers = ref<TPaperListWithAuthorOutput>([]);
 const contentLoading = ref(true);
 const paperLoading = ref(true);
 
@@ -106,7 +106,7 @@ onMounted(async () => {
     for (const group of info.value.groupIds)
       paperIds = paperIds.concat((await $api.group.content.query({ id: group })).papers);
     for (const paper of paperIds)
-      papers.value.push(await $api.paper.content.query({ id: paper }));
+      papers.value.push(await $api.paper.contentWithAuthor.query({ id: paper }));
     paperLoading.value = false;
   } catch (err) {
     useErrorHandler(err);
