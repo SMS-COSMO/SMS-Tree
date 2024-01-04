@@ -1,35 +1,43 @@
 <template>
   <el-skeleton :rows="0" :loading="loading" animated style="width: 600px;">
     <span v-if="type === 'text'">
-      <span 
-        v-if="groupId" v-for="(member, index) of members" :key="index" class="mx-0.6"
-        :style="`${showLeader && member.userId === leader ? 'font-weight: bold;' : ''}`"
-      >
-        {{ member.username }}
-      </span>
-      <span
-        v-if="authors" v-for="(author, index) of authors" :key="index" class="mx-0.6"
-        :style="`${showLeader && author.userId === leaderId ? 'font-weight: bold;' : ''}`"
-      >
-        {{ author.username }}
-      </span>
-    </span>
-    <span v-if="type === 'link'">
-      <span v-if="groupId" v-for="(member, index) of members" :key="index" class="mx-0.6">
-        <el-link
-          :href="`/user/${member.userId}`"
+      <span v-if="groupId">
+        <span
+          v-for="(member, index) of members" :key="index" class="mx-0.6"
           :style="`${showLeader && member.userId === leader ? 'font-weight: bold;' : ''}`"
         >
           {{ member.username }}
-        </el-link>
+        </span>
       </span>
-      <span v-if="authors" v-for="(author, index) of authors" :key="index" class="mx-0.6">
-        <el-link
-          :href="`/user/${author.userId}`"
+      <span v-if="authors">
+        <span
+          v-for="(author, index) of authors" :key="index" class="mx-0.6"
           :style="`${showLeader && author.userId === leaderId ? 'font-weight: bold;' : ''}`"
         >
           {{ author.username }}
-        </el-link>
+        </span>
+      </span>
+    </span>
+    <span v-if="type === 'link'">
+      <span v-if="groupId">
+        <span v-for="(member, index) of members" :key="index" class="mx-0.6">
+          <el-link
+            :href="`/user/${member.userId}`"
+            :style="`${showLeader && member.userId === leader ? 'font-weight: bold;' : ''}`"
+          >
+            {{ member.username }}
+          </el-link>
+        </span>
+      </span>
+      <span v-if="authors">
+        <span v-for="(author, index) of authors" :key="index" class="mx-0.6">
+          <el-link
+            :href="`/user/${author.userId}`"
+            :style="`${showLeader && author.userId === leaderId ? 'font-weight: bold;' : ''}`"
+          >
+            {{ author.username }}
+          </el-link>
+        </span>
       </span>
     </span>
   </el-skeleton>
