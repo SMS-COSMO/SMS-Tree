@@ -25,7 +25,8 @@
         {{ paper?.title }}
       </el-text>
       <el-text>
-        <GroupMembers :group-id="paper.groupId" type="text" :show-leader="false" />
+        <GroupMembers v-if="'groupId' in paper" :group-id="paper.groupId" type="text" :show-leader="false" />
+        <GroupMembers v-else :authors="paper.authors" type="text" :show-leader="false" />
       </el-text>
     </el-row>
     <el-row v-if="showAbstract" class="mt-2.5">
@@ -37,10 +38,10 @@
 </template>
 
 <script setup lang="ts">
-import type { TPaperListOutputItem } from '~/types/index';
+import type { TPaperListOutputItem, TPaperListWithAuthorOutputItem } from '~/types/index';
 
 withDefaults(defineProps<{
-  paper: TPaperListOutputItem
+  paper: TPaperListOutputItem | TPaperListWithAuthorOutputItem
   showAbstract?: boolean
   lineClamp?: number
 }>(), {
@@ -48,7 +49,7 @@ withDefaults(defineProps<{
   lineClamp: 3,
 });
 
-function openPaper(paper: TPaperListOutputItem) {
+function openPaper(paper: TPaperListOutputItem | TPaperListWithAuthorOutputItem) {
   navigateTo(`/paper/${paper.id}`);
 }
 </script>

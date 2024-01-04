@@ -41,7 +41,7 @@
         <el-skeleton animated :rows="4" :loading="contentLoading">
           <el-descriptions title="" :column="1">
             <el-descriptions-item label="作者">
-              <GroupMembers :group-id="content?.groupId" type="link" class="inline" />
+              <GroupMembers :authors="content?.authors" :leader-id="content?.leader.userId" type="link" class="inline" />
             </el-descriptions-item>
             <el-descriptions-item label="发布时间">
               {{ content?.createdAt.toLocaleDateString('zh-CN') }}
@@ -104,7 +104,7 @@
 </template>
 
 <script setup lang="ts">
-import type { TPaperContentOutput } from '~/types/index';
+import type { TPaperContentWithAuthorOutput } from '~/types/index';
 
 useHeadSafe({
   title: '论文信息',
@@ -119,7 +119,7 @@ const isSmallScreen = useWindowWidth();
 const downloadDialog = ref(false);
 const contentLoading = ref(true);
 
-const content = ref<TPaperContentOutput>();
+const content = ref<TPaperContentWithAuthorOutput>();
 
 function searchTag(keyword: string) {
   navigateTo({
@@ -132,7 +132,7 @@ function searchTag(keyword: string) {
 
 onMounted(async () => {
   try {
-    content.value = await $api.paper.content.query({ id });
+    content.value = await $api.paper.contentWithAuthor.query({ id });
     contentLoading.value = false;
   } catch (err) {
     useErrorHandler(err);

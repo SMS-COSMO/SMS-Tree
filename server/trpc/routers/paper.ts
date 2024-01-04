@@ -35,6 +35,16 @@ export const paperRouter = router({
         return res.res;
     }),
 
+  contentWithAuthor: protectedProcedure
+    .input(z.object({ id: z.string().min(1, '论文id不存在') }))
+    .query(async ({ ctx, input }) => {
+      const res = await ctx.paperController.getContentWithAuthor(input.id);
+      if (!res.res || !res.success)
+        throw new TRPCError({ code: 'BAD_REQUEST', message: res.message });
+      else
+        return res.res;
+    }),
+
   remove: protectedProcedure
     .input(z.object({ id: z.string().min(1, '论文id不存在') }))
     .use(requireRoles(['admin', 'teacher']))
@@ -49,6 +59,15 @@ export const paperRouter = router({
   list: protectedProcedure
     .query(async ({ ctx }) => {
       const res = await ctx.paperController.getList();
+      if (!res.res || !res.success)
+        throw new TRPCError({ code: 'BAD_REQUEST', message: res.message });
+      else
+        return res.res;
+    }),
+
+  listWithAuthor: protectedProcedure
+    .query(async ({ ctx }) => {
+      const res = await ctx.paperController.getListWithAuthor();
       if (!res.res || !res.success)
         throw new TRPCError({ code: 'BAD_REQUEST', message: res.message });
       else

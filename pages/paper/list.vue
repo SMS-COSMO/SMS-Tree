@@ -72,7 +72,7 @@
 <script setup lang="ts">
 import { useFuse } from '@vueuse/integrations/useFuse';
 import { vOnClickOutside } from '@vueuse/components';
-import type { TPaperListOutput, TPaperListOutputItem } from '~/types/index';
+import type { TPaperListWithAuthorOutput, TPaperListWithAuthorOutputItem } from '~/types/index';
 import type { TSearchOption } from '~/components/paper/SearchOptions.vue';
 
 useHeadSafe({
@@ -94,7 +94,7 @@ function closeSearchOptions() {
   showSearchOptions.value = false;
 }
 
-const listData = ref<TPaperListOutput>([]);
+const listData = ref<TPaperListWithAuthorOutput>([]);
 const loading = ref(true);
 
 const searchOptions = reactive<TSearchOption>({
@@ -127,7 +127,7 @@ const fuseOptions = computed(() => {
 const fuse = useFuse(searchContent, listData, fuseOptions);
 const processedListData = computed(() => {
   return fuse.results.value.map(e => e.item)
-    .filter((o: TPaperListOutputItem) => {
+    .filter((o: TPaperListWithAuthorOutputItem) => {
       if (searchOptions.filter.onlyCanDownload && !o.canDownload)
         return false;
       if (searchOptions.filter.onlyFeatured && !o.isFeatured)
@@ -139,7 +139,7 @@ const processedListData = computed(() => {
         return false;
       return true;
     })
-    .sort((a: TPaperListOutputItem, b: TPaperListOutputItem) => {
+    .sort((a: TPaperListWithAuthorOutputItem, b: TPaperListWithAuthorOutputItem) => {
       if (searchOptions.sortOption === 'default')
         return 0; // Keep original order
       if (searchOptions.sortOption === 'rate')
@@ -158,7 +158,7 @@ function load() {
 
 onMounted(async () => {
   try {
-    listData.value = await $api.paper.list.query();
+    listData.value = await $api.paper.listWithAuthor.query();
     loading.value = false;
   } catch (err) {
     useErrorHandler(err);
