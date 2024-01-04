@@ -3,9 +3,11 @@ import { db } from '../../db/db';
 import type { TNewPaper, TRawUser } from '../../db/db';
 
 import { papers } from '../../db/schema/paper';
-import type { TPaper } from '../serializer/paper';
-import { paperFileSerializer, paperSerializer } from '../serializer/paper';
+import type { TAuthorPaper, TPaper } from '../serializer/paper';
+import { paperFileSerializer, paperSerializer, paperWithAuthorSerializer } from '../serializer/paper';
 import { papersToGroups } from '../../db/schema/paperToGroup';
+import { GroupController } from './group';
+import { UserController } from './user';
 
 export class PaperController {
   async create(newPaper: TNewPaper & { groupId?: string }) {
@@ -63,6 +65,46 @@ export class PaperController {
       for (const paper of await db.select().from(papers)) {
         const groups = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, paper.id));
         res.push(paperSerializer(paper, groups.length ? groups[0].groupId : ''));
+      }
+
+      return { success: true, res, message: '查询成功' };
+    } catch (err) {
+      return { success: false, message: '服务器内部错误' };
+    }
+  }
+
+  async getListWithAuthor() {
+    try {
+      const res: Array<TAuthorPaper> = [];
+      for (const paper of await db.select().from(papers)) {
+        const groups = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, paper.id));
+        if (groups.length) {
+          const gc = new GroupController();
+          const uc = new UserController();
+
+          const group = await gc.getContent(groups[0].groupId);
+          if (!group.success || !group.res)
+            return { success: false, message: group.message ?? '服务器内部错误' };
+
+          const authors = await Promise.all(
+            (group.res.members ?? [])
+              .map(async (author) => {
+                const usr = (await uc.getProfile(author)).res;
+                if (!usr)
+                  return { userId: '', username: '' };
+                return {
+                  userId: usr.id,
+                  username: usr.username,
+                };
+              }),
+          );
+
+          const leader = await uc.getProfile(group.res.leader);
+          if (!leader.success || !leader.res)
+            return { success: false, message: leader.message ?? '服务器内部错误' };
+
+          res.push(paperWithAuthorSerializer(paper, authors, { username: leader.res.username, userId: leader.res.id }));
+        }
       }
 
       return { success: true, res, message: '查询成功' };

@@ -9,5 +9,7 @@ export type TUserStudentListOutput = RouterOutput['user']['studentList'];
 export type TPaperContentOutput = RouterOutput['paper']['content'];
 export type TPaperListOutput = RouterOutput['paper']['list'];
 export type TPaperListOutputItem = RouterOutput['paper']['list'][0];
+export type TPaperListWithAuthorOutput = RouterOutput['paper']['listWithAuthor'];
+export type TPaperListWithAuthorOutputItem = RouterOutput['paper']['listWithAuthor'][0];
 export type TCreatePaperInput = RouterInput['paper']['create'];
 export type TRegisterInput = RouterInput['user']['register'];

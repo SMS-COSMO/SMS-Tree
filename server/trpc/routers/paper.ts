@@ -55,6 +55,15 @@ export const paperRouter = router({
         return res.res;
     }),
 
+  listWithAuthor: protectedProcedure
+    .query(async ({ ctx }) => {
+      const res = await ctx.paperController.getListWithAuthor();
+      if (!res.res || !res.success)
+        throw new TRPCError({ code: 'BAD_REQUEST', message: res.message });
+      else
+        return res.res;
+    }),
+
   file: protectedProcedure
     .input(z.object({ id: z.string().min(1, '论文id不存在') }))
     .query(async ({ ctx, input }) => {

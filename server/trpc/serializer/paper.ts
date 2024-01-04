@@ -1,7 +1,6 @@
 import type { TRawPaper } from '../../db/db';
 
 export type TPaper = ReturnType<typeof paperSerializer>;
-
 export function paperSerializer(content: TRawPaper, groupId: string) {
   return {
     id: content.id,
@@ -9,6 +8,28 @@ export function paperSerializer(content: TRawPaper, groupId: string) {
     keywords: content.keywords,
     abstract: content.abstract,
     groupId,
+    status: content.status,
+    downloadCount: content.downloadCount,
+    isFeatured: content.isFeatured,
+    canDownload: content.canDownload,
+    rate: content.rate,
+    createdAt: content.createdAt,
+  };
+}
+
+export interface TAuthor {
+  username: string
+  userId: string
+};
+export type TAuthorPaper = ReturnType<typeof paperWithAuthorSerializer>;
+export function paperWithAuthorSerializer(content: TRawPaper, authors: TAuthor[], leader: TAuthor) {
+  return {
+    id: content.id,
+    title: content.title,
+    keywords: content.keywords,
+    abstract: content.abstract,
+    authors,
+    leader,
     status: content.status,
     downloadCount: content.downloadCount,
     isFeatured: content.isFeatured,
