@@ -34,11 +34,63 @@ export class PaperController {
     }
   }
 
+  async getAuthors(groupId: string) {
+    const gc = new GroupController();
+    const uc = new UserController();
+
+    const group = await gc.getContent(groupId);
+    if (!group.success || !group.res)
+      return { success: false, message: group.message ?? '服务器内部错误' };
+
+    const authors = await Promise.all(
+      (group.res.members ?? [])
+        .map(async (author) => {
+          const usr = (await uc.getProfile(author)).res;
+          if (!usr)
+            return { userId: '', username: '' };
+          return {
+            userId: usr.id,
+            username: usr.username,
+          };
+        }),
+    );
+    const leader = await uc.getProfile(group.res.leader);
+    if (!leader.success || !leader.res)
+      return { success: false, message: leader.message ?? '服务器内部错误' };
+
+    return {
+      success: true,
+      res: {
+        authors,
+        leader: {
+          username: leader.res.username,
+          userId: leader.res.id,
+        },
+      },
+    };
+  }
+
   async getContent(id: string) {
     try {
       const info = (await db.select().from(papers).where(eq(papers.id, id)))[0];
       const groups = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, id));
       const paper = paperSerializer(info, groups.length ? groups[0].groupId : '');
+      return { success: true, res: paper, message: '查询成功' };
+    } catch (err) {
+      return { success: false, message: '论文不存在' };
+    }
+  }
+
+  async getContentWithAuthor(id: string) {
+    try {
+      const info = (await db.select().from(papers).where(eq(papers.id, id)))[0];
+      const groups = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, id));
+
+      const res = await this.getAuthors(groups[0].groupId);
+      if (!res.success || !res.res)
+        return { success: false, message: res.message ?? '服务器内部错误' };
+
+      const paper = paperWithAuthorSerializer(info, res.res.authors, res.res.leader);
       return { success: true, res: paper, message: '查询成功' };
     } catch (err) {
       return { success: false, message: '论文不存在' };
@@ -75,39 +127,18 @@ export class PaperController {
 
   async getListWithAuthor() {
     try {
-      const res: Array<TAuthorPaper> = [];
+      const list: Array<TAuthorPaper> = [];
       for (const paper of await db.select().from(papers)) {
         const groups = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, paper.id));
         if (groups.length) {
-          const gc = new GroupController();
-          const uc = new UserController();
+          const res = await this.getAuthors(groups[0].groupId);
+          if (!res.success || !res.res)
+            return { success: false, message: res.message ?? '服务器内部错误' };
 
-          const group = await gc.getContent(groups[0].groupId);
-          if (!group.success || !group.res)
-            return { success: false, message: group.message ?? '服务器内部错误' };
-
-          const authors = await Promise.all(
-            (group.res.members ?? [])
-              .map(async (author) => {
-                const usr = (await uc.getProfile(author)).res;
-                if (!usr)
-                  return { userId: '', username: '' };
-                return {
-                  userId: usr.id,
-                  username: usr.username,
-                };
-              }),
-          );
-
-          const leader = await uc.getProfile(group.res.leader);
-          if (!leader.success || !leader.res)
-            return { success: false, message: leader.message ?? '服务器内部错误' };
-
-          res.push(paperWithAuthorSerializer(paper, authors, { username: leader.res.username, userId: leader.res.id }));
+          list.push(paperWithAuthorSerializer(paper, res.res.authors, res.res.leader));
         }
       }
-
-      return { success: true, res, message: '查询成功' };
+      return { success: true, res: list, message: '查询成功' };
     } catch (err) {
       return { success: false, message: '服务器内部错误' };
     }

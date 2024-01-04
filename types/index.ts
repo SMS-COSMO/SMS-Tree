@@ -7,6 +7,7 @@ export type RouterInput = inferRouterInputs<AppRouter>;
 export type TUserProfileOutput = RouterOutput['user']['profile'];
 export type TUserStudentListOutput = RouterOutput['user']['studentList'];
 export type TPaperContentOutput = RouterOutput['paper']['content'];
+export type TPaperContentWithAuthorOutput = RouterOutput['paper']['contentWithAuthor'];
 export type TPaperListOutput = RouterOutput['paper']['list'];
 export type TPaperListOutputItem = RouterOutput['paper']['list'][0];
 export type TPaperListWithAuthorOutput = RouterOutput['paper']['listWithAuthor'];
