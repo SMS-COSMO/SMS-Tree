@@ -14,3 +14,4 @@ export type TPaperListWithAuthorOutput = RouterOutput['paper']['listWithAuthor']
 export type TPaperListWithAuthorOutputItem = RouterOutput['paper']['listWithAuthor'][0];
 export type TCreatePaperInput = RouterInput['paper']['create'];
 export type TRegisterInput = RouterInput['user']['register'];
+export type TClassContentOutput = RouterOutput['class']['content'];

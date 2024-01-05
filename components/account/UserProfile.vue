@@ -31,7 +31,7 @@
             {{ info?.id }}
           </span>
         </el-descriptions-item>
-        <el-descriptions-item>
+        <el-descriptions-item v-if="info?.role === 'student'">
           <template #label>
             <div class="cell-item">
               <el-icon>
@@ -40,7 +40,9 @@
               班级
             </div>
           </template>
-          <span class="cell-item" />
+          <span class="cell-item">
+            {{ classString }}
+          </span>
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -76,7 +78,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { TPaperListWithAuthorOutput, TUserProfileOutput } from '~/types/index';
+import type { TPaperListWithAuthorOutput, TUserProfileOutput, TClassContentOutput } from '~/types/index';
 
 const props = defineProps<{
   userId: string
@@ -94,6 +96,16 @@ const roleName = {
 
 const info = ref<TUserProfileOutput>();
 const papers = ref<TPaperListWithAuthorOutput>([]);
+const classInfo = ref<TClassContentOutput>();
+const classString = computed(() => {
+  if (!classInfo.value)
+    return '';
+  const now = new Date();
+  const yearString = ['', '高一', '高二', '毕业'];
+  const year = now.getFullYear() - classInfo.value.enterYear + (now.getMonth() > 8 ? 1 : 0);
+
+  return `${yearString[year]}（${classInfo.value.index}）`;
+});
 const contentLoading = ref(true);
 const paperLoading = ref(true);
 
@@ -108,6 +120,9 @@ onMounted(async () => {
     for (const paper of paperIds)
       papers.value.push(await $api.paper.contentWithAuthor.query({ id: paper }));
     paperLoading.value = false;
+
+    classInfo.value = await $api.class.content.query({ id: info.value.classIds[0]});
+    
   } catch (err) {
     useErrorHandler(err);
   }
