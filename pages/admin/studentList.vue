@@ -10,7 +10,11 @@
         </template>
       </el-table-column>
       <el-table-column :width="100" show-overflow-tooltip prop="username" label="姓名" />
-      <el-table-column :width="100" label="班级" />
+      <el-table-column :width="100" label="班级">
+        <template #default="scope">
+          <static-class-string :key="searchContent" :user-info="scope.row" />
+        </template>
+      </el-table-column>
       <el-table-column :width="400" show-overflow-tooltip label="课题" />
       <el-table-column label="操作" align="right">
         <template #header>
@@ -38,6 +42,7 @@
 
 <script setup lang="ts">
 import { useSearchStudent } from '~/composables/useSearchStudent';
+import type { TUserProfileOutput } from '~/types';
 
 const { $api } = useNuxtApp();
 useHeadSafe({

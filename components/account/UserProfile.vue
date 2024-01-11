@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { TClassContentOutput, TPaperListWithAuthorOutput, TUserProfileOutput } from '~/types/index';
+import type { TPaperListWithAuthorOutput, TUserProfileOutput } from '~/types/index';
 
 const props = defineProps<{
   userId: string
@@ -96,18 +96,9 @@ const roleName = {
 
 const info = ref<TUserProfileOutput>();
 const papers = ref<TPaperListWithAuthorOutput>([]);
-const classInfo = ref<TClassContentOutput>();
-const classString = computed(() => {
-  if (!classInfo.value)
-    return '';
-  const now = new Date();
-  const yearString = ['', '高一', '高二', '毕业'];
-  const year = now.getFullYear() - classInfo.value.enterYear + (now.getMonth() > 8 ? 1 : 0);
-
-  return `${yearString[year]}（${classInfo.value.index}）`;
-});
 const contentLoading = ref(true);
 const paperLoading = ref(true);
+const classString = ref('');
 
 onMounted(async () => {
   try {
@@ -120,8 +111,7 @@ onMounted(async () => {
     for (const paper of paperIds)
       papers.value.push(await $api.paper.contentWithAuthor.query({ id: paper }));
     paperLoading.value = false;
-
-    classInfo.value = await $api.class.content.query({ id: info.value.classIds[0] });
+    classString.value = await useClassString(info.value);
   } catch (err) {
     useErrorHandler(err);
   }
