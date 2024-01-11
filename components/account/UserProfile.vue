@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { TPaperListWithAuthorOutput, TUserProfileOutput, TClassContentOutput } from '~/types/index';
+import type { TClassContentOutput, TPaperListWithAuthorOutput, TUserProfileOutput } from '~/types/index';
 
 const props = defineProps<{
   userId: string
@@ -121,8 +121,7 @@ onMounted(async () => {
       papers.value.push(await $api.paper.contentWithAuthor.query({ id: paper }));
     paperLoading.value = false;
 
-    classInfo.value = await $api.class.content.query({ id: info.value.classIds[0]});
-    
+    classInfo.value = await $api.class.content.query({ id: info.value.classIds[0] });
   } catch (err) {
     useErrorHandler(err);
   }

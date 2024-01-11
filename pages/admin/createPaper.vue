@@ -17,7 +17,7 @@
         />
       </el-form-item>
       <el-form-item label="作者">
-        <el-select filterable />
+        <SelectAccount />
       </el-form-item>
       <el-form-item label="文件">
         <el-upload class="w-full">

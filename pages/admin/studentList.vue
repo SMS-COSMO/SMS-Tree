@@ -37,53 +37,26 @@
 </template>
 
 <script setup lang="ts">
-import { useFuse } from '@vueuse/integrations/useFuse';
-import type { TUserStudentListOutput } from '~/types/index';
+import { useSearchStudent } from '~/composables/useSearchStudent';
 
+const { $api } = useNuxtApp();
 useHeadSafe({
   title: '学生列表',
 });
 
-const { $api } = useNuxtApp();
-
-const listData = ref<TUserStudentListOutput>([]);
-const loading = ref(true);
-
 const searchContent = ref('');
+const { listData, loading, processedListData } = useSearchStudent(searchContent);
 
 function visitProfile(id: string) {
   navigateTo(`/user/${id}`);
 }
 
-function deleteUser(id: string) {
+async function deleteUser(id: string) {
   try {
-    $api.user.remove.mutate({ id });
+    await $api.user.remove.mutate({ id });
     listData.value.splice(listData.value.findIndex(e => e.id === id), 1);
   } catch (err) {
     useErrorHandler(err);
   }
 }
-
-function fuseOptions() {
-  return {
-    fuseOptions: {
-      keys: ['id', 'username'],
-      shouldSort: true,
-    },
-    matchAllWhenSearchEmpty: true,
-  };
-}
-const fuse = useFuse(searchContent, listData, fuseOptions);
-const processedListData = computed(() =>
-  fuse.results.value.map(e => e.item),
-);
-
-onMounted(async () => {
-  try {
-    listData.value = await $api.user.studentList.query();
-    loading.value = false;
-  } catch (err) {
-    useErrorHandler(err);
-  }
-});
 </script>
