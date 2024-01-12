@@ -10,7 +10,7 @@
     <el-col v-on-click-outside="closeSearchOptions" :span="isSmallScreen ? 24 : 18">
       <el-input
         v-model="searchContent" placeholder="搜索论文" clearable class="mb-2.5" :suffix-icon="isSmallScreen ? ElIconSearch : ''"
-        @change="updateUrl"
+        @change="$router.replace({ query: { search: searchContent } });"
       >
         <template #prepend>
           <el-icon v-if="!isSmallScreen">
@@ -70,9 +70,9 @@
 </template>
 
 <script setup lang="ts">
-import { useFuse } from '@vueuse/integrations/useFuse';
 import { vOnClickOutside } from '@vueuse/components';
-import type { TPaperListWithAuthorOutput, TPaperListWithAuthorOutputItem } from '~/types/index';
+import { useSearch } from '~/composables/useSearch';
+import type { TPaperListWithAuthorOutputItem } from '~/types/index';
 import type { TSearchOption } from '~/components/paper/SearchOptions.vue';
 
 useHeadSafe({
@@ -80,11 +80,8 @@ useHeadSafe({
 });
 
 const { $api } = useNuxtApp();
-
-const isSmallScreen = useWindowWidth();
-
-const router = useRouter();
 const route = useRoute();
+const isSmallScreen = useWindowWidth();
 
 const count = ref(10);
 
@@ -93,9 +90,6 @@ const showSearchOptions = ref(false);
 function closeSearchOptions() {
   showSearchOptions.value = false;
 }
-
-const listData = ref<TPaperListWithAuthorOutput>([]);
-const loading = ref(true);
 
 const searchOptions = reactive<TSearchOption>({
   filter: {
@@ -107,10 +101,6 @@ const searchOptions = reactive<TSearchOption>({
   showAbstract: false,
   sortOption: 'default',
 });
-
-function updateUrl() {
-  router.replace({ query: { search: searchContent.value } });
-}
 
 const fuseOptions = computed(() => {
   return {
@@ -124,46 +114,39 @@ const fuseOptions = computed(() => {
   };
 });
 
-const fuse = useFuse(searchContent, listData, fuseOptions);
-const processedListData = computed(() => {
-  return fuse.results.value.map(e => e.item)
-    .filter((o: TPaperListWithAuthorOutputItem) => {
-      if (searchOptions.filter.onlyCanDownload && !o.canDownload)
-        return false;
-      if (searchOptions.filter.onlyFeatured && !o.isFeatured)
-        return false;
-      if (searchOptions.filter.timeRange
-        && (o.createdAt.getTime() < Date.parse(searchOptions.filter.timeRange[0])
-        || o.createdAt.getTime() > Date.parse(searchOptions.filter.timeRange[1]))
-      )
-        return false;
-      return true;
-    })
-    .sort((a: TPaperListWithAuthorOutputItem, b: TPaperListWithAuthorOutputItem) => {
-      if (searchOptions.sortOption === 'default')
-        return 0; // Keep original order
-      if (searchOptions.sortOption === 'rate')
-        return b.rate - a.rate; // Greater first
-      if (searchOptions.sortOption === 'time')
-        return a.createdAt > b.createdAt ? -1 : 1; // Newest first
-      if (searchOptions.sortOption === 'downloadCount')
-        return b.downloadCount - a.downloadCount; // Greater first
-      return 0;
-    });
-});
+const { processedListData, loading } = useSearch<TPaperListWithAuthorOutputItem>(
+  searchContent,
+  fuseOptions,
+  () => $api.paper.listWithAuthor.query(),
+  e => e.item,
+  (o: TPaperListWithAuthorOutputItem) => {
+    if (searchOptions.filter.onlyCanDownload && !o.canDownload)
+      return false;
+    if (searchOptions.filter.onlyFeatured && !o.isFeatured)
+      return false;
+    if (searchOptions.filter.timeRange
+      && (o.createdAt.getTime() < Date.parse(searchOptions.filter.timeRange[0])
+      || o.createdAt.getTime() > Date.parse(searchOptions.filter.timeRange[1]))
+    )
+      return false;
+    return true;
+  },
+  (a: TPaperListWithAuthorOutputItem, b: TPaperListWithAuthorOutputItem) => {
+    if (searchOptions.sortOption === 'default')
+      return 0; // Keep original order
+    if (searchOptions.sortOption === 'rate')
+      return b.rate - a.rate; // Greater first
+    if (searchOptions.sortOption === 'time')
+      return a.createdAt > b.createdAt ? -1 : 1; // Newest first
+    if (searchOptions.sortOption === 'downloadCount')
+      return b.downloadCount - a.downloadCount; // Greater first
+    return 0;
+  },
+);
 
 function load() {
   count.value += Math.min(5, processedListData.value.length - count.value);
 }
-
-onMounted(async () => {
-  try {
-    listData.value = await $api.paper.listWithAuthor.query();
-    loading.value = false;
-  } catch (err) {
-    useErrorHandler(err);
-  }
-});
 </script>
 
 <style scoped lang="scss">

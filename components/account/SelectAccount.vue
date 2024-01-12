@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useSearchStudent } from '~/composables/useSearchStudent';
+import { useSearchStudent } from '~/composables/useSearch';
 
 const selected = ref([]);
 const searchContent = ref('');

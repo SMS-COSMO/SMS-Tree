@@ -41,8 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { useSearchStudent } from '~/composables/useSearchStudent';
-import type { TUserProfileOutput } from '~/types';
+import { useSearchStudent } from '~/composables/useSearch';
 
 const { $api } = useNuxtApp();
 useHeadSafe({

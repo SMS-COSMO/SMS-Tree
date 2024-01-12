@@ -6,6 +6,8 @@ export type RouterInput = inferRouterInputs<AppRouter>;
 
 export type TUserProfileOutput = RouterOutput['user']['profile'];
 export type TUserStudentListOutput = RouterOutput['user']['studentList'];
+export type TUserStudentListOutputItem = RouterOutput['user']['studentList'][0];
+
 export type TPaperContentOutput = RouterOutput['paper']['content'];
 export type TPaperContentWithAuthorOutput = RouterOutput['paper']['contentWithAuthor'];
 export type TPaperListOutput = RouterOutput['paper']['list'];
@@ -13,5 +15,8 @@ export type TPaperListOutputItem = RouterOutput['paper']['list'][0];
 export type TPaperListWithAuthorOutput = RouterOutput['paper']['listWithAuthor'];
 export type TPaperListWithAuthorOutputItem = RouterOutput['paper']['listWithAuthor'][0];
 export type TCreatePaperInput = RouterInput['paper']['create'];
+
 export type TRegisterInput = RouterInput['user']['register'];
+
 export type TClassContentOutput = RouterOutput['class']['content'];
+export type TClassListOutput = RouterOutput['class']['list'];
