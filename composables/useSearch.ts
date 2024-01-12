@@ -4,11 +4,11 @@ import type { TUserStudentListOutputItem } from '~/types/index';
 
 export function useSearch<T>(
   searchContent: Ref<string>,
-  fuseOptions: UseFuseOptions<T>,
+  fuseOptions: MaybeRefOrGetter<UseFuseOptions<T>>,
   getList: Function,
   map: (e: any) => T = (e: any) => e.item,
-  filter?: (e: any) => boolean,
-  sort?: ((a: any, b: any) => number),
+  filter?: (e: T) => boolean,
+  sort?: ((a: T, b: T) => number),
 ) {
   const loading = ref(true);
   const listData = ref<T[]>([]);
