@@ -7,24 +7,29 @@ export const useUserStore = defineStore('user', () => {
   const userId = ref('');
   const username = ref('');
   const role = ref('');
+  const classIds = ref<string[]>([]);
+  const groupIds = ref<string[]>([]);
   const isDefaultPassword = ref(true);
 
   const login = (data: {
     accessToken: string
     refreshToken: string
-    userId: string
+    id: string
     username: string
     role: 'admin' | 'student' | 'teacher'
+    classIds: string[]
+    groupIds: string[]
   }) => {
     loggedIn.value = true;
 
     accessToken.value = data.accessToken;
     refreshToken.value = data.refreshToken;
 
-    userId.value = data.userId;
+    userId.value = data.id;
     username.value = data.username;
-
     role.value = data.role;
+    classIds.value = data.classIds;
+    groupIds.value = data.groupIds;
   };
 
   const logout = () => {
@@ -37,6 +42,8 @@ export const useUserStore = defineStore('user', () => {
     username.value = '';
 
     role.value = '';
+    classIds.value = [];
+    groupIds.value = [];
   };
 
   const passwordChange = () => {
@@ -50,6 +57,8 @@ export const useUserStore = defineStore('user', () => {
     userId,
     username,
     role,
+    classIds,
+    groupIds,
     isDefaultPassword,
     login,
     logout,

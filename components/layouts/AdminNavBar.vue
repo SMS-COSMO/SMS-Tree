@@ -38,6 +38,12 @@
       </el-icon>
       学生列表
     </el-menu-item>
+    <el-menu-item index="/admin/classList">
+      <el-icon>
+        <ElIconDocument />
+      </el-icon>
+      班级列表
+    </el-menu-item>
   </el-menu>
 </template>
 

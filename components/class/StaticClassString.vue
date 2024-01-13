@@ -11,7 +11,7 @@ const props = defineProps<{
 }>();
 
 const ClassString = computedAsync(
-  async () => await useClassString(props.userInfo),
+  async () => await useUserClassString(props.userInfo),
   '',
 );
 </script>

@@ -89,7 +89,7 @@ export class UserController {
       return;
     const accessToken = await this.auth.produceAccessToken(user.id);
     const refreshToken = await this.auth.produceRefreshToken(user.id);
-    return { userId: user.id, username: user.username, role: user.role, accessToken, refreshToken };
+    return { ...await this.getFullUser(user), accessToken, refreshToken };
   }
 
   async refreshAccessToken(refreshToken: string, id: string) {
