@@ -44,7 +44,7 @@ export class ClassController {
     }
   }
 
-  async getFullClass(basicClass: TRawClass) {
+  private async getFullClass(basicClass: TRawClass) {
     const users = (
       await db.select().from(classesToUsers)
         .where(eq(classesToUsers.classId, basicClass.id))
@@ -53,6 +53,15 @@ export class ClassController {
   }
 
   async getContent(id: string) {
+    try {
+      const res = (await db.select().from(classes).where(eq(classes.id, id)))[0];
+      return { success: true, res, message: '查询成功' };
+    } catch (err) {
+      return { success: false, message: '班级不存在' };
+    }
+  }
+
+  async getFullContent(id: string) {
     try {
       const basicClass = (await db.select().from(classes).where(eq(classes.id, id)))[0];
       return { success: true, res: await this.getFullClass(basicClass), message: '查询成功' };

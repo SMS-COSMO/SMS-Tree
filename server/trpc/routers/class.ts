@@ -30,6 +30,17 @@ export const classRouter = router({
         return res.res;
     }),
 
+  fullContent: protectedProcedure
+    .input(z.object({ id: z.string().min(1, '班级id不存在') }))
+    .use(requireRoles(['admin', 'teacher']))
+    .query(async ({ ctx, input }) => {
+      const res = await ctx.classController.getFullContent(input.id);
+      if (!res.res || !res.success)
+        throw new TRPCError({ code: 'BAD_REQUEST', message: res.message });
+      else
+        return res.res;
+    }),
+
   list: protectedProcedure
     .use(requireRoles(['admin', 'teacher']))
     .query(async ({ ctx }) => {
