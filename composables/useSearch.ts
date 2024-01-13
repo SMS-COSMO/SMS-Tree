@@ -1,6 +1,6 @@
 import type { UseFuseOptions } from '@vueuse/integrations/useFuse';
 import { useFuse } from '@vueuse/integrations/useFuse';
-import type { TUserStudentListOutputItem } from '~/types/index';
+import type { TUserListOutputItem } from '~/types/index';
 
 export function useSearch<T>(
   searchContent: Ref<string>,
@@ -32,10 +32,10 @@ export function useSearch<T>(
   return { processedListData, loading, listData };
 }
 
-export function useSearchStudent(searchContent: Ref<string>) {
+export function useUserSearch(searchContent: Ref<string>, role: 'student' | 'teacher' = 'student') {
   const { $api } = useNuxtApp();
 
-  return useSearch<TUserStudentListOutputItem>(
+  return useSearch<TUserListOutputItem>(
     searchContent,
     {
       fuseOptions: {
@@ -44,6 +44,6 @@ export function useSearchStudent(searchContent: Ref<string>) {
       },
       matchAllWhenSearchEmpty: true,
     },
-    () => $api.user.studentList.query(),
+    () => $api.user.list.query({ role }),
   );
 }

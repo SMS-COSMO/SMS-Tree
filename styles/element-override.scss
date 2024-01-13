@@ -104,6 +104,25 @@
     box-shadow: none !important;
 }
 
+// Input Number
+.el-input-number__decrease {
+    border-top-left-radius: 8px !important;
+    border-bottom-left-radius: 8px !important;
+    border-right-width: 2px !important;
+    top: 1.5px !important;
+    bottom: 2px !important;
+    left: 2px !important;
+}
+
+.el-input-number__increase {
+    border-top-right-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
+    border-left-width: 2px !important;
+    top: 1.5px !important;
+    bottom: 2px !important;
+    right: 2px !important;
+}
+
 // Select
 .el-select__popper {
     border-radius: $border-radius !important;

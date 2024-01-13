@@ -23,6 +23,12 @@
           </el-icon>
           创建论文
         </el-menu-item>
+        <el-menu-item index="/admin/createClass">
+          <el-icon>
+            <ElIconCirclePlus />
+          </el-icon>
+          创建班级
+        </el-menu-item>
       </el-menu-item-group>
     </el-sub-menu>
 

@@ -123,10 +123,14 @@ export class UserController {
     }
   }
 
-  async getStudentList() {
+  async getList(role: 'student' | 'teacher' | 'admin' | 'all') {
     try {
       const res: Array<TUser> = [];
-      for (const basicUser of await db.select().from(users).where(eq(users.role, 'student')))
+      for (const basicUser of
+        role === 'all'
+          ? await db.select().from(users).all()
+          : await db.select().from(users).where(eq(users.role, role))
+      )
         res.push(await this.getFullUser(basicUser));
 
       return { success: true, res };

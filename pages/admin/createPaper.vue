@@ -16,9 +16,7 @@
           style="--el-switch-on-color: #13ce66; --el-switch-off-color: #db3131;"
         />
       </el-form-item>
-      <el-form-item label="作者">
-        <SelectAccount />
-      </el-form-item>
+      <el-form-item label="作者" />
       <el-form-item label="文件">
         <el-upload class="w-full">
           <el-button color="#146E3C" plain>

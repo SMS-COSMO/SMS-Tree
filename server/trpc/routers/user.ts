@@ -2,13 +2,15 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { protectedProcedure, publicProcedure, requireRoles, router } from '../trpc';
 
+const roleEnum = z.enum(['student', 'teacher', 'admin'], { errorMap: () => ({ message: '提交了不存在的用户身份' }) });
+
 export const userRouter = router({
   register: protectedProcedure
     .meta({ description: '@require 需要用户具有 teacher 或 admin 的身份' })
     .use(requireRoles(['teacher', 'admin']))
     .input(z.object({
       id: z.string().min(4, { message: '用户ID长度应至少为4' }).max(24, { message: '用户ID超出长度范围' }),
-      role: z.enum(['student', 'teacher', 'admin'], { errorMap: () => ({ message: '提交了不存在的用户身份' }) }),
+      role: roleEnum,
       username: z.string().min(2, { message: '用户名长度应至少为2' }).max(15, { message: '用户名超出长度范围' }),
       password: z.string().min(8, { message: '用户密码长度应至少为8' }),
       groupIds: z.array(z.string()).optional(),
@@ -110,21 +112,11 @@ export const userRouter = router({
         return res.res;
     }),
 
-  studentList: protectedProcedure
-    .meta({
-      description: `
-      @require 需要用户具有 teacher 或 admin 的身份
-      @return [{
-        id: string;
-        username: string;
-        role: "admin" | "student" | "teacher";
-        createdAt: Date;
-      }, ...]
-    `,
-    })
+  list: protectedProcedure
+    .input(z.object({ role: roleEnum.optional() }))
     .use(requireRoles(['teacher', 'admin']))
-    .query(async ({ ctx }) => {
-      const res = await ctx.userController.getStudentList();
+    .query(async ({ ctx, input }) => {
+      const res = await ctx.userController.getList(input.role ?? 'all');
       if (!res.res || !res.success)
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: res.message });
       else
