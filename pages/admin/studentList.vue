@@ -10,7 +10,7 @@
         </template>
       </el-table-column>
       <el-table-column :width="100" show-overflow-tooltip prop="username" label="姓名" />
-      <el-table-column :width="100" label="班级">
+      <el-table-column :width="120" label="班级">
         <template #default="scope">
           <static-class-string :key="searchContent" :user-info="scope.row" />
         </template>
@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { useSearchStudent } from '~/composables/useSearch';
+import { useUserSearch } from '~/composables/useSearch';
 
 const { $api } = useNuxtApp();
 useHeadSafe({
@@ -49,7 +49,7 @@ useHeadSafe({
 });
 
 const searchContent = ref('');
-const { listData, loading, processedListData } = useSearchStudent(searchContent);
+const { listData, loading, processedListData } = useUserSearch(searchContent, 'student');
 
 function visitProfile(id: string) {
   navigateTo(`/user/${id}`);

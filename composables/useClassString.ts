@@ -14,7 +14,7 @@ export async function useClassString(userInfo: TUserProfileOutput | undefined) {
     return '未知';
 
   const now = new Date();
-  const yearString = ['', '高一', '高二', '高三', '毕业'];
+  const yearString = ['新高一', '高一', '高二', '高三', '毕业'];
   const year = now.getFullYear() - classInfo.value.enterYear + (now.getMonth() > 8 ? 1 : 0);
 
   return `${yearString[year]}（${classInfo.value.index}）`;
