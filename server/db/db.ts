@@ -24,6 +24,7 @@ export type TRawPaper = typeof papers.$inferSelect;
 export type TNewPaper = typeof papers.$inferInsert;
 
 export type TRawGroup = typeof groups.$inferSelect;
+export type TNewGroup = typeof groups.$inferInsert;
 
 export type TRawClass = typeof classes.$inferSelect;
 export type TNewClass = typeof classes.$inferInsert;

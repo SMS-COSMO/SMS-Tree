@@ -4,6 +4,7 @@ import type { AppRouter } from '~/server/trpc/routers';
 export type RouterOutput = inferRouterOutputs<AppRouter>;
 export type RouterInput = inferRouterInputs<AppRouter>;
 
+export type TUserLoginOutput = RouterOutput['user']['login'];
 export type TUserProfileOutput = RouterOutput['user']['profile'];
 export type TUserListOutput = RouterOutput['user']['list'];
 export type TUserListOutputItem = RouterOutput['user']['list'][0];

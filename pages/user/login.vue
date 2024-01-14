@@ -63,8 +63,7 @@ async function login() {
   buttonLoading.value = true;
 
   try {
-    const { createdAt: _, ...res } = await $api.user.login.mutate({ id: form.userId, password: form.password });
-    userStore.login(res);
+    userStore.login(await $api.user.login.mutate({ id: form.userId, password: form.password }));
 
     buttonLoading.value = false;
     router.back();

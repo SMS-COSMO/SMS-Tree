@@ -17,6 +17,7 @@ export const groupRouter = router({
         .min(1, '请填写组员ID')
         .max(64, '组员最多64人'),
       classId: z.string().min(1, '班级ID不存在'),
+      projectName: z.string().max(50, '课题名称最长为50').optional(),
       papers: z
         .array(z.string())
         .max(8, '小组最多8篇论文')
@@ -49,6 +50,7 @@ export const groupRouter = router({
       else
         return res.res;
     }),
+
   modify: protectedProcedure
     .input(z.object({
       groupId: z.string().min(1, '不可以传入空ID'),
@@ -62,6 +64,7 @@ export const groupRouter = router({
       else
         return res;
     }),
+
   remove: protectedProcedure
     .input(z.object({ id: z.string().min(1, '小组id不存在') }))
     .use(requireRoles(['admin', 'teacher']))

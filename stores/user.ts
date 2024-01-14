@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import type { TUserLoginOutput } from '~/types';
 
 export const useUserStore = defineStore('user', () => {
   const loggedIn = ref(false);
@@ -11,15 +12,7 @@ export const useUserStore = defineStore('user', () => {
   const groupIds = ref<string[]>([]);
   const isDefaultPassword = ref(true);
 
-  const login = (data: {
-    accessToken: string
-    refreshToken: string
-    id: string
-    username: string
-    role: 'admin' | 'student' | 'teacher'
-    classIds: string[]
-    groupIds: string[]
-  }) => {
+  const login = (data: TUserLoginOutput) => {
     loggedIn.value = true;
 
     accessToken.value = data.accessToken;

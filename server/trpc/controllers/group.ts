@@ -1,5 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { LibsqlError } from '@libsql/client';
+import type { TNewGroup } from '../../db/db';
 import { db } from '../../db/db';
 import { groups } from '../../db/schema/group';
 import type { TGroup } from '../serializer/group';
@@ -8,19 +9,12 @@ import { usersToGroups } from '../../db/schema/userToGroup';
 import { papersToGroups } from '../../db/schema/paperToGroup';
 
 export class GroupController {
-  async create(newGroup: {
-    leader: string
+  async create(newGroup: TNewGroup & {
     members: string[]
     papers?: string[]
-    classId: string
-    archived?: boolean
   }) {
-    const { leader, members, papers, classId, archived } = newGroup;
-    const group = {
-      leader,
-      classId,
-      archived: archived ?? false,
-    };
+    const { members, papers, ...group } = newGroup;
+    group.archived = group.archived ?? false;
 
     let insertedId: string;
     try {

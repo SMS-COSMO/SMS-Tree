@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { useSearch } from '~/composables/useSearch';
+import { templateSearchOption, useSearch } from '~/composables/useSearch';
 import type { TClassListOutputItem } from '~/types';
 
 const { $api } = useNuxtApp();
@@ -51,13 +51,7 @@ const showAll = ref(false);
 const searchContent = ref('');
 const { loading, processedListData } = useSearch<TClassListOutputItem>(
   searchContent,
-  {
-    fuseOptions: {
-      keys: ['str'],
-      shouldSort: true,
-    },
-    matchAllWhenSearchEmpty: true,
-  },
+  templateSearchOption(['str']),
   async () => (await $api.class.list.query()).map(e => ({ ...e, str: useClassString(e) })),
   e => e.item,
   (e) => {

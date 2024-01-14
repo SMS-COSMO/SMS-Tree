@@ -2,7 +2,7 @@
   <el-card>
     <el-table v-loading="loading" :data="processedListData">
       <el-table-column type="selection" width="55" />
-      <el-table-column :width="150" show-overflow-tooltip prop="id" label="学号">
+      <el-table-column :width="120" show-overflow-tooltip prop="id" label="学号">
         <template #default="scope">
           <span style="cursor: pointer !important;" @click="visitProfile(scope.row.id)">
             {{ scope.row.id }}
@@ -15,7 +15,7 @@
           <static-class-string :key="searchContent" :user-info="scope.row" />
         </template>
       </el-table-column>
-      <el-table-column :width="400" show-overflow-tooltip label="课题" />
+      <el-table-column :width="400" show-overflow-tooltip label="课题" prop="projectName" />
       <el-table-column label="操作" align="right">
         <template #header>
           <el-input v-model="searchContent" placeholder="搜索学生" />
@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { useUserSearch } from '~/composables/useSearch';
+import { useUserDetailedSearch } from '~/composables/useSearch';
 
 const { $api } = useNuxtApp();
 useHeadSafe({
@@ -49,7 +49,7 @@ useHeadSafe({
 });
 
 const searchContent = ref('');
-const { listData, loading, processedListData } = useUserSearch(searchContent, 'student');
+const { listData, loading, processedListData } = useUserDetailedSearch(searchContent, 'student');
 
 function visitProfile(id: string) {
   navigateTo(`/user/${id}`);
