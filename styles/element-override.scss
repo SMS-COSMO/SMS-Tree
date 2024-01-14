@@ -130,15 +130,14 @@
 
 .el-select-dropdown__list {
     margin: 0 !important;
-    padding-right: 10px !important;
-    padding-bottom: 10px !important;
+    padding: 12px 10px 10px 0 !important;
     background: #fff;
     border-radius: 10px !important;
 }
 
 .el-select-dropdown__item {
-    margin: 10px 0 0 10px;
-    border-radius: $border-radius !important;
+    margin: 0px 0 0 10px;
+    border-radius: 8px !important;
     height: 35px !important;
 }
 

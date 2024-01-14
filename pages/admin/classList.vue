@@ -24,14 +24,7 @@
       <el-table-column :width="150" prop="enterYear" label="入学年份" />
       <el-table-column :width="150" show-overflow-tooltip label="状态">
         <template #default="scope">
-          {{
-            {
-              archived: '已归档',
-              initialized: '初始化',
-              selectGroup: '选择小组',
-              submitPaper: '提交论文',
-            }[scope.row.state as 'archived' | 'initialized' | 'selectGroup' | 'submitPaper']
-          }}
+          <StateBadge :state="scope.row.state" />
         </template>
       </el-table-column>
     </el-table>

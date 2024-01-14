@@ -24,7 +24,9 @@
             :key="item.value"
             :label="item.label"
             :value="item.value"
-          />
+          >
+            <StateBadge :state="item.value as TClassState" />
+          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item prop="index" label="学生">
@@ -43,6 +45,7 @@
 </template>
 
 <script setup lang="ts">
+import type { TClassState } from '~/components/class/StateBadge.vue';
 import type { TCreateClassInput } from '~/types/index';
 
 const { $api } = useNuxtApp();
