@@ -7,7 +7,7 @@
       <el-table-column type="selection" width="55" />
       <el-table-column type="expand" width="55" label="展开">
         <template #default="scope">
-          <ClassUserList :users="scope.row.users" />
+          <ClassUserList :students="scope.row.students" />
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip prop="str" label="名称">
@@ -17,10 +17,10 @@
       </el-table-column>
       <el-table-column :width="150" label="人数">
         <template #default="scope">
-          <!-- -1 for removing the teacher -->
-          {{ scope.row.users.length - 1 }}
+          {{ scope.row.students.length }}
         </template>
       </el-table-column>
+      <el-table-column :width="150" prop="teacher" label="教师" />
       <el-table-column :width="150" prop="enterYear" label="入学年份" />
       <el-table-column :width="150" show-overflow-tooltip label="状态">
         <template #default="scope">

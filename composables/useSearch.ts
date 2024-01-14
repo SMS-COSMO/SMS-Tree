@@ -26,6 +26,7 @@ export function useSearch<T>(
       loading.value = false;
     } catch (err) {
       useErrorHandler(err);
+      loading.value = false;
     }
   });
 

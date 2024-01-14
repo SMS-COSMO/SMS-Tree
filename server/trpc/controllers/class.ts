@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import type { TRawClass } from '../../db/db';
 import { db } from '../../db/db';
 import { classes } from '../../db/schema/class';
@@ -26,7 +26,7 @@ export class ClassController {
         classId: insertedId,
         userId: item,
       })));
-      await db.insert(classesToUsers).values({ classId: insertedId, userId: newClass.teacher });
+      await db.insert(classesToUsers).values({ classId: insertedId, userId: newClass.teacher, type: 'teacher' });
     } catch (err) {
       return { success: false, message: '用户不存在' };
     }
@@ -45,11 +45,13 @@ export class ClassController {
   }
 
   private async getFullClass(basicClass: TRawClass) {
-    const users = (
+    const students = (
       await db.select().from(classesToUsers)
-        .where(eq(classesToUsers.classId, basicClass.id))
+        .where(and(eq(classesToUsers.classId, basicClass.id), eq(classesToUsers.type, 'student')))
     ).map(item => item.userId);
-    return classSerializer(basicClass, users);
+    const teacher = (await db.select().from(classesToUsers)
+      .where(and(eq(classesToUsers.classId, basicClass.id), eq(classesToUsers.type, 'teacher'))))[0].userId;
+    return classSerializer(basicClass, students, teacher);
   }
 
   async getContent(id: string) {
