@@ -90,7 +90,11 @@ export class UserController {
         return new ResultNoRes(false, '用户名或密码错误');
       const accessToken = await this.auth.produceAccessToken(user.id);
       const refreshToken = await this.auth.produceRefreshToken(user.id);
-      return new Result(true, '登陆成功', { ...await this.getFullUser(user), accessToken, refreshToken });
+      return new Result(true, '登陆成功', {
+        ...(await this.getFullUser(user)).getResOrTRPCError('INTERNAL_SERVER_ERROR'),
+        accessToken,
+        refreshToken,
+      });
     } catch (err) {
       return new Result500();
     }

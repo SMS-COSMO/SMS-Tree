@@ -56,17 +56,16 @@ async function modify() {
 
   const userStore = useUserStore();
   try {
-    const res = await $api.user.modifyPassword.mutate({ oldPassword: form.oldPassword, newPassword: form.newPassword });
+    const message = await $api.user.modifyPassword.mutate({ oldPassword: form.oldPassword, newPassword: form.newPassword });
     ElMessage({
-      message: res.message,
+      message,
       type: 'success',
       showClose: true,
     });
     userStore.passwordChange();
-    buttonLoading.value = false;
   } catch (err) {
     useErrorHandler(err);
-    buttonLoading.value = false;
   }
+  buttonLoading.value = false;
 }
 </script>

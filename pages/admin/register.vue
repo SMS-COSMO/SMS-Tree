@@ -92,21 +92,13 @@ async function register(submittedForm: FormInstance | undefined) {
   await submittedForm.validate(async (valid) => {
     if (valid) {
       buttonLoading.value = true;
-
       try {
-        await $api.user.register.mutate({
-          id: form.id,
-          username: form.username,
-          password: form.password,
-          role: form.role,
-        });
-
-        ElMessage({ message: '创建成功', type: 'success', showClose: true });
-        buttonLoading.value = false;
+        const message = await $api.user.register.mutate({ ...form });
+        ElMessage({ message, type: 'success', showClose: true });
       } catch (err) {
         useErrorHandler(err);
-        buttonLoading.value = false;
       }
+      buttonLoading.value = false;
     }
   });
 }

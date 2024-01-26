@@ -16,7 +16,7 @@
             </el-icon>
             学号
           </div>
-          <el-input v-model="form.userId" />
+          <el-input v-model="form.id" />
         </el-form-item>
         <el-form-item>
           <div>
@@ -27,7 +27,7 @@
           </div>
           <el-input
             v-model="form.password" type="password" show-password
-            @keyup.enter="form.userId && form.password ? login() : () => { }"
+            @keyup.enter="form.id && form.password ? login() : () => { }"
           />
         </el-form-item>
         <el-form-item class="m-0">
@@ -55,15 +55,14 @@ const router = useRouter();
 const buttonLoading = ref(false);
 
 const form = reactive({
-  userId: '',
+  id: '',
   password: '',
 });
 
 async function login() {
   buttonLoading.value = true;
-
   try {
-    userStore.login(await $api.user.login.mutate({ id: form.userId, password: form.password }));
+    userStore.login(await $api.user.login.mutate({ ...form }));
 
     buttonLoading.value = false;
     router.back();
@@ -74,8 +73,8 @@ async function login() {
     });
   } catch (err) {
     useErrorHandler(err);
-    buttonLoading.value = false;
   }
+  buttonLoading.value = false;
 }
 </script>
 
