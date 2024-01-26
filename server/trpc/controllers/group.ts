@@ -7,6 +7,7 @@ import type { TGroup } from '../serializer/group';
 import { groupSerializer } from '../serializer/group';
 import { usersToGroups } from '../../db/schema/userToGroup';
 import { papersToGroups } from '../../db/schema/paperToGroup';
+import { Result, Result500, ResultNoRes } from '../utils/result';
 
 export class GroupController {
   async create(newGroup: TNewGroup & {
@@ -20,7 +21,7 @@ export class GroupController {
     try {
       insertedId = (await db.insert(groups).values(group).returning({ id: groups.id }))[0].id;
     } catch (err) {
-      return { success: false, message: '服务器内部错误' };
+      return new Result500();
     }
 
     try {
@@ -29,7 +30,7 @@ export class GroupController {
         userId: item,
       })));
     } catch (err) {
-      return { success: false, message: '用户不存在' };
+      return new ResultNoRes(false, '用户不存在');
     }
 
     try {
@@ -40,10 +41,10 @@ export class GroupController {
         })));
       }
     } catch (err) {
-      return { success: false, message: '论文不存在' };
+      return new ResultNoRes(false, '论文不存在');
     }
 
-    return { success: true, message: '创建成功' };
+    return new ResultNoRes(true, '创建成功');
   }
 
   async remove(id: string) {
@@ -51,28 +52,28 @@ export class GroupController {
       await db.delete(usersToGroups).where(eq(usersToGroups.groupId, id));
       await db.delete(papersToGroups).where(eq(papersToGroups.groupId, id));
       await db.delete(groups).where(eq(groups.id, id));
-      return { success: true, message: '删除成功' };
+      return new ResultNoRes(true, '删除成功');
     } catch (err) {
-      return { success: false, message: '小组不存在' };
+      return new ResultNoRes(false, '小组不存在');
     }
   }
 
   async modifyMembers(groupId: string, newMembers: string[], newLeader: string) {
     if (!newMembers.includes(newLeader))
-      return { success: false, message: '组长需要包含于组员中' };
+      return new ResultNoRes(false, '组长需要包含于组员中');
     if (!(await db.select().from(groups).where(eq(groups.id, groupId))).length)
-      return { success: false, message: '小组id不存在' };
+      return new ResultNoRes(false, '小组id不存在');
     try {
       await db.update(groups).set({ leader: newLeader }).where(eq(groups.id, groupId));
       await db.delete(usersToGroups).where(eq(usersToGroups.groupId, groupId));
       for (const userId of newMembers)
         await db.insert(usersToGroups).values({ userId, groupId });
 
-      return { success: true, message: '修改成功' };
+      return new ResultNoRes(true, '修改成功');
     } catch (err) {
       if (err instanceof LibsqlError && err.code === 'SQLITE_CONSTRAINT_FOREIGNKEY')
-        return { success: false, message: '传入了不存在的用户id' };
-      return { success: false, message: '服务器内部错误' };
+        return new ResultNoRes(false, '用户id不存在');
+      return new Result500();
     }
   }
 
@@ -91,9 +92,9 @@ export class GroupController {
       ).map(item => item.paperId);
 
       const group = groupSerializer(info, members, papers);
-      return { success: true, res: group, message: '查询成功' };
+      return new Result(true, '查询成功', group);
     } catch (err) {
-      return { success: false, message: '小组不存在' };
+      return new ResultNoRes(false, '小组不存在');
     }
   }
 
@@ -114,9 +115,9 @@ export class GroupController {
         res.push(groupSerializer(info, members, papers));
       }
 
-      return { success: true, res, message: '查询成功' };
+      return new Result(true, '查询成功', res);
     } catch (err) {
-      return { success: false, message: '服务器内部错误' };
+      return new Result500();
     }
   }
 }

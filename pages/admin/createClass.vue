@@ -65,7 +65,7 @@ const buttonLoading = ref(false);
 async function create() {
   buttonLoading.value = true;
   try {
-    await $api.class.create.mutate({
+    const msg = await $api.class.create.mutate({
       enterYear: form.enterYear,
       index: form.index,
       state: form.state,
@@ -73,7 +73,7 @@ async function create() {
       teacher: form.teacher,
     });
 
-    ElMessage({ message: '创建成功', type: 'success', showClose: true });
+    ElMessage({ message: msg, type: 'success', showClose: true });
     buttonLoading.value = false;
   } catch (err) {
     useErrorHandler(err);

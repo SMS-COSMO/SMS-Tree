@@ -5,6 +5,7 @@ import { classes } from '../../db/schema/class';
 import { classesToUsers } from '../../db/schema/classToUser';
 import type { TClass } from '../serializer/class';
 import { classSerializer } from '../serializer/class';
+import { Result, Result500, ResultNoRes } from '../utils/result';
 
 export class ClassController {
   async create(newClass: {
@@ -18,7 +19,7 @@ export class ClassController {
     try {
       insertedId = (await db.insert(classes).values(newClass).returning({ id: classes.id }))[0].id;
     } catch (err) {
-      return { success: false, message: '服务器内部错误' };
+      return new Result500();
     }
 
     try {
@@ -28,47 +29,51 @@ export class ClassController {
       })));
       await db.insert(classesToUsers).values({ classId: insertedId, userId: newClass.teacher, type: 'teacher' });
     } catch (err) {
-      return { success: false, message: '用户不存在' };
+      return new Result(false, '用户不存在');
     }
-
-    return { success: true, message: '创建成功' };
+    return new Result(true, '创建成功');
   }
 
   async remove(id: string) {
     try {
       await db.delete(classesToUsers).where(eq(classesToUsers.classId, id));
       await db.delete(classes).where(eq(classes.id, id));
-      return { success: true, message: '删除成功' };
     } catch (err) {
-      return { success: false, message: '班级不存在' };
+      return new ResultNoRes(false, '班级不存在');
     }
+    return new ResultNoRes(true, '删除成功');
   }
 
   private async getFullClass(basicClass: TRawClass) {
-    const students = (
-      await db.select().from(classesToUsers)
-        .where(and(eq(classesToUsers.classId, basicClass.id), eq(classesToUsers.type, 'student')))
-    ).map(item => item.userId);
-    const teacher = (await db.select().from(classesToUsers)
-      .where(and(eq(classesToUsers.classId, basicClass.id), eq(classesToUsers.type, 'teacher'))))[0].userId;
-    return classSerializer(basicClass, students, teacher);
+    try {
+      const students = (
+        await db.select().from(classesToUsers)
+          .where(and(eq(classesToUsers.classId, basicClass.id), eq(classesToUsers.type, 'student')))
+      ).map(item => item.userId);
+      const teacher = (await db.select().from(classesToUsers)
+        .where(and(eq(classesToUsers.classId, basicClass.id), eq(classesToUsers.type, 'teacher'))))[0].userId;
+      return new Result(true, '', classSerializer(basicClass, students, teacher));
+    } catch (err) {
+      return new Result500();
+    }
   }
 
   async getContent(id: string) {
     try {
       const res = (await db.select().from(classes).where(eq(classes.id, id)))[0];
-      return { success: true, res, message: '查询成功' };
+      return new Result(true, '查询成功', res);
     } catch (err) {
-      return { success: false, message: '班级不存在' };
+      return new ResultNoRes(false, '班级不存在');
     }
   }
 
   async getFullContent(id: string) {
     try {
       const basicClass = (await db.select().from(classes).where(eq(classes.id, id)))[0];
-      return { success: true, res: await this.getFullClass(basicClass), message: '查询成功' };
+      const res = (await this.getFullClass(basicClass)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+      return new Result(true, '查询成功', res);
     } catch (err) {
-      return { success: false, message: '班级不存在' };
+      return new ResultNoRes(false, '班级不存在');
     }
   }
 
@@ -76,11 +81,11 @@ export class ClassController {
     try {
       const res: Array<TClass> = [];
       for (const basicClass of await db.select().from(classes))
-        res.push(await this.getFullClass(basicClass));
+        res.push((await this.getFullClass(basicClass)).getResOrTRPCError('INTERNAL_SERVER_ERROR'));
 
-      return { success: true, res, message: '查询成功' };
+      return new Result(true, '查询成功', res);
     } catch (err) {
-      return { success: false, message: '服务器内部错误' };
+      return new Result500();
     }
   }
 }

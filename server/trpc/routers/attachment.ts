@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { TRPCError } from '@trpc/server';
 import { protectedProcedure, router } from '../trpc';
 
 export const attachmentRouter = router({
@@ -13,10 +12,7 @@ export const attachmentRouter = router({
     }))
     .mutation(async ({ ctx, input }) => {
       const res = await ctx.attachmentController.create(input, ctx.user);
-      if (!res.success)
-        throw new TRPCError({ code: 'BAD_REQUEST', message: res.message });
-      else
-        return res;
+      return res.msgOrTRPCError('BAD_REQUEST');
     }),
 
   remove: protectedProcedure
@@ -25,9 +21,6 @@ export const attachmentRouter = router({
     }))
     .mutation(async ({ ctx, input }) => {
       const res = await ctx.attachmentController.remove(input.id, ctx.user);
-      if (!res.success)
-        throw new TRPCError({ code: 'BAD_REQUEST', message: res.message });
-      else
-        return res;
+      return res.msgOrTRPCError('BAD_REQUEST');
     }),
 });

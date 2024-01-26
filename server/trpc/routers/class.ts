@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { TRPCError } from '@trpc/server';
 import { protectedProcedure, requireRoles, router } from '../trpc';
 
 export const classRouter = router({
@@ -13,52 +12,32 @@ export const classRouter = router({
     }))
     .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
-      const res = await ctx.classController.create(input);
-      if (!res.success)
-        throw new TRPCError({ code: 'BAD_REQUEST', message: res.message });
-      else
-        return res;
+      return (await ctx.classController.create(input)).getMsgOrTRPCError();
     }),
 
   content: protectedProcedure
     .input(z.object({ id: z.string().min(1, '班级id不存在') }))
     .query(async ({ ctx, input }) => {
-      const res = await ctx.classController.getContent(input.id);
-      if (!res.res || !res.success)
-        throw new TRPCError({ code: 'BAD_REQUEST', message: res.message });
-      else
-        return res.res;
+      return (await ctx.classController.getContent(input.id)).getResOrTRPCError();
     }),
 
   fullContent: protectedProcedure
     .input(z.object({ id: z.string().min(1, '班级id不存在') }))
     .use(requireRoles(['admin', 'teacher']))
     .query(async ({ ctx, input }) => {
-      const res = await ctx.classController.getFullContent(input.id);
-      if (!res.res || !res.success)
-        throw new TRPCError({ code: 'BAD_REQUEST', message: res.message });
-      else
-        return res.res;
+      return (await ctx.classController.getFullContent(input.id)).getResOrTRPCError();
     }),
 
   list: protectedProcedure
     .use(requireRoles(['admin', 'teacher']))
     .query(async ({ ctx }) => {
-      const res = await ctx.classController.getList();
-      if (!res.res || !res.success)
-        throw new TRPCError({ code: 'BAD_REQUEST', message: res.message });
-      else
-        return res.res;
+      return (await ctx.classController.getList()).getResOrTRPCError();
     }),
 
   remove: protectedProcedure
     .input(z.object({ id: z.string().min(1, '班级id不存在') }))
     .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
-      const res = await ctx.classController.remove(input.id);
-      if (!res.success)
-        throw new TRPCError({ code: 'BAD_REQUEST', message: res.message });
-      else
-        return res;
+      return (await ctx.classController.remove(input.id)).getResOrTRPCError();
     }),
 });

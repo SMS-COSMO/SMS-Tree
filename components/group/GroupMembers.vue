@@ -4,7 +4,7 @@
       <span v-if="groupId">
         <span
           v-for="(member, index) of members" :key="index" class="mx-0.6"
-          :style="`${showLeader && member.userId === leader ? 'font-weight: bold;' : ''}`"
+          :style="`${showLeader && member.id === leader ? 'font-weight: bold;' : ''}`"
         >
           {{ member.username }}
         </span>
@@ -12,7 +12,7 @@
       <span v-if="authors">
         <span
           v-for="(author, index) of authors" :key="index" class="mx-0.6"
-          :style="`${showLeader && author.userId === leaderId ? 'font-weight: bold;' : ''}`"
+          :style="`${showLeader && author.id === leaderId ? 'font-weight: bold;' : ''}`"
         >
           {{ author.username }}
         </span>
@@ -22,8 +22,8 @@
       <span v-if="groupId">
         <span v-for="(member, index) of members" :key="index" class="mx-0.6">
           <el-link
-            :href="`/user/${member.userId}`"
-            :style="`${showLeader && member.userId === leader ? 'font-weight: bold;' : ''}`"
+            :href="`/user/${member.id}`"
+            :style="`${showLeader && member.id === leader ? 'font-weight: bold;' : ''}`"
           >
             {{ member.username }}
           </el-link>
@@ -32,8 +32,8 @@
       <span v-if="authors">
         <span v-for="(author, index) of authors" :key="index" class="mx-0.6">
           <el-link
-            :href="`/user/${author.userId}`"
-            :style="`${showLeader && author.userId === leaderId ? 'font-weight: bold;' : ''}`"
+            :href="`/user/${author.id}`"
+            :style="`${showLeader && author.id === leaderId ? 'font-weight: bold;' : ''}`"
           >
             {{ author.username }}
           </el-link>
@@ -75,7 +75,7 @@ const members = computedAsync(
     const res = await Promise.all(
       group.members
         .map(async (user) => {
-          return { username: (await $api.user.profile.query({ id: user })).username, userId: user };
+          return { username: (await $api.user.profile.query({ id: user })).username, id: user };
         }),
     );
     loading.value = false;

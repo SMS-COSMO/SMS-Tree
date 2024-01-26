@@ -7,11 +7,15 @@ import type { TAuthorPaper, TPaper } from '../serializer/paper';
 import { paperSerializer, paperWithAuthorSerializer } from '../serializer/paper';
 import { papersToGroups } from '../../db/schema/paperToGroup';
 import { attachmentSerializer } from '../serializer/attachment';
+import { Result, Result500, ResultNoRes } from '../utils/result';
 import { GroupController } from './group';
 import { UserController } from './user';
 import { attachments } from '~/server/db/schema/attachment';
 
 export class PaperController {
+  private gc = new GroupController();
+  private uc = new UserController();
+
   async create(newPaper: TNewPaper & { groupId?: string }) {
     const { groupId, ...paper } = newPaper;
 
@@ -19,9 +23,9 @@ export class PaperController {
       const insertedId = (await db.insert(papers).values(paper).returning({ id: papers.id }))[0].id;
       if (groupId)
         await db.insert(papersToGroups).values({ groupId, paperId: insertedId });
-      return { success: true, message: '创建成功' };
+      return new ResultNoRes(true, '创建成功');
     } catch (err) {
-      return { success: false, message: '服务器内部错误' };
+      return new Result500();
     }
   }
 
@@ -29,56 +33,38 @@ export class PaperController {
     try {
       await db.delete(papersToGroups).where(eq(papersToGroups.paperId, id));
       await db.delete(papers).where(eq(papers.id, id));
-      return { success: true, message: '删除成功' };
+      return new ResultNoRes(true, '删除成功');
     } catch (err) {
-      return { success: false, message: '论文不存在' };
+      return new ResultNoRes(false, '论文不存在');
     }
   }
 
   async getAuthors(groupId: string) {
-    const gc = new GroupController();
-    const uc = new UserController();
-
-    const group = await gc.getContent(groupId);
-    if (!group.success || !group.res)
-      return { success: false, message: group.message ?? '服务器内部错误' };
-
+    const group = (await this.gc.getContent(groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+    const leader = (await this.uc.getProfile(group.leader)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
     const authors = await Promise.all(
-      (group.res.members ?? [])
+      (group.members ?? [])
         .map(async (author) => {
-          const usr = (await uc.getProfile(author)).res;
+          const usr = (await this.uc.getProfile(author)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
           if (!usr)
-            return { userId: '', username: '' };
+            return { id: '', username: '' };
           return {
-            userId: usr.id,
+            id: usr.id,
             username: usr.username,
           };
         }),
     );
-    const leader = await uc.getProfile(group.res.leader);
-    if (!leader.success || !leader.res)
-      return { success: false, message: leader.message ?? '服务器内部错误' };
 
-    return {
-      success: true,
-      res: {
-        authors,
-        leader: {
-          username: leader.res.username,
-          userId: leader.res.id,
-        },
-      },
-    };
+    return new Result(true, '查询成功', { authors, leader: { id: leader.id, username: leader.username } });
   }
 
   async getContent(id: string) {
     try {
       const info = (await db.select().from(papers).where(eq(papers.id, id)))[0];
       const groups = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, id));
-      const paper = paperSerializer(info, groups[0].groupId);
-      return { success: true, res: paper, message: '查询成功' };
+      return new Result(true, '查询成功', paperSerializer(info, groups[0].groupId));
     } catch (err) {
-      return { success: false, message: '论文不存在' };
+      return new ResultNoRes(false, '论文不存在');
     }
   }
 
@@ -86,15 +72,11 @@ export class PaperController {
     try {
       const info = (await db.select().from(papers).where(eq(papers.id, id)))[0];
       const groups = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, id));
+      const res = (await this.getAuthors(groups[0].groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
 
-      const res = await this.getAuthors(groups[0].groupId);
-      if (!res.success || !res.res)
-        return { success: false, message: res.message ?? '服务器内部错误' };
-
-      const paper = paperWithAuthorSerializer(info, res.res.authors, res.res.leader);
-      return { success: true, res: paper, message: '查询成功' };
+      return new Result(true, '查询成功', paperWithAuthorSerializer(info, res.authors, res.leader));
     } catch (err) {
-      return { success: false, message: '论文不存在' };
+      return new ResultNoRes(false, '论文不存在');
     }
   }
 
@@ -106,9 +88,9 @@ export class PaperController {
         res.push(paperSerializer(paper, groups.length ? groups[0].groupId : ''));
       }
 
-      return { success: true, res, message: '查询成功' };
+      return new Result(true, '查询成功', res);
     } catch (err) {
-      return { success: false, message: '服务器内部错误' };
+      return new Result500();
     }
   }
 
@@ -118,16 +100,13 @@ export class PaperController {
       for (const paper of await db.select().from(papers)) {
         const groups = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, paper.id));
         if (groups.length) {
-          const res = await this.getAuthors(groups[0].groupId);
-          if (!res.success || !res.res)
-            return { success: false, message: res.message ?? '服务器内部错误' };
-
-          list.push(paperWithAuthorSerializer(paper, res.res.authors, res.res.leader));
+          const res = (await this.getAuthors(groups[0].groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+          list.push(paperWithAuthorSerializer(paper, res.authors, res.leader));
         }
       }
-      return { success: true, res: list, message: '查询成功' };
+      return new Result(true, '查询成功', list);
     } catch (err) {
-      return { success: false, message: '服务器内部错误' };
+      return new Result500();
     }
   }
 
@@ -141,17 +120,17 @@ export class PaperController {
       if (canDownload && !isOwned)
         await db.update(papers).set({ downloadCount: downloadCount + 1 }).where(eq(papers.id, id));
 
-      return { success: true, res, message: '查询成功' };
+      return new Result(true, '查询成功', res);
     } catch (err) {
-      return { success: false, message: '附件获取失败' };
+      return new ResultNoRes(false, '附件获取失败');
     }
   }
 
   async hasUser(id: string, userId: string) {
     try {
-      const authors = (await this.getContentWithAuthor(id)).res?.authors;
+      const { authors } = (await this.getContentWithAuthor(id)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
       if (authors)
-        return authors.some(x => x.userId === userId);
+        return authors.some(x => x.id === userId);
       return false;
     } catch (err) {
       return false;

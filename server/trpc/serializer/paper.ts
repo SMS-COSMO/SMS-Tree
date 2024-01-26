@@ -10,7 +10,7 @@ export function paperSerializer(content: TRawPaper, groupId?: string) {
 
 export interface TAuthor {
   username: string;
-  userId: string;
+  id: string;
 };
 export type TAuthorPaper = ReturnType<typeof paperWithAuthorSerializer>;
 export function paperWithAuthorSerializer(content: TRawPaper, authors: TAuthor[], leader: TAuthor) {
