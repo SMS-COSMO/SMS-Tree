@@ -65,20 +65,12 @@ const buttonLoading = ref(false);
 async function create() {
   buttonLoading.value = true;
   try {
-    const msg = await $api.class.create.mutate({
-      enterYear: form.enterYear,
-      index: form.index,
-      state: form.state,
-      students: form.students,
-      teacher: form.teacher,
-    });
-
+    const msg = await $api.class.create.mutate({ ...form });
     ElMessage({ message: msg, type: 'success', showClose: true });
-    buttonLoading.value = false;
   } catch (err) {
     useErrorHandler(err);
-    buttonLoading.value = false;
   }
+  buttonLoading.value = false;
 }
 </script>
 

@@ -12,7 +12,7 @@ export const attachmentRouter = router({
     }))
     .mutation(async ({ ctx, input }) => {
       const res = await ctx.attachmentController.create(input, ctx.user);
-      return res.msgOrTRPCError('BAD_REQUEST');
+      return res.getMsgOrTRPCError('BAD_REQUEST');
     }),
 
   remove: protectedProcedure
@@ -21,6 +21,6 @@ export const attachmentRouter = router({
     }))
     .mutation(async ({ ctx, input }) => {
       const res = await ctx.attachmentController.remove(input.id, ctx.user);
-      return res.msgOrTRPCError('BAD_REQUEST');
+      return res.getMsgOrTRPCError('BAD_REQUEST');
     }),
 });
