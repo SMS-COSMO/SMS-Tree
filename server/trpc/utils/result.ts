@@ -5,7 +5,7 @@ export class Result<T> {
   msg: string;
   res?: T;
 
-  constructor(ok: boolean, msg: string, res?: T) {
+  constructor(ok: boolean, msg: string, res: T) {
     this.ok = ok;
     this.msg = msg;
     this.res = res;
@@ -26,7 +26,7 @@ export class Result<T> {
 
 export class ResultNoRes extends Result<undefined> {
   constructor(ok: boolean, msg: string) {
-    super(ok, msg);
+    super(ok, msg, undefined);
   }
 }
 
