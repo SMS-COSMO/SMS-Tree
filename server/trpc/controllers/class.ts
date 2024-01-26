@@ -29,9 +29,9 @@ export class ClassController {
       })));
       await db.insert(classesToUsers).values({ classId: insertedId, userId: newClass.teacher, type: 'teacher' });
     } catch (err) {
-      return new Result(false, '用户不存在');
+      return new ResultNoRes(false, '用户不存在');
     }
-    return new Result(true, '创建成功');
+    return new ResultNoRes(true, '创建成功');
   }
 
   async remove(id: string) {
