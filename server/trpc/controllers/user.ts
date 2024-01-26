@@ -49,7 +49,7 @@ export class UserController {
     }
   }
 
-  async bulkRegister(inputUsers: { id: string, username: string }[], randomPassword?: boolean) {
+  async bulkRegister(inputUsers: { id: string; username: string }[], randomPassword?: boolean) {
     if ((new Set(inputUsers.map(user => user.id))).size !== inputUsers.length)
       return { success: false, message: '用户ID出现重复' };
 

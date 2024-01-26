@@ -23,8 +23,8 @@
 
 <script setup lang="ts">
 withDefaults(defineProps<{
-  canFold?: boolean
-  defaultPosition?: 'folded' | 'unfolded'
+  canFold?: boolean;
+  defaultPosition?: 'folded' | 'unfolded';
 }>(), {
   canFold: true,
   defaultPosition: 'unfolded',

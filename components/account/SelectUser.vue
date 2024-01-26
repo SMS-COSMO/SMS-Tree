@@ -31,9 +31,9 @@
 import { useUserSearch } from '~/composables/useSearch';
 
 const props = withDefaults(defineProps<{
-  modelValue: string[] | string
-  multiple?: boolean
-  role?: 'student' | 'teacher'
+  modelValue: string[] | string;
+  multiple?: boolean;
+  role?: 'student' | 'teacher';
 }>(), {
   multiple: true,
   role: 'student',

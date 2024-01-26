@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { PutObjectCommand, UploadPartCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { publicProcedure, router } from '../trpc';
-import { env } from '../env';
+import { env } from '../../env';
 
 export const s3Router = router({
   getStandardUploadPresignedUrl: publicProcedure
@@ -39,7 +39,7 @@ export const s3Router = router({
         });
       }
 
-      const urls: Promise<{ url: string, partNumber: number }>[] = [];
+      const urls: Promise<{ url: string; partNumber: number }>[] = [];
 
       for (let i = 1; i <= filePartTotal; i++) {
         const uploadPartCommand = new UploadPartCommand({

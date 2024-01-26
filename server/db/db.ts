@@ -5,6 +5,7 @@ import type { refreshTokens, users } from './schema/user';
 import type { papers } from './schema/paper';
 import type { groups } from './schema/group';
 import type { classes } from './schema/class';
+import type { attachments } from './schema/attachment';
 
 const options = (() => {
   switch (env.DATABASE_CONNECTION_TYPE) {
@@ -28,3 +29,6 @@ export type TNewGroup = typeof groups.$inferInsert;
 
 export type TRawClass = typeof classes.$inferSelect;
 export type TNewClass = typeof classes.$inferInsert;
+
+export type TRawAttachment = typeof attachments.$inferSelect;
+export type TNewAttachment = typeof attachments.$inferInsert;

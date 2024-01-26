@@ -41,9 +41,9 @@
 import type { TPaperListOutputItem, TPaperListWithAuthorOutputItem } from '~/types/index';
 
 withDefaults(defineProps<{
-  paper: TPaperListOutputItem | TPaperListWithAuthorOutputItem
-  showAbstract?: boolean
-  lineClamp?: number
+  paper: TPaperListOutputItem | TPaperListWithAuthorOutputItem;
+  showAbstract?: boolean;
+  lineClamp?: number;
 }>(), {
   showAbstract: false,
   lineClamp: 3,

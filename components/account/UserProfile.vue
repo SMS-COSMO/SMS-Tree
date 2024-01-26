@@ -81,7 +81,7 @@
 import type { TPaperListWithAuthorOutput, TUserProfileOutput } from '~/types/index';
 
 const props = defineProps<{
-  userId: string
+  userId: string;
 }>();
 
 const { $api } = useNuxtApp();

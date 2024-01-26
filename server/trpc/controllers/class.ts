@@ -8,11 +8,11 @@ import { classSerializer } from '../serializer/class';
 
 export class ClassController {
   async create(newClass: {
-    index: number
-    enterYear: number
-    state: 'archived' | 'initialized' | 'selectGroup' | 'submitPaper'
-    students: string[]
-    teacher: string
+    index: number;
+    enterYear: number;
+    state: 'archived' | 'initialized' | 'selectGroup' | 'submitPaper';
+    students: string[];
+    teacher: string;
   }) {
     let insertedId: string;
     try {

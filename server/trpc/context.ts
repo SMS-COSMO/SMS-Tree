@@ -7,28 +7,32 @@ import { s3 } from './controllers/s3';
 import { PaperController } from './controllers/paper';
 import { GroupController } from './controllers/group';
 import { ClassController } from './controllers/class';
+import { AttachmentController } from './controllers/attachment';
 
 const newGlobal = globalThis as unknown as {
-  userController: UserController | undefined
-  paperController: PaperController | undefined
-  groupController: GroupController | undefined
-  classController: ClassController | undefined
+  userController: UserController | undefined;
+  paperController: PaperController | undefined;
+  groupController: GroupController | undefined;
+  classController: ClassController | undefined;
+  attachmentController: AttachmentController | undefined;
 };
 
 const userController = newGlobal.userController ?? new UserController();
 const paperController = newGlobal.paperController ?? new PaperController();
 const groupController = newGlobal.groupController ?? new GroupController();
 const classController = newGlobal.classController ?? new ClassController();
+const attachmentController = newGlobal.attachmentController ?? new AttachmentController();
 
 if (process.env.NODE_ENV !== 'production') {
   newGlobal.userController = userController;
   newGlobal.paperController = paperController;
   newGlobal.groupController = groupController;
   newGlobal.classController = classController;
+  newGlobal.attachmentController = attachmentController;
 }
 
 interface CreateContextOptions {
-  user?: TRawUser
+  user?: TRawUser;
 }
 
 /**
@@ -45,6 +49,7 @@ export function createInnerContext(opts: CreateContextOptions) {
     paperController,
     groupController,
     classController,
+    attachmentController,
   };
 }
 

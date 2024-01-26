@@ -7,7 +7,7 @@
 <script setup lang="ts">
 export type TClassState = 'archived' | 'initialized' | 'selectGroup' | 'submitPaper';
 defineProps<{
-  state: TClassState
+  state: TClassState;
 }>();
 
 const stateTable = {

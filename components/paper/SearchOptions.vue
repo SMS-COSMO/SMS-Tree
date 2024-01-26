@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  modelValue: TSearchOption
+  modelValue: TSearchOption;
 }>();
 
 const emit = defineEmits(['update:modelValue']);
@@ -44,13 +44,13 @@ const isSmallScreen = useWindowWidth();
 
 export interface TSearchOption {
   filter: {
-    onlyCanDownload: boolean
-    onlyFeatured: boolean
-    timeRange: string
-  }
-  searchSelectValue: string[]
-  showAbstract: false
-  sortOption: 'default' | 'time' | 'rate' | 'downloadCount'
+    onlyCanDownload: boolean;
+    onlyFeatured: boolean;
+    timeRange: string;
+  };
+  searchSelectValue: string[];
+  showAbstract: false;
+  sortOption: 'default' | 'time' | 'rate' | 'downloadCount';
 }
 
 const modelValue = ref(props.modelValue);

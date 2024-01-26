@@ -15,7 +15,6 @@ export const paperRouter = router({
       abstract: z.string(),
       groupId: z.string().optional(),
       canDownload: z.boolean(),
-      S3FileId: z.string().min(1, '请上传文件'),
     }))
     .mutation(async ({ ctx, input }) => {
       const res = await ctx.paperController.create(input);
@@ -74,10 +73,10 @@ export const paperRouter = router({
         return res.res;
     }),
 
-  file: protectedProcedure
+  attachments: protectedProcedure
     .input(z.object({ id: z.string().min(1, '论文id不存在') }))
     .query(async ({ ctx, input }) => {
-      const res = await ctx.paperController.getFile(input.id, ctx.user.role);
+      const res = await ctx.paperController.getAttachments(input.id, ctx.user);
       if (!res.res || !res.success)
         throw new TRPCError({ code: 'BAD_REQUEST', message: res.message });
       else

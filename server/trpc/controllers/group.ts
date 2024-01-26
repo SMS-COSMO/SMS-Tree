@@ -10,8 +10,8 @@ import { papersToGroups } from '../../db/schema/paperToGroup';
 
 export class GroupController {
   async create(newGroup: TNewGroup & {
-    members: string[]
-    papers?: string[]
+    members: string[];
+    papers?: string[];
   }) {
     const { members, papers, ...group } = newGroup;
     group.archived = group.archived ?? false;

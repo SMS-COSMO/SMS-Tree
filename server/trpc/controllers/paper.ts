@@ -4,15 +4,16 @@ import type { TNewPaper, TRawUser } from '../../db/db';
 
 import { papers } from '../../db/schema/paper';
 import type { TAuthorPaper, TPaper } from '../serializer/paper';
-import { paperFileSerializer, paperSerializer, paperWithAuthorSerializer } from '../serializer/paper';
+import { paperSerializer, paperWithAuthorSerializer } from '../serializer/paper';
 import { papersToGroups } from '../../db/schema/paperToGroup';
+import { attachmentSerializer } from '../serializer/attachment';
 import { GroupController } from './group';
 import { UserController } from './user';
+import { attachments } from '~/server/db/schema/attachment';
 
 export class PaperController {
   async create(newPaper: TNewPaper & { groupId?: string }) {
-    const { title, keywords, abstract, canDownload, S3FileId, groupId } = newPaper;
-    const paper = { title, keywords, abstract, canDownload, S3FileId };
+    const { groupId, ...paper } = newPaper;
 
     try {
       const insertedId = (await db.insert(papers).values(paper).returning({ id: papers.id }))[0].id;
@@ -74,7 +75,7 @@ export class PaperController {
     try {
       const info = (await db.select().from(papers).where(eq(papers.id, id)))[0];
       const groups = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, id));
-      const paper = paperSerializer(info, groups.length ? groups[0].groupId : '');
+      const paper = paperSerializer(info, groups[0].groupId);
       return { success: true, res: paper, message: '查询成功' };
     } catch (err) {
       return { success: false, message: '论文不存在' };
@@ -92,20 +93,6 @@ export class PaperController {
 
       const paper = paperWithAuthorSerializer(info, res.res.authors, res.res.leader);
       return { success: true, res: paper, message: '查询成功' };
-    } catch (err) {
-      return { success: false, message: '论文不存在' };
-    }
-  }
-
-  async getFile(id: string, role: TRawUser['role']) {
-    try {
-      const paper = (await db.select().from(papers).where(eq(papers.id, id)))[0];
-      if (!paper.canDownload && role === 'student')
-        return { success: false, message: '无下载权限' };
-
-      const file = paperFileSerializer(paper);
-      await db.update(papers).set({ downloadCount: paper.downloadCount + 1 }).where(eq(papers.id, id));
-      return { success: true, res: file, message: '查询成功' };
     } catch (err) {
       return { success: false, message: '论文不存在' };
     }
@@ -141,6 +128,33 @@ export class PaperController {
       return { success: true, res: list, message: '查询成功' };
     } catch (err) {
       return { success: false, message: '服务器内部错误' };
+    }
+  }
+
+  async getAttachments(id: string, user: TRawUser) {
+    try {
+      const { canDownload, downloadCount } = (await this.getContent(id)).res ?? { canDownload: false, downloadCount: 0 };
+      const isOwned = await this.hasUser(id, user.id);
+      const res = (await db.select().from(attachments).where(eq(attachments.paperId, id))).map(
+        x => attachmentSerializer(x, canDownload || ['teacher', 'admin'].includes(user.role) || isOwned),
+      );
+      if (canDownload && !isOwned)
+        await db.update(papers).set({ downloadCount: downloadCount + 1 }).where(eq(papers.id, id));
+
+      return { success: true, res, message: '查询成功' };
+    } catch (err) {
+      return { success: false, message: '附件获取失败' };
+    }
+  }
+
+  async hasUser(id: string, userId: string) {
+    try {
+      const authors = (await this.getContentWithAuthor(id)).res?.authors;
+      if (authors)
+        return authors.some(x => x.userId === userId);
+      return false;
+    } catch (err) {
+      return false;
     }
   }
 }

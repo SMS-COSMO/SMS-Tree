@@ -48,11 +48,11 @@ import { computedAsync } from '@vueuse/core';
 import type { TAuthor } from '~/server/trpc/serializer/paper';
 
 const props = withDefaults(defineProps<{
-  groupId?: string
-  authors?: TAuthor[]
-  leaderId?: string
-  type?: 'text' | 'link'
-  showLeader?: boolean
+  groupId?: string;
+  authors?: TAuthor[];
+  leaderId?: string;
+  type?: 'text' | 'link';
+  showLeader?: boolean;
 }>(), {
   type: 'text',
   showLeader: true,

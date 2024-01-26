@@ -13,7 +13,7 @@
 import type { TUserListOutputItem } from '~/types';
 
 const props = defineProps<{
-  students: string[]
+  students: string[];
 }>();
 
 const { $api } = useNuxtApp();

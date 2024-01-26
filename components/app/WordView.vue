@@ -8,8 +8,8 @@
 
 <script lang="ts" setup>
 withDefaults(defineProps<{
-  type: string
-  url: string
+  type: string;
+  url: string;
 }>(), {
   type: 'word',
 });

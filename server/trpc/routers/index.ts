@@ -3,6 +3,7 @@ import { paperRouter } from './paper';
 import { userRouter } from './user';
 import { groupRouter } from './group';
 import { classRouter } from './class';
+import { attachmentRouter } from './attachment';
 
 export const appRouter = router({
   status: publicProcedure.query(() => 'Hola! This is working'),
@@ -10,6 +11,7 @@ export const appRouter = router({
   paper: paperRouter,
   group: groupRouter,
   class: classRouter,
+  attachment: attachmentRouter,
 });
 
 export type AppRouter = typeof appRouter;

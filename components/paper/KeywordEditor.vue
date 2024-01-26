@@ -27,9 +27,9 @@
 import { ElInput } from 'element-plus';
 
 const props = withDefaults(defineProps<{
-  modelValue: string[]
-  contentMaxLength?: number
-  maxLength?: number
+  modelValue: string[];
+  contentMaxLength?: number;
+  maxLength?: number;
 }>(), {
   contentMaxLength: 8,
   maxLength: 8,

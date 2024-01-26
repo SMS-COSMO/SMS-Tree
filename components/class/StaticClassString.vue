@@ -7,7 +7,7 @@ import { computedAsync } from '@vueuse/core';
 import type { TUserProfileOutput } from '~/types';
 
 const props = defineProps<{
-  userInfo: TUserProfileOutput
+  userInfo: TUserProfileOutput;
 }>();
 
 const ClassString = computedAsync(
