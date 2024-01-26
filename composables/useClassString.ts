@@ -1,6 +1,6 @@
-import type { TClassContentOutput, TUserProfileOutput } from '~/types/index';
+import type { TClassContent, TUserProfile } from '~/types/index';
 
-export function useClassString(classInfo: TClassContentOutput) {
+export function useClassString(classInfo: TClassContent) {
   if (!classInfo)
     return '未知';
   const now = new Date();
@@ -10,11 +10,11 @@ export function useClassString(classInfo: TClassContentOutput) {
   return `${yearString[year]}（${classInfo.index}）`;
 }
 
-export async function useUserClassString(userInfo: TUserProfileOutput | undefined) {
+export async function useUserClassString(userInfo: TUserProfile | undefined) {
   if (!userInfo)
     return '';
   const { $api } = useNuxtApp();
-  const classInfo = ref<TClassContentOutput>();
+  const classInfo = ref<TClassContent>();
   try {
     classInfo.value = await $api.class.content.query({ id: userInfo.classIds[0] });
   } catch (err) {

@@ -38,10 +38,10 @@
 </template>
 
 <script setup lang="ts">
-import type { TPaperListOutputItem, TPaperListWithAuthorOutputItem } from '~/types/index';
+import type { TPaperListItem, TPaperListWithAuthorItem } from '~/types/index';
 
 withDefaults(defineProps<{
-  paper: TPaperListOutputItem | TPaperListWithAuthorOutputItem;
+  paper: TPaperListItem | TPaperListWithAuthorItem;
   showAbstract?: boolean;
   lineClamp?: number;
 }>(), {
@@ -49,7 +49,7 @@ withDefaults(defineProps<{
   lineClamp: 3,
 });
 
-function openPaper(paper: TPaperListOutputItem | TPaperListWithAuthorOutputItem) {
+function openPaper(paper: TPaperListItem | TPaperListWithAuthorItem) {
   navigateTo(`/paper/${paper.id}`);
 }
 </script>

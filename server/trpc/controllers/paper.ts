@@ -117,7 +117,7 @@ export class PaperController {
       const res = (await db.select().from(attachments).where(eq(attachments.paperId, id))).map(
         x => attachmentSerializer(x, canDownload || ['teacher', 'admin'].includes(user.role) || isOwned),
       );
-      if (canDownload && !isOwned)
+      if (canDownload && !isOwned && !['teacher', 'admin'].includes(user.role))
         await db.update(papers).set({ downloadCount: downloadCount + 1 }).where(eq(papers.id, id));
 
       return new Result(true, '查询成功', res);

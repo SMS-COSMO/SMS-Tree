@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { TPaperListWithAuthorOutput, TUserProfileOutput } from '~/types/index';
+import type { TPaperListWithAuthor, TUserProfile } from '~/types/index';
 
 const props = defineProps<{
   userId: string;
@@ -94,8 +94,8 @@ const roleName = {
   admin: '管理员',
 };
 
-const info = ref<TUserProfileOutput>();
-const papers = ref<TPaperListWithAuthorOutput>([]);
+const info = ref<TUserProfile>();
+const papers = ref<TPaperListWithAuthor>([]);
 const contentLoading = ref(true);
 const paperLoading = ref(true);
 const classString = ref('');

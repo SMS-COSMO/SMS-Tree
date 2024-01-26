@@ -10,14 +10,14 @@
 </template>
 
 <script setup lang="ts">
-import type { TUserListOutputItem } from '~/types';
+import type { TUserListItem } from '~/types';
 
 const props = defineProps<{
   students: string[];
 }>();
 
 const { $api } = useNuxtApp();
-const list = ref<(TUserListOutputItem & { projectName: string | null })[]>([]);
+const list = ref<(TUserListItem & { projectName: string | null })[]>([]);
 const loading = ref(true);
 onMounted(async () => {
   try {

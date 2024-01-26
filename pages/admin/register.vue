@@ -52,7 +52,7 @@
 
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus';
-import type { TRegisterInput } from '~/types/index';
+import type { TUserRegister } from '~/types/index';
 
 useHeadSafe({
   title: '创建用户',
@@ -61,14 +61,14 @@ useHeadSafe({
 const { $api } = useNuxtApp();
 
 const formRef = ref<FormInstance>();
-const form = reactive<TRegisterInput>({
+const form = reactive<TUserRegister>({
   id: '',
   username: '',
   password: '',
   role: 'student',
 });
 
-const rules = reactive<FormRules<TRegisterInput>>({
+const rules = reactive<FormRules<TUserRegister>>({
   id: [
     { required: true, message: '学号 / 用户名不能为空', trigger: 'blur' },
     { min: 4, max: 24, message: '学号 / 用户名长度应在 4~24 之间', trigger: 'blur' },

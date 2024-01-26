@@ -46,14 +46,14 @@
 
 <script setup lang="ts">
 import type { TClassState } from '~/components/class/StateBadge.vue';
-import type { TCreateClassInput } from '~/types/index';
+import type { TClassCreate } from '~/types/index';
 
 const { $api } = useNuxtApp();
 useHeadSafe({
   title: '创建论文',
 });
 
-const form = reactive<TCreateClassInput>({
+const form = reactive<TClassCreate>({
   index: 1,
   enterYear: (new Date()).getFullYear(),
   state: 'initialized',

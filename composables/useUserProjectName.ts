@@ -1,6 +1,6 @@
-import type { TUserListOutputItem } from '~/types';
+import type { TUserListItem } from '~/types';
 
-export async function useUserProjectName(user: TUserListOutputItem) {
+export async function useUserProjectName(user: TUserListItem) {
   const { $api } = useNuxtApp();
 
   const req = [];

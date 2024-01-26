@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import { templateSearchOption, useSearch } from '~/composables/useSearch';
-import type { TClassListOutputItem } from '~/types';
+import type { TClassListItem } from '~/types';
 
 const { $api } = useNuxtApp();
 useHeadSafe({
@@ -42,7 +42,7 @@ useHeadSafe({
 
 const showAll = ref(false);
 const searchContent = ref('');
-const { loading, processedListData } = useSearch<TClassListOutputItem>(
+const { loading, processedListData } = useSearch<TClassListItem>(
   searchContent,
   templateSearchOption(['str']),
   async () => (await $api.class.list.query()).map(e => ({ ...e, str: useClassString(e) })),

@@ -1,6 +1,6 @@
 import type { UseFuseOptions } from '@vueuse/integrations/useFuse';
 import { useFuse } from '@vueuse/integrations/useFuse';
-import type { TUserListOutputItem } from '~/types/index';
+import type { TUserListItem } from '~/types/index';
 
 export function useSearch<T>(
   searchContent: Ref<string>,
@@ -36,7 +36,7 @@ export function useSearch<T>(
 export function useUserSearch(searchContent: Ref<string>, role: 'student' | 'teacher' = 'student') {
   const { $api } = useNuxtApp();
 
-  return useSearch<TUserListOutputItem>(
+  return useSearch<TUserListItem>(
     searchContent,
     templateSearchOption(['id', 'username']),
     () => $api.user.list.query({ role }),
@@ -46,7 +46,7 @@ export function useUserSearch(searchContent: Ref<string>, role: 'student' | 'tea
 export function useUserDetailedSearch(searchContent: Ref<string>, role: 'student' | 'teacher' = 'student') {
   const { $api } = useNuxtApp();
 
-  return useSearch<TUserListOutputItem>(
+  return useSearch<TUserListItem>(
     searchContent,
     templateSearchOption(['id', 'username', 'projectName']),
     async () => {

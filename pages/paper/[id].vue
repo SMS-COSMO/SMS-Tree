@@ -62,16 +62,7 @@
             </el-descriptions-item>
           </el-descriptions>
         </el-skeleton>
-        <el-button v-if="content?.canDownload" color="#146E3C" class="mt-1 w-full" plain @click="downloadDialog = true;">
-          下载
-        </el-button>
-        <el-dialog v-model="downloadDialog" title="文件下载" class="download-dialog">
-          <el-collapse>
-            <el-collapse-item title="Placeholder">
-              placeholder
-            </el-collapse-item>
-          </el-collapse>
-        </el-dialog>
+        <Attachment :paper="content" />
       </FoldableCard>
     </el-col>
     <el-col :span="isSmallScreen ? 24 : 18" :class="isSmallScreen ? 'mt-4' : ''">
@@ -104,7 +95,8 @@
 </template>
 
 <script setup lang="ts">
-import type { TPaperContentWithAuthorOutput } from '~/types/index';
+import Attachment from '~/components/paper/Attachment.vue';
+import type { TPaperContentWithAuthor } from '~/types/index';
 
 useHeadSafe({
   title: '论文信息',
@@ -116,10 +108,8 @@ const route = useRoute();
 const id = route.params.id.toString();
 const isSmallScreen = useWindowWidth();
 
-const downloadDialog = ref(false);
 const contentLoading = ref(true);
-
-const content = ref<TPaperContentWithAuthorOutput>();
+const content = ref<TPaperContentWithAuthor>();
 
 function searchTag(keyword: string) {
   navigateTo({

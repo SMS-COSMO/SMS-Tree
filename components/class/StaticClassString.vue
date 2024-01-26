@@ -4,10 +4,10 @@
 
 <script lang="ts" setup>
 import { computedAsync } from '@vueuse/core';
-import type { TUserProfileOutput } from '~/types';
+import type { TUserProfile } from '~/types';
 
 const props = defineProps<{
-  userInfo: TUserProfileOutput;
+  userInfo: TUserProfile;
 }>();
 
 const ClassString = computedAsync(

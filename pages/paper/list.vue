@@ -72,7 +72,7 @@
 <script setup lang="ts">
 import { vOnClickOutside } from '@vueuse/components';
 import { useSearch } from '~/composables/useSearch';
-import type { TPaperListWithAuthorOutputItem } from '~/types/index';
+import type { TPaperListWithAuthorItem } from '~/types/index';
 import type { TSearchOption } from '~/components/paper/SearchOptions.vue';
 
 useHeadSafe({
@@ -114,12 +114,12 @@ const fuseOptions = computed(() => {
   };
 });
 
-const { processedListData, loading } = useSearch<TPaperListWithAuthorOutputItem>(
+const { processedListData, loading } = useSearch<TPaperListWithAuthorItem>(
   searchContent,
   fuseOptions,
   () => $api.paper.listWithAuthor.query(),
   e => e.item,
-  (o: TPaperListWithAuthorOutputItem) => {
+  (o: TPaperListWithAuthorItem) => {
     if (searchOptions.filter.onlyCanDownload && !o.canDownload)
       return false;
     if (searchOptions.filter.onlyFeatured && !o.isFeatured)
@@ -131,7 +131,7 @@ const { processedListData, loading } = useSearch<TPaperListWithAuthorOutputItem>
       return false;
     return true;
   },
-  (a: TPaperListWithAuthorOutputItem, b: TPaperListWithAuthorOutputItem) => {
+  (a: TPaperListWithAuthorItem, b: TPaperListWithAuthorItem) => {
     if (searchOptions.sortOption === 'default')
       return 0; // Keep original order
     if (searchOptions.sortOption === 'rate')

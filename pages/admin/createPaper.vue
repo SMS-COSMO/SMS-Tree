@@ -28,14 +28,14 @@
 
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus';
-import type { TCreatePaperInput } from '~/types/index';
+import type { TPaperCreate } from '~/types/index';
 
 useHeadSafe({
   title: '创建论文',
 });
 
 const formRef = ref<FormInstance>();
-const form = reactive<TCreatePaperInput>({
+const form = reactive<TPaperCreate>({
   title: '',
   abstract: '',
   groupId: '',
@@ -43,7 +43,7 @@ const form = reactive<TCreatePaperInput>({
   canDownload: false,
 });
 
-const rules = reactive<FormRules<TCreatePaperInput>>({
+const rules = reactive<FormRules<TPaperCreate>>({
 });
 
 const buttonLoading = ref(false);

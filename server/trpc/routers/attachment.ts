@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { protectedProcedure, router } from '../trpc';
 
+const attachmentIdZod = z.string().min(0, '附件不存在');
+
 export const attachmentRouter = router({
   create: protectedProcedure
     .input(z.object({
@@ -11,16 +13,18 @@ export const attachmentRouter = router({
       S3FileId: z.string().min(0, '请上传文件'),
     }))
     .mutation(async ({ ctx, input }) => {
-      const res = await ctx.attachmentController.create(input, ctx.user);
-      return res.getMsgOrTRPCError('BAD_REQUEST');
+      return (await ctx.attachmentController.create(input, ctx.user)).getMsgOrTRPCError('BAD_REQUEST');
+    }),
+
+  content: protectedProcedure
+    .input(z.object({ id: attachmentIdZod }))
+    .query(async ({ ctx, input }) => {
+      return (await ctx.attachmentController.getContent(input.id, ctx.user)).getResOrTRPCError('BAD_REQUEST');
     }),
 
   remove: protectedProcedure
-    .input(z.object({
-      id: z.string().min(0, '附件不存在'),
-    }))
+    .input(z.object({ id: attachmentIdZod }))
     .mutation(async ({ ctx, input }) => {
-      const res = await ctx.attachmentController.remove(input.id, ctx.user);
-      return res.getMsgOrTRPCError('BAD_REQUEST');
+      return (await ctx.attachmentController.remove(input.id, ctx.user)).getMsgOrTRPCError('BAD_REQUEST');
     }),
 });
