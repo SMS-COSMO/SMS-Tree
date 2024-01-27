@@ -7,7 +7,9 @@ import { attachments } from '~/server/db/schema/attachment';
 
 export class AttachmentController {
   private pc = new PaperController();
-  private async hasPerm(paperId: string, user: TRawUser) {
+  private async hasPerm(paperId: string | undefined | null, user: TRawUser) {
+    if (!paperId)
+      return true;
     return await this.pc.hasUser(paperId, user.id) || ['teacher', 'admin'].includes(user.role);
   };
 
@@ -18,20 +20,22 @@ export class AttachmentController {
       else
         return new ResultNoRes(false, '超出权限范围');
     } catch (err) {
-      return new ResultNoRes(false, '服务器内部错误');
+      return new Result500();
     }
     return new ResultNoRes(true, '创建成功');
   }
 
-  async getContent(id: string, user: TRawUser) {
+  async modify(id: string, newAttachment: TNewAttachment, user: TRawUser) {
     try {
-      const attachment = (await db.select().from(attachments).where(eq(attachments.id, id)))[0];
-      if (await this.hasPerm(attachment.paperId, user))
-        return new Result(true, '查询成功', attachment);
-      return new ResultNoRes(false, '超出权限范围');
+      const oldPaperId = (await db.select().from(attachments).where(eq(attachments.id, id)))[0].paperId;
+      if (await this.hasPerm(oldPaperId, user) && await this.hasPerm(newAttachment.paperId, user))
+        await db.update(attachments).set(newAttachment).where(eq(attachments.id, id));
+      else
+        return new ResultNoRes(false, '超出权限范围');
     } catch (err) {
       return new Result500();
     }
+    return new ResultNoRes(true, '修改成功');
   }
 
   async remove(id: string, user: TRawUser) {
@@ -45,5 +49,14 @@ export class AttachmentController {
       return new ResultNoRes(false, '附件不存在');
     }
     return new ResultNoRes(true, '删除成功');
+  }
+
+  async list() {
+    try {
+      const l = await db.select().from(attachments).all();
+      return new Result(true, '查询成功', l);
+    } catch (err) {
+      return new Result500();
+    }
   }
 }
