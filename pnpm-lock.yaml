@@ -69,7 +69,7 @@ devDependencies:
     version: 2.6.3(@unocss/eslint-plugin@0.58.4)(@vue/compiler-sfc@3.4.15)(eslint@8.56.0)(typescript@5.3.3)
   '@element-plus/nuxt':
     specifier: ^1.0.7
-    version: 1.0.7(@element-plus/icons-vue@2.3.1)(element-plus@2.5.3)
+    version: 1.0.7(@element-plus/icons-vue@2.3.1)(element-plus@2.4.4)
   '@nuxt/devtools':
     specifier: latest
     version: 1.0.8(nuxt@3.9.3)(vite@5.0.11)
@@ -95,8 +95,8 @@ devDependencies:
     specifier: ^0.20.13
     version: 0.20.13
   element-plus:
-    specifier: ^2.5.3
-    version: 2.5.3(vue@3.4.15)
+    specifier: 2.4.4
+    version: 2.4.4(vue@3.4.15)
   eslint:
     specifier: ^8.56.0
     version: 8.56.0
@@ -1186,7 +1186,7 @@ packages:
       vue: 3.4.15(typescript@5.3.3)
     dev: true
 
-  /@element-plus/nuxt@1.0.7(@element-plus/icons-vue@2.3.1)(element-plus@2.5.3):
+  /@element-plus/nuxt@1.0.7(@element-plus/icons-vue@2.3.1)(element-plus@2.4.4):
     resolution: {integrity: sha512-cRP2iMTzrKKKgfXuWXQ/HAC1vawVeErNZPz7ylA2OfhR+RKPS0UbDy43zytBx/imxhuZbtDI6lPuGAf7TOMYDQ==}
     peerDependencies:
       '@element-plus/icons-vue': '>=0.2.6'
@@ -1194,7 +1194,7 @@ packages:
     dependencies:
       '@element-plus/icons-vue': 2.3.1(vue@3.4.15)
       '@nuxt/kit': 3.9.3
-      element-plus: 2.5.3(vue@3.4.15)
+      element-plus: 2.4.4(vue@3.4.15)
       magic-string: 0.27.0
       unplugin: 1.6.0
     transitivePeerDependencies:
@@ -5413,8 +5413,8 @@ packages:
   /electron-to-chromium@1.4.646:
     resolution: {integrity: sha512-vThkQ0JuF45qT/20KbRgM56lV7IuGt7SjhawQ719PDHzhP84KAO1WJoaxgCoAffKHK47FmVKP1Fqizx7CwK1SA==}
 
-  /element-plus@2.5.3(vue@3.4.15):
-    resolution: {integrity: sha512-wmtstxaMkD6UinIgD+45CjrhbRh4u0vt+/GgxfPeMLt5pDpIVwZFjkUaVcWqqxcxd5a80HP3XlDF74fW7wim9A==}
+  /element-plus@2.4.4(vue@3.4.15):
+    resolution: {integrity: sha512-TlKubXJgxwhER0dw+8ULn9hr9kZjraV4R6Q/eidwWUwCKxwXYPBGmMKsZ/85tlxlhMYbcLZd/YZh6G3QkHX4fg==}
     peerDependencies:
       vue: ^3.2.0
     dependencies:
