@@ -13,7 +13,7 @@ export interface TAuthor {
   id: string;
 };
 export type TAuthorPaper = ReturnType<typeof paperWithAuthorSerializer>;
-export function paperWithAuthorSerializer(content: TRawPaper, authors: TAuthor[], leader: TAuthor) {
+export function paperWithAuthorSerializer(content: TRawPaper, authors?: TAuthor[], leader?: TAuthor) {
   return {
     ...content,
     authors,

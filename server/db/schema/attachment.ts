@@ -6,6 +6,6 @@ export const attachments = sqliteTable('attachments', {
   name: text('name', { mode: 'text' }).notNull(),
   paperId: text('paper_id', { mode: 'text' }),
   isMainFile: integer('is_main_file', { mode: 'boolean' }).notNull().default(false),
-  fileType: text('file_type', { enum: ['pdf', 'docx', 'image', 'video'] }).notNull(),
+  fileType: text('file_type', { mode: 'text' }).notNull(),
   S3FileId: text('s3_file_id', { mode: 'text' }).notNull(),
 });

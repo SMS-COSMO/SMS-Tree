@@ -6,7 +6,7 @@ const attachmentZod = z.object({
   paperId: z.string().optional(),
   name: z.string().min(0, '文件名最短为1').max(100, '文件名最长为100'),
   isMainFile: z.boolean(),
-  fileType: z.enum(['pdf', 'docx', 'image', 'video']),
+  fileType: z.string(),
   S3FileId: z.string().min(0, '请上传文件'),
 });
 
@@ -14,13 +14,22 @@ export const attachmentRouter = router({
   create: protectedProcedure
     .input(attachmentZod)
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.attachmentController.create(input, ctx.user)).getMsgOrTRPCError();
+      return (await ctx.attachmentController.create(input, ctx.user)).getResOrTRPCError();
     }),
 
   modify: protectedProcedure
     .input(z.object({ id: attachmentIdZod, newAttachment: attachmentZod }))
     .mutation(async ({ ctx, input }) => {
       return (await ctx.attachmentController.modify(input.id, input.newAttachment, ctx.user)).getMsgOrTRPCError();
+    }),
+
+  batchMoveToPaper: protectedProcedure
+    .input(z.object({
+      ids: z.array(z.string()),
+      paperId: z.string(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return (await ctx.attachmentController.bulkMoveToPaper(input.ids, input.paperId, ctx.user)).getMsgOrTRPCError();
     }),
 
   remove: protectedProcedure

@@ -17,11 +17,14 @@
         />
       </el-form-item>
       <el-form-item label="作者" />
+      <el-form-item label="论文文件">
+        <UploadFile v-model="paperFile" is-main-file />
+      </el-form-item>
       <el-form-item label="附件">
-        <UploadFile />
+        <UploadFile v-model="attachments" multiple />
       </el-form-item>
       <el-form-item>
-        <el-button class="submit-button" color="#146E3C" :loading="buttonLoading" @click="register(formRef)">
+        <el-button class="submit-button" color="#146E3C" :loading="buttonLoading" @click="create(formRef)">
           创建
         </el-button>
       </el-form-item>
@@ -33,6 +36,7 @@
 import type { FormInstance, FormRules } from 'element-plus';
 import type { TPaperCreate } from '~/types/index';
 
+const { $api } = useNuxtApp();
 useHeadSafe({
   title: '创建论文',
 });
@@ -40,24 +44,32 @@ useHeadSafe({
 const formRef = ref<FormInstance>();
 const form = reactive<TPaperCreate>({
   title: '',
-  abstract: '',
-  groupId: '',
   keywords: [],
+  abstract: '',
   canDownload: false,
+  groupId: undefined,
 });
 
 const rules = reactive<FormRules<TPaperCreate>>({
 });
+const paperFile = ref<string[]>([]);
+const attachments = ref<string[]>([]);
 
 const buttonLoading = ref(false);
 
-async function register(submittedForm: FormInstance | undefined) {
+async function create(submittedForm: FormInstance | undefined) {
   if (!submittedForm)
     return;
 
   await submittedForm.validate(async (valid) => {
-    if (valid)
+    if (valid) {
       buttonLoading.value = true;
+      const paperId = await $api.paper.create.mutate(form);
+      await $api.attachment.batchMoveToPaper.mutate({
+        ids: paperFile.value.concat(attachments.value),
+        paperId,
+      });
+    }
   });
 }
 </script>

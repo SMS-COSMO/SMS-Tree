@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../../db/db';
-import type { TNewPaper, TRawUser } from '../../db/db';
+import type { TNewPaper, TRawPaper, TRawUser } from '../../db/db';
 
 import { papers } from '../../db/schema/paper';
 import type { TAuthorPaper, TPaper } from '../serializer/paper';
@@ -23,7 +23,7 @@ export class PaperController {
       const insertedId = (await db.insert(papers).values(paper).returning({ id: papers.id }))[0].id;
       if (groupId)
         await db.insert(papersToGroups).values({ groupId, paperId: insertedId });
-      return new ResultNoRes(true, '创建成功');
+      return new Result(true, '创建成功', insertedId);
     } catch (err) {
       return new Result500();
     }
@@ -68,13 +68,16 @@ export class PaperController {
     }
   }
 
-  async getContentWithAuthor(id: string) {
+  async getContentWithAuthor(id: string, info?: TRawPaper) {
     try {
-      const info = (await db.select().from(papers).where(eq(papers.id, id)))[0];
+      const realInfo = info ?? (await db.select().from(papers).where(eq(papers.id, id)))[0];
       const groups = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, id));
-      const res = (await this.getAuthors(groups[0].groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+      let res;
+      try {
+        res = (await this.getAuthors(groups[0].groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+      } catch (err) { }
 
-      return new Result(true, '查询成功', paperWithAuthorSerializer(info, res.authors, res.leader));
+      return new Result(true, '查询成功', paperWithAuthorSerializer(realInfo, res?.authors, res?.leader));
     } catch (err) {
       return new ResultNoRes(false, '论文不存在');
     }
@@ -98,11 +101,8 @@ export class PaperController {
     try {
       const list: Array<TAuthorPaper> = [];
       for (const paper of await db.select().from(papers)) {
-        const groups = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, paper.id));
-        if (groups.length) {
-          const res = (await this.getAuthors(groups[0].groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
-          list.push(paperWithAuthorSerializer(paper, res.authors, res.leader));
-        }
+        const res = (await this.getContentWithAuthor(paper.id, paper)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+        list.push(res);
       }
       return new Result(true, '查询成功', list);
     } catch (err) {

@@ -1,8 +1,16 @@
 <template>
-  <el-upload v-model:file-list="fileList" action="" drag :http-request="handleUpload" multiple class="w-full">
+  <el-upload
+    v-model:file-list="fileList" action="" drag :http-request="handleUpload"
+    :multiple="multiple" class="w-full" :limit="multiple ? 10 : 1"
+  >
     <div class="el-upload__text">
       拖拽文件或 <strong>点击这里上传</strong>
     </div>
+    <template #tip>
+      <div class="el-upload__tip">
+        最多上传 {{ multiple ? 10 : 1 }} 个文件
+      </div>
+    </template>
   </el-upload>
 </template>
 
@@ -11,10 +19,19 @@ import type { UploadFiles, UploadRawFile, UploadRequestOptions } from 'element-p
 import { nanoid } from 'nanoid';
 import axios from 'axios';
 
+const props = withDefaults(defineProps<{
+  isMainFile?: boolean;
+  multiple?: boolean;
+}>(), {
+  isMainFile: false,
+  multiple: false,
+});
+const attachmentIdList = defineModel<string[]>({ default: [] });
+
 const { $api } = useNuxtApp();
 
 const fileList = ref<UploadFiles>([]);
-
+// Get file with upload meta data
 function getFile(rawFile: UploadRawFile) {
   return fileList.value.find(file => file.uid === rawFile.uid);
 }
@@ -22,21 +39,28 @@ function getFile(rawFile: UploadRawFile) {
 async function handleUpload(option: UploadRequestOptions) {
   const key = `${nanoid(10)}-${option.file.name}`;
   const { file } = option;
+  const f = getFile(file);
 
   try {
     const url = await $api.s3.getStandardUploadPresignedUrl.mutate({ key });
     await axios.put(url, file.slice(), {
       headers: { 'Content-Type': file.type },
       onUploadProgress: (p) => {
-        const f = getFile(file);
         if (f) {
           f.status = 'uploading';
           f.percentage = Math.round((p.progress ?? 0) * 100);
         }
       },
     });
+
+    const id = await $api.attachment.create.mutate({
+      isMainFile: props.isMainFile,
+      fileType: file.type,
+      name: file.name,
+      S3FileId: url.split('?')[0],
+    });
+    attachmentIdList.value.push(id);
   } catch (err) {
-    const f = getFile(file);
     if (f)
       fileList.value.splice(fileList.value.indexOf(f), 1);
     ElMessage({ message: '上传失败', type: 'error', showClose: true });

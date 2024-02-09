@@ -213,10 +213,18 @@
     border-radius: $border-radius !important;
     border-width: 3px !important;
     border-style: dotted !important;
+
+    padding-top: 25px !important;
+    padding-bottom: 25px !important;
 }
 
 .el-upload-dragger:hover {
     border-color: $color-primary-0 !important;
+}
+
+.el-upload__tip,
+.el-upload-list {
+    margin-top: 0 !important;
 }
 
 // Step

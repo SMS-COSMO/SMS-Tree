@@ -18,7 +18,7 @@ export const paperRouter = router({
       canDownload: z.boolean(),
     }))
     .mutation(async ({ ctx, input }) => {
-      (await ctx.paperController.create(input)).getMsgOrTRPCError();
+      return (await ctx.paperController.create(input)).getResOrTRPCError();
     }),
 
   content: protectedProcedure

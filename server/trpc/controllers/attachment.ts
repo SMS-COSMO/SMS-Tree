@@ -15,14 +15,15 @@ export class AttachmentController {
 
   async create(newAttachment: TNewAttachment, user: TRawUser) {
     try {
-      if (await this.hasPerm(newAttachment.paperId, user))
-        await db.insert(attachments).values(newAttachment);
-      else
+      if (await this.hasPerm(newAttachment.paperId, user)) {
+        const id = (await db.insert(attachments).values(newAttachment).returning({ id: attachments.id }))[0].id;
+        return new Result(true, '创建成功', id);
+      } else {
         return new ResultNoRes(false, '超出权限范围');
+      }
     } catch (err) {
       return new Result500();
     }
-    return new ResultNoRes(true, '创建成功');
   }
 
   async modify(id: string, newAttachment: TNewAttachment, user: TRawUser) {
@@ -32,6 +33,21 @@ export class AttachmentController {
         await db.update(attachments).set(newAttachment).where(eq(attachments.id, id));
       else
         return new ResultNoRes(false, '超出权限范围');
+    } catch (err) {
+      return new Result500();
+    }
+    return new ResultNoRes(true, '修改成功');
+  }
+
+  async bulkMoveToPaper(ids: string[], paperId: string, user: TRawUser) {
+    try {
+      if (!(await this.hasPerm(paperId, user)))
+        return new ResultNoRes(false, '超出权限范围');
+      await Promise.all(
+        ids.map(id =>
+          db.update(attachments).set({ paperId }).where(eq(attachments.id, id)),
+        ),
+      );
     } catch (err) {
       return new Result500();
     }
