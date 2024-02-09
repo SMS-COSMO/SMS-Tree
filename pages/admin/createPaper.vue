@@ -17,6 +17,9 @@
         />
       </el-form-item>
       <el-form-item label="作者" />
+      <el-form-item label="附件">
+        <UploadFile />
+      </el-form-item>
       <el-form-item>
         <el-button class="submit-button" color="#146E3C" :loading="buttonLoading" @click="register(formRef)">
           创建

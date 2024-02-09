@@ -44,8 +44,8 @@ export function createInnerContext(opts: CreateContextOptions) {
   return {
     user: opts.user,
     db,
-    userController,
     s3,
+    userController,
     paperController,
     groupController,
     classController,

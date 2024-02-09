@@ -31,10 +31,13 @@ dependencies:
     version: 10.7.2(vue@3.4.15)
   '@vueuse/integrations':
     specifier: ^10.7.2
-    version: 10.7.2(fuse.js@7.0.0)(vue@3.4.15)
+    version: 10.7.2(axios@1.6.7)(fuse.js@7.0.0)(vue@3.4.15)
   '@vueuse/nuxt':
     specifier: ^10.7.2
     version: 10.7.2(nuxt@3.9.3)(vue@3.4.15)
+  axios:
+    specifier: ^1.6.7
+    version: 1.6.7
   bcrypt:
     specifier: ^5.1.1
     version: 5.1.1
@@ -4177,7 +4180,7 @@ packages:
       - vue
     dev: true
 
-  /@vueuse/integrations@10.7.2(fuse.js@7.0.0)(vue@3.4.15):
+  /@vueuse/integrations@10.7.2(axios@1.6.7)(fuse.js@7.0.0)(vue@3.4.15):
     resolution: {integrity: sha512-+u3RLPFedjASs5EKPc69Ge49WNgqeMfSxFn+qrQTzblPXZg6+EFzhjarS5edj2qAf6xQ93f95TUxRwKStXj/sQ==}
     peerDependencies:
       async-validator: '*'
@@ -4220,6 +4223,7 @@ packages:
     dependencies:
       '@vueuse/core': 10.7.2(vue@3.4.15)
       '@vueuse/shared': 10.7.2(vue@3.4.15)
+      axios: 1.6.7
       fuse.js: 7.0.0
       vue-demi: 0.14.6(vue@3.4.15)
     transitivePeerDependencies:
@@ -4595,6 +4599,16 @@ packages:
       picocolors: 1.0.0
       postcss: 8.4.33
       postcss-value-parser: 4.2.0
+
+  /axios@1.6.7:
+    resolution: {integrity: sha512-/hDJGff6/c7u0hDkvkGxR/oy6CbCs8ziCsC7SqmhjfozqiJGc8Z11wrv9z9lYfY4K8l+H9TpjcMDX0xOZmx+RA==}
+    dependencies:
+      follow-redirects: 1.15.5
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
 
   /b4a@1.6.4:
     resolution: {integrity: sha512-fpWrvyVHEKyeEvbKZTVOeZF3VSKKWtJxFIxX/jaVPf+cLbGUSitjb49pHLqPV2BUNNZ0LcoeEGfE/YCpyDYHIw==}
@@ -6237,6 +6251,16 @@ packages:
 
   /flatted@3.2.9:
     resolution: {integrity: sha512-36yxDn5H7OFZQla0/jFJmbIKTdZAQHngCedGxiMmpNfEZM0sdEeT+WczLQrjK6D7o2aiyLYDnkw0R3JK0Qv1RQ==}
+
+  /follow-redirects@1.15.5:
+    resolution: {integrity: sha512-vSFWUON1B+yAw1VN4xMfxgn5fTUiaOzAJCKBwIIgT/+7CuGy9+r+5gITvP62j3RmaD5Ph65UaERdOSRGUzZtgw==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dev: false
 
   /foreground-child@3.1.1:
     resolution: {integrity: sha512-TMKDUnIte6bfb5nWv7V/caI169OHgvwjb7V4WkeUvbQQdjr5rWKqHFiKWb/fcOwB+CzBT+qbWjvj+DVwRskpIg==}
@@ -8528,6 +8552,10 @@ packages:
 
   /protocols@2.0.1:
     resolution: {integrity: sha512-/XJ368cyBJ7fzLMwLKv1e4vLxOju2MNAIokcr7meSaNcVbWz/CPcW22cP04mwxOErdA5mwjA8Q6w/cdAQxVn7Q==}
+
+  /proxy-from-env@1.1.0:
+    resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
+    dev: false
 
   /punycode@1.4.1:
     resolution: {integrity: sha512-jmYNElW7yvO7TV33CjSmvSiE2yco3bV2czu/OzDKdMNVZQWfxCblURLhf+47syQRBntjfLdd/H0egrzIG+oaFQ==}
