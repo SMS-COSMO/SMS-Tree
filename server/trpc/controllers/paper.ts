@@ -85,12 +85,13 @@ export class PaperController {
 
   async getList() {
     try {
-      const res: Array<TPaper> = [];
-      for (const paper of await db.select().from(papers)) {
-        const groups = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, paper.id));
-        res.push(paperSerializer(paper, groups.length ? groups[0].groupId : ''));
-      }
-
+      const res = await Promise.all(
+        (await db.select().from(papers))
+          .map(async (paper) => {
+            const groups = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, paper.id));
+            return paperSerializer(paper, groups.length ? groups[0].groupId : '');
+          }),
+      );
       return new Result(true, '查询成功', res);
     } catch (err) {
       return new Result500();
@@ -99,12 +100,13 @@ export class PaperController {
 
   async getListWithAuthor() {
     try {
-      const list: Array<TAuthorPaper> = [];
-      for (const paper of await db.select().from(papers)) {
-        const res = (await this.getContentWithAuthor(paper.id, paper)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
-        list.push(res);
-      }
-      return new Result(true, '查询成功', list);
+      const res = await Promise.all(
+        (await db.select().from(papers))
+          .map(async (paper) => {
+            return (await this.getContentWithAuthor(paper.id, paper)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+          }),
+      );
+      return new Result(true, '查询成功', res);
     } catch (err) {
       return new Result500();
     }

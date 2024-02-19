@@ -79,9 +79,11 @@ export class ClassController {
 
   async getList() {
     try {
-      const res: Array<TClass> = [];
-      for (const basicClass of await db.select().from(classes))
-        res.push((await this.getFullClass(basicClass)).getResOrTRPCError('INTERNAL_SERVER_ERROR'));
+      const res = await Promise.all(
+        (await db.select().from(classes)).map(
+          async basicClass => (await this.getFullClass(basicClass)).getResOrTRPCError('INTERNAL_SERVER_ERROR')
+        ),
+      );
 
       return new Result(true, '查询成功', res);
     } catch (err) {
