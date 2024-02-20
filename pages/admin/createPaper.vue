@@ -56,7 +56,6 @@ const paperFile = ref<string[]>([]);
 const attachments = ref<string[]>([]);
 
 const buttonLoading = ref(false);
-
 async function create(submittedForm: FormInstance | undefined) {
   if (!submittedForm)
     return;
@@ -69,6 +68,7 @@ async function create(submittedForm: FormInstance | undefined) {
         ids: paperFile.value.concat(attachments.value),
         paperId,
       });
+      buttonLoading.value = false;
     }
   });
 }

@@ -80,11 +80,7 @@
   </el-row>
 
   <el-card class="mt-5">
-    <WordView url="https://ztl-uwu.github.io/test.docx" />
-  </el-card>
-
-  <el-card class="mt-5">
-    <WordView type="pdf" url="https://ztl-uwu.github.io/test.pdf" />
+    Preview
   </el-card>
 
   <el-card class="desktop:mb-5 mb-22 mt-5">
@@ -157,10 +153,6 @@ onMounted(async () => {
     font-size: 15px;
     padding: 0;
   }
-}
-
-.download-dialog {
-  width: 30%;
 }
 
 .clickable {

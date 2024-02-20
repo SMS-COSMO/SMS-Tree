@@ -26,3 +26,4 @@ export type TClassCreate = RouterInput['class']['create'];
 export type TAttachmentList = RouterOutput['paper']['attachments'];
 export type TAttachmentListItem = RouterOutput['paper']['attachments'][0];
 export type TAttachmentCreate = RouterInput['attachment']['create'];
+export type TAttachmentContent = TAttachmentListItem;

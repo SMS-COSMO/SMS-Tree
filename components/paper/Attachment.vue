@@ -3,7 +3,7 @@
     下载
   </el-button>
 
-  <el-dialog v-model="showDialog" title="文件下载" class="download-dialog">
+  <el-dialog v-model="showDialog" title="文件下载">
     <el-collapse>
       <el-collapse-item
         v-for="attachment in attachments.sort((a, b) => {
@@ -26,6 +26,7 @@
             </span>
           </div>
         </template>
+        <Preview :attachment="attachment" />
       </el-collapse-item>
     </el-collapse>
   </el-dialog>
