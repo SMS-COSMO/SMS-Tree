@@ -63,7 +63,7 @@ export class PaperController {
     try {
       const info = (await db.select().from(papers).where(eq(papers.id, id)))[0];
       const groups = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, id));
-      return new Result(true, '查询成功', paperSerializer(info, groups[0].groupId));
+      return new Result(true, '查询成功', paperSerializer(info, groups[0]?.groupId));
     } catch (err) {
       return new ResultNoRes(false, '论文不存在');
     }
@@ -115,17 +115,28 @@ export class PaperController {
 
   async getAttachments(id: string, user: TRawUser) {
     try {
-      const { canDownload, downloadCount } = (await this.getContent(id)).res ?? { canDownload: false, downloadCount: 0 };
+      const { canDownload } = (await this.getContent(id)).getResOrTRPCError('INTERNAL_SERVER_ERROR') ?? { canDownload: false, downloadCount: 0 };
       const isOwned = await this.hasUser(id, user.id);
       const res = (await db.select().from(attachments).where(eq(attachments.paperId, id))).map(
         x => attachmentSerializer(x, canDownload || ['teacher', 'admin'].includes(user.role) || isOwned),
       );
-      if (canDownload && !isOwned && !['teacher', 'admin'].includes(user.role))
-        await db.update(papers).set({ downloadCount: downloadCount + 1 }).where(eq(papers.id, id));
 
       return new Result(true, '查询成功', res);
     } catch (err) {
       return new ResultNoRes(false, '附件获取失败');
+    }
+  }
+
+  async updateDownloadCount(id: string, user: TRawUser) {
+    try {
+      const { canDownload, downloadCount } = (await this.getContent(id)).getResOrTRPCError('INTERNAL_SERVER_ERROR') ?? { canDownload: false, downloadCount: 0 };
+      const isOwned = await this.hasUser(id, user.id);
+      if (canDownload && !isOwned && !['teacher', 'admin'].includes(user.role))
+        await db.update(papers).set({ downloadCount: downloadCount + 1 }).where(eq(papers.id, id));
+
+      return new ResultNoRes(true, '修改成功');
+    } catch (err) {
+      return new Result500();
     }
   }
 

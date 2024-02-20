@@ -55,4 +55,10 @@ export const paperRouter = router({
     .query(async ({ ctx, input }) => {
       return (await ctx.paperController.getAttachments(input.id, ctx.user)).getResOrTRPCError();
     }),
+
+  updateDownloadCount: protectedProcedure
+    .input(z.object({ id: paperIdZod }))
+    .mutation(async ({ ctx, input }) => {
+      return (await ctx.paperController.updateDownloadCount(input.id, ctx.user)).getMsgOrTRPCError();
+    }),
 });

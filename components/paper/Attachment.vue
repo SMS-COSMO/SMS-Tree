@@ -1,12 +1,12 @@
 <template>
-  <el-button v-if="paper?.canDownload" color="#146E3C" class="mt-1 w-full" plain @click="showDialog = true;">
+  <el-button v-if="canDownload" color="#146E3C" class="mt-1 w-full" plain @click="showDialog = true;">
     下载
   </el-button>
 
   <el-dialog v-model="showDialog" title="文件下载">
     <el-collapse>
       <el-collapse-item
-        v-for="attachment in attachments.sort((a, b) => {
+        v-for="attachment in attachments.toSorted((a, b) => {
           if (a.isMainFile) return -1;
           else if (b.isMainFile) return 1;
           else return 0;
@@ -15,11 +15,14 @@
       >
         <template #title>
           <div class="space-x-2">
+            <el-button
+              tag="a"
+              :href="attachment.S3FileId"
+              target="_blank"
+              :icon="ElIconDownload" circle size="small" text bg
+            />
             <el-tag v-if="attachment.isMainFile" type="success">
               <el-icon><ElIconStar /></el-icon>
-            </el-tag>
-            <el-tag type="info">
-              {{ attachment.fileType }}
             </el-tag>
             <span class="text-[15px]">
               {{ attachment.name }}
@@ -33,20 +36,25 @@
 </template>
 
 <script setup lang="ts">
-import type { TAttachmentList, TPaperContentWithAuthor } from '~/types';
+import type { TAttachmentList } from '~/types';
 
 const props = defineProps<{
-  paper?: TPaperContentWithAuthor;
+  paperId?: string;
+  canDownload?: boolean;
+  attachments: TAttachmentList;
 }>();
 
 const { $api } = useNuxtApp();
 
+let firstOpen = true;
 const showDialog = ref(false);
-const attachments = ref<TAttachmentList>([]);
 
 watch(showDialog, async () => {
   try {
-    attachments.value = await $api.paper.attachments.query({ id: props.paper!.id });
+    if (showDialog.value && firstOpen) {
+      await $api.paper.updateDownloadCount.mutate({ id: props.paperId! });
+      firstOpen = false;
+    }
   } catch (err) {
     useErrorHandler(err);
   }

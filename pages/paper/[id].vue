@@ -62,7 +62,7 @@
             </el-descriptions-item>
           </el-descriptions>
         </el-skeleton>
-        <Attachment :paper="content" />
+        <Attachment :can-download="content?.canDownload" :paper-id="content?.id" :attachments="attachments" />
       </FoldableCard>
     </el-col>
     <el-col :span="isSmallScreen ? 24 : 18" :class="isSmallScreen ? 'mt-4' : ''">
@@ -79,20 +79,21 @@
     </el-col>
   </el-row>
 
-  <el-card class="mt-5">
-    Preview
+  <el-card v-if="attachments.length" class="mt-5">
+    <Preview :attachment="attachments.filter(a => a.isMainFile)[0]" full-height />
   </el-card>
 
   <el-card class="desktop:mb-5 mb-22 mt-5">
     <template #header>
       教师评语
     </template>
+    <el-skeleton animated :rows="4" :loading="contentLoading" />
   </el-card>
 </template>
 
 <script setup lang="ts">
 import Attachment from '~/components/paper/Attachment.vue';
-import type { TPaperContentWithAuthor } from '~/types/index';
+import type { TAttachmentList, TPaperContentWithAuthor } from '~/types/index';
 
 useHeadSafe({
   title: '论文信息',
@@ -106,6 +107,7 @@ const isSmallScreen = useWindowWidth();
 
 const contentLoading = ref(true);
 const content = ref<TPaperContentWithAuthor>();
+const attachments = ref<TAttachmentList>([]);
 
 function searchTag(keyword: string) {
   navigateTo({
@@ -118,7 +120,10 @@ function searchTag(keyword: string) {
 
 onMounted(async () => {
   try {
-    content.value = await $api.paper.contentWithAuthor.query({ id });
+    [content.value, attachments.value] = await Promise.all([
+      $api.paper.contentWithAuthor.query({ id }),
+      $api.paper.attachments.query({ id }),
+    ]);
     contentLoading.value = false;
   } catch (err) {
     useErrorHandler(err);
