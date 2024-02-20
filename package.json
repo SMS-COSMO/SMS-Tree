@@ -9,7 +9,11 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "db:createAdmin": "tsx ./scripts/createDefaultUser.ts",
+    "db:createSampleDB": "tsx ./scripts/createSampleDb.ts",
+    "db:studio": "drizzle-kit studio",
+    "db:push": "drizzle-kit push:sqlite"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.499.0",
