@@ -5,16 +5,16 @@ export const groupRouter = router({
   create: protectedProcedure
     .input(z.object({
       leader: z.string()
-        .min(4, { message: '组长ID长度应至少为4' })
-        .max(24, { message: '组长ID超出长度范围' }),
+        .max(24, { message: '组长ID超出长度范围' })
+        .optional(),
       members: z
         .array(z
           .string()
           .min(4, { message: '用户ID长度应至少为4' })
           .max(24, { message: '用户ID超出长度范围' }),
         )
-        .min(1, '请填写组员ID')
-        .max(64, '组员最多64人'),
+        .max(64, '组员最多64人')
+        .optional(),
       classId: z.string().min(1, '班级ID不存在'),
       projectName: z.string().max(50, '课题名称最长为50').optional(),
       papers: z

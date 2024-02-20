@@ -7,7 +7,7 @@
       <el-table-column type="selection" width="55" />
       <el-table-column type="expand" width="55" label="展开">
         <template #default="scope">
-          <ClassUserList :students="scope.row.students" />
+          <ClassUserList :data="scope.row" />
         </template>
       </el-table-column>
       <el-table-column show-overflow-tooltip prop="str" label="名称">

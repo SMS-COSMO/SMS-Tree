@@ -8,26 +8,7 @@
         <el-input-number v-model="form.index" :min="1" :max="100" />
       </el-form-item>
       <el-form-item prop="state" label="状态">
-        <el-select
-          v-model="form.state"
-          placeholder="Select"
-          size="large"
-          style="width: 240px"
-        >
-          <el-option
-            v-for="item in [
-              { label: '已归档', value: 'archived' },
-              { label: '初始化', value: 'initialized' },
-              { label: '选择小组', value: 'selectGroup' },
-              { label: '提交论文', value: 'submitPaper' },
-            ]"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          >
-            <StateBadge :state="item.value as TClassState" />
-          </el-option>
-        </el-select>
+        <StateSelect v-model="form.state" />
       </el-form-item>
       <el-form-item prop="index" label="学生">
         <SelectUser v-model="form.students" />
@@ -45,8 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import type { TClassState } from '~/components/class/StateBadge.vue';
-import type { TClassCreate } from '~/types/index';
+import type { TClassCreate } from '~/types';
 
 const { $api } = useNuxtApp();
 useHeadSafe({

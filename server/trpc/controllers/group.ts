@@ -11,7 +11,7 @@ import { Result, Result500, ResultNoRes } from '../utils/result';
 
 export class GroupController {
   async create(newGroup: TNewGroup & {
-    members: string[];
+    members?: string[];
     papers?: string[];
   }) {
     const { members, papers, ...group } = newGroup;
@@ -25,7 +25,7 @@ export class GroupController {
     }
 
     try {
-      await db.insert(usersToGroups).values(members.map(item => ({
+      await db.insert(usersToGroups).values((members ?? []).map(item => ({
         groupId: insertedId,
         userId: item,
       })));

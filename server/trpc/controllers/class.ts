@@ -3,11 +3,13 @@ import type { TRawClass } from '../../db/db';
 import { db } from '../../db/db';
 import { classes } from '../../db/schema/class';
 import { classesToUsers } from '../../db/schema/classToUser';
-import type { TClass } from '../serializer/class';
 import { classSerializer } from '../serializer/class';
 import { Result, Result500, ResultNoRes } from '../utils/result';
+import { GroupController } from './group';
 
 export class ClassController {
+  private gc = new GroupController();
+
   async create(newClass: {
     index: number;
     enterYear: number;
@@ -81,11 +83,22 @@ export class ClassController {
     try {
       const res = await Promise.all(
         (await db.select().from(classes)).map(
-          async basicClass => (await this.getFullClass(basicClass)).getResOrTRPCError('INTERNAL_SERVER_ERROR')
+          async basicClass => (await this.getFullClass(basicClass)).getResOrTRPCError('INTERNAL_SERVER_ERROR'),
         ),
       );
 
       return new Result(true, '查询成功', res);
+    } catch (err) {
+      return new Result500();
+    }
+  }
+
+  async initGroups(id: string, amount: number) {
+    try {
+      await Promise.all(
+        [...Array(amount)].map(() => this.gc.create({ classId: id })),
+      );
+      return new ResultNoRes(true, '创建成功');
     } catch (err) {
       return new Result500();
     }

@@ -41,7 +41,9 @@ export class PaperController {
 
   async getAuthors(groupId: string) {
     const group = (await this.gc.getContent(groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
-    const leader = (await this.uc.getProfile(group.leader)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+    const leader = group.leader
+      ? (await this.uc.getProfile(group.leader)).getResOrTRPCError('INTERNAL_SERVER_ERROR')
+      : undefined;
     const authors = await Promise.all(
       (group.members ?? [])
         .map(async (author) => {
@@ -55,7 +57,7 @@ export class PaperController {
         }),
     );
 
-    return new Result(true, '查询成功', { authors, leader: { id: leader.id, username: leader.username } });
+    return new Result(true, '查询成功', { authors, leader: leader ? { ...leader } : undefined });
   }
 
   async getContent(id: string) {

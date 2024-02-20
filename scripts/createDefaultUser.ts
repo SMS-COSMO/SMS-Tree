@@ -5,6 +5,7 @@ const userController = new UserController();
 const password = nanoid(10);
 await userController.register({ id: 'admin', username: 'admin', role: 'admin', password });
 console.log(`Created default admin user. \nUserID: 'admin' \nPassword: '${password}'`);
-const admin = await userController.login('admin', password);
+
+const admin = (await userController.login('admin', password)).getResOrTRPCError();
 console.log('Admin AccessToken:');
-console.log(admin?.accessToken);
+console.log(admin.accessToken);
