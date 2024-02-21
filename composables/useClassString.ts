@@ -10,13 +10,14 @@ export function useClassString(classInfo: TClassContent) {
   return `${yearString[year]}（${classInfo.index}）`;
 }
 
-export async function useUserClassString(userInfo: TUserProfile | undefined) {
-  if (!userInfo)
+export async function useUserClassString(classId: string) {
+  if (!classId)
     return '';
+
   const { $api } = useNuxtApp();
   const classInfo = ref<TClassContent>();
   try {
-    classInfo.value = await $api.class.content.query({ id: userInfo.classIds[0] });
+    classInfo.value = await $api.class.content.query({ id: classId });
   } catch (err) {
     return '未知';
   }

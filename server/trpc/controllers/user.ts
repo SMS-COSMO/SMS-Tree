@@ -157,8 +157,9 @@ export class UserController {
 
   async remove(id: string) {
     try {
-      await db.delete(users).where(eq(users.id, id));
       await db.delete(usersToGroups).where(eq(usersToGroups.userId, id));
+      await db.delete(classesToUsers).where(eq(classesToUsers.userId, id));
+      await db.delete(users).where(eq(users.id, id));
       return new ResultNoRes(true, '删除成功');
     } catch (err) {
       return new ResultNoRes(false, '用户不存在');

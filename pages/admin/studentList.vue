@@ -1,46 +1,26 @@
 <template>
   <el-card>
-    <el-table v-loading="loading" :data="processedListData">
-      <el-table-column type="selection" width="55" />
-      <el-table-column :width="120" show-overflow-tooltip prop="id" label="学号">
-        <template #default="scope">
-          <span style="cursor: pointer !important;" @click="visitProfile(scope.row.id)">
-            {{ scope.row.id }}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column :width="100" show-overflow-tooltip prop="username" label="姓名" />
-      <el-table-column :width="120" label="班级">
-        <template #default="scope">
-          <static-class-string :key="searchContent" :user-info="scope.row" />
-        </template>
-      </el-table-column>
-      <el-table-column :width="400" show-overflow-tooltip label="课题" prop="projectName" />
-      <el-table-column label="操作" align="right">
-        <template #header>
-          <el-input v-model="searchContent" placeholder="搜索学生" />
-        </template>
-        <template #default="scope">
-          <el-button size="small">
-            修改
-          </el-button>
-          <el-popconfirm
-            title="确定要删除此用户吗？" confirm-button-text="是" cancel-button-text="否" width="220"
-            confirm-button-type="danger" @confirm="deleteUser(scope.row.id)"
-          >
-            <template #reference>
-              <el-button size="small" type="danger">
-                删除
-              </el-button>
-            </template>
-          </el-popconfirm>
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-input v-model="searchContent" placeholder="搜索学生" />
+    <el-skeleton :loading="loading" animated :rows="20" class="mt-5">
+      <div class="h-[calc(100vh-200px)]">
+        <el-auto-resizer>
+          <template #default="{ height, width }">
+            <el-table-v2
+              :columns="columns"
+              :data="processedListData"
+              :width="width"
+              :height="height"
+            />
+          </template>
+        </el-auto-resizer>
+      </div>
+    </el-skeleton>
   </el-card>
 </template>
 
-<script setup lang="ts">
+<script setup lang="tsx">
+import { TableV2FixedDir } from 'element-plus';
+import type { AnyColumn } from 'element-plus/es/components/table-v2/src/common';
 import { useUserDetailedSearch } from '~/composables/useSearch';
 
 const { $api } = useNuxtApp();
@@ -63,4 +43,72 @@ async function deleteUser(id: string) {
     useErrorHandler(err);
   }
 }
+
+const columns: AnyColumn[] = [
+  {
+    key: 'id',
+    dataKey: 'id',
+    width: 120,
+    title: '学号',
+    cellRenderer: ({ cellData: id }) => (
+      <span style="cursor: pointer !important;" onClick={() => visitProfile(id)}>
+        {id}
+      </span>
+    ),
+  },
+  {
+    key: 'username',
+    dataKey: 'username',
+    width: 100,
+    title: '姓名',
+  },
+  {
+    key: 'classIds',
+    dataKey: 'classIds',
+    width: 120,
+    title: '班级',
+    cellRenderer: ({ cellData: classId }) => (
+      <static-class-string classId={classId[0]} />
+    ),
+  },
+  {
+    key: 'projectName',
+    dataKey: 'projectName',
+    width: 400,
+    flexGrow: 1,
+    title: '课题',
+  },
+  {
+    key: 'op',
+    dataKey: 'id',
+    width: 200,
+    flexShrink: 1,
+    fixed: TableV2FixedDir.RIGHT,
+    align: 'right',
+    title: '操作',
+    cellRenderer: ({ cellData: id }) => (
+      <span>
+        <el-button size="small">
+          修改
+        </el-button>
+        <el-popconfirm
+          title="确定要删除此用户吗？"
+          confirm-button-text="是"
+          cancel-button-text="否"
+          width="220"
+          confirm-button-type="danger"
+          onConfirm={() => deleteUser(id)}
+        >
+          {{
+            reference: () => (
+              <el-button size="small" type="danger">
+                删除
+              </el-button>
+            ),
+          }}
+        </el-popconfirm>
+      </span>
+    ),
+  },
+];
 </script>

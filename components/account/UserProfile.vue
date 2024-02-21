@@ -111,7 +111,7 @@ onMounted(async () => {
     for (const paper of paperIds)
       papers.value.push(await $api.paper.contentWithAuthor.query({ id: paper }));
     paperLoading.value = false;
-    classString.value = await useUserClassString(info.value);
+    classString.value = await useUserClassString(info.value.classIds[0]);
   } catch (err) {
     useErrorHandler(err);
   }

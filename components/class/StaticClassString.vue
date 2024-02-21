@@ -4,14 +4,11 @@
 
 <script lang="ts" setup>
 import { computedAsync } from '@vueuse/core';
-import type { TUserProfile } from '~/types';
 
-const props = defineProps<{
-  userInfo: TUserProfile;
-}>();
+const props = defineProps(['classId']);
 
 const ClassString = computedAsync(
-  async () => await useUserClassString(props.userInfo),
+  async () => await useUserClassString(props.classId),
   '',
 );
 </script>
