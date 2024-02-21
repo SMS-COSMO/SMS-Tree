@@ -5,7 +5,7 @@ export type TClass = ReturnType<typeof classSerializer>;
 export function classSerializer(
   basicClass: TRawClass,
   students: string[],
-  teacher: string,
+  teacher: string | undefined,
   className: string,
 ) {
   return {

@@ -19,7 +19,7 @@ export class ClassController {
   }) {
     let insertedId: string;
     try {
-      insertedId = (await db.insert(classes).values(newClass).returning({ id: classes.id }))[0].id;
+      insertedId = (await db.insert(classes).values(newClass).returning({ id: classes.id }).get()).id;
     } catch (err) {
       return new Result500();
     }
@@ -61,14 +61,17 @@ export class ClassController {
     }
   }
 
-  private async getFullClass(basicClass: TRawClass) {
+  private async getFullClass(basicClass: TRawClass | undefined) {
     try {
+      if (!basicClass)
+        return new ResultNoRes(false, '班级不存在');
+
       const students = (
-        await db.select().from(classesToUsers)
+        await db.select({ userId: classesToUsers.userId }).from(classesToUsers)
           .where(and(eq(classesToUsers.classId, basicClass.id), eq(classesToUsers.type, 'student')))
       ).map(item => item.userId);
-      const teacher = (await db.select().from(classesToUsers)
-        .where(and(eq(classesToUsers.classId, basicClass.id), eq(classesToUsers.type, 'teacher'))))[0].userId;
+      const teacher = (await db.select({ userId: classesToUsers.userId }).from(classesToUsers)
+        .where(and(eq(classesToUsers.classId, basicClass.id), eq(classesToUsers.type, 'teacher'))).get())?.userId;
       const className = (await this.getString('', basicClass)).getResOrTRPCError();
 
       return new Result(true, '', classSerializer(basicClass, students, teacher, className));
@@ -79,7 +82,7 @@ export class ClassController {
 
   async getContent(id: string) {
     try {
-      const res = (await db.select().from(classes).where(eq(classes.id, id)))[0];
+      const res = await db.select().from(classes).where(eq(classes.id, id)).get();
       return new Result(true, '查询成功', res);
     } catch (err) {
       return new ResultNoRes(false, '班级不存在');
@@ -88,7 +91,7 @@ export class ClassController {
 
   async getFullContent(id: string) {
     try {
-      const basicClass = (await db.select().from(classes).where(eq(classes.id, id)))[0];
+      const basicClass = await db.select().from(classes).where(eq(classes.id, id)).get();
       const res = (await this.getFullClass(basicClass)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
       return new Result(true, '查询成功', res);
     } catch (err) {

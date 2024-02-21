@@ -37,7 +37,7 @@ export class UserController {
     const hash = await bcrypt.hash(password, 8);
     const user = { id, username, password: hash, role };
     try {
-      const insertedId = (await db.insert(users).values(user).returning({ id: users.id }))[0].id;
+      const insertedId = (await db.insert(users).values(user).returning({ id: users.id }).get()).id;
       if (groupIds?.length) {
         await db.insert(usersToGroups).values(
           groupIds.map(item => ({
@@ -89,7 +89,7 @@ export class UserController {
 
   async login(id: string, password: string) {
     try {
-      const user = (await db.select().from(users).where(eq(users.id, id)))[0];
+      const user = await db.select().from(users).where(eq(users.id, id)).get();
       if (!(user && (await bcrypt.compare(password, user.password))))
         return new ResultNoRes(false, '用户名或密码错误');
       const accessToken = await this.auth.produceAccessToken(user.id);
@@ -143,7 +143,9 @@ export class UserController {
 
   async getProfile(id: string) {
     try {
-      const basicUser = (await db.select().from(users).where(eq(users.id, id)))[0];
+      const basicUser = await db.select().from(users).where(eq(users.id, id)).get();
+      if (!basicUser)
+        return new ResultNoRes(false, '用户不存在');
       return new Result(true, '获取成功', (await this.getFullUser(basicUser)).getResOrTRPCError('INTERNAL_SERVER_ERROR'));
     } catch (err) {
       return new ResultNoRes(false, '用户不存在');

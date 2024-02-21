@@ -16,7 +16,7 @@ export class AttachmentController {
   async create(newAttachment: TNewAttachment, user: TRawUser) {
     try {
       if (await this.hasPerm(newAttachment.paperId, user)) {
-        const id = (await db.insert(attachments).values(newAttachment).returning({ id: attachments.id }))[0].id;
+        const id = (await db.insert(attachments).values(newAttachment).returning({ id: attachments.id }).get()).id;
         return new Result(true, '创建成功', id);
       } else {
         return new ResultNoRes(false, '超出权限范围');
@@ -28,7 +28,7 @@ export class AttachmentController {
 
   async modify(id: string, newAttachment: TNewAttachment, user: TRawUser) {
     try {
-      const oldPaperId = (await db.select().from(attachments).where(eq(attachments.id, id)))[0].paperId;
+      const oldPaperId = (await db.select({ paperId: attachments.paperId }).from(attachments).where(eq(attachments.id, id)).get())?.paperId;
       if (await this.hasPerm(oldPaperId, user) && await this.hasPerm(newAttachment.paperId, user))
         await db.update(attachments).set(newAttachment).where(eq(attachments.id, id));
       else
@@ -44,9 +44,7 @@ export class AttachmentController {
       if (!(await this.hasPerm(paperId, user)))
         return new ResultNoRes(false, '超出权限范围');
       await Promise.all(
-        ids.map(id =>
-          db.update(attachments).set({ paperId }).where(eq(attachments.id, id)),
-        ),
+        ids.map(id => db.update(attachments).set({ paperId }).where(eq(attachments.id, id))),
       );
     } catch (err) {
       return new Result500();
@@ -56,7 +54,7 @@ export class AttachmentController {
 
   async remove(id: string, user: TRawUser) {
     try {
-      const { paperId } = (await db.select().from(attachments).where(eq(attachments.id, id)))[0];
+      const paperId = (await db.select({ paperId: attachments.paperId }).from(attachments).where(eq(attachments.id, id)).get())?.paperId;
       if (await this.hasPerm(paperId, user))
         await db.delete(attachments).where(eq(attachments.id, id));
       else

@@ -19,7 +19,7 @@ export class PaperController {
     const { groupId, ...paper } = newPaper;
 
     try {
-      const insertedId = (await db.insert(papers).values(paper).returning({ id: papers.id }))[0].id;
+      const insertedId = (await db.insert(papers).values(paper).returning({ id: papers.id }).get()).id;
       if (groupId)
         await db.insert(papersToGroups).values({ groupId, paperId: insertedId });
       return new Result(true, '创建成功', insertedId);
@@ -61,7 +61,9 @@ export class PaperController {
 
   async getContent(id: string) {
     try {
-      const info = (await db.select().from(papers).where(eq(papers.id, id)))[0];
+      const info = await db.select().from(papers).where(eq(papers.id, id)).get();
+      if (!info)
+        return new ResultNoRes(false, '论文不存在');
       const groups = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, id));
       return new Result(true, '查询成功', paperSerializer(info, groups[0]?.groupId));
     } catch (err) {
@@ -71,7 +73,10 @@ export class PaperController {
 
   async getContentWithAuthor(id: string, info?: TRawPaper) {
     try {
-      const realInfo = info ?? (await db.select().from(papers).where(eq(papers.id, id)))[0];
+      const realInfo = info ?? await db.select().from(papers).where(eq(papers.id, id)).get();
+      if (!realInfo)
+        return new ResultNoRes(false, '论文不存在');
+
       const groups = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, id));
       let res;
       try {

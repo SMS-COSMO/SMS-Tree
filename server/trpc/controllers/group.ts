@@ -19,7 +19,7 @@ export class GroupController {
 
     let insertedId: string;
     try {
-      insertedId = (await db.insert(groups).values(group).returning({ id: groups.id }))[0].id;
+      insertedId = (await db.insert(groups).values(group).returning({ id: groups.id }).get()).id;
     } catch (err) {
       return new Result500();
     }
@@ -49,8 +49,10 @@ export class GroupController {
 
   async remove(id: string) {
     try {
-      await db.delete(usersToGroups).where(eq(usersToGroups.groupId, id));
-      await db.delete(papersToGroups).where(eq(papersToGroups.groupId, id));
+      await Promise.all([
+        db.delete(usersToGroups).where(eq(usersToGroups.groupId, id)),
+        db.delete(papersToGroups).where(eq(papersToGroups.groupId, id)),
+      ]);
       await db.delete(groups).where(eq(groups.id, id));
       return new ResultNoRes(true, '删除成功');
     } catch (err) {
@@ -66,9 +68,7 @@ export class GroupController {
     try {
       await db.update(groups).set({ leader: newLeader }).where(eq(groups.id, groupId));
       await db.delete(usersToGroups).where(eq(usersToGroups.groupId, groupId));
-      for (const userId of newMembers)
-        await db.insert(usersToGroups).values({ userId, groupId });
-
+      await Promise.all(newMembers.map(userId => db.insert(usersToGroups).values({ userId, groupId })));
       return new ResultNoRes(true, '修改成功');
     } catch (err) {
       if (err instanceof LibsqlError && err.code === 'SQLITE_CONSTRAINT_FOREIGNKEY')
@@ -79,7 +79,9 @@ export class GroupController {
 
   async getContent(id: string) {
     try {
-      const info = (await db.select().from(groups).where(eq(groups.id, id)))[0];
+      const info = await db.select().from(groups).where(eq(groups.id, id)).get();
+      if (!info)
+        return new ResultNoRes(false, '小组不存在');
 
       const members = (
         await db.select().from(usersToGroups)
