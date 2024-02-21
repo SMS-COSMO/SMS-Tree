@@ -41,7 +41,7 @@
             </div>
           </template>
           <span class="cell-item">
-            {{ classString }}
+            {{ info?.className }}
           </span>
         </el-descriptions-item>
         <el-descriptions-item>
@@ -98,7 +98,6 @@ const info = ref<TUserProfile>();
 const papers = ref<TPaperListWithAuthor>([]);
 const contentLoading = ref(true);
 const paperLoading = ref(true);
-const classString = ref('');
 
 onMounted(async () => {
   try {
@@ -111,7 +110,6 @@ onMounted(async () => {
     for (const paper of paperIds)
       papers.value.push(await $api.paper.contentWithAuthor.query({ id: paper }));
     paperLoading.value = false;
-    classString.value = await useUserClassString(info.value.classIds[0]);
   } catch (err) {
     useErrorHandler(err);
   }

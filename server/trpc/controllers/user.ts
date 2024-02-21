@@ -11,9 +11,13 @@ import { type TUser, userSerializer } from '../serializer/user';
 import { usersToGroups } from '../../db/schema/userToGroup';
 import { classesToUsers } from '../../db/schema/classToUser';
 import { Result, Result500, ResultNoRes } from '../utils/result';
+import { GroupController } from './group';
+import { ClassController } from './class';
 
 export class UserController {
   private auth: Auth;
+  private gc = new GroupController();
+  private cc = new ClassController();
 
   constructor() {
     this.auth = new Auth();
@@ -121,10 +125,17 @@ export class UserController {
       const groupIds = (
         await db.select().from(usersToGroups).where(eq(usersToGroups.userId, basicUser.id))
       ).map(item => item.groupId);
+
       const classIds = (
         await db.select().from(classesToUsers).where(eq(classesToUsers.userId, basicUser.id))
       ).map(item => item.classId);
-      return new Result(true, '获取成功', userSerializer(basicUser, groupIds, classIds));
+
+      let projectName, className;
+      if (basicUser.role === 'student') {
+        className = (await this.cc.getString(classIds[0])).getResOrTRPCError();
+        projectName = (await this.gc.projectName(groupIds)).getResOrTRPCError();
+      }
+      return new Result(true, '获取成功', userSerializer(basicUser, groupIds, classIds, projectName, className));
     } catch (err) {
       return new ResultNoRes(false, '获取用户详细信息失败');
     }
@@ -157,8 +168,10 @@ export class UserController {
 
   async remove(id: string) {
     try {
-      await db.delete(usersToGroups).where(eq(usersToGroups.userId, id));
-      await db.delete(classesToUsers).where(eq(classesToUsers.userId, id));
+      await Promise.all([
+        db.delete(usersToGroups).where(eq(usersToGroups.userId, id)),
+        db.delete(classesToUsers).where(eq(classesToUsers.userId, id)),
+      ]);
       await db.delete(users).where(eq(users.id, id));
       return new ResultNoRes(true, '删除成功');
     } catch (err) {

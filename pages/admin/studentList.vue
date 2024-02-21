@@ -21,7 +21,7 @@
 <script setup lang="tsx">
 import { TableV2FixedDir } from 'element-plus';
 import type { AnyColumn } from 'element-plus/es/components/table-v2/src/common';
-import { useUserDetailedSearch } from '~/composables/useSearch';
+import { useUserSearch } from '~/composables/useSearch';
 
 const { $api } = useNuxtApp();
 useHeadSafe({
@@ -29,7 +29,7 @@ useHeadSafe({
 });
 
 const searchContent = ref('');
-const { listData, loading, processedListData } = useUserDetailedSearch(searchContent, 'student');
+const { listData, loading, processedListData } = useUserSearch(searchContent, 'student');
 
 function visitProfile(id: string) {
   navigateTo(`/user/${id}`);
@@ -51,7 +51,7 @@ const columns: AnyColumn[] = [
     width: 120,
     title: '学号',
     cellRenderer: ({ cellData: id }) => (
-      <span style="cursor: pointer !important;" onClick={() => visitProfile(id)}>
+      <span style="cursor: pointer" onClick={() => visitProfile(id)}>
         {id}
       </span>
     ),
@@ -63,25 +63,21 @@ const columns: AnyColumn[] = [
     title: '姓名',
   },
   {
-    key: 'classIds',
-    dataKey: 'classIds',
+    key: 'className',
+    dataKey: 'className',
     width: 120,
     title: '班级',
-    cellRenderer: ({ cellData: classId }) => (
-      <static-class-string classId={classId[0]} />
-    ),
   },
   {
     key: 'projectName',
     dataKey: 'projectName',
     width: 400,
-    flexGrow: 1,
     title: '课题',
   },
   {
     key: 'op',
     dataKey: 'id',
-    width: 200,
+    width: 170,
     flexShrink: 1,
     fixed: TableV2FixedDir.RIGHT,
     align: 'right',

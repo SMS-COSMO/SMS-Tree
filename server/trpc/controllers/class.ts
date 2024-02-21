@@ -46,6 +46,21 @@ export class ClassController {
     return new ResultNoRes(true, '删除成功');
   }
 
+  async getString(id: string, classInfo?: TRawClass) {
+    try {
+      if (!classInfo && !id)
+        return new Result(true, '查询成功', '未知');
+      classInfo ??= (await this.getContent(id)).getResOrTRPCError();
+      const now = new Date();
+      const yearString = ['新高一', '高一', '高二', '高三', '毕业'];
+      const year = now.getFullYear() - classInfo.enterYear + (now.getMonth() > 8 ? 1 : 0);
+
+      return new Result(true, '查询成功', `${yearString[year]}（${classInfo.index}）`);
+    } catch (err) {
+      return new Result500();
+    }
+  }
+
   private async getFullClass(basicClass: TRawClass) {
     try {
       const students = (
@@ -54,7 +69,9 @@ export class ClassController {
       ).map(item => item.userId);
       const teacher = (await db.select().from(classesToUsers)
         .where(and(eq(classesToUsers.classId, basicClass.id), eq(classesToUsers.type, 'teacher'))))[0].userId;
-      return new Result(true, '', classSerializer(basicClass, students, teacher));
+      const className = (await this.getString('', basicClass)).getResOrTRPCError();
+
+      return new Result(true, '', classSerializer(basicClass, students, teacher, className));
     } catch (err) {
       return new Result500();
     }

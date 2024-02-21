@@ -30,7 +30,7 @@ const props = defineProps<{
 }>();
 
 const { $api } = useNuxtApp();
-const list = ref<(TUserListItem & { projectName: string | null })[]>([]);
+const list = ref<TUserListItem[]>([]);
 
 const newGroupCount = ref(8);
 const newState = ref(props.data.state);
@@ -55,15 +55,7 @@ async function createEmptyGroups() {
 const loading = ref(true);
 onMounted(async () => {
   try {
-    const getUser = async (id: string) => {
-      const user = await $api.user.profile.query({ id });
-      return useUserProjectName(user);
-    };
-
-    const req = [];
-    for (const id of props.data.students)
-      req.push(getUser(id));
-    list.value = await Promise.all(req);
+    list.value = await Promise.all(props.data.students.map(id => $api.user.profile.query({ id })));
   } catch (err) {
     useErrorHandler(err);
   }

@@ -38,25 +38,8 @@ export function useUserSearch(searchContent: Ref<string>, role: 'student' | 'tea
 
   return useSearch<TUserListItem>(
     searchContent,
-    templateSearchOption(['id', 'username']),
+    templateSearchOption(['id', 'username', 'projectName', 'className']),
     () => $api.user.list.query({ role }),
-  );
-}
-
-export function useUserDetailedSearch(searchContent: Ref<string>, role: 'student' | 'teacher' = 'student') {
-  const { $api } = useNuxtApp();
-
-  return useSearch<TUserListItem>(
-    searchContent,
-    templateSearchOption(['id', 'username', 'projectName']),
-    async () => {
-      const list = await $api.user.list.query({ role });
-
-      const res = [];
-      for (const user of list)
-        res.push(useUserProjectName(user));
-      return await Promise.all(res);
-    },
   );
 }
 

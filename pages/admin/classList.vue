@@ -10,7 +10,7 @@
           <ClassUserList :data="scope.row" />
         </template>
       </el-table-column>
-      <el-table-column show-overflow-tooltip prop="str" label="名称">
+      <el-table-column show-overflow-tooltip prop="className" label="名称">
         <template #header>
           <el-input v-model="searchContent" placeholder="搜索班级" style="height: 35px !important;" />
         </template>
@@ -44,8 +44,8 @@ const showAll = ref(false);
 const searchContent = ref('');
 const { loading, processedListData } = useSearch<TClassListItem>(
   searchContent,
-  templateSearchOption(['str']),
-  async () => (await $api.class.list.query()).map(e => ({ ...e, str: useClassString(e) })),
+  templateSearchOption(['className', 'teacher']),
+  async () => await $api.class.list.query(),
   e => e.item,
   (e) => {
     const userStore = useUserStore();

@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import { LibsqlError } from '@libsql/client';
 import type { TNewGroup } from '../../db/db';
 import { db } from '../../db/db';
@@ -95,6 +95,18 @@ export class GroupController {
       return new Result(true, '查询成功', group);
     } catch (err) {
       return new ResultNoRes(false, '小组不存在');
+    }
+  }
+
+  async projectName(groupIds: string[]) {
+    try {
+      if (!groupIds.length)
+        return new Result(true, '查询成功', '');
+      const projectNames = (await db.select({ projectName: groups.projectName }).from(groups).where(inArray(groups.id, groupIds))).map(n => n.projectName);
+      const res = projectNames.reduce((a, c) => `${a}《${c}》`, '');
+      return new Result(true, '查询成功', res);
+    } catch (err) {
+      return new Result500();
     }
   }
 
