@@ -21,16 +21,7 @@ jobs:
         run: pnpm i
 
       - name: Use env secrets
-        working-directory: .
-        run: |
-          echo $TEST_NODE_ENV > .env.local
-        shell: bash
-        env:
-          TEST_NODE_ENV: ${{secrets.TEST_NODE_ENV}}
-
-      - name: wtf
-        working-directory: .
-        run: ls -a
+        run: echo "${{ secrets.TEST_NODE_ENV }}" | base64 -d > .env.local
 
       - name: Run Tests
         run: pnpm test
