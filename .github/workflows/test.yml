@@ -30,7 +30,7 @@ jobs:
 
       - name: wtf
         working-directory: .
-        run: ls
+        run: ls -a
 
       - name: Run Tests
         run: pnpm test
