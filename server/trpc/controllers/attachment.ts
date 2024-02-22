@@ -7,7 +7,7 @@ import { attachments } from '~/server/db/schema/attachment';
 
 export class AttachmentController {
   private pc = new PaperController();
-  private async hasPerm(paperId: string | undefined | null, user: TRawUser) {
+  async hasPerm(paperId: string | undefined | null, user: TRawUser) {
     if (!paperId)
       return true;
     return await this.pc.hasUser(paperId, user.id) || ['teacher', 'admin'].includes(user.role);

@@ -28,5 +28,9 @@ drizzle/
 
 # local sqlite file
 local.sqlite
+testRuntime.sqlite
+
+# vitest coverage folder
+coverage/
 
 .vscode/
