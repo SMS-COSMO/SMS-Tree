@@ -3,7 +3,7 @@ name: Run Tests
 on: [workflow_dispatch, push]
 
 jobs:
-  lint:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,6 +21,7 @@ jobs:
         run: pnpm i
 
       - name: Use env secrets
+        working-directory: .
         run: |
           echo $TEST_NODE_ENV > .env.local
         shell: bash
