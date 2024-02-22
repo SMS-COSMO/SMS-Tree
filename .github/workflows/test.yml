@@ -28,5 +28,9 @@ jobs:
         env:
           TEST_NODE_ENV: ${{secrets.TEST_NODE_ENV}}
 
+      - name: wtf
+        working-directory: .
+        run: ls
+
       - name: Run Tests
         run: pnpm test
