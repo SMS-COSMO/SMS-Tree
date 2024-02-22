@@ -20,8 +20,12 @@ jobs:
         working-directory: .
         run: pnpm i
 
-      - name: Use Env Variables
-        run: echo ${{ secrets.TEST_NODE_ENV }} > ".env.local"
+      - name: Use env secrets
+        run: |
+          echo $TEST_NODE_ENV > .env.local
+        shell: bash
+        env:
+          TEST_NODE_ENV: ${{secrets.TEST_NODE_ENV}}
 
       - name: Run Tests
         run: pnpm test
