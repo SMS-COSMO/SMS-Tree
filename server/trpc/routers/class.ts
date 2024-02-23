@@ -2,19 +2,27 @@ import { z } from 'zod';
 import { protectedProcedure, requireRoles, router } from '../trpc';
 
 const classIdZod = z.string().min(1, '班级id不存在');
+const stateZod = z.enum(['initialized', 'selectGroup', 'submitPaper', 'archived']);
 
 export const classRouter = router({
   create: protectedProcedure
     .input(z.object({
       index: z.number().int().min(0, '班级号至少为0').max(100, '班级号最大为100'),
       enterYear: z.number().int().min(2000, '请输入正确的入学年份').max(9999, '请输入正确的入学年份'),
-      state: z.enum(['initialized', 'selectGroup', 'submitPaper', 'archived']),
+      state: stateZod,
       students: z.array(z.string().min(1, '学生不存在')),
       teacher: z.string().min(1, '老师不存在'),
     }))
     .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
       return (await ctx.classController.create(input)).getMsgOrTRPCError();
+    }),
+
+  modifyState: protectedProcedure
+    .use(requireRoles(['admin', 'teacher']))
+    .input(z.object({ id: classIdZod, newState: stateZod }))
+    .mutation(async ({ ctx, input }) => {
+      return (await ctx.classController.modifyState(input.id, input.newState)).getMsgOrTRPCError();
     }),
 
   content: protectedProcedure

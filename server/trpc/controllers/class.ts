@@ -7,11 +7,13 @@ import { classSerializer } from '../serializer/class';
 import { Result, Result500, ResultNoRes } from '../utils/result';
 import { ctl } from '../context';
 
+type TState = 'archived' | 'initialized' | 'selectGroup' | 'submitPaper';
+
 export class ClassController {
   async create(newClass: {
     index: number;
     enterYear: number;
-    state: 'archived' | 'initialized' | 'selectGroup' | 'submitPaper';
+    state: TState;
     students: string[];
     teacher: string;
   }) {
@@ -76,6 +78,15 @@ export class ClassController {
     } catch (err) {
       return new Result500();
     }
+  }
+
+  async modifyState(id: string, newState: TState) {
+    try {
+      await db.update(classes).set({ state: newState }).where(eq(classes.id, id));
+    } catch (err) {
+      return new Result500();
+    }
+    return new ResultNoRes(true, '修改成功');
   }
 
   async getContent(id: string) {

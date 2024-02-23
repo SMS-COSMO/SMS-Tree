@@ -36,7 +36,11 @@ const newGroupCount = ref(8);
 const newState = ref(props.data.state);
 
 watch(newState, async () => {
-  // TODO Modify state
+  try {
+    await $api.class.modifyState.mutate({ id: props.data.id, newState: newState.value });
+  } catch (err) {
+    useErrorHandler(err);
+  }
 });
 
 async function createEmptyGroups() {
