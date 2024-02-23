@@ -4,6 +4,7 @@ import { db } from '../mockDb';
 import * as exports from '../../../server/db/db';
 import { ctl } from '../../../server/trpc/context';
 import { users } from '~/server/db/schema/user';
+import { ResultNoRes } from '~/server/trpc/utils/result';
 
 it('hasPerm', async () => {
   vi.spyOn(exports, 'db', 'get').mockReturnValue(db);
@@ -97,4 +98,40 @@ it('create', async () => {
       isMainFile: true,
     }, student0)
   ).ok).toBe(false);
+});
+
+it('modify', async () => {
+  vi.spyOn(exports, 'db', 'get').mockReturnValue(db);
+
+  const student32 = (await db.select().from(users).where(eq(users.id, 'Student32')))[0];
+  const student91 = (await db.select().from(users).where(eq(users.id, 'Student91')))[0];
+  const teacher0 = (await db.select().from(users).where(eq(users.id, 'Teacher0')))[0];
+
+  const newAttachment = {
+    name: 'modified Attachment',
+    fileType: 'modified type',
+    S3FileId: 'new URL',
+    isMainFile: false,
+  };
+  const newAttachmentWithNewPaper = {
+    ...newAttachment,
+    paperId: 'G0T5-gklEpLQ',
+  };
+
+  expect(await ctl.ac.modify('fCpk9Co2eJyL', newAttachment, student91)).toStrictEqual(
+    new ResultNoRes(true, '修改成功'),
+  );
+  expect(await ctl.ac.modify('fCpk9Co2eJyL', newAttachmentWithNewPaper, student91)).toStrictEqual(
+    new ResultNoRes(false, '超出权限范围'),
+  );
+  expect(await ctl.ac.modify('fCpk9Co2eJyL', newAttachment, teacher0)).toStrictEqual(
+    new ResultNoRes(true, '修改成功'),
+  );
+  expect(await ctl.ac.modify('fCpk9Co2eJyL', newAttachmentWithNewPaper, teacher0)).toStrictEqual(
+    new ResultNoRes(true, '修改成功'),
+  );
+
+  expect(await ctl.ac.modify('fCpk9Co2eJyL', newAttachment, student32)).toStrictEqual(
+    new ResultNoRes(false, '超出权限范围'),
+  );
 });
