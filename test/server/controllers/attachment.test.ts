@@ -2,7 +2,7 @@ import { expect, it, vi } from 'vitest';
 import { eq } from 'drizzle-orm';
 import { db } from '../mockDb';
 import * as exports from '../../../server/db/db';
-import { ctl } from './controllers';
+import { ctl } from '../../../server/trpc/context';
 import { users } from '~/server/db/schema/user';
 
 it('hasPerm', async () => {

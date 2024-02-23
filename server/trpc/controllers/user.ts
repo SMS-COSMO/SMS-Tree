@@ -11,14 +11,10 @@ import { type TUser, userSerializer } from '../serializer/user';
 import { usersToGroups } from '../../db/schema/userToGroup';
 import { classesToUsers } from '../../db/schema/classToUser';
 import { Result, Result500, ResultNoRes } from '../utils/result';
-import { GroupController } from './group';
-import { ClassController } from './class';
+import { ctl } from '../context';
 
 export class UserController {
   private auth: Auth;
-  private gc = new GroupController();
-  private cc = new ClassController();
-
   constructor() {
     this.auth = new Auth();
   }
@@ -132,8 +128,9 @@ export class UserController {
 
       let projectName, className;
       if (basicUser.role === 'student') {
-        className = (await this.cc.getString(classIds[0])).getResOrTRPCError();
-        projectName = (await this.gc.projectName(groupIds)).getResOrTRPCError();
+        if (classIds.length)
+          className = (await ctl.cc.getString(classIds[0])).getResOrTRPCError();
+        projectName = (await ctl.gc.projectName(groupIds)).getResOrTRPCError();
       }
       return new Result(true, '获取成功', userSerializer(basicUser, groupIds, classIds, projectName, className));
     } catch (err) {

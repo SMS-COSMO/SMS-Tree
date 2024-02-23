@@ -2,15 +2,14 @@ import { eq } from 'drizzle-orm';
 import type { TNewAttachment, TRawUser } from '../../db/db';
 import { db } from '../../db/db';
 import { Result, Result500, ResultNoRes } from '../utils/result';
-import { PaperController } from './paper';
+import { ctl } from '../context';
 import { attachments } from '~/server/db/schema/attachment';
 
 export class AttachmentController {
-  private pc = new PaperController();
   async hasPerm(paperId: string | undefined | null, user: TRawUser) {
     if (!paperId)
       return true;
-    return await this.pc.hasUser(paperId, user.id) || ['teacher', 'admin'].includes(user.role);
+    return await ctl.pc.hasUser(paperId, user.id) || ['teacher', 'admin'].includes(user.role);
   };
 
   async create(newAttachment: TNewAttachment, user: TRawUser) {

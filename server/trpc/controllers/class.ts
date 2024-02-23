@@ -5,11 +5,9 @@ import { classes } from '../../db/schema/class';
 import { classesToUsers } from '../../db/schema/classToUser';
 import { classSerializer } from '../serializer/class';
 import { Result, Result500, ResultNoRes } from '../utils/result';
-import { GroupController } from './group';
+import { ctl } from '../context';
 
 export class ClassController {
-  private gc = new GroupController();
-
   async create(newClass: {
     index: number;
     enterYear: number;
@@ -116,7 +114,7 @@ export class ClassController {
   async initGroups(id: string, amount: number) {
     try {
       await Promise.all(
-        [...Array(amount)].map(() => this.gc.create({ classId: id })),
+        [...Array(amount)].map(() => ctl.gc.create({ classId: id })),
       );
       return new ResultNoRes(true, '创建成功');
     } catch (err) {

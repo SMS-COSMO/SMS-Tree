@@ -53,6 +53,14 @@ export function createInnerContext(opts: CreateContextOptions) {
   };
 }
 
+export const ctl = {
+  uc: userController,
+  pc: paperController,
+  gc: groupController,
+  cc: classController,
+  ac: attachmentController,
+};
+
 /**
  * This is the actual context you'll use in your router. It will be used to
  * process every request that goes through your tRPC endpoint

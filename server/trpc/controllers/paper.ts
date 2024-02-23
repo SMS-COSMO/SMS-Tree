@@ -7,14 +7,10 @@ import { paperSerializer, paperWithAuthorSerializer } from '../serializer/paper'
 import { papersToGroups } from '../../db/schema/paperToGroup';
 import { attachmentSerializer } from '../serializer/attachment';
 import { Result, Result500, ResultNoRes } from '../utils/result';
-import { GroupController } from './group';
-import { UserController } from './user';
+import { ctl } from '../context';
 import { attachments } from '~/server/db/schema/attachment';
 
 export class PaperController {
-  private gc = new GroupController();
-  private uc = new UserController();
-
   async create(newPaper: TNewPaper & { groupId?: string }) {
     const { groupId, ...paper } = newPaper;
 
@@ -39,14 +35,14 @@ export class PaperController {
   }
 
   async getAuthors(groupId: string) {
-    const group = (await this.gc.getContent(groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+    const group = (await ctl.gc.getContent(groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
     const leader = group.leader
-      ? (await this.uc.getProfile(group.leader)).getResOrTRPCError('INTERNAL_SERVER_ERROR')
+      ? (await ctl.uc.getProfile(group.leader)).getResOrTRPCError('INTERNAL_SERVER_ERROR')
       : undefined;
     const authors = await Promise.all(
       (group.members ?? [])
         .map(async (author) => {
-          const usr = (await this.uc.getProfile(author)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+          const usr = (await ctl.uc.getProfile(author)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
           if (!usr)
             return { id: '', username: '' };
           return {
