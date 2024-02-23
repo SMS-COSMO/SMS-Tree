@@ -15,8 +15,8 @@
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push:sqlite",
     "test": "cp test.sqlite testRuntime.sqlite || copy test.sqlite testRuntime.sqlite && vitest",
-    "test:ui": "vitest --ui",
-    "coverage": "vitest run --coverage"
+    "test:ui": "cp test.sqlite testRuntime.sqlite || copy test.sqlite testRuntime.sqlite && vitest --ui",
+    "coverage": "cp test.sqlite testRuntime.sqlite || copy test.sqlite testRuntime.sqlite && vitest run --coverage"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.499.0",
