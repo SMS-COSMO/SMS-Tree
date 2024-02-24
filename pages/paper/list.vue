@@ -38,8 +38,10 @@
           </div>
           <div v-else>
             <TransitionGroup
-              v-infinite-scroll="load" name="list" tag="ul" class="infinite-list list-full-screen m-0 p-0"
+              v-infinite-scroll="load"
               infinite-scroll-immediate="false"
+              infinite-scroll-distance="500"
+              name="list" tag="ul" class="infinite-list list-full-screen m-0 p-0"
             >
               <li v-for="(paper, index) in processedListData.slice(0, count)" :key="index">
                 <div class="list-full-screen-center mx-auto px-5">
