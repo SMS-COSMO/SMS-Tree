@@ -34,6 +34,7 @@ export const groupRouter = router({
     }),
 
   list: protectedProcedure
+    .input(z.object({ classId: z.string().optional() }))
     .query(async ({ ctx }) => {
       return (await ctx.groupController.getList()).getResOrTRPCError();
     }),
@@ -58,4 +59,22 @@ export const groupRouter = router({
     .mutation(async ({ ctx, input }) => {
       return (await ctx.groupController.remove(input.id)).getMsgOrTRPCError();
     }),
+
+  join: protectedProcedure
+    .input(z.object({ groupId: z.string().min(1, '小组id不存在'), userId: z.string().min(1, '用户id不存在') }))
+    .mutation(async ({ ctx, input }) => {
+      return (await ctx.groupController.joinGroup(input.userId, input.groupId)).getMsgOrTRPCError();
+    }),
+
+  leave: protectedProcedure
+    .input(z.object({ groupId: z.string().min(1, '小组id不存在'), userId: z.string().min(1, '用户id不存在') }))
+    .mutation(async ({ ctx, input }) => {
+      return (await ctx.groupController.leaveGroup(input.userId, input.groupId)).getMsgOrTRPCError();
+    }),
+  change: protectedProcedure
+    .input(z.object({ oldGroupId: z.string().min(1, '小组id不存在'), userId: z.string().min(1, '用户id不存在'), newGroupId: z.string().min(1, '新小组id不存在') }))
+    .mutation(async ({ ctx, input }) => {
+      return (await ctx.groupController.changeGroup(input.userId, input.oldGroupId, input.newGroupId)).getMsgOrTRPCError();
+    }),
+
 });
