@@ -1,6 +1,8 @@
 <template>
   <el-upload
-    v-model:file-list="fileList" action="" drag :http-request="handleUpload"
+    v-model:file-list="fileList" action="" drag
+    :http-request="handleUpload"
+    :on-remove="handleRemove"
     :multiple="multiple" class="w-full" :limit="multiple ? 10 : 1"
   >
     <div class="el-upload__text">
@@ -15,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import type { UploadFiles, UploadRawFile, UploadRequestOptions } from 'element-plus';
+import type { UploadFile, UploadFiles, UploadRawFile, UploadRequestOptions } from 'element-plus';
 import { nanoid } from 'nanoid';
 import axios from 'axios';
 
@@ -27,6 +29,7 @@ const props = withDefaults(defineProps<{
   multiple: false,
 });
 const attachmentIdList = defineModel<string[]>({ default: [] });
+const fileUidToAttachmentId = new Map<number, string>();
 
 const { $api } = useNuxtApp();
 
@@ -60,10 +63,20 @@ async function handleUpload(option: UploadRequestOptions) {
       S3FileId: url.split('?')[0],
     });
     attachmentIdList.value.push(id);
+    fileUidToAttachmentId.set(file.uid, id);
   } catch (err) {
     if (f)
       fileList.value.splice(fileList.value.indexOf(f), 1);
     ElMessage({ message: '上传失败', type: 'error', showClose: true });
   }
 }
+
+function handleRemove(uploadFile: UploadFile) {
+  attachmentIdList.value.splice(
+    attachmentIdList.value.findIndex(
+      v => v === fileUidToAttachmentId.get(uploadFile.uid),
+    ),
+    1,
+  );
+};
 </script>

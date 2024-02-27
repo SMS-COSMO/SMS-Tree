@@ -14,7 +14,7 @@
         <el-menu-item index="/paper/list">
           论文列表
         </el-menu-item>
-        <el-menu-item index="/group">
+        <el-menu-item v-if="userStore.role !== 'admin' && userStore.role !== 'teacher'" index="/group">
           小组作业
         </el-menu-item>
         <el-menu-item

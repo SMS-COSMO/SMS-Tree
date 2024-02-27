@@ -51,6 +51,14 @@ const form = reactive<TPaperCreate>({
 });
 
 const rules = reactive<FormRules<TPaperCreate>>({
+  title: [
+    { required: true, message: '论文标题不能为空', trigger: 'blur' },
+    { min: 1, max: 256, message: '论文标题长度不应超过 256', trigger: 'blur' },
+  ],
+  abstract: [
+    { required: true, message: '摘要不能为空', trigger: 'blur' },
+    { min: 1, max: 5000, message: '摘要不应超过5000个字', trigger: 'blur' },
+  ],
 });
 const paperFile = ref<string[]>([]);
 const attachments = ref<string[]>([]);
@@ -62,13 +70,20 @@ async function create(submittedForm: FormInstance | undefined) {
 
   await submittedForm.validate(async (valid) => {
     if (valid) {
-      buttonLoading.value = true;
-      const paperId = await $api.paper.create.mutate(form);
-      await $api.attachment.batchMoveToPaper.mutate({
-        ids: paperFile.value.concat(attachments.value),
-        paperId,
-      });
+      try {
+        buttonLoading.value = true;
+        const paperId = await $api.paper.create.mutate(form);
+        await $api.attachment.batchMoveToPaper.mutate({
+          ids: paperFile.value.concat(attachments.value),
+          paperId,
+        });
+        ElMessage({ message: '创建成功', type: 'success', showClose: true });
+      } catch (err) {
+        useErrorHandler(err);
+      }
       buttonLoading.value = false;
+    } else {
+      ElMessage({ message: '表单内有错误，请修改后再提交', type: 'error', showClose: true });
     }
   });
 }
