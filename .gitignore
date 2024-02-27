@@ -33,4 +33,9 @@ testRuntime.sqlite
 # vitest coverage folder
 coverage/
 
+# vitepress
+docs/.vitepress/dist
+docs/.vitepress/cache
+
+# Editor
 .vscode/
