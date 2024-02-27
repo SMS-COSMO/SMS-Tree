@@ -2,6 +2,8 @@ import { defineConfig } from 'vitepress';
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  lang: 'zh-cn',
+  lastUpdated: true,
   title: 'SMS-Tree',
   description: 'A VitePress Site',
   themeConfig: {
@@ -22,7 +24,15 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/vuejs/vitepress' },
+      { icon: 'github', link: 'https://github.com/SMS-COSMO/SMS-Tree' },
     ],
+
+    search: {
+      provider: 'local',
+    },
+
+    editLink: {
+      pattern: 'https://github.com/SMS-COSMO/SMS-Tree/edit/main/docs/:path',
+    },
   },
 });
