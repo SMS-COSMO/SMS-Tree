@@ -34,7 +34,7 @@
 
   <el-row :gutter="20">
     <el-col :span="isSmallScreen ? 24 : 6">
-      <FoldableCard :can-fold="isSmallScreen">
+      <FoldableCard :can-fold="isSmallScreen" class="box-border h-full">
         <template #header>
           论文信息
         </template>
@@ -66,7 +66,7 @@
       </FoldableCard>
     </el-col>
     <el-col :span="isSmallScreen ? 24 : 18" :class="isSmallScreen ? 'mt-4' : ''">
-      <FoldableCard :can-fold="isSmallScreen">
+      <FoldableCard :can-fold="isSmallScreen" class="box-border h-full">
         <template #header>
           摘要
         </template>
@@ -83,7 +83,7 @@
     <Preview :attachment="attachments.filter(a => a.isMainFile)[0]" full-height />
   </el-card>
 
-  <el-card class="desktop:mb-5 mb-22 mt-5">
+  <el-card class="mb-22 mt-5 lg:mb-5">
     <template #header>
       教师评语
     </template>

@@ -1,10 +1,10 @@
 <template>
   <div class="mb-22">
     <el-tabs v-if="isMine" :tab-position="isSmallScreen ? 'top' : 'left'">
-      <el-tab-pane label="用户信息" class="desktop:ml-4">
+      <el-tab-pane label="用户信息" class="lg:ml-4">
         <UserProfile :user-id="id" />
       </el-tab-pane>
-      <el-tab-pane label="修改密码" class="desktop:ml-4">
+      <el-tab-pane label="修改密码" class="lg:ml-4">
         <ModifyPassword />
       </el-tab-pane>
     </el-tabs>

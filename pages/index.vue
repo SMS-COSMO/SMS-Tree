@@ -31,7 +31,7 @@
           </el-row>
         </el-card>
       </el-col>
-      <el-col :span="isSmallScreen ? 24 : 17" class="desktop:mt-0 mt-4">
+      <el-col :span="isSmallScreen ? 24 : 17" class="mt-4 lg:mt-0">
         <el-card>
           <template #header>
             作业进度
