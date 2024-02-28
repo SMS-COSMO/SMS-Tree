@@ -3,8 +3,7 @@
     <el-check-tag :checked="showAll" class="mb-3" @change="showAll = !showAll">
       展示所有班级
     </el-check-tag>
-    <el-table v-loading="loading" :data="processedListData" border>
-      <el-table-column type="selection" width="55" />
+    <el-table v-loading="loading" :data="processedListData">
       <el-table-column type="expand" width="55" label="展开">
         <template #default="scope">
           <ClassUserList :data="scope.row" />
@@ -52,4 +51,10 @@ const { loading, processedListData } = useSearch<TClassListItem>(
     return showAll.value || userStore.classIds.includes(e.id);
   },
 );
+
+onMounted(() => {
+  const userStore = useUserStore();
+  if (userStore.role === 'admin')
+    showAll.value = true;
+});
 </script>

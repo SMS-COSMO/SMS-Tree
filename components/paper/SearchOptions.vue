@@ -1,7 +1,9 @@
 <template>
-  <el-checkbox v-model="modelValue.filter.onlyCanDownload" label="仅查看可下载" border @change="updateValue" />
-  <el-checkbox v-model="modelValue.filter.onlyFeatured" label="仅查看优秀作业" class="mt-2" border @change="updateValue" />
-  <el-checkbox v-model="modelValue.showAbstract" label="显示摘要" class="mt-2" border @change="updateValue" />
+  <div class="space-y-2">
+    <el-checkbox v-model="modelValue.filter.onlyCanDownload" label="仅查看可下载" border @change="updateValue" />
+    <el-checkbox v-model="modelValue.filter.onlyFeatured" label="仅查看优秀作业" border @change="updateValue" />
+    <el-checkbox v-model="modelValue.showAbstract" label="显示摘要" border @change="updateValue" />
+  </div>
 
   <el-divider content-position="left">
     搜索范围
@@ -28,7 +30,7 @@
       分数
     </el-radio-button>
     <el-radio-button label="downloadCount">
-      下载次数
+      下载
     </el-radio-button>
   </el-radio-group>
 </template>
