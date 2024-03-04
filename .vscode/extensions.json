@@ -1,0 +1,14 @@
+{
+    "recommendations": [
+        "dbaeumer.vscode-eslint",
+        "antfu.goto-alias",
+        "cpreston321.nuxt-vscode",
+        "yoavbls.pretty-ts-errors",
+        "bradlc.vscode-tailwindcss",
+        "antfu.unocss",
+        "vitest.explorer",
+        "vue.volar",
+        "vue.vscode-typescript-vue-plugin",
+        "streetsidesoftware.code-spell-checker"
+    ]
+}
