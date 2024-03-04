@@ -1,33 +1,39 @@
 <template>
-  <el-select
-    v-model="selected"
-    placeholder="请选择"
-    clearable collapse-tags :multiple="multiple"
-    :max-collapse-tags="4"
-    class="w-[400px]"
-    @change="emit('update:modelValue', selected)"
-  >
-    <template #header>
-      <el-input v-model="searchContent" :placeholder="`搜索${roleName[role]}`" />
-    </template>
-    <el-option
-      v-for="item in processedListData"
-      :key="item.id"
-      :label="item.username"
-      :value="item.id"
+  <client-only>
+    <el-select
+      v-model="selected"
+      placeholder="请选择"
+      clearable collapse-tags :multiple="multiple"
+      :max-collapse-tags="4"
+      class="w-[400px]"
+      @change="emit('update:modelValue', selected)"
     >
-      <span>{{ item.username }}</span>
-      <span
-        style="color: var(--el-text-color-secondary)"
-        class="float-right pr-1 text-[11px]"
+      <template #header>
+        <el-input v-model="searchContent" :placeholder="`搜索${roleName[role]}`" />
+      </template>
+      <el-option
+        v-for="item in processedListData"
+        :key="item.id"
+        :label="item.username"
+        :value="item.id"
       >
-        {{ item.id }}
-      </span>
-    </el-option>
-  </el-select>
+        <span>{{ item.username }}</span>
+        <span
+          style="color: var(--el-text-color-secondary)"
+          class="float-right pr-1 text-[11px]"
+        >
+          {{ item.id }}
+        </span>
+      </el-option>
+    </el-select>
+    <template #fallback>
+      <SelectPlaceholder width="400" />
+    </template>
+  </client-only>
 </template>
 
 <script lang="ts" setup>
+import SelectPlaceholder from '../utils/SelectPlaceholder.vue';
 import { useUserSearch } from '~/composables/useSearch';
 
 const props = withDefaults(defineProps<{

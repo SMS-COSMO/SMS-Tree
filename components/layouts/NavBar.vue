@@ -28,20 +28,27 @@
         </el-menu-item>
       </template>
       <div class="flex-grow" />
-      <el-sub-menu v-if="userStore.loggedIn" index="4">
-        <template #title>
-          {{ userStore.username }}
+      <client-only>
+        <el-sub-menu v-if="userStore.loggedIn" index="4">
+          <template #title>
+            {{ userStore.username }}
+          </template>
+          <el-menu-item :index="`/user/${userStore.userId}`">
+            主页
+          </el-menu-item>
+          <el-menu-item @click="logout">
+            登出
+          </el-menu-item>
+        </el-sub-menu>
+        <el-menu-item v-else index="/user/login">
+          登录
+        </el-menu-item>
+        <template #fallback>
+          <el-menu-item>
+            {{ userStore.username }}
+          </el-menu-item>
         </template>
-        <el-menu-item :index="`/user/${userStore.userId}`">
-          主页
-        </el-menu-item>
-        <el-menu-item @click="logout">
-          登出
-        </el-menu-item>
-      </el-sub-menu>
-      <el-menu-item v-else index="/user/login">
-        登录
-      </el-menu-item>
+      </client-only>
     </el-menu>
   </div>
 
@@ -128,9 +135,5 @@ function logout() {
   border: none;
   margin-left: auto;
   margin-right: auto;
-}
-
-.flex-grow {
-  flex-grow: 1;
 }
 </style>

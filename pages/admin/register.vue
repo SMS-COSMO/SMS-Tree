@@ -35,11 +35,16 @@
           </el-icon>
           用户权限
         </div>
-        <el-select v-model="form.role" placeholder="请选择" style="width: 100%;">
-          <el-option label="教师" value="teacher" />
-          <el-option label="学生" value="student" />
-          <el-option label="管理员" value="admin" />
-        </el-select>
+        <client-only>
+          <el-select v-model="form.role" placeholder="请选择" style="width: 100%;">
+            <el-option label="教师" value="teacher" />
+            <el-option label="学生" value="student" />
+            <el-option label="管理员" value="admin" />
+          </el-select>
+          <template #fallback>
+            <SelectPlaceholder />
+          </template>
+        </client-only>
       </el-form-item>
       <el-form-item>
         <el-button class="submit-button" color="#146E3C" :loading="buttonLoading" @click="register(formRef)">

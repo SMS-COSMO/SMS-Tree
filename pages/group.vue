@@ -86,7 +86,7 @@
 
         <el-tabs v-model="activeTab" type="border-card">
           <el-tab-pane label="上传" name="first">
-            <el-upload drag multiple>
+            <el-upload multiple drag>
               <el-icon class="el-icon--upload">
                 <ElIconUploadFilled />
               </el-icon>
@@ -101,11 +101,13 @@
             </el-upload>
           </el-tab-pane>
           <el-tab-pane label="已上传文件" name="second">
-            <el-collapse>
-              <el-collapse-item title="Placeholder">
-                placeholder
-              </el-collapse-item>
-            </el-collapse>
+            <client-only>
+              <el-collapse>
+                <el-collapse-item title="Placeholder">
+                  placeholder
+                </el-collapse-item>
+              </el-collapse>
+            </client-only>
           </el-tab-pane>
         </el-tabs>
 
@@ -117,25 +119,31 @@
 
     <el-col :span="2">
       <div style="height: 500px">
-        <el-steps direction="vertical" :active="1">
-          <el-step :icon="ElIconUpload" title="提交" />
-          <el-step :icon="ElIconCircleCheck" title="查重" />
-          <el-step :icon="ElIconEdit" title="批改" />
-        </el-steps>
+        <client-only>
+          <el-steps direction="vertical" :active="1">
+            <el-step :icon="ElIconUpload" title="提交" />
+            <el-step :icon="ElIconCircleCheck" title="查重" />
+            <el-step :icon="ElIconEdit" title="批改" />
+          </el-steps>
+        </client-only>
       </div>
     </el-col>
   </el-row>
 </template>
 
 <script lang="ts" setup>
-const activeTab = ref('first');
 const { $api } = useNuxtApp();
 const userStore = useUserStore();
+
+const activeTab = ref('first');
+
 const classInfo = await $api.class.content.query({ id: userStore.classIds[0] });
 const availableGroups = await $api.group.list.query({ classId: userStore.classIds[0] });
+
 // refresh user group info
 const userInfo = await $api.user.profile.query({ id: userStore.userId });
 userStore.groupIds = userInfo.groupIds;
+
 async function joinGroup(groupId: string) {
   try {
     const message = await $api.group.join.mutate({ userId: userStore.userId, groupId });
