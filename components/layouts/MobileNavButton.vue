@@ -1,5 +1,5 @@
 <template>
-  <el-col :span="6" @click="jump">
+  <div class="flex-grow" @click="navigateTo(href)">
     <div class="bottom-nav-button" :class="isHighlight ? 'highlighted' : ''">
       <el-icon :size="18" color="#606266">
         <slot name="icon" />
@@ -9,7 +9,7 @@
         {{ label }}
       </el-text>
     </div>
-  </el-col>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -19,11 +19,6 @@ const props = defineProps<{
 }>();
 
 const route = useRoute();
-
-function jump() {
-  navigateTo(props.href);
-}
-
 const isHighlight = computed(() => route.fullPath === props.href);
 </script>
 

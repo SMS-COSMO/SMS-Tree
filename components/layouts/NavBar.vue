@@ -60,7 +60,10 @@
           <ElIconReading />
         </template>
       </MobileNavButton>
-      <MobileNavButton label="管理" href="/admin">
+      <MobileNavButton
+        v-if="userStore.role === 'admin' || userStore.role === 'teacher'" label="管理"
+        href="/admin"
+      >
         <template #icon>
           <ElIconEditPen />
         </template>
