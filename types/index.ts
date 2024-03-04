@@ -29,3 +29,5 @@ export type TAttachmentCreate = RouterInput['attachment']['create'];
 export type TAttachmentContent = TAttachmentListItem;
 
 export type TRole = 'student' | 'teacher' | 'admin';
+
+export type TGroupList = RouterOutput['group']['list'];

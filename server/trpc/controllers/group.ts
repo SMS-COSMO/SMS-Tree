@@ -180,4 +180,14 @@ export class GroupController {
       return new Result500();
     }
   }
+
+  async setLeader(userId: string, groupId: string) {
+    try {
+      await db.update(groups).set({ leader: userId }).where(eq(groups.id, groupId));
+      return new ResultNoRes(true, '修改成功');
+    } catch (err) {
+      return new Result500();
+    }
+  }
+
 }
