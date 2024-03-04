@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import type { TUserLogin } from '~/types';
+import type { TRole, TUserLogin } from '~/types';
 
 export const useUserStore = defineStore('user', () => {
   const loggedIn = ref(false);
@@ -7,7 +7,7 @@ export const useUserStore = defineStore('user', () => {
   const refreshToken = ref('');
   const userId = ref('');
   const username = ref('');
-  const role = ref('');
+  const role = ref<TRole>('student');
   const classIds = ref<string[]>([]);
   const groupIds = ref<string[]>([]);
   const isDefaultPassword = ref(true);
@@ -34,7 +34,7 @@ export const useUserStore = defineStore('user', () => {
     userId.value = '';
     username.value = '';
 
-    role.value = '';
+    role.value = 'student';
     classIds.value = [];
     groupIds.value = [];
   };

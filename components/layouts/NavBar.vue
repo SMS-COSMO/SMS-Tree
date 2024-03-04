@@ -14,7 +14,10 @@
         <el-menu-item index="/paper/list">
           论文列表
         </el-menu-item>
-        <el-menu-item v-if="userStore.role !== 'admin' && userStore.role !== 'teacher'" index="/group">
+        <el-menu-item
+          v-if="userStore.role === 'student'"
+          index="/group"
+        >
           小组作业
         </el-menu-item>
         <el-menu-item
@@ -55,7 +58,11 @@
           <ElIconTickets />
         </template>
       </MobileNavButton>
-      <MobileNavButton label="小组作业" href="/group">
+      <MobileNavButton
+        v-if="userStore.role === 'student'"
+        label="小组作业"
+        href="/group"
+      >
         <template #icon>
           <ElIconReading />
         </template>

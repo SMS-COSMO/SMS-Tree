@@ -17,16 +17,11 @@
             快速搜索
           </template>
           <el-row :gutter="10">
-            <el-col :span="16">
-              <el-input v-model="quickSearchContent" clearable @keyup.enter="quickSearch" />
+            <el-col :span="18">
+              <el-input v-model="quickSearchContent" clearable placeholder="输入搜索内容" @keyup.enter="quickSearch" />
             </el-col>
-            <el-col :span="8">
-              <el-button class="w-full" color="#146E3C" plain @click="quickSearch">
-                <el-icon :size="14">
-                  <ElIconSearch />
-                </el-icon>
-                搜索
-              </el-button>
+            <el-col :span="6">
+              <el-button class="w-full" color="#146E3C" plain :icon="ElIconSearch" @click="quickSearch" />
             </el-col>
           </el-row>
         </el-card>

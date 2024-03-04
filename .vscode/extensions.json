@@ -8,7 +8,6 @@
         "antfu.unocss",
         "vitest.explorer",
         "vue.volar",
-        "vue.vscode-typescript-vue-plugin",
         "streetsidesoftware.code-spell-checker"
     ]
 }
