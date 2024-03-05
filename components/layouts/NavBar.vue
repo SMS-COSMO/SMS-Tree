@@ -18,7 +18,7 @@
           v-if="userStore.role === 'student'"
           index="/group"
         >
-          小组作业
+          我的小组
         </el-menu-item>
         <el-menu-item
           v-if="userStore.role === 'admin' || userStore.role === 'teacher'"
@@ -67,7 +67,7 @@
       </MobileNavButton>
       <MobileNavButton
         v-if="userStore.role === 'student'"
-        label="小组作业"
+        label="我的小组"
         href="/group"
       >
         <template #icon>

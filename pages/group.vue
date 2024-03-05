@@ -1,97 +1,71 @@
 <template>
-  <el-row v-if="!classInfo" justify="center">
-    <el-col :span="22">
-      <el-card>
-        <template #header>
-          <span class="text-xl font-bold">错误</span>
-        </template>
-        <p class="">
-          无法获取班级信息，请刷新页面重试
-        </p>
-      </el-card>
-    </el-col>
-  </el-row>
+  <template v-if="!classInfo">
+    <el-card>
+      <template #header>
+        <span class="text-xl font-bold">错误</span>
+      </template>
+      无法获取班级信息，请刷新页面重试
+    </el-card>
+  </template>
   <template v-else>
-    <el-row v-if="classInfo.state === 'initialized'" justify="center">
-      <el-col :span="22">
-        <el-card>
-          <template #header>
-            <span class="text-xl font-bold">等待老师开启小组选择</span>
-          </template>
-          <p class="">
-            老师还没有开启小组选择，请耐心等待~
-          </p>
-        </el-card>
-      </el-col>
-    </el-row>
-    <el-row v-else-if="classInfo.state === 'selectGroup'">
-      <el-col :span="24">
-        <el-space direction="vertical" style="width: 100%;" :size="20" fill>
-          <el-card>
-            <template #header>
-              <span class="text-xl font-bold">请选择一个小组加入</span>
-            </template>
+    <el-card v-if="classInfo.state === 'initialized'">
+      <template #header>
+        <span class="text-xl font-bold">等待老师开启小组选择</span>
+      </template>
+      老师还没有开启小组选择，请耐心等待~
+    </el-card>
+    <el-card v-else-if="classInfo.state === 'selectGroup'">
+      <template #header>
+        <span class="text-xl font-bold">请选择一个小组加入</span>
+      </template>
 
-            <el-table :data="availableGroups" stripe>
-              <el-table-column prop="leader" label="组长" width="120" />
-              <el-table-column prop="members" label="已有组员">
-                <template #default="{ row }">
-                  <span v-if="!row.members.length">还没有组员~</span>
-                  <span v-else>
-                    <el-space>
-                      <template v-for="member in row.members" :key="member">
-                        <el-tag size="large">{{ member }}</el-tag>
-                      </template>
-                    </el-space>
-                  </span>
-                </template>
-              </el-table-column>
-              <el-table-column label="操作" width="300">
-                <template #default="{ row }">
-                  <el-button
-                    v-if="!userStore.groupIds.length"
-                    plain
-                    type="primary"
-                    @click="joinGroup({ groupId: row.id, userId: userStore.userId })"
-                  >
-                    加入
-                  </el-button>
-                  <template v-else-if="userStore.groupIds.includes(row.id)">
-                    <el-button
-                      type="danger" @click="leaveGroup({
-                        userId: userStore.userId,
-                        groupId: row.id,
-                      })"
-                    >
-                      退出小组
-                    </el-button>
-                    <el-button
-                      type="primary" @click="becomeLeader({
-                        userId: userStore.userId,
-                        groupId: row.id,
-                      })"
-                    >
-                      成为组长
-                    </el-button>
-                  </template>
-                  <template v-else>
-                    <el-button
-                      plain @click="changeGroup({
-                        userId: userStore.userId,
-                        oldGroupId: userStore.groupIds[0],
-                        newGroupId: row.id,
-                      })"
-                    >
-                      更换为此小组
-                    </el-button>
-                  </template>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-card>
-        </el-space>
-      </el-col>
-    </el-row>
+      <el-table :data="availableGroups" stripe>
+        <el-table-column prop="leader" label="组长" width="120">
+          <template #default="{ row }">
+            {{ row.leader ?? '还没有组长' }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="members" label="已有组员">
+          <template #default="{ row }">
+            <span v-if="!row.members.length">还没有组员~</span>
+            <span v-else class="space-x-2">
+              <template v-for="member in row.members" :key="member">
+                <el-tag class="font-bold" disable-transitions size="large">{{ member }}</el-tag>
+              </template>
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="300">
+          <template #default="{ row }">
+            <el-button
+              v-if="!userStore.groupIds.length"
+              plain type="primary"
+              @click="joinGroup({ groupId: row.id, userId: userStore.userId })"
+            >
+              加入
+            </el-button>
+            <template v-else-if="userStore.groupIds.includes(row.id)">
+              <el-button type="danger" @click="leaveGroup({ userId: userStore.userId, groupId: row.id })">
+                退出小组
+              </el-button>
+              <el-button type="primary" @click="becomeLeader({ userId: userStore.userId, groupId: row.id })">
+                成为组长
+              </el-button>
+            </template>
+            <el-button
+              v-else
+              plain @click="changeGroup({
+                userId: userStore.userId,
+                oldGroupId: userStore.groupIds[0],
+                newGroupId: row.id,
+              })"
+            >
+              更换为此小组
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
     <el-row v-else-if="classInfo.state === 'submitPaper'" :gutter="20">
       <el-col :span="22">
         <el-space direction="vertical" style="width: 100%;" :size="20" fill>
@@ -116,7 +90,7 @@
 
           <el-tabs v-model="activeTab" type="border-card">
             <el-tab-pane label="上传" name="first">
-              <el-upload multiple drag>
+              <el-upload drag multiple>
                 <el-icon class="el-icon--upload">
                   <ElIconUploadFilled />
                 </el-icon>

@@ -1,6 +1,6 @@
 import { and, eq, inArray } from 'drizzle-orm';
 import { LibsqlError } from '@libsql/client';
-import type { TNewGroup } from '../../db/db';
+import type { TNewGroup, TRawUser } from '../../db/db';
 import { db } from '../../db/db';
 import { groups } from '../../db/schema/group';
 import type { TGroup } from '../serializer/group';
@@ -8,6 +8,7 @@ import { groupSerializer } from '../serializer/group';
 import { usersToGroups } from '../../db/schema/userToGroup';
 import { papersToGroups } from '../../db/schema/paperToGroup';
 import { Result, Result500, ResultNoRes } from '../utils/result';
+import { requireEqualOrThrow } from '../utils/shared';
 
 export class GroupController {
   async create(newGroup: TNewGroup & {
@@ -115,38 +116,25 @@ export class GroupController {
   async getList(classId?: string) {
     try {
       const res: Array<TGroup> = [];
-      if (classId) {
-        for (const info of await db.select().from(groups).where(eq(groups.classId, classId))) {
-          const members = (
-            await db.select().from(usersToGroups)
-              .where(eq(usersToGroups.groupId, info.id))
-          ).map(item => item.userId);
+      for (const info of
+        classId
+          ? await db.select().from(groups).where(eq(groups.classId, classId))
+          : await db.select().from(groups).all()
+      ) {
+        const members = (
+          await db.select().from(usersToGroups)
+            .where(eq(usersToGroups.groupId, info.id))
+        ).map(item => item.userId);
 
-          const papers = (
-            await db.select().from(papersToGroups)
-              .where(eq(papersToGroups.groupId, info.id))
-          ).map(item => item.paperId);
+        const papers = (
+          await db.select().from(papersToGroups)
+            .where(eq(papersToGroups.groupId, info.id))
+        ).map(item => item.paperId);
 
-          res.push(groupSerializer(info, members, papers));
-        }
-        return new Result(true, '查询成功', res);
-      } else {
-        for (const info of await db.select().from(groups)) {
-          const members = (
-            await db.select().from(usersToGroups)
-              .where(eq(usersToGroups.groupId, info.id))
-          ).map(item => item.userId);
-
-          const papers = (
-            await db.select().from(papersToGroups)
-              .where(eq(papersToGroups.groupId, info.id))
-          ).map(item => item.paperId);
-
-          res.push(groupSerializer(info, members, papers));
-        }
-
-        return new Result(true, '查询成功', res);
+        res.push(groupSerializer(info, members, papers));
       }
+
+      return new Result(true, '查询成功', res);
     } catch (err) {
       return new Result500();
     }
@@ -165,7 +153,10 @@ export class GroupController {
 
   async leaveGroup(userId: string, groupId: string) {
     try {
-      await db.delete(usersToGroups).where(and(eq(usersToGroups.userId, userId), (eq(usersToGroups.groupId, groupId))));
+      await db.delete(usersToGroups).where(and(
+        eq(usersToGroups.userId, userId),
+        eq(usersToGroups.groupId, groupId),
+      ));
       return new ResultNoRes(true, '退出成功');
     } catch (err) {
       return new Result500();
@@ -174,14 +165,18 @@ export class GroupController {
 
   async changeGroup(userId: string, oldGroupId: string, newGroupId: string) {
     try {
-      await db.update(usersToGroups).set({ groupId: newGroupId }).where(and(eq(usersToGroups.userId, userId), (eq(usersToGroups.groupId, oldGroupId))));
+      await db.update(usersToGroups).set({ groupId: newGroupId }).where(and(
+        eq(usersToGroups.userId, userId),
+        eq(usersToGroups.groupId, oldGroupId),
+      ));
       return new ResultNoRes(true, '修改成功');
     } catch (err) {
       return new Result500();
     }
   }
 
-  async setLeader(userId: string, groupId: string) {
+  async setLeader(userId: string, groupId: string, user: TRawUser) {
+    requireEqualOrThrow(userId, user?.id, '只能将自己设为组长', 'FORBIDDEN');
     try {
       await db.update(groups).set({ leader: userId }).where(eq(groups.id, groupId));
       return new ResultNoRes(true, '修改成功');

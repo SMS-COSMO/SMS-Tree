@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { protectedProcedure, requireRoles, router } from '../trpc';
-import { requireEqualOrThrow } from '../utils/shared';
 
 export const groupRouter = router({
   create: protectedProcedure
@@ -36,8 +35,8 @@ export const groupRouter = router({
 
   list: protectedProcedure
     .input(z.object({ classId: z.string().optional() }))
-    .query(async ({ ctx }) => {
-      return (await ctx.groupController.getList()).getResOrTRPCError();
+    .query(async ({ ctx, input }) => {
+      return (await ctx.groupController.getList(input.classId)).getResOrTRPCError();
     }),
 
   modify: protectedProcedure
@@ -62,26 +61,39 @@ export const groupRouter = router({
     }),
 
   join: protectedProcedure
-    .input(z.object({ groupId: z.string().min(1, '小组id不存在'), userId: z.string().min(1, '用户id不存在') }))
+    .input(z.object({
+      groupId: z.string().min(1, '小组id不存在'),
+      userId: z.string().min(1, '用户id不存在'),
+    }))
     .mutation(async ({ ctx, input }) => {
       return (await ctx.groupController.joinGroup(input.userId, input.groupId)).getMsgOrTRPCError();
     }),
 
   leave: protectedProcedure
-    .input(z.object({ groupId: z.string().min(1, '小组id不存在'), userId: z.string().min(1, '用户id不存在') }))
+    .input(z.object({
+      groupId: z.string().min(1, '小组id不存在'),
+      userId: z.string().min(1, '用户id不存在'),
+    }))
     .mutation(async ({ ctx, input }) => {
       return (await ctx.groupController.leaveGroup(input.userId, input.groupId)).getMsgOrTRPCError();
     }),
 
   change: protectedProcedure
-    .input(z.object({ oldGroupId: z.string().min(1, '小组id不存在'), userId: z.string().min(1, '用户id不存在'), newGroupId: z.string().min(1, '新小组id不存在') }))
+    .input(z.object({
+      oldGroupId: z.string().min(1, '小组id不存在'),
+      userId: z.string().min(1, '用户id不存在'),
+      newGroupId: z.string().min(1, '新小组id不存在'),
+    }))
     .mutation(async ({ ctx, input }) => {
       return (await ctx.groupController.changeGroup(input.userId, input.oldGroupId, input.newGroupId)).getMsgOrTRPCError();
     }),
 
   setLeader: protectedProcedure
-    .input(z.object({ groupId: z.string().min(1, '小组id不存在'), userId: z.string().min(1, '用户id不存在') }))
+    .input(z.object({
+      groupId: z.string().min(1, '小组id不存在'),
+      userId: z.string().min(1, '用户id不存在'),
+    }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.groupController.setLeader(input.userId, input.groupId)).getMsgOrTRPCError();
+      return (await ctx.groupController.setLeader(input.userId, input.groupId, ctx.user)).getMsgOrTRPCError();
     }),
 });
