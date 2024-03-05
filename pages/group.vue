@@ -25,29 +25,28 @@
       </el-col>
     </el-row>
     <el-row v-else-if="classInfo.state === 'selectGroup'">
-      <el-col :span="22">
+      <el-col :span="24">
         <el-space direction="vertical" style="width: 100%;" :size="20" fill>
           <el-card>
             <template #header>
               <span class="text-xl font-bold">请选择一个小组加入</span>
             </template>
 
-            <el-table :data="availableGroups" stripe border>
-              <el-table-column prop="leader" label="组长" />
+            <el-table :data="availableGroups" stripe>
+              <el-table-column prop="leader" label="组长" width="120" />
               <el-table-column prop="members" label="已有组员">
                 <template #default="{ row }">
                   <span v-if="!row.members.length">还没有组员~</span>
                   <span v-else>
                     <el-space>
-
                       <template v-for="member in row.members" :key="member">
-                        <el-tag>{{ member }}</el-tag>
+                        <el-tag size="large">{{ member }}</el-tag>
                       </template>
                     </el-space>
                   </span>
                 </template>
               </el-table-column>
-              <el-table-column label="操作">
+              <el-table-column label="操作" width="300">
                 <template #default="{ row }">
                   <el-button
                     v-if="!userStore.groupIds.length"
@@ -66,7 +65,12 @@
                     >
                       退出小组
                     </el-button>
-                    <el-button type="primary" @click="becomeLeader(row.id)">
+                    <el-button
+                      type="primary" @click="becomeLeader({
+                        userId: userStore.userId,
+                        groupId: row.id,
+                      })"
+                    >
                       成为组长
                     </el-button>
                   </template>
@@ -127,13 +131,13 @@
               </el-upload>
             </el-tab-pane>
             <el-tab-pane label="已上传文件" name="second">
-            <client-only>
+              <client-only>
                 <el-collapse>
                   <el-collapse-item title="Placeholder">
                     placeholder
                   </el-collapse-item>
                 </el-collapse>
-            </client-only>
+              </client-only>
             </el-tab-pane>
           </el-tabs>
 
@@ -145,13 +149,13 @@
 
       <el-col :span="2">
         <div style="height: 500px">
-        <client-only>
+          <client-only>
             <el-steps direction="vertical" :active="1">
               <el-step :icon="ElIconUpload" title="提交" />
               <el-step :icon="ElIconCircleCheck" title="查重" />
               <el-step :icon="ElIconEdit" title="批改" />
             </el-steps>
-        </client-only>
+          </client-only>
         </div>
       </el-col>
     </el-row>
@@ -164,50 +168,70 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 const { $api } = useNuxtApp();
 const userStore = useUserStore();
 const queryClient = useQueryClient();
-const { data: classInfo, error: classInfoErr } = useQuery({ queryKey: ['classInfo'], queryFn: () => $api.class.content.query({ id: userStore.classIds[0] }) });
-const { data: availableGroups, error: availableGroupsErr } = useQuery({ queryKey: ['availableGroups'], queryFn: () => $api.group.list.query({ classId: userStore.classIds[0] }) });
-const { data: userInfo, error: userInfoErr } = useQuery({ queryKey: ['userInfo'], queryFn: () => $api.user.profile.query({ id: userStore.userId }) });
 
-useErrorHandler([classInfoErr, availableGroupsErr, userInfoErr]);
+const { data: classInfo, suspense: classInfoSuspense } = useQuery({
+  queryKey: ['classInfo'],
+  queryFn: () => $api.class.content.query({ id: userStore.classIds[0] }),
+});
 
-userStore.groupIds = userInfo.value.groupIds;
+const { data: availableGroups, suspense: availableGroupsSuspense } = useQuery({
+  queryKey: ['availableGroups'],
+  queryFn: () => $api.group.list.query({ classId: userStore.classIds[0] }),
+});
 
-const { mutate: joinGroup, isPending: joinGroupPending } = useMutation({
+const { data: userInfo, suspense: userInfoSuspense } = useQuery({
+  queryKey: ['userInfo'],
+  queryFn: () => $api.user.profile.query({ id: userStore.userId }),
+});
+
+const activeTab = ref('first');
+
+await classInfoSuspense();
+await availableGroupsSuspense();
+await userInfoSuspense();
+
+const { mutate: joinGroup } = useMutation({
   mutationFn: $api.group.join.mutate,
   onSuccess: (message, input) => {
     queryClient.invalidateQueries({ queryKey: ['availableGroups'] });
     ElMessage.success(message);
-    userStore.groupIds.push(input.groupId);
+    userStore.setGroupId([input.groupId]);
   },
   onError: err => useErrorHandler(err),
 });
 
-const { mutate: leaveGroup, isPending: leaveGroupPending } = useMutation({
+const { mutate: leaveGroup } = useMutation({
   mutationFn: $api.group.leave.mutate,
-  onSuccess: (message, input) => {
+  onSuccess: (message) => {
+    queryClient.invalidateQueries({ queryKey: ['availableGroups'] });
     ElMessage.success(message);
-    userStore.groupIds = userStore.groupIds.filter(id => id !== input.groupId);
+    userStore.setGroupId([]);
   },
   onError: err => useErrorHandler(err),
 });
 
-const { mutate: changeGroup, isPending: changeGroupPending } = useMutation({
+const { mutate: changeGroup } = useMutation({
   mutationFn: $api.group.change.mutate,
   onSuccess: (message, input) => {
+    queryClient.invalidateQueries({ queryKey: ['availableGroups'] });
     ElMessage.success(message);
-    userStore.groupIds = userStore.groupIds.filter(id => id !== input.oldGroupId);
-    userStore.groupIds.push(input.newGroupId);
+    userStore.setGroupId([input.newGroupId]);
   },
   onError: err => useErrorHandler(err),
 });
 
-const { mutate: becomeLeader, isPending: becomeLeaderPending } = useMutation({
+const { mutate: becomeLeader } = useMutation({
   mutationFn: $api.group.setLeader.mutate,
   onSuccess: (message) => {
     queryClient.invalidateQueries({ queryKey: ['availableGroups'] });
     ElMessage.success(message);
   },
   onError: err => useErrorHandler(err),
+});
+
+onMounted(() => {
+  if (userInfo.value)
+    userStore.groupIds = userInfo.value.groupIds;
 });
 </script>
 

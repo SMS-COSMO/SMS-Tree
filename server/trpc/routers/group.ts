@@ -72,6 +72,7 @@ export const groupRouter = router({
     .mutation(async ({ ctx, input }) => {
       return (await ctx.groupController.leaveGroup(input.userId, input.groupId)).getMsgOrTRPCError();
     }),
+
   change: protectedProcedure
     .input(z.object({ oldGroupId: z.string().min(1, '小组id不存在'), userId: z.string().min(1, '用户id不存在'), newGroupId: z.string().min(1, '新小组id不存在') }))
     .mutation(async ({ ctx, input }) => {
@@ -81,7 +82,6 @@ export const groupRouter = router({
   setLeader: protectedProcedure
     .input(z.object({ groupId: z.string().min(1, '小组id不存在'), userId: z.string().min(1, '用户id不存在') }))
     .mutation(async ({ ctx, input }) => {
-      requireEqualOrThrow(input.userId, ctx.user?.id, '只有组长才能设置组长', 'FORBIDDEN');
       return (await ctx.groupController.setLeader(input.userId, input.groupId)).getMsgOrTRPCError();
     }),
 });

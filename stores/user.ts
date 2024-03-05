@@ -43,6 +43,10 @@ export const useUserStore = defineStore('user', () => {
     isDefaultPassword.value = false;
   };
 
+  const setGroupId = (newId: string[]) => {
+    groupIds.value = newId;
+  };
+
   return {
     loggedIn,
     accessToken,
@@ -56,6 +60,7 @@ export const useUserStore = defineStore('user', () => {
     login,
     logout,
     passwordChange,
+    setGroupId,
   };
 }, {
   persist: true,

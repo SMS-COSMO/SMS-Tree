@@ -189,5 +189,4 @@ export class GroupController {
       return new Result500();
     }
   }
-
 }
