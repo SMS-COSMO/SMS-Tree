@@ -1,6 +1,6 @@
 <template>
-  <el-card class="card-container mb-2.5" @click="openPaper(paper)">
-    <el-row style="gap: 6px">
+  <el-card class="mb-2.5 cursor-pointer hover:border-color-[#D4D7DE]! hover:bg-[#F5F7FA]!" @click="openPaper(paper)">
+    <el-row class="gap-[6px]">
       <el-tag v-if="paper?.isFeatured" type="success" disable-transitions>
         <el-icon>
           <ElIconStar />
@@ -20,8 +20,8 @@
         下载次数：{{ paper?.downloadCount }}
       </el-text>
     </el-row>
-    <el-row class="mt-2" style="gap: 8px">
-      <el-text class="title break-normal">
+    <el-row class="mt-2 gap-2">
+      <el-text class="break-normal font-bold text-xl!">
         {{ paper?.title }}
       </el-text>
       <el-text>
@@ -53,19 +53,3 @@ function openPaper(paper: TPaperListItem | TPaperListWithAuthorItem) {
   navigateTo(`/paper/${paper.id}`);
 }
 </script>
-
-<style scoped lang="scss">
-.title {
-  font-weight: bold;
-  font-size: 19px;
-}
-
-.card-container {
-  cursor: pointer;
-}
-
-.card-container:hover {
-  border-color: #D4D7DE !important;
-  background-color: #F5F7FA !important;
-}
-</style>

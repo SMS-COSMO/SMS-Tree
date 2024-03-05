@@ -20,7 +20,7 @@
       </template>
 
       <el-table :data="availableGroups" stripe>
-        <el-table-column prop="leader" label="组长" width="120">
+        <el-table-column prop="leader" label="组长" width="200">
           <template #default="{ row }">
             {{ row.leader ?? '还没有组长' }}
           </template>
@@ -142,27 +142,16 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 const { $api } = useNuxtApp();
 const userStore = useUserStore();
 const queryClient = useQueryClient();
+const activeTab = ref('first');
 
-const { data: classInfo, suspense: classInfoSuspense } = useQuery({
-  queryKey: ['classInfo'],
-  queryFn: () => $api.class.content.query({ id: userStore.classIds[0] }),
-});
+const classInfo = await $api.class.content.query({ id: userStore.classIds[0] });
+const userInfo = await $api.user.profile.query({ id: userStore.userId });
 
 const { data: availableGroups, suspense: availableGroupsSuspense } = useQuery({
   queryKey: ['availableGroups'],
   queryFn: () => $api.group.list.query({ classId: userStore.classIds[0] }),
 });
-
-const { data: userInfo, suspense: userInfoSuspense } = useQuery({
-  queryKey: ['userInfo'],
-  queryFn: () => $api.user.profile.query({ id: userStore.userId }),
-});
-
-const activeTab = ref('first');
-
-await classInfoSuspense();
 await availableGroupsSuspense();
-await userInfoSuspense();
 
 const { mutate: joinGroup } = useMutation({
   mutationFn: $api.group.join.mutate,
@@ -204,8 +193,8 @@ const { mutate: becomeLeader } = useMutation({
 });
 
 onMounted(() => {
-  if (userInfo.value)
-    userStore.groupIds = userInfo.value.groupIds;
+  if (userInfo)
+    userStore.groupIds = userInfo.groupIds;
 });
 </script>
 

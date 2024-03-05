@@ -31,7 +31,7 @@
           />
         </el-form-item>
         <el-form-item class="m-0">
-          <el-button class="ml-auto" color="#146E3C" :loading="buttonLoading" @click="login">
+          <el-button class="ml-auto" color="#146E3C" :loading="isPending" @click="login">
             登录
           </el-button>
         </el-form-item>
@@ -41,6 +41,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useMutation } from '@tanstack/vue-query';
 import { useUserStore } from '~/stores/user';
 
 useHeadSafe({
@@ -50,31 +51,27 @@ useHeadSafe({
 const { $api } = useNuxtApp();
 const userStore = useUserStore();
 
-const router = useRouter();
-
-const buttonLoading = ref(false);
-
 const form = reactive({
   id: '',
   password: '',
 });
 
-async function login() {
-  buttonLoading.value = true;
-  try {
-    userStore.login(await $api.user.login.mutate({ ...form }));
-
-    buttonLoading.value = false;
-    router.back();
+const { mutate: loginMutation, isPending } = useMutation({
+  mutationFn: $api.user.login.mutate,
+  onSuccess: (res) => {
+    userStore.login(res);
+    useRouter().back();
     ElMessage({
       message: '登录成功',
       type: 'success',
       showClose: true,
     });
-  } catch (err) {
-    useErrorHandler(err);
-  }
-  buttonLoading.value = false;
+  },
+  onError: err => useErrorHandler(err),
+});
+
+async function login() {
+  loginMutation({ ...form });
 }
 </script>
 

@@ -47,7 +47,7 @@
         </client-only>
       </el-form-item>
       <el-form-item>
-        <el-button class="submit-button" color="#146E3C" :loading="buttonLoading" @click="register(formRef)">
+        <el-button class="submit-button" color="#146E3C" :loading="isPending" @click="register(formRef)">
           创建
         </el-button>
       </el-form-item>
@@ -56,6 +56,7 @@
 </template>
 
 <script setup lang="ts">
+import { useMutation } from '@tanstack/vue-query';
 import type { FormInstance, FormRules } from 'element-plus';
 import type { TUserRegister } from '~/types/index';
 
@@ -88,25 +89,21 @@ const rules = reactive<FormRules<TUserRegister>>({
   ],
 });
 
-const buttonLoading = ref(false);
+const { mutate: registerMutation, isPending } = useMutation({
+  mutationFn: $api.user.register.mutate,
+  onSuccess: message => ElMessage({ message, type: 'success', showClose: true }),
+  onError: err => useErrorHandler(err),
+});
 
 async function register(submittedForm: FormInstance | undefined) {
   if (!submittedForm)
     return;
 
   await submittedForm.validate(async (valid) => {
-    if (valid) {
-      buttonLoading.value = true;
-      try {
-        const message = await $api.user.register.mutate({ ...form });
-        ElMessage({ message, type: 'success', showClose: true });
-      } catch (err) {
-        useErrorHandler(err);
-      }
-      buttonLoading.value = false;
-    } else {
+    if (valid)
+      registerMutation({ ...form });
+    else
       ElMessage({ message: '表单内有错误，请修改后再提交', type: 'error', showClose: true });
-    }
   });
 }
 </script>

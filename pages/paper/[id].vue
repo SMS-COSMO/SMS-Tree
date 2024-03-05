@@ -3,33 +3,29 @@
 
   <div class="title-holder mb-3">
     <h1 class="title">
-      <el-skeleton animated :rows="0" :loading="contentLoading">
-        <el-tag v-if="content?.isFeatured" type="success" size="large">
-          <el-text style="color: var(--el-color-success);">
-            <el-icon>
-              <ElIconStar />
-            </el-icon>
-            优秀作业
-          </el-text>
-        </el-tag>
-        {{ content?.title }}
-      </el-skeleton>
+      <el-tag v-if="content?.isFeatured" type="success" size="large">
+        <el-text style="color: var(--el-color-success);">
+          <el-icon>
+            <ElIconStar />
+          </el-icon>
+          优秀作业
+        </el-text>
+      </el-tag>
+      {{ content?.title }}
     </h1>
-    <el-skeleton v-if="!isSmallScreen" animated :loading="contentLoading" :rows="2" style="width: 200px">
-      <el-space :size="20">
-        <el-statistic :value="content?.rate">
-          <template #title>
-            分数
-          </template>
-        </el-statistic>
-        <el-divider direction="vertical" style="height: 40px;" />
-        <el-statistic :value="content?.downloadCount">
-          <template #title>
-            下载次数
-          </template>
-        </el-statistic>
-      </el-space>
-    </el-skeleton>
+    <el-space :size="20" class="mb-2 lg:mb-0">
+      <el-statistic :value="content?.rate">
+        <template #title>
+          分数
+        </template>
+      </el-statistic>
+      <el-divider direction="vertical" style="height: 40px;" />
+      <el-statistic :value="content?.downloadCount">
+        <template #title>
+          下载次数
+        </template>
+      </el-statistic>
+    </el-space>
   </div>
 
   <el-row :gutter="20">
@@ -38,30 +34,22 @@
         <template #header>
           论文信息
         </template>
-        <el-skeleton animated :rows="4" :loading="contentLoading">
-          <el-descriptions title="" :column="1">
-            <el-descriptions-item label="作者">
-              <GroupMembers :authors="content?.authors" :leader-id="content?.leader?.id" type="link" class="inline" />
-            </el-descriptions-item>
-            <el-descriptions-item label="发布时间">
-              {{ content?.createdAt.toLocaleDateString('zh-CN') }}
-            </el-descriptions-item>
-            <el-descriptions-item label="关键词">
-              <el-tag
-                v-for="(keyword, index) in content?.keywords" :key="index" class="clickable m-0.75" type="info"
-                effect="plain" @click="searchTag(keyword)"
-              >
-                {{ keyword }}
-              </el-tag>
-            </el-descriptions-item>
-            <el-descriptions-item v-if="isSmallScreen" label="分数">
-              {{ content?.rate }}
-            </el-descriptions-item>
-            <el-descriptions-item v-if="isSmallScreen" label="下载次数">
-              {{ content?.downloadCount }}
-            </el-descriptions-item>
-          </el-descriptions>
-        </el-skeleton>
+        <el-descriptions title="" :column="1">
+          <el-descriptions-item label="作者">
+            <GroupMembers :authors="content?.authors" :leader-id="content?.leader?.id" type="link" class="inline" />
+          </el-descriptions-item>
+          <el-descriptions-item label="发布时间">
+            {{ content?.createdAt.toLocaleDateString('zh-CN') }}
+          </el-descriptions-item>
+          <el-descriptions-item label="关键词">
+            <el-tag
+              v-for="(keyword, index) in content?.keywords" :key="index" class="clickable m-0.75" type="info"
+              effect="plain" @click="searchTag(keyword)"
+            >
+              {{ keyword }}
+            </el-tag>
+          </el-descriptions-item>
+        </el-descriptions>
         <Attachment :can-download="content?.canDownload" :paper-id="content?.id" :attachments="attachments" />
       </FoldableCard>
     </el-col>
@@ -70,11 +58,9 @@
         <template #header>
           摘要
         </template>
-        <el-skeleton animated :rows="4" :loading="contentLoading">
-          <div class="abstract leading-normal">
-            {{ content?.abstract }}
-          </div>
-        </el-skeleton>
+        <div class="abstract leading-normal">
+          {{ content?.abstract }}
+        </div>
       </FoldableCard>
     </el-col>
   </el-row>
@@ -87,13 +73,11 @@
     <template #header>
       教师评语
     </template>
-    <el-skeleton animated :rows="4" :loading="contentLoading" />
   </el-card>
 </template>
 
 <script setup lang="ts">
 import Attachment from '~/components/paper/Attachment.vue';
-import type { TAttachmentList, TPaperContentWithAuthor } from '~/types/index';
 
 useHeadSafe({
   title: '论文信息',
@@ -105,9 +89,10 @@ const route = useRoute();
 const id = route.params.id.toString();
 const isSmallScreen = useWindowWidth();
 
-const contentLoading = ref(true);
-const content = ref<TPaperContentWithAuthor>();
-const attachments = ref<TAttachmentList>([]);
+const [content, attachments] = await Promise.all([
+  $api.paper.contentWithAuthor.query({ id }),
+  $api.paper.attachments.query({ id }),
+]);
 
 function searchTag(keyword: string) {
   navigateTo({
@@ -117,18 +102,6 @@ function searchTag(keyword: string) {
     },
   });
 }
-
-onMounted(async () => {
-  try {
-    [content.value, attachments.value] = await Promise.all([
-      $api.paper.contentWithAuthor.query({ id }),
-      $api.paper.attachments.query({ id }),
-    ]);
-    contentLoading.value = false;
-  } catch (err) {
-    useErrorHandler(err);
-  }
-});
 </script>
 
 <style scoped lang="scss">

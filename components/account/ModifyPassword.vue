@@ -38,7 +38,7 @@
         />
       </el-form-item>
       <el-form-item class="m-0">
-        <el-button color="#146E3C" :loading="buttonLoading" @click="modify(formRef)">
+        <el-button color="#146E3C" :loading="isPending" @click="modify(formRef)">
           修改
         </el-button>
       </el-form-item>
@@ -47,6 +47,7 @@
 </template>
 
 <script setup lang="ts">
+import { useMutation } from '@tanstack/vue-query';
 import type { FormInstance, FormRules } from 'element-plus';
 import { useUserStore } from '~/stores/user';
 
@@ -66,7 +67,7 @@ const rules = reactive<FormRules<typeof form>>({
   newPassword: [
     { required: true, message: '密码不能为空', trigger: 'blur' },
     { min: 8, message: '密码至少 8 位', trigger: 'change' },
-    { validator: (rule: any, value: any, callback: any) => {
+    { validator: (_, value: any, callback: any) => {
       if (value === form.oldPassword)
         callback(new Error('新密码不能与旧密码相同'));
       else callback();
@@ -74,7 +75,7 @@ const rules = reactive<FormRules<typeof form>>({
   ],
   repeatPassword: [
     { required: true, message: '请再次输入新密码', trigger: 'blur' },
-    { validator: (rule: any, value: any, callback: any) => {
+    { validator: (_, value: any, callback: any) => {
       if (value !== form.newPassword)
         callback(new Error('密码不匹配'));
       else callback();
@@ -82,11 +83,23 @@ const rules = reactive<FormRules<typeof form>>({
   ],
 });
 
-const buttonLoading = ref(false);
+const { mutate: changePassword, isPending } = useMutation({
+  mutationFn: $api.user.modifyPassword.mutate,
+  onSuccess: (message) => {
+    ElMessage({
+      message,
+      type: 'success',
+      showClose: true,
+    });
+    const userStore = useUserStore();
+    userStore.passwordChange();
+  },
+  onError: err => useErrorHandler(err),
+});
+
 async function modify(formEl: FormInstance | undefined) {
   if (!formEl)
     return;
-  buttonLoading.value = true;
   await formEl.validate(async (valid) => {
     if (valid) {
       if (form.oldPassword === form.newPassword) {
@@ -95,24 +108,9 @@ async function modify(formEl: FormInstance | undefined) {
           type: 'error',
           showClose: true,
         });
-        buttonLoading.value = false;
-        return;
       }
-
-      const userStore = useUserStore();
-      try {
-        const message = await $api.user.modifyPassword.mutate({ oldPassword: form.oldPassword, newPassword: form.newPassword });
-        ElMessage({
-          message,
-          type: 'success',
-          showClose: true,
-        });
-        userStore.passwordChange();
-      } catch (err) {
-        useErrorHandler(err);
-      }
+      changePassword({ oldPassword: form.oldPassword, newPassword: form.newPassword });
     }
   });
-  buttonLoading.value = false;
 }
 </script>

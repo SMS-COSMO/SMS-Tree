@@ -90,13 +90,12 @@
 import { useUserStore } from '~/stores/user';
 
 const userStore = useUserStore();
-
 const isSmallScreen = useWindowWidth();
 
 function logout() {
   userStore.logout();
   navigateTo('/');
-  ElMessage({ message: '登出成功！', type: 'success' });
+  ElMessage({ message: '登出成功！', type: 'success', showClose: true });
 }
 </script>
 

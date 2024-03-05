@@ -4,7 +4,12 @@
     <div class="flex flex-col">
       <div v-if="data.state === 'initialized'" class="flex flex-row gap-2">
         <el-input-number v-model="newGroupCount" />
-        <el-button @click="createEmptyGroups">
+        <el-button
+          @click="createEmptyGroups({
+            id: data.id,
+            amount: newGroupCount,
+          })"
+        >
           创建空白小组
         </el-button>
       </div>
@@ -14,7 +19,7 @@
       </div>
     </div>
     <h3>学生列表</h3>
-    <el-table v-loading="loading" :default-sort="{ prop: 'projectName', order: 'descending' }" :data="list">
+    <el-table :default-sort="{ prop: 'projectName', order: 'descending' }" :data="studentProfileList">
       <el-table-column :width="150" label="学号" prop="id" />
       <el-table-column :width="150" label="姓名" sortable prop="username" />
       <el-table-column label="课题" sortable prop="projectName" />
@@ -23,46 +28,32 @@
 </template>
 
 <script setup lang="ts">
-import type { TClassListItem, TUserListItem } from '~/types';
+import { useMutation } from '@tanstack/vue-query';
+import type { TClassListItem } from '~/types';
 
 const props = defineProps<{
   data: TClassListItem;
 }>();
 
 const { $api } = useNuxtApp();
-const list = ref<TUserListItem[]>([]);
+
+const studentProfileList = await Promise.all(props.data.students.map(id => $api.user.profile.query({ id })));
 
 const newGroupCount = ref(8);
 const newState = ref(props.data.state);
 
-watch(newState, async () => {
-  try {
-    await $api.class.modifyState.mutate({ id: props.data.id, newState: newState.value });
-  } catch (err) {
-    useErrorHandler(err);
-  }
+const { mutate: modifyState } = useMutation({
+  mutationFn: $api.class.modifyState.mutate,
+  onError: err => useErrorHandler(err),
 });
 
-async function createEmptyGroups() {
-  try {
-    await $api.class.initGroups.mutate({
-      id: props.data.id,
-      amount: newGroupCount.value,
-    });
+watch(newState, () => modifyState({ id: props.data.id, newState: newState.value }));
 
+const { mutate: createEmptyGroups } = useMutation({
+  mutationFn: $api.class.initGroups.mutate,
+  onSuccess: () => {
     ElMessage({ type: 'success', message: '创建成功', showClose: true });
-  } catch (err) {
-    useErrorHandler(err);
-  }
-}
-
-const loading = ref(true);
-onMounted(async () => {
-  try {
-    list.value = await Promise.all(props.data.students.map(id => $api.user.profile.query({ id })));
-  } catch (err) {
-    useErrorHandler(err);
-  }
-  loading.value = false;
+  },
+  onError: err => useErrorHandler(err),
 });
 </script>

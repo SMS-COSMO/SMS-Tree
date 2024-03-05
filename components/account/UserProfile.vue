@@ -65,7 +65,7 @@
       参与的论文
     </template>
     <el-skeleton :rows="10" :loading="paperLoading" animated>
-      <div class="lg:columns-2">
+      <div :class="papers.length > 1 ? 'lg:columns-2' : ''">
         <div v-for="(paper, index) in papers" :key="index">
           <PaperCard :paper="paper" show-abstract />
         </div>
