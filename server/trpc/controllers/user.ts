@@ -9,7 +9,10 @@ import { type TUser, userSerializer } from '../serializer/user';
 import { usersToGroups } from '../../db/schema/userToGroup';
 import { classesToUsers } from '../../db/schema/classToUser';
 import { ctl } from '../context';
-import { Auth } from '../../utils/auth';
+import { Auth } from '../utils/auth';
+import { Result, Result500, ResultNoRes } from '../utils/result';
+import { makeId } from '~/server/trpc/utils/shared';
+
 
 export class UserController {
   private auth: Auth;

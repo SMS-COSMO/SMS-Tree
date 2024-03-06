@@ -7,6 +7,8 @@ import type { TGroup } from '../serializer/group';
 import { groupSerializer } from '../serializer/group';
 import { usersToGroups } from '../../db/schema/userToGroup';
 import { papersToGroups } from '../../db/schema/paperToGroup';
+import { Result, Result500, ResultNoRes } from '../utils/result';
+import { requireEqualOrThrow } from '../utils/shared';
 
 export class GroupController {
   async create(newGroup: TNewGroup & {

@@ -7,6 +7,7 @@ import { paperSerializer, paperWithAuthorSerializer } from '../serializer/paper'
 import { papersToGroups } from '../../db/schema/paperToGroup';
 import { attachmentSerializer } from '../serializer/attachment';
 import { ctl } from '../context';
+import { Result, Result500, ResultNoRes } from '../utils/result';
 import { attachments } from '~/server/db/schema/attachment';
 
 export class PaperController {

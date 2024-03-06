@@ -1,8 +1,9 @@
 import * as jose from 'jose';
 import { eq } from 'drizzle-orm';
-import { db } from '../db/db';
-import { refreshTokens, users } from '../db/schema/user';
-import { env } from '../env';
+import { db } from '../../db/db';
+import { refreshTokens, users } from '../../db/schema/user';
+import { env } from '../../env';
+import { makeId } from '~/server/trpc/utils/shared';
 
 const encode = TextEncoder.prototype.encode.bind(new TextEncoder());
 const decode = TextDecoder.prototype.decode.bind(new TextDecoder());
