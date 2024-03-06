@@ -3,7 +3,7 @@
     <el-check-tag :checked="showAll" class="mb-3" @change="showAll = !showAll">
       展示所有班级
     </el-check-tag>
-    <el-table v-loading="loading" :data="processedListData">
+    <el-table :data="processedListData">
       <el-table-column type="expand" width="55" label="展开">
         <template #default="scope">
           <ClassUserList :data="scope.row" />
@@ -41,7 +41,7 @@ useHeadSafe({
 
 const showAll = ref(false);
 const searchContent = ref('');
-const { loading, processedListData } = useSearch<TClassListItem>(
+const { processedListData } = await useSearch<TClassListItem>(
   searchContent,
   templateSearchOption(['className', 'teacher']),
   async () => await $api.class.list.query(),

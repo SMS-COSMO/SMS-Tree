@@ -1,20 +1,18 @@
 <template>
   <el-card>
     <el-input v-model="searchContent" placeholder="搜索学生" />
-    <el-skeleton :loading="loading" animated :rows="20" class="mt-5">
-      <div class="h-[calc(100vh-200px)]">
-        <el-auto-resizer>
-          <template #default="{ height, width }">
-            <el-table-v2
-              :columns="columns"
-              :data="processedListData"
-              :width="width"
-              :height="height"
-            />
-          </template>
-        </el-auto-resizer>
-      </div>
-    </el-skeleton>
+    <div class="h-[calc(100vh-200px)]">
+      <el-auto-resizer>
+        <template #default="{ height, width }">
+          <el-table-v2
+            :columns="columns"
+            :data="processedListData"
+            :width="width"
+            :height="height"
+          />
+        </template>
+      </el-auto-resizer>
+    </div>
   </el-card>
 </template>
 
@@ -29,7 +27,7 @@ useHeadSafe({
 });
 
 const searchContent = ref('');
-const { listData, loading, processedListData } = useUserSearch(searchContent, 'student');
+const { listData, processedListData } = await useUserSearch(searchContent, 'student');
 
 function visitProfile(id: string) {
   navigateTo(`/user/${id}`);
@@ -38,7 +36,7 @@ function visitProfile(id: string) {
 async function deleteUser(id: string) {
   try {
     await $api.user.remove.mutate({ id });
-    listData.value.splice(listData.value.findIndex(e => e.id === id), 1);
+    listData.splice(listData.findIndex(e => e.id === id), 1);
   } catch (err) {
     useErrorHandler(err);
   }

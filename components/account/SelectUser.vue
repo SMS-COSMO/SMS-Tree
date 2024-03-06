@@ -53,5 +53,5 @@ const roleName = {
 
 const selected = ref(props.modelValue);
 const searchContent = ref('');
-const { processedListData } = useUserSearch(searchContent, props.role);
+const { processedListData } = await useUserSearch(searchContent, props.role);
 </script>

@@ -31,40 +31,33 @@
       </Transition>
       <Transition name="mobile-search-result-transition">
         <div v-show="!showSearchOptions">
-          <div v-if="loading" class="infinite-list-skeleton m-0 p-0">
-            <el-card v-for="n in 10" :key="n" class="mb-2.5">
-              <el-skeleton :rows="1" animated :loading="loading" />
-            </el-card>
-          </div>
-          <div v-else>
-            <TransitionGroup
-              v-infinite-scroll="load"
-              infinite-scroll-immediate="false"
-              infinite-scroll-distance="500"
-              name="list" tag="ul" class="infinite-list list-full-screen m-0 p-0"
-            >
-              <li v-for="(paper, index) in processedListData.slice(0, count)" :key="index">
-                <div class="list-full-screen-center mx-auto px-5">
-                  <el-row :gutter="20">
-                    <el-col :span="6" />
-                    <el-col :span="isSmallScreen ? 24 : 18">
-                      <PaperCard :paper="paper" :show-abstract="searchOptions.showAbstract" />
-                    </el-col>
-                  </el-row>
-                </div>
-              </li>
-              <li v-if="processedListData.length === 0" class="text-center">
-                <div class="list-full-screen-center mx-auto px-5">
-                  <el-row :gutter="20">
-                    <el-col :span="6" />
-                    <el-col :span="isSmallScreen ? 24 : 18">
-                      <el-empty description="无结果，换个搜索条件试试？" />
-                    </el-col>
-                  </el-row>
-                </div>
-              </li>
-            </TransitionGroup>
-          </div>
+          <TransitionGroup
+            v-infinite-scroll="load"
+            infinite-scroll-immediate="false"
+            infinite-scroll-distance="500"
+            name="list" tag="ul" class="infinite-list list-full-screen m-0 p-0"
+          >
+            <li v-for="(paper, index) in processedListData.slice(0, count)" :key="index">
+              <div class="list-full-screen-center mx-auto px-5">
+                <el-row :gutter="20">
+                  <el-col :span="6" />
+                  <el-col :span="isSmallScreen ? 24 : 18">
+                    <PaperCard :paper="paper" :show-abstract="searchOptions.showAbstract" />
+                  </el-col>
+                </el-row>
+              </div>
+            </li>
+            <li v-if="processedListData.length === 0" class="text-center">
+              <div class="list-full-screen-center mx-auto px-5">
+                <el-row :gutter="20">
+                  <el-col :span="6" />
+                  <el-col :span="isSmallScreen ? 24 : 18">
+                    <el-empty description="无结果，换个搜索条件试试？" />
+                  </el-col>
+                </el-row>
+              </div>
+            </li>
+          </TransitionGroup>
         </div>
       </Transition>
     </el-col>
@@ -116,7 +109,7 @@ const fuseOptions = computed(() => {
   };
 });
 
-const { processedListData, loading } = useSearch<TPaperListWithAuthorItem>(
+const { processedListData } = await useSearch<TPaperListWithAuthorItem>(
   searchContent,
   fuseOptions,
   () => $api.paper.listWithAuthor.query(),

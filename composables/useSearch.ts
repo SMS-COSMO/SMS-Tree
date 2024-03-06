@@ -2,7 +2,7 @@ import type { UseFuseOptions } from '@vueuse/integrations/useFuse';
 import { useFuse } from '@vueuse/integrations/useFuse';
 import type { TUserListItem } from '~/types/index';
 
-export function useSearch<T>(
+export async function useSearch<T>(
   searchContent: Ref<string>,
   fuseOptions: MaybeRefOrGetter<UseFuseOptions<T>>,
   getList: Function,
@@ -10,8 +10,7 @@ export function useSearch<T>(
   filter?: (e: T) => boolean,
   sort?: ((a: T, b: T) => number),
 ) {
-  const loading = ref(true);
-  const listData = ref<T[]>([]);
+  const listData: T[] = await getList();
   const fuse = useFuse(searchContent, listData, fuseOptions);
   const processedListData = computed<T[]>(
     () => fuse.results.value
@@ -19,18 +18,7 @@ export function useSearch<T>(
       .filter(filter ?? (() => true))
       .sort(sort ?? (() => 0)),
   );
-
-  onMounted(async () => {
-    try {
-      listData.value = await getList();
-      loading.value = false;
-    } catch (err) {
-      useErrorHandler(err);
-      loading.value = false;
-    }
-  });
-
-  return { processedListData, loading, listData };
+  return { processedListData, listData };
 }
 
 export function useUserSearch(searchContent: Ref<string>, role: 'student' | 'teacher' = 'student') {
