@@ -1,7 +1,6 @@
 import { eq } from 'drizzle-orm';
 import type { TNewAttachment, TRawUser } from '../../db/db';
 import { db } from '../../db/db';
-import { Result, Result500, ResultNoRes } from '../utils/result';
 import { ctl } from '../context';
 import { attachments } from '~/server/db/schema/attachment';
 

@@ -6,7 +6,6 @@ import { papers } from '../../db/schema/paper';
 import { paperSerializer, paperWithAuthorSerializer } from '../serializer/paper';
 import { papersToGroups } from '../../db/schema/paperToGroup';
 import { attachmentSerializer } from '../serializer/attachment';
-import { Result, Result500, ResultNoRes } from '../utils/result';
 import { ctl } from '../context';
 import { attachments } from '~/server/db/schema/attachment';
 

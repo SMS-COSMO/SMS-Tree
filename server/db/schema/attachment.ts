@@ -1,8 +1,7 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { nanoid } from 'nanoid';
 
 export const attachments = sqliteTable('attachments', {
-  id: text('id', { mode: 'text' }).primaryKey().$defaultFn(() => nanoid(12)),
+  id: text('id', { mode: 'text' }).primaryKey().$defaultFn(() => makeId(12)),
   name: text('name', { mode: 'text' }).notNull(),
   paperId: text('paper_id', { mode: 'text' }),
   isMainFile: integer('is_main_file', { mode: 'boolean' }).notNull().default(false),

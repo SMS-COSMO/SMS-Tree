@@ -1,17 +1,15 @@
 import { LibsqlError } from '@libsql/client';
 import bcrypt from 'bcrypt';
-import { nanoid } from 'nanoid';
 import { and, eq } from 'drizzle-orm';
 import type { CreateExpressContextOptions } from '@trpc/server/adapters/express';
 import type { TNewUser, TRawUser } from '../../db/db';
 import { db } from '../../db/db';
 import { refreshTokens, users } from '../../db/schema/user';
-import { Auth } from '../utils/auth';
 import { type TUser, userSerializer } from '../serializer/user';
 import { usersToGroups } from '../../db/schema/userToGroup';
 import { classesToUsers } from '../../db/schema/classToUser';
-import { Result, Result500, ResultNoRes } from '../utils/result';
 import { ctl } from '../context';
+import { Auth } from '../../utils/auth';
 
 export class UserController {
   private auth: Auth;
@@ -60,7 +58,7 @@ export class UserController {
     }
 
     const newUsers = await Promise.all(inputUsers.map(async ({ id, username }) => {
-      const password = randomPassword ? await bcrypt.hash(nanoid(12), 8) : await bcrypt.hash(id, 8);
+      const password = randomPassword ? await bcrypt.hash(makeId(12), 8) : await bcrypt.hash(id, 8);
       return {
         id,
         role: 'student',

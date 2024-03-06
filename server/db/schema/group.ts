@@ -1,10 +1,9 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { nanoid } from 'nanoid';
 import { users } from './user';
 import { classes } from './class';
 
 export const groups = sqliteTable('groups', {
-  id: text('id', { mode: 'text' }).primaryKey().$defaultFn(() => nanoid(12)),
+  id: text('id', { mode: 'text' }).primaryKey().$defaultFn(() => makeId(12)),
   leader: text('leader', { mode: 'text' }).references(() => users.id),
   archived: integer('archived', { mode: 'boolean' }).notNull().default(false),
   projectName: text('project_name', { mode: 'text' }),

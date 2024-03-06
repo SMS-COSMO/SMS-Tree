@@ -18,7 +18,6 @@
 
 <script setup lang="ts">
 import type { UploadFile, UploadFiles, UploadRawFile, UploadRequestOptions } from 'element-plus';
-import { nanoid } from 'nanoid';
 import axios from 'axios';
 
 const props = withDefaults(defineProps<{
@@ -40,7 +39,7 @@ function getFile(rawFile: UploadRawFile) {
 }
 
 async function handleUpload(option: UploadRequestOptions) {
-  const key = `${nanoid(10)}-${option.file.name}`;
+  const key = `${makeId(10)}-${option.file.name}`;
   const { file } = option;
   const f = getFile(file);
 

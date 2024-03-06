@@ -4,7 +4,7 @@ import { db } from '../mockDb';
 import * as exports from '../../../server/db/db';
 import { ctl } from '../../../server/trpc/context';
 import { users } from '~/server/db/schema/user';
-import { ResultNoRes } from '~/server/trpc/utils/result';
+import { ResultNoRes } from '~/server/utils/result';
 
 it('hasPerm', async () => {
   vi.spyOn(exports, 'db', 'get').mockReturnValue(db);

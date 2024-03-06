@@ -1,7 +1,5 @@
 import * as readline from 'node:readline/promises';
 import process from 'node:process';
-import { nanoid } from 'nanoid';
-
 import { UserController } from '~/server/trpc/controllers/user';
 import { ClassController } from '~/server/trpc/controllers/class';
 import { GroupController } from '~/server/trpc/controllers/group';
@@ -101,9 +99,9 @@ const paperCount = Number(await rl.question('? Number of papers to create: '));
 await Promise.all(
   [...Array(paperCount)].map((_, i) => {
     return pc.create({
-      abstract: nanoid(100),
+      abstract: makeId(100),
       title: `Paper ${i}`,
-      keywords: [...Array(5)].map(_ => nanoid(5)),
+      keywords: [...Array(5)].map(_ => makeId(5)),
       canDownload: Math.random() < 0.5,
       isFeatured: Math.random() < 0.3,
       rate: Math.round(Math.random() * 100),

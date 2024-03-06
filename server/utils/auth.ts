@@ -1,9 +1,8 @@
 import * as jose from 'jose';
-import { nanoid } from 'nanoid';
 import { eq } from 'drizzle-orm';
-import { db } from '../../db/db';
-import { refreshTokens, users } from '../../db/schema/user';
-import { env } from '../../env';
+import { db } from '../db/db';
+import { refreshTokens, users } from '../db/schema/user';
+import { env } from '../env';
 
 const encode = TextEncoder.prototype.encode.bind(new TextEncoder());
 const decode = TextDecoder.prototype.decode.bind(new TextDecoder());
@@ -19,7 +18,7 @@ export class Auth {
       .setIssuedAt()
       .setExpirationTime('24h')
       .setIssuer('sms-tree')
-      .setJti(nanoid(32))
+      .setJti(makeId(32))
       .setProtectedHeader({
         alg: 'RS512',
         kid: env.SIGN_KID,
@@ -53,7 +52,7 @@ export class Auth {
   }
 
   async produceRefreshToken(owner: string) {
-    const token = nanoid(128);
+    const token = makeId(128);
     await db.insert(refreshTokens).values({ token, owner });
     return token;
   }

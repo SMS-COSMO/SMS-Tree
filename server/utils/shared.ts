@@ -1,4 +1,5 @@
 import { TRPCError } from '@trpc/server';
+import { customAlphabet } from 'nanoid';
 
 /**
  * Checks if two values are equal and throws an error if they are not.
@@ -12,3 +13,5 @@ export function requireEqualOrThrow(a: any, b: any, message: string, code: TRPCE
   if (a !== b)
     throw new TRPCError({ code, message });
 }
+
+export const makeId = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 12);
