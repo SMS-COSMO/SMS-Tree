@@ -13,7 +13,6 @@ import { Auth } from '../utils/auth';
 import { Result, Result500, ResultNoRes } from '../utils/result';
 import { makeId } from '~/server/trpc/utils/shared';
 
-
 export class UserController {
   private auth: Auth;
   constructor() {
