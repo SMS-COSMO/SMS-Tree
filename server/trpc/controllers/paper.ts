@@ -151,4 +151,13 @@ export class PaperController {
       return false;
     }
   }
+
+  async setComment(id: string, comment: string) {
+    try {
+      await db.update(papers).set({ comment }).where(eq(papers.id, id));
+      return new ResultNoRes(true, '保存评语成功');
+    } catch (err) {
+      return new Result500();
+    }
+  }
 }

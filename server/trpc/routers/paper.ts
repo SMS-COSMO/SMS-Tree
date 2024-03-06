@@ -61,4 +61,14 @@ export const paperRouter = router({
     .mutation(async ({ ctx, input }) => {
       return (await ctx.paperController.updateDownloadCount(input.id, ctx.user)).getMsgOrTRPCError();
     }),
+
+  setComment: protectedProcedure
+    .use(requireRoles(['admin', 'teacher']))
+    .input(z.object({
+      paperId: z.string().min(1, '小组id不存在'),
+      comment: z.string().min(1, '评语长度不能为零').max(500, '评论最长为500'),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return (await ctx.paperController.setComment(input.paperId, input.comment)).getMsgOrTRPCError();
+    }),
 });
