@@ -1,5 +1,5 @@
 <template>
-  <el-card class="mb-2.5 cursor-pointer hover:border-color-[#D4D7DE]! hover:bg-[#F5F7FA]!" @click="openPaper(paper)">
+  <el-card class="mb-2.5 cursor-pointer hover:border-color-[#D4D7DE]! hover:bg-hover-bg!" @click="openPaper(paper)">
     <el-row class="gap-[6px]">
       <el-tag v-if="paper?.isFeatured" type="success" disable-transitions>
         <el-icon>

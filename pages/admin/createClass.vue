@@ -1,6 +1,6 @@
 <template>
   <el-card>
-    <el-form class="register-form mx-auto py-5" :model="form" label-width="120px">
+    <el-form class="mx-auto w-[700px] py-5" :model="form" label-width="120px">
       <el-form-item prop="enterYear" label="入学年份">
         <el-input-number v-model="form.enterYear" :min="2000" :max="3000" />
       </el-form-item>
@@ -17,7 +17,7 @@
         <SelectUser v-model="form.teacher" role="teacher" :multiple="false" />
       </el-form-item>
       <el-form-item>
-        <el-button class="submit-button" color="#146E3C" :loading="buttonLoading" @click="create">
+        <el-button color="#146E3C" :loading="buttonLoading" @click="create">
           创建
         </el-button>
       </el-form-item>
@@ -53,9 +53,3 @@ async function create() {
   buttonLoading.value = false;
 }
 </script>
-
-<style scoped lang="scss">
-.register-form {
-  max-width: 700px;
-}
-</style>

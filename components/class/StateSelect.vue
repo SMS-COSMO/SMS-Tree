@@ -4,7 +4,7 @@
       v-model="model"
       placeholder="Select"
       size="large"
-      style="width: 240px"
+      class="w-60"
     >
       <el-option
         v-for="item in [

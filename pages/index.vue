@@ -57,12 +57,7 @@ function quickSearch() {
 }
 </script>
 
-<style scoped lang="scss">
-#app {
-  text-align: center;
-  color: var(--ep-text-color-primary);
-}
-
+<style scoped>
 .el-carousel__item h3 {
   color: #475669;
   opacity: 0.75;

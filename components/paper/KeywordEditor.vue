@@ -64,7 +64,7 @@ function handleInputConfirm() {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .same-size {
   height: 32px !important;
   width: 120px !important;
@@ -76,7 +76,7 @@ function handleInputConfirm() {
 }
 </style>
 
-<style lang="scss">
+<style>
 .tag-input .el-input__wrapper {
   border: none !important;
 }

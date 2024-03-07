@@ -1,8 +1,8 @@
 <template>
   <el-backtop :right="isSmallScreen ? 30 : 100" :bottom="100" />
 
-  <div class="title-holder mb-3">
-    <h1 class="title">
+  <div class="mb-3 lg:flex">
+    <h1 class="w-full text-2xl lg:pr-[2em] lg:text-4xl">
       <el-tag v-if="content?.isFeatured" type="success" size="large">
         <el-text style="color: var(--el-color-success);">
           <el-icon>
@@ -19,7 +19,7 @@
           分数
         </template>
       </el-statistic>
-      <el-divider direction="vertical" style="height: 40px;" />
+      <el-divider direction="vertical" class="h-10!" />
       <el-statistic :value="content?.downloadCount">
         <template #title>
           下载次数
@@ -34,7 +34,7 @@
         <template #header>
           论文信息
         </template>
-        <el-descriptions title="" :column="1">
+        <el-descriptions :column="1">
           <el-descriptions-item label="作者">
             <GroupMembers :authors="content?.authors" :leader-id="content?.leader?.id" type="link" class="inline" />
           </el-descriptions-item>
@@ -43,7 +43,7 @@
           </el-descriptions-item>
           <el-descriptions-item label="关键词">
             <el-tag
-              v-for="(keyword, index) in content?.keywords" :key="index" class="clickable m-0.75" type="info"
+              v-for="(keyword, index) in content?.keywords" :key="index" class="m-0.75 cursor-pointer" type="info"
               effect="plain" @click="searchTag(keyword)"
             >
               {{ keyword }}
@@ -58,7 +58,7 @@
         <template #header>
           摘要
         </template>
-        <div class="abstract leading-normal">
+        <div class="text-justify text-[15px] leading-normal lg:text-base">
           {{ content?.abstract }}
         </div>
       </FoldableCard>
@@ -103,43 +103,3 @@ function searchTag(keyword: string) {
   });
 }
 </script>
-
-<style scoped lang="scss">
-.title {
-  width: 100%;
-
-  @media only screen and (min-width: 700px) {
-    padding-right: 4em;
-    font-size: 45px;
-  }
-
-  font-size: 30px;
-}
-
-.title-holder {
-  @media only screen and (min-width: 700px) {
-    display: flex;
-  }
-}
-
-.abstract {
-  text-align: justify;
-  font-size: 16px;
-  padding: 5px;
-
-  @media only screen and (max-width: 700px) {
-    font-size: 15px;
-    padding: 0;
-  }
-}
-
-.clickable {
-  cursor: pointer;
-}
-</style>
-
-<style lang="scss">
-.el-descriptions__label {
-  font-weight: bold;
-}
-</style>

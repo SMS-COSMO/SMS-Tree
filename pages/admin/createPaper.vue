@@ -1,6 +1,11 @@
 <template>
   <el-card>
-    <el-form ref="formRef" class="register-form mx-auto py-5" :model="form" :rules="rules" label-width="120px">
+    <el-form
+      ref="formRef"
+      class="mx-auto w-[700px] py-5"
+      :model="form" :rules="rules"
+      label-width="120px"
+    >
       <el-form-item prop="title" label="标题">
         <el-input v-model="form.title" />
       </el-form-item>
@@ -12,7 +17,9 @@
       </el-form-item>
       <el-form-item prop="canDownload" label="允许下载">
         <el-switch
-          v-model="form.canDownload" size="large" active-text="是" inactive-text="否" inline-prompt
+          v-model="form.canDownload"
+          size="large"
+          active-text="是" inactive-text="否" inline-prompt
           style="--el-switch-on-color: #13ce66; --el-switch-off-color: #db3131;"
         />
       </el-form-item>
@@ -24,7 +31,7 @@
         <UploadFile v-model="attachments" multiple />
       </el-form-item>
       <el-form-item>
-        <el-button class="submit-button" color="#146E3C" :loading="buttonLoading" @click="create(formRef)">
+        <el-button color="#146E3C" :loading="buttonLoading" @click="create(formRef)">
           创建
         </el-button>
       </el-form-item>
@@ -88,9 +95,3 @@ async function create(submittedForm: FormInstance | undefined) {
   });
 }
 </script>
-
-<style scoped lang="scss">
-.register-form {
-  max-width: 700px;
-}
-</style>

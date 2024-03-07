@@ -5,6 +5,9 @@
 </template>
 
 <script setup lang="ts">
+import '~/styles/index.css';
+import '~/styles/element-override.css';
+
 const { $api } = useNuxtApp();
 
 useHeadSafe({
@@ -20,9 +23,3 @@ onBeforeMount(async () => {
   }
 });
 </script>
-
-<style lang="scss">
-@use "~/styles/element-override.scss";
-@use "~/styles/index.scss";
-@use "~/styles/color.scss";
-</style>

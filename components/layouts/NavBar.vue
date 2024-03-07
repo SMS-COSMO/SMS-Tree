@@ -1,10 +1,10 @@
 <template>
-  <div class="top-nav">
+  <div class="nav top-0 bg-primary-0">
     <el-menu
-      class="menu" :ellipsis="false" mode="horizontal" background-color="#146E3C" text-color="#FFFFFF"
+      class="max-w-[1300px] mx-auto! border-none!" :ellipsis="false" mode="horizontal" background-color="#146E3C" text-color="#FFFFFF"
       active-text-color="#FFFFFF" :router="true" :default-active="$route.path"
     >
-      <el-menu-item disabled class="logo">
+      <el-menu-item disabled class="cursor-default! opacity-100!">
         <NuxtImg preload src="/logo.png" class="h-[30px]" />
       </el-menu-item>
       <template v-if="!isSmallScreen">
@@ -53,7 +53,7 @@
   </div>
 
   <!-- Mobile Bottom Nav Bar -->
-  <div v-if="isSmallScreen" class="bottom-nav">
+  <div v-if="isSmallScreen" class="nav bottom-0 border-t-1 border-t-border-light border-t-solid bg-white">
     <el-row :gutter="5" class="px-2">
       <MobileNavButton label="首页" href="/">
         <template #icon>
@@ -98,41 +98,3 @@ function logout() {
   ElMessage({ message: '登出成功！', type: 'success', showClose: true });
 }
 </script>
-
-<style scoped lang="scss">
-@import "~/styles/color.scss";
-
-.logo {
-  opacity: 1 !important;
-  cursor: default !important;
-}
-
-.top-nav {
-  user-select: none;
-  z-index: 20;
-  width: 100vw;
-  position: fixed;
-  top: 0;
-  left: auto;
-  right: auto;
-  background-color: $color-primary-0;
-}
-
-.bottom-nav {
-  user-select: none;
-  z-index: 20;
-  position: fixed;
-  bottom: 0;
-  width: 100vw;
-  border-top: 1px solid $light-border;
-  background-color: #FFFFFF;
-}
-
-.menu {
-  max-width: 1300px;
-  padding-right: 10px;
-  border: none;
-  margin-left: auto;
-  margin-right: auto;
-}
-</style>

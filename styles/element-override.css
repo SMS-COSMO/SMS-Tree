@@ -1,9 +1,4 @@
-// import
-@import "color.scss";
-@import "mixins.scss";
-@import "variable.scss";
-
-// menu
+/* menu */
 .el-menu {
     padding-bottom: 10px;
 }
@@ -17,7 +12,7 @@
     margin: 10px 0 0 10px !important;
     height: 45px !important;
     border: none !important;
-    border-radius: $border-radius !important;
+    border-radius: 10px !important;
 }
 
 .el-sub-menu__title:hover,
@@ -26,7 +21,7 @@
 }
 
 .el-menu--popup {
-    border-radius: $border-radius !important;
+    border-radius: 10px !important;
     padding: 0 10px 10px 0 !important;
 }
 
@@ -44,7 +39,7 @@
     padding-right: 10px;
 }
 
-// Input
+/* Input */
 .el-input {
     height: 45px !important;
     border: 3px !important;
@@ -55,12 +50,12 @@
     min-height: 45px !important;
     font-size: 16px !important;
     border: 2px solid var(--el-border-color) !important;
-    border-radius: $border-radius !important;
+    border-radius: 10px !important;
     box-shadow: none !important;
 }
 
 .el-input__wrapper {
-    border-radius: $border-radius !important;
+    border-radius: 10px !important;
     box-shadow: none !important;
     border: 2px solid var(--el-border-color);
 }
@@ -104,7 +99,7 @@
     box-shadow: none !important;
 }
 
-// Input Number
+/* Input Number */
 .el-input-number__decrease {
     border-top-left-radius: 8px !important;
     border-bottom-left-radius: 8px !important;
@@ -123,9 +118,9 @@
     right: 2px !important;
 }
 
-// Select
+/* Select */
 .el-select__popper {
-    border-radius: $border-radius !important;
+    border-radius: 10px !important;
 }
 
 .el-select-dropdown__list {
@@ -142,13 +137,13 @@
 }
 
 .el-select-dropdown__item.selected {
-    color: $color-primary-0 !important;
+    color: #146E3B !important;
 }
 
-// Button
+/* Button */
 .el-button {
     border-width: 2px !important;
-    border-radius: $border-radius !important;
+    border-radius: 10px !important;
 }
 
 .el-button:not(.el-button--small) {
@@ -161,31 +156,31 @@
     padding: 8px 20px !important;
 }
 
-// Card
+/* Card */
 .el-card {
-    border-radius: $border-radius !important;
+    border-radius: 10px !important;
     box-shadow: none !important;
     border: none !important;
-    @include border-normal();
+    border: 2px solid #E4E7ED !important;
 }
 
 .el-card__header {
     border-bottom-width: 2px !important;
 }
 
-// Alert
+/* Alert */
 .el-alert {
     height: 45px !important;
     box-shadow: none !important;
-    border-radius: $border-radius !important;
+    border-radius: 10px !important;
 }
 
-// Carousel
+/* Carousel */
 .el-carousel {
-    border-radius: $border-radius !important;
+    border-radius: 10px !important;
 }
 
-// Pagination
+/* Pagination */
 .el-pagination>.btn-next,
 .el-pagination>.btn-prev,
 .el-pager>.number,
@@ -193,7 +188,7 @@
     height: 45px !important;
     width: 45px !important;
     font-size: 15px !important;
-    border-radius: $border-radius !important;
+    border-radius: 10px !important;
 }
 
 .el-pagination>.btn-next:hover,
@@ -201,16 +196,16 @@
 .el-pager>.number:not(.is-active):hover,
 .el-pager>.more:hover {
     font-weight: bold;
-    color: $color-primary-0 !important;
+    color: #146E3B !important;
 }
 
 .el-pager>.is-active {
-    background-color: $color-primary-0 !important;
+    background-color: #146E3B !important;
 }
 
-// Upload
+/* Upload */
 .el-upload-dragger {
-    border-radius: $border-radius !important;
+    border-radius: 10px !important;
     border-width: 3px !important;
     border-style: dotted !important;
 
@@ -219,7 +214,7 @@
 }
 
 .el-upload-dragger:hover {
-    border-color: $color-primary-0 !important;
+    border-color: #146E3B !important;
 }
 
 .el-upload__tip,
@@ -227,16 +222,16 @@
     margin-top: 0 !important;
 }
 
-// Step
+/* Step */
 .el-step__title.is-finish,
 .el-step__head.is-finish {
-    color: $color-primary-0 !important;
+    color: #146E3B !important;
 }
 
-// Tabs
+/* Tabs */
 .el-tabs__item.is-active,
 .el-tabs__item:hover {
-    color: $color-primary-0 !important;
+    color: #146E3B !important;
 }
 
 .el-tabs--border-card>.el-tabs__header {
@@ -244,8 +239,8 @@
 }
 
 .el-tabs--border-card {
-    border: 2px solid $light-border !important;
-    border-radius: $border-radius !important;
+    border: 2px solid #E4E7ED !important;
+    border-radius: 10px !important;
 }
 
 .el-tabs__header {
@@ -262,11 +257,11 @@
 }
 
 .el-tabs__active-bar {
-    background-color: $color-primary-0 !important;
+    background-color: #146E3B !important;
     border-radius: 1000px;
 }
 
-// Collapse
+/* Collapse */
 .el-collapse {
     border-top-width: 2px !important;
 }
@@ -275,40 +270,40 @@
     border-bottom-width: 2px !important;
 }
 
-// Link
+/* Link */
 .el-link--primary {
-    color: $color-primary-0 !important;
+    color: #146E3B !important;
 }
 
 .el-link--primary:hover::after {
-    border-color: $color-primary-0 !important;
+    border-color: #146E3B !important;
 }
 
-// Dialog
+/* Dialog */
 .el-dialog {
-    border-radius: $border-radius !important;
+    border-radius: 10px !important;
     max-width: 800px !important;
     width: calc(100% - 40px) !important;
 }
 
 .el-dialog__header {
-    border-bottom: 2px solid $light-border;
+    border-bottom: 2px solid #E4E7ED;
     margin-right: 0 !important;
 }
 
-// Back to top
+/* Back to top */
 .el-backtop {
     box-sizing: border-box;
     width: 60px !important;
     height: 60px !important;
-    border-radius: $border-radius !important;
+    border-radius: 10px !important;
     background-color: rgb(232, 241, 236) !important;
-    color: $color-primary-0 !important;
+    color: #146E3B !important;
 }
 
-// Message
+/* Message */
 .el-message {
-    border-radius: $border-radius !important;
+    border-radius: 10px !important;
     height: 60px;
     border-width: 2px !important;
 }
@@ -317,7 +312,7 @@
     font-size: 16px !important;
 }
 
-// Date Picker
+/* Date Picker */
 .el-date-editor {
     height: 45px !important;
     box-sizing: border-box;
@@ -325,14 +320,19 @@
 }
 
 .el-picker__popper {
-    border-radius: $border-radius !important;
+    border-radius: 10px !important;
 }
 
 .el-date-range-picker {
-    border-radius: $border-radius !important;
+    border-radius: 10px !important;
 }
 
 .el-picker-panel__sidebar {
-    border-top-left-radius: $border-radius !important;
-    border-bottom-left-radius: $border-radius !important;
+    border-top-left-radius: 10px !important;
+    border-bottom-left-radius: 10px !important;
+}
+
+/* Descriptions */
+.el-descriptions__label {
+    font-weight: bold;
 }

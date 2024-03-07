@@ -2,7 +2,7 @@
   <el-row :gutter="20">
     <el-col v-if="!isSmallScreen" :span="isSmallScreen ? 24 : 6">
       <el-card>
-        <div class="left-box-inner">
+        <div class="relative z-10">
           <SearchOptions v-model="searchOptions" />
         </div>
       </el-card>
@@ -35,10 +35,11 @@
             v-infinite-scroll="load"
             infinite-scroll-immediate="false"
             infinite-scroll-distance="500"
-            name="list" tag="ul" class="infinite-list list-full-screen m-0 p-0"
+            name="list" tag="ul"
+            class="infinite-list fixed left-0 m-0 h-[calc(100svh-95px-65px-70px)] w-screen list-none overflow-x-hidden overflow-y-scroll p-0 scrollbar-hidden lg:h-[calc(100svh-95px-65px)]"
           >
             <li v-for="(paper, index) in processedListData.slice(0, count)" :key="index">
-              <div class="list-full-screen-center mx-auto px-5">
+              <div class="mx-auto max-w-[1300px] px-5">
                 <el-row :gutter="20">
                   <el-col :span="6" />
                   <el-col :span="isSmallScreen ? 24 : 18">
@@ -48,7 +49,7 @@
               </div>
             </li>
             <li v-if="processedListData.length === 0" class="text-center">
-              <div class="list-full-screen-center mx-auto px-5">
+              <div class="mx-auto max-w-[1300px] px-5">
                 <el-row :gutter="20">
                   <el-col :span="6" />
                   <el-col :span="isSmallScreen ? 24 : 18">
@@ -144,42 +145,7 @@ function load() {
 }
 </script>
 
-<style scoped lang="scss">
-.left-box-inner {
-  position: relative;
-  z-index: 10;
-}
-
-.infinite-list {
-  @media only screen and (max-width: 700px) {
-    height: calc(100svh - 95px - 65px - 70px);
-  }
-
-  height: calc(100svh - 95px - 65px);
-  list-style: none;
-  overflow-x: hidden;
-  overflow-y: scroll;
-
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.list-full-screen {
-  position: fixed;
-  left: 0;
-  width: 100vw;
-}
-
-.list-full-screen-center {
-  max-width: 1300px;
-}
-
-.infinite-list-skeleton {
-  height: calc(100vh - 95px - 65px - 50px);
-  list-style: none;
-  overflow: hidden;
-}
-
+<style scoped>
 .infinite-list::-webkit-scrollbar {
   display: none;
 }

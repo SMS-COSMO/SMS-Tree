@@ -1,46 +1,44 @@
 <template>
-  <el-skeleton :rows="0" :loading="loading" animated style="width: 600px;">
-    <span v-if="type === 'text'">
-      <span v-if="groupId">
-        <span
-          v-for="(member, index) of members" :key="index" class="mx-0.6"
-          :style="`${showLeader && member.id === leader ? 'font-weight: bold;' : ''}`"
+  <span v-if="type === 'text'" class="space-x-1.5">
+    <template v-if="groupId">
+      <span
+        v-for="(member, index) of members" :key="index"
+        :class="`${showLeader && member.id === leader ? 'font-bold' : ''}`"
+      >
+        {{ member.username }}
+      </span>
+    </template>
+    <template v-else-if="authors">
+      <span
+        v-for="(author, index) of authors" :key="index"
+        :class="`${showLeader && author.id === leaderId ? 'font-bold' : ''}`"
+      >
+        {{ author.username }}
+      </span>
+    </template>
+  </span>
+  <span v-else-if="type === 'link'" class="space-x-1.5">
+    <template v-if="groupId">
+      <span v-for="(member, index) of members" :key="index">
+        <el-link
+          :href="`/user/${member.id}`"
+          :class="`${showLeader && member.id === leader ? 'font-bold' : ''}`"
         >
           {{ member.username }}
-        </span>
+        </el-link>
       </span>
-      <span v-if="authors">
-        <span
-          v-for="(author, index) of authors" :key="index" class="mx-0.6"
-          :style="`${showLeader && author.id === leaderId ? 'font-weight: bold;' : ''}`"
+    </template>
+    <template v-else-if="authors">
+      <span v-for="(author, index) of authors" :key="index">
+        <el-link
+          :href="`/user/${author.id}`"
+          :class="`${showLeader && author.id === leaderId ? 'font-bold' : ''}`"
         >
           {{ author.username }}
-        </span>
+        </el-link>
       </span>
-    </span>
-    <span v-if="type === 'link'">
-      <span v-if="groupId">
-        <span v-for="(member, index) of members" :key="index" class="mx-0.6">
-          <el-link
-            :href="`/user/${member.id}`"
-            :style="`${showLeader && member.id === leader ? 'font-weight: bold;' : ''}`"
-          >
-            {{ member.username }}
-          </el-link>
-        </span>
-      </span>
-      <span v-if="authors">
-        <span v-for="(author, index) of authors" :key="index" class="mx-0.6">
-          <el-link
-            :href="`/user/${author.id}`"
-            :style="`${showLeader && author.id === leaderId ? 'font-weight: bold;' : ''}`"
-          >
-            {{ author.username }}
-          </el-link>
-        </span>
-      </span>
-    </span>
-  </el-skeleton>
+    </template>
+  </span>
 </template>
 
 <script setup lang="ts">
@@ -60,15 +58,11 @@ const props = withDefaults(defineProps<{
 
 const { $api } = useNuxtApp();
 
-const loading = ref(true);
 const leader = ref('');
-
 const members = computedAsync(
   async () => {
-    if (!props.groupId || props.authors) {
-      loading.value = false;
+    if (!props.groupId || props.authors)
       return [];
-    }
 
     const group = await $api.group.content.query({ id: props.groupId });
     leader.value = group.leader ?? '';
@@ -78,7 +72,6 @@ const members = computedAsync(
           return { username: (await $api.user.profile.query({ id: user })).username, id: user };
         }),
     );
-    loading.value = false;
     return res;
   },
   [],

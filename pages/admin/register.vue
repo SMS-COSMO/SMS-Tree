@@ -1,6 +1,11 @@
 <template>
   <el-card>
-    <el-form ref="formRef" label-position="top" class="register-form mx-auto py-5" :model="form" :rules="rules">
+    <el-form
+      ref="formRef"
+      label-position="top"
+      class="mx-auto max-w-[500px] py-5"
+      :model="form" :rules="rules"
+    >
       <el-form-item prop="id">
         <div class="icon-label">
           <el-icon :size="15">
@@ -36,7 +41,7 @@
           用户权限
         </div>
         <client-only>
-          <el-select v-model="form.role" placeholder="请选择" style="width: 100%;">
+          <el-select v-model="form.role" placeholder="请选择" class="w-full">
             <el-option label="教师" value="teacher" />
             <el-option label="学生" value="student" />
             <el-option label="管理员" value="admin" />
@@ -47,7 +52,7 @@
         </client-only>
       </el-form-item>
       <el-form-item>
-        <el-button class="submit-button" color="#146E3C" :loading="isPending" @click="register(formRef)">
+        <el-button color="#146E3C" :loading="isPending" @click="register(formRef)">
           创建
         </el-button>
       </el-form-item>
@@ -107,9 +112,3 @@ async function register(submittedForm: FormInstance | undefined) {
   });
 }
 </script>
-
-<style scoped lang="scss">
-.register-form {
-  max-width: 500px;
-}
-</style>

@@ -1,6 +1,9 @@
 <template>
   <el-menu
-    class="left-menu h-full" background-color="#f3f5f7" active-text-color="#4d4d4d" :router="true"
+    class="h-full w-[250px] select-none rounded border-normal"
+    background-color="#f3f5f7"
+    active-text-color="#4d4d4d"
+    :router="true"
     :default-active="$route.path"
   >
     <el-sub-menu index="1">
@@ -46,19 +49,3 @@
     </el-menu-item>
   </el-menu>
 </template>
-
-<style scoped lang="scss">
-@import "~/styles/mixins.scss";
-
-.left-menu {
-  @include border-normal();
-  user-select: none;
-  border-radius: 10px;
-  overflow: none;
-  width: 250px;
-}
-
-.el-menu-item .is-active {
-  background-color: #fff !important;
-}
-</style>

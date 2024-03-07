@@ -3,16 +3,16 @@
     <iframe
       v-if="docxFileTypes.includes(attachment.fileType)"
       :src="`https://view.officeapps.live.com/op/embed.aspx?src=${attachment.S3FileId}`" frameborder="0"
-      :class="`content ${fullHeight ? 'full-height' : ''}`"
+      :class="`w-full ${fullHeight ? 'h-[calc(100vh-200px)]' : 'h-125'}`"
     />
     <iframe
       v-else-if="pdfFileTypes.includes(attachment.fileType)"
       :src="attachment.S3FileId" frameborder="0"
-      :class="`content ${fullHeight ? 'full-height' : ''}`"
+      :class="`w-full ${fullHeight ? 'h-[calc(100vh-200px)]' : 'h-125'}`"
     />
     <el-image
       v-else-if="/^image*/.test(attachment.fileType)"
-      class="h-40 w-40 rounded-lg shadow transition-all hover:shadow-md"
+      class="h-40 w-40 shadow transition-all rounded hover:shadow-md"
       :src="attachment.S3FileId"
       :zoom-rate="1.2"
       :max-scale="7"
@@ -47,14 +47,3 @@ const docxFileTypes = [
 
 const pdfFileTypes = ['application/pdf'];
 </script>
-
-<style lang="scss">
-.content {
-  width: 100%;
-  height: 500px;
-}
-
-.full-height {
-  height: calc(100vh - 80px);
-}
-</style>

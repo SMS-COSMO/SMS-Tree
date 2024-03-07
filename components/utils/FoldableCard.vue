@@ -1,8 +1,12 @@
 <template>
   <el-card v-if="canFold">
-    <div class="card-header">
+    <div class="flex items-center justify-between">
       <slot name="header" />
-      <el-button style="height: 30px !important; width: 30px !important;" text bg @click="showContent = !showContent">
+      <el-button
+        class="h-8! w-7!"
+        text bg size="small"
+        @click="showContent = !showContent"
+      >
         <el-icon color="#909399">
           <ElIconArrowUpBold v-if="showContent" />
           <ElIconArrowDownBold v-else />
@@ -32,22 +36,3 @@ withDefaults(defineProps<{
 
 const showContent = ref(true);
 </script>
-
-<style scoped lang="scss">
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.content-enter-active,
-.content-leave-active {
-  transition: all .4s;
-}
-
-.content-enter,
-.content-leave-active {
-  transform: translate3d(0, 3rem, 0);
-  opacity: 0;
-}
-</style>

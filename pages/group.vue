@@ -68,7 +68,7 @@
     </el-card>
     <el-row v-else-if="classInfo.state === 'submitPaper'" :gutter="20">
       <el-col :span="22">
-        <el-space direction="vertical" style="width: 100%;" :size="20" fill>
+        <el-space direction="vertical" class="w-full" :size="20" fill>
           <el-row :gutter="20">
             <el-col :span="8">
               <el-card>
@@ -122,7 +122,7 @@
       </el-col>
 
       <el-col :span="2">
-        <div style="height: 500px">
+        <div class="h-500px">
           <client-only>
             <el-steps direction="vertical" :active="1">
               <el-step :icon="ElIconUpload" title="提交" />
@@ -197,11 +197,3 @@ onMounted(() => {
     userStore.groupIds = userInfo.groupIds;
 });
 </script>
-
-<style scoped lang="scss">
-@import "~/styles/color.scss";
-
-em {
-  color: $color-primary-0 !important;
-}
-</style>

@@ -1,6 +1,9 @@
 <template>
   <div class="flex-grow" @click="navigateTo(href)">
-    <div class="bottom-nav-button" :class="isHighlight ? 'highlighted' : ''">
+    <div
+      class="m-2 h-10 p-1.5 text-center leading-[0.95] rounded"
+      :class="isHighlight ? 'transition-all bg-hover-bg' : ''"
+    >
       <el-icon :size="18" color="#606266">
         <slot name="icon" />
       </el-icon>
@@ -21,19 +24,3 @@ const props = defineProps<{
 const route = useRoute();
 const isHighlight = computed(() => route.fullPath === props.href);
 </script>
-
-<style scoped lang="scss">
-.bottom-nav-button {
-  height: 40px;
-  margin: 8px;
-  padding: 6px;
-  text-align: center;
-  border-radius: 10px;
-  line-height: 0.95;
-}
-
-.highlighted {
-  transition: all 0.2s ease;
-  background-color: #F5F7FA;
-}
-</style>

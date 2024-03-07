@@ -1,5 +1,5 @@
 <template>
-  <div class="top-margin middle mx-auto">
+  <div class="mx-auto mt-[20vh] max-w-120">
     <el-alert
       v-if="userStore.isDefaultPassword" title="第一次登录完毕后请修改密码！" show-icon type="warning" effect="dark"
       :closable="false"
@@ -74,18 +74,3 @@ async function login() {
   loginMutation({ ...form });
 }
 </script>
-
-<style scoped lang="scss">
-.el-alert--warning {
-  z-index: 0;
-  background-color: #F29A41;
-}
-
-.middle {
-  max-width: 480px;
-}
-
-.top-margin {
-  margin-top: 20vh;
-}
-</style>
