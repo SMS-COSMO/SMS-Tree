@@ -1,5 +1,5 @@
 <template>
-  <el-card class="card mx-auto">
+  <el-card class="mx-auto mt-30vh max-w-200">
     <h1 style="font-size: 80px; text-align: center; margin: 20px;">
       {{ error?.statusCode }}
     </h1>
@@ -14,10 +14,3 @@ defineProps({
   error: Object,
 });
 </script>
-
-<style scoped lang="scss">
-.card {
-  max-width: 800px;
-  margin-top: 30vh;
-}
-</style>
