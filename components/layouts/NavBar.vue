@@ -1,8 +1,10 @@
 <template>
   <div class="nav top-0 bg-primary-0">
     <el-menu
-      class="max-w-[1300px] mx-auto! border-none!" :ellipsis="false" mode="horizontal" background-color="#146E3C" text-color="#FFFFFF"
-      active-text-color="#FFFFFF" :router="true" :default-active="$route.path"
+      :class="`${route.matched[0].path === '/admin' ? '' : 'max-w-[1300px]'} mx-auto! border-none!`"
+      :ellipsis="false" mode="horizontal"
+      background-color="#146E3C" text-color="#FFFFFF" active-text-color="#FFFFFF"
+      :router="true" :default-active="$route.path"
     >
       <el-menu-item disabled class="cursor-default! opacity-100!">
         <NuxtImg preload src="/logo.png" class="h-[30px]" />
@@ -91,6 +93,8 @@ import { useUserStore } from '~/stores/user';
 
 const userStore = useUserStore();
 const isSmallScreen = useWindowWidth();
+
+const route = useRoute();
 
 function logout() {
   userStore.logout();
