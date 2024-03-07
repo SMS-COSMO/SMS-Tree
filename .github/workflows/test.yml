@@ -3,7 +3,7 @@ name: Run Tests
 on: [workflow_dispatch, push]
 
 jobs:
-  test:
+  test-pnpm:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,3 +25,22 @@ jobs:
 
       - name: Run Tests
         run: pnpm test
+
+  test-bun:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v1
+
+      - name: Install dependencies
+        working-directory: .
+        run: bun i install
+
+      - name: Use env secrets
+        run: echo "${{ secrets.TEST_NODE_ENV }}" | base64 -d > .env.local
+
+      - name: Run Tests
+        run: bun run test
