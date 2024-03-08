@@ -73,6 +73,7 @@
     <template #header>
       教师评语
     </template>
+    {{ content?.comment }}
   </el-card>
 </template>
 

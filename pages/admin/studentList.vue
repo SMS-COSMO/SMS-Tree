@@ -1,19 +1,17 @@
 <template>
-  <el-card>
-    <el-input v-model="searchContent" placeholder="搜索学生" />
-    <div class="h-[calc(100vh-200px)]">
-      <el-auto-resizer>
-        <template #default="{ height, width }">
-          <el-table-v2
-            :columns="columns"
-            :data="processedListData"
-            :width="width"
-            :height="height"
-          />
-        </template>
-      </el-auto-resizer>
-    </div>
-  </el-card>
+  <el-input v-model="searchContent" placeholder="搜索学生" />
+  <div class="h-[calc(100vh-190px)]">
+    <el-auto-resizer>
+      <template #default="{ height, width }">
+        <el-table-v2
+          :columns="columns"
+          :data="processedListData"
+          :width="width"
+          :height="height"
+        />
+      </template>
+    </el-auto-resizer>
+  </div>
 </template>
 
 <script setup lang="tsx">

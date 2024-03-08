@@ -1,13 +1,18 @@
 <template>
-  <NuxtLoadingIndicator :height="5" color="#4AA06F" />
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+  <el-config-provider :locale="zhCn">
+    <NuxtLoadingIndicator :height="5" color="#4AA06F" />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </el-config-provider>
 </template>
 
 <script setup lang="ts">
 import '~/styles/index.css';
 import '~/styles/element-override.css';
+
+// @ts-expect-error import element-plus locale
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs';
 
 useHeadSafe({
   titleTemplate: (title?: string) => !title ? '深中知网' : `${title} | 深中知网`,

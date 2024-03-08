@@ -1,28 +1,26 @@
 <template>
-  <el-card>
-    <el-form class="mx-auto w-[700px] py-5" :model="form" label-width="120px">
-      <el-form-item prop="enterYear" label="入学年份">
-        <el-input-number v-model="form.enterYear" :min="2000" :max="3000" />
-      </el-form-item>
-      <el-form-item prop="index" label="班级">
-        <el-input-number v-model="form.index" :min="1" :max="100" />
-      </el-form-item>
-      <el-form-item prop="state" label="状态">
-        <StateSelect v-model="form.state" />
-      </el-form-item>
-      <el-form-item prop="index" label="学生">
-        <SelectUser v-model="form.students" />
-      </el-form-item>
-      <el-form-item prop="index" label="教师">
-        <SelectUser v-model="form.teacher" role="teacher" :multiple="false" />
-      </el-form-item>
-      <el-form-item>
-        <el-button color="#146E3C" :loading="buttonLoading" @click="create">
-          创建
-        </el-button>
-      </el-form-item>
-    </el-form>
-  </el-card>
+  <el-form class="mx-auto w-[700px] py-5" :model="form" label-width="120px">
+    <el-form-item prop="enterYear" label="入学年份">
+      <el-input-number v-model="form.enterYear" :min="2000" :max="3000" />
+    </el-form-item>
+    <el-form-item prop="index" label="班级">
+      <el-input-number v-model="form.index" :min="1" :max="100" />
+    </el-form-item>
+    <el-form-item prop="state" label="状态">
+      <StateSelect v-model="form.state" />
+    </el-form-item>
+    <el-form-item prop="index" label="学生">
+      <SelectUser v-model="form.students" />
+    </el-form-item>
+    <el-form-item prop="index" label="教师">
+      <SelectUser v-model="form.teacher" role="teacher" :multiple="false" />
+    </el-form-item>
+    <el-form-item>
+      <el-button color="#146E3C" :loading="buttonLoading" @click="create">
+        创建
+      </el-button>
+    </el-form-item>
+  </el-form>
 </template>
 
 <script setup lang="ts">

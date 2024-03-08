@@ -1,8 +1,8 @@
 <template>
-  <div class="absolute inset-x-[20px] w-[calc(100vw-40px)] flex flex-row gap-4">
+  <div class="absolute inset-x-0 box-border w-screen flex flex-row gap-4 px-4">
     <AdminNavBar />
-    <div class="mb-5 w-full">
+    <el-card class="mb-5 w-full">
       <slot />
-    </div>
+    </el-card>
   </div>
 </template>

@@ -1,33 +1,31 @@
 <template>
-  <el-card>
-    <el-check-tag :checked="showAll" class="mb-3" @change="showAll = !showAll">
-      展示所有班级
-    </el-check-tag>
-    <el-table :data="processedListData">
-      <el-table-column type="expand" width="55" label="展开">
-        <template #default="scope">
-          <ClassUserList :data="scope.row" />
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip prop="className" label="名称">
-        <template #header>
-          <el-input v-model="searchContent" placeholder="搜索班级" style="height: 35px !important;" />
-        </template>
-      </el-table-column>
-      <el-table-column :width="150" label="人数">
-        <template #default="scope">
-          {{ scope.row.students.length }}
-        </template>
-      </el-table-column>
-      <el-table-column :width="150" prop="teacher" label="教师" />
-      <el-table-column :width="150" prop="enterYear" label="入学年份" />
-      <el-table-column :width="150" show-overflow-tooltip label="状态">
-        <template #default="scope">
-          <StateBadge :state="scope.row.state" />
-        </template>
-      </el-table-column>
-    </el-table>
-  </el-card>
+  <el-check-tag :checked="showAll" class="mb-3" @change="showAll = !showAll">
+    展示所有班级
+  </el-check-tag>
+  <el-table :data="processedListData">
+    <el-table-column type="expand" width="55" label="展开">
+      <template #default="scope">
+        <ClassUserList :data="scope.row" />
+      </template>
+    </el-table-column>
+    <el-table-column show-overflow-tooltip prop="className" label="名称">
+      <template #header>
+        <el-input v-model="searchContent" placeholder="搜索班级" style="height: 35px !important;" />
+      </template>
+    </el-table-column>
+    <el-table-column :width="150" label="人数">
+      <template #default="scope">
+        {{ scope.row.students.length }}
+      </template>
+    </el-table-column>
+    <el-table-column :width="150" prop="teacher" label="教师" />
+    <el-table-column :width="150" prop="enterYear" label="入学年份" />
+    <el-table-column :width="150" show-overflow-tooltip label="状态">
+      <template #default="scope">
+        <StateBadge :state="scope.row.state" />
+      </template>
+    </el-table-column>
+  </el-table>
 </template>
 
 <script setup lang="ts">

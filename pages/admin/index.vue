@@ -1,7 +1,5 @@
 <template>
-  <el-card>
-    home
-  </el-card>
+  home
 </template>
 
 <script setup lang="ts">
