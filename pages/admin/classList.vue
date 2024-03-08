@@ -44,7 +44,7 @@ const searchContent = ref('');
 const { processedListData } = await useSearch<TClassListItem>(
   searchContent,
   templateSearchOption(['className', 'teacher']),
-  async () => await $api.class.list.query(),
+  $api.class.list.query,
   e => e.item,
   (e) => {
     const userStore = useUserStore();

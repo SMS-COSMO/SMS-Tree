@@ -36,7 +36,7 @@ function visitProfile(id: string) {
 async function deleteUser(id: string) {
   try {
     await $api.user.remove.mutate({ id });
-    listData.splice(listData.findIndex(e => e.id === id), 1);
+    listData.value.splice(listData.value.findIndex(e => e.id === id), 1);
   } catch (err) {
     useErrorHandler(err);
   }

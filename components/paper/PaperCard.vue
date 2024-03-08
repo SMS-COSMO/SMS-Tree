@@ -1,5 +1,8 @@
 <template>
-  <el-card class="mb-2.5 cursor-pointer hover:border-color-[#D4D7DE]! hover:bg-hover-bg!" @click="openPaper(paper)">
+  <el-card
+    class="mb-2.5 cursor-pointer hover:border-color-[#D4D7DE]! hover:bg-hover-bg!"
+    @click="navigateTo(`/paper/${paper.id}`)"
+  >
     <el-row class="gap-[6px]">
       <el-tag v-if="paper?.isFeatured" type="success" disable-transitions>
         <el-icon>
@@ -48,8 +51,4 @@ withDefaults(defineProps<{
   showAbstract: false,
   lineClamp: 3,
 });
-
-function openPaper(paper: TPaperListItem | TPaperListWithAuthorItem) {
-  navigateTo(`/paper/${paper.id}`);
-}
 </script>

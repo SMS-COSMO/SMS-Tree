@@ -44,7 +44,6 @@ useHeadSafe({
 });
 
 const isSmallScreen = useWindowWidth();
-
 const quickSearchContent = ref('');
 
 function quickSearch() {

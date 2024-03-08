@@ -1,7 +1,7 @@
 <template>
   <div class="nav top-0 bg-primary-0">
     <el-menu
-      :class="`${route.matched[0].path === '/admin' ? '' : 'max-w-[1300px]'} mx-auto! border-none!`"
+      :class="`${route.matched[0].path === '/admin' ? '' : 'max-w-[1300px]'} mx-auto! border-none! pr-3`"
       :ellipsis="false" mode="horizontal"
       background-color="#146E3C" text-color="#FFFFFF" active-text-color="#FFFFFF"
       :router="true" :default-active="$route.path"

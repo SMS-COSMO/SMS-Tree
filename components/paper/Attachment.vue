@@ -6,7 +6,7 @@
   <el-dialog v-model="showDialog" title="文件下载">
     <el-collapse>
       <el-collapse-item
-        v-for="attachment in attachments.toSorted((a, b) => {
+        v-for="attachment in attachments?.toSorted((a, b) => {
           if (a.isMainFile) return -1;
           else if (b.isMainFile) return 1;
           else return 0;
@@ -19,7 +19,7 @@
               tag="a"
               :href="attachment.S3FileId"
               target="_blank"
-              :icon="ElIconDownload" circle size="small" text bg
+              :icon="ElIconDownload" size="small" text bg circle
             />
             <el-tag v-if="attachment.isMainFile" type="success">
               <el-icon><ElIconStar /></el-icon>
@@ -41,7 +41,7 @@ import type { TAttachmentList } from '~/types';
 const props = defineProps<{
   paperId?: string;
   canDownload?: boolean;
-  attachments: TAttachmentList;
+  attachments?: TAttachmentList;
 }>();
 
 const { $api } = useNuxtApp();

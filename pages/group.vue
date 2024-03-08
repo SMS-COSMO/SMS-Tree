@@ -144,12 +144,14 @@ const userStore = useUserStore();
 const queryClient = useQueryClient();
 const activeTab = ref('first');
 
-const classInfo = await $api.class.content.query({ id: userStore.classIds[0] });
-const userInfo = await $api.user.profile.query({ id: userStore.userId });
+const [classInfo, userInfo] = await useTrpcAsyncData(() => Promise.all([
+  $api.class.content.query({ id: userStore.classIds[0] }),
+  $api.user.profile.query({ id: userStore.userId }),
+])) ?? [];
 
 const { data: availableGroups, suspense: availableGroupsSuspense } = useQuery({
   queryKey: ['availableGroups'],
-  queryFn: () => $api.group.list.query({ classId: userStore.classIds[0] }),
+  queryFn: () => useTrpcAsyncData(() => $api.group.list.query({ classId: userStore.classIds[0] })),
 });
 await availableGroupsSuspense();
 

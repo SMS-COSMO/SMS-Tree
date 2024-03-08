@@ -37,7 +37,9 @@ const props = defineProps<{
 
 const { $api } = useNuxtApp();
 
-const studentProfileList = await Promise.all(props.data.students.map(id => $api.user.profile.query({ id })));
+const studentProfileList = await useTrpcAsyncData(
+  () => Promise.all(props.data.students.map(id => $api.user.profile.query({ id }))),
+);
 
 const newGroupCount = ref(8);
 const newState = ref(props.data.state);

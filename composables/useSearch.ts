@@ -5,12 +5,12 @@ import type { TUserListItem } from '~/types/index';
 export async function useSearch<T>(
   searchContent: Ref<string>,
   fuseOptions: MaybeRefOrGetter<UseFuseOptions<T>>,
-  getList: Function,
+  getList: () => Promise<T[]>,
   map: (e: any) => T = (e: any) => e.item,
   filter?: (e: T) => boolean,
   sort?: ((a: T, b: T) => number),
 ) {
-  const listData: T[] = await getList();
+  const listData = ref(await useTrpcAsyncData(getList) ?? []);
   const fuse = useFuse(searchContent, listData, fuseOptions);
   const processedListData = computed<T[]>(
     () => fuse.results.value

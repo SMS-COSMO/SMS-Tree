@@ -65,8 +65,8 @@
     </el-col>
   </el-row>
 
-  <el-card v-if="attachments.length" class="mt-5">
-    <Preview :attachment="attachments.filter(a => a.isMainFile)[0]" full-height />
+  <el-card v-if="attachments?.length" class="mt-5">
+    <Preview :attachment="attachments?.filter(a => a.isMainFile)[0]" full-height />
   </el-card>
 
   <el-card class="mb-22 mt-5 lg:mb-5">
@@ -89,10 +89,10 @@ const route = useRoute();
 const id = route.params.id.toString();
 const isSmallScreen = useWindowWidth();
 
-const [content, attachments] = await Promise.all([
+const [content, attachments] = await useTrpcAsyncData(() => Promise.all([
   $api.paper.contentWithAuthor.query({ id }),
   $api.paper.attachments.query({ id }),
-]);
+])) ?? [];
 
 function searchTag(keyword: string) {
   navigateTo({
