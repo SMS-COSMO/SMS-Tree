@@ -3,7 +3,7 @@
     <div class="w-full">
       <el-carousel trigger="click" height="250px">
         <el-carousel-item v-for="item in 4" :key="item">
-          <h3 class="small justify-center" text="2xl">
+          <h3 class="justify-center" text="2xl">
             {{ item }}
           </h3>
         </el-carousel-item>
@@ -26,7 +26,7 @@
           </el-row>
         </el-card>
       </el-col>
-      <el-col :span="isSmallScreen ? 24 : 17" class="mt-4 lg:mt-0">
+      <el-col :span="isSmallScreen ? 24 : 17" class="mt-3 lg:mt-0">
         <el-card>
           <template #header>
             作业进度

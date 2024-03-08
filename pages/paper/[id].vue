@@ -53,7 +53,7 @@
         <Attachment :can-download="content?.canDownload" :paper-id="content?.id" :attachments="attachments" />
       </FoldableCard>
     </el-col>
-    <el-col :span="isSmallScreen ? 24 : 18" :class="isSmallScreen ? 'mt-4' : ''">
+    <el-col :span="isSmallScreen ? 24 : 18" class="mt-3 lg:mt-0">
       <FoldableCard :can-fold="isSmallScreen" class="box-border h-full">
         <template #header>
           摘要
@@ -65,11 +65,11 @@
     </el-col>
   </el-row>
 
-  <el-card v-if="attachments?.length" class="mt-5">
+  <el-card v-if="attachments?.length" class="mt-3 lg:mt-5">
     <Preview :attachment="attachments?.filter(a => a.isMainFile)[0]" full-height />
   </el-card>
 
-  <el-card class="mb-22 mt-5 lg:mb-5">
+  <el-card class="mb-22 mt-3 lg:mb-5 lg:mt-5">
     <template #header>
       教师评语
     </template>

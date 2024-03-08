@@ -36,7 +36,7 @@
             infinite-scroll-immediate="false"
             infinite-scroll-distance="500"
             name="list" tag="ul"
-            class="infinite-list fixed left-0 m-0 h-[calc(100svh-95px-65px-70px)] w-screen list-none overflow-x-hidden overflow-y-scroll p-0 scrollbar-hidden lg:h-[calc(100svh-95px-65px)]"
+            class="infinite-list fixed left-0 m-0 h-[calc(100svh-95px-65px-60px)] w-screen list-none overflow-x-hidden overflow-y-scroll p-0 scrollbar-hidden lg:h-[calc(100svh-95px-65px)]"
           >
             <li v-for="(paper, index) in processedListData.slice(0, count)" :key="index">
               <div class="mx-auto max-w-[1300px] px-5">
