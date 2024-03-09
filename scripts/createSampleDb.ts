@@ -1,20 +1,18 @@
 import * as readline from 'node:readline/promises';
 import process from 'node:process';
 import { nanoid } from 'nanoid';
-import { UserController } from '~/server/trpc/controllers/user';
-import { ClassController } from '~/server/trpc/controllers/class';
-import { GroupController } from '~/server/trpc/controllers/group';
-import { PaperController } from '~/server/trpc/controllers/paper';
+
+import { ctl } from '~/server/trpc/context';
+import { env } from '~/server/env';
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
-const uc = new UserController();
-const cc = new ClassController();
-const gc = new GroupController();
-const pc = new PaperController();
+const ans = await rl.question(`Make changes to ${env.DATABASE_CONNECTION_TYPE} - ${env.DATABASE_URL}? [y/n]\n`);
+if (ans === 'n' || ans === 'N')
+  process.exit(0);
 
 const defaultPwd = await rl.question('? Default password: ');
-await uc.register({
+await ctl.uc.register({
   id: 'admin',
   username: 'admin',
   password: defaultPwd,
@@ -26,7 +24,7 @@ const classCount = Number(await rl.question('? Number of classes to create: '));
 
 await Promise.all(
   [...Array(studentCount)].map((_, i) => {
-    return uc.register({
+    return ctl.uc.register({
       id: `Student${i}`,
       username: `Student${i}`,
       password: defaultPwd,
@@ -34,7 +32,7 @@ await Promise.all(
     });
   }).concat(
     [...Array(classCount)].map((_, i) => {
-      return uc.register({
+      return ctl.uc.register({
         id: `Teacher${i}`,
         username: `Teacher${i}`,
         password: defaultPwd,
@@ -52,13 +50,13 @@ function splitToNChunks<T>(array: T[], n: number) {
   return result;
 }
 
-const studentList = (await uc.getList('student')).getResOrTRPCError();
-const teacherList = (await uc.getList('teacher')).getResOrTRPCError();
+const studentList = (await ctl.uc.getList('student')).getResOrTRPCError();
+const teacherList = (await ctl.uc.getList('teacher')).getResOrTRPCError();
 const sepStudentList = splitToNChunks(studentList, classCount);
 
 await Promise.all(
   [...Array(classCount)].map((_, i) => {
-    return cc.create({
+    return ctl.cc.create({
       enterYear: 2022,
       index: Math.round(Math.random() * 100) % 30,
       state: 'initialized',
@@ -68,7 +66,7 @@ await Promise.all(
   }),
 );
 
-const classList = (await cc.getList()).getResOrTRPCError();
+const classList = (await ctl.cc.getList()).getResOrTRPCError();
 
 const groupCount = Number(await rl.question('? Number of groups (per class) to create: '));
 await Promise.all(
@@ -83,7 +81,7 @@ await Promise.all(
 
     return Promise.all(
       [...Array(classGroupCount)].map((_, j) => {
-        return gc.create({
+        return ctl.gc.create({
           classId: c.id,
           members: shuffled[j],
           leader: shuffled[j][0],
@@ -94,12 +92,12 @@ await Promise.all(
   }),
 );
 
-const groupList = (await gc.getList()).getResOrTRPCError();
+const groupList = (await ctl.gc.getList()).getResOrTRPCError();
 
 const paperCount = Number(await rl.question('? Number of papers to create: '));
 await Promise.all(
   [...Array(paperCount)].map((_, i) => {
-    return pc.create({
+    return ctl.pc.create({
       abstract: nanoid(100),
       title: `Paper ${i}`,
       keywords: [...Array(5)].map(_ => nanoid(5)),
