@@ -1,7 +1,7 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { makeId } from '../../trpc/utils/shared';
 import { users } from './user';
 import { classes } from './class';
-import { makeId } from '../../trpc/utils/shared';
 
 export const groups = sqliteTable('groups', {
   id: text('id', { mode: 'text' }).primaryKey().$defaultFn(() => makeId(12)),
