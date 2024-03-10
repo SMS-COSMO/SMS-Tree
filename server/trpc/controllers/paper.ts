@@ -36,18 +36,15 @@ export class PaperController {
 
   async getAuthors(groupId: string) {
     const group = (await ctl.gc.getContent(groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
-    const leader = group.leader
-      ? (await ctl.uc.getProfile(group.leader)).getResOrTRPCError('INTERNAL_SERVER_ERROR')
-      : undefined;
+    const leader = group.leader ?? undefined;
     const authors = await Promise.all(
       (group.members ?? [])
         .map(async (author) => {
-          const usr = (await ctl.uc.getProfile(author)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
-          if (!usr)
+          if (!author)
             return { id: '', username: '' };
           return {
-            id: usr.id,
-            username: usr.username,
+            id: author.id,
+            username: author.username,
           };
         }),
     );
