@@ -11,7 +11,7 @@ import { classesToUsers } from '../../db/schema/classToUser';
 import { ctl } from '../context';
 import { Auth } from '../utils/auth';
 import { Result, Result500, ResultNoRes } from '../utils/result';
-import { makeId } from '~/server/trpc/utils/shared';
+import { makeId } from '../../trpc/utils/shared';
 
 export class UserController {
   private auth: Auth;

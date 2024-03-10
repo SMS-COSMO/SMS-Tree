@@ -1,5 +1,5 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { makeId } from '~/server/trpc/utils/shared';
+import { makeId } from '../../trpc/utils/shared';
 
 export const users = sqliteTable('users', {
   id: text('id', { mode: 'text' }).primaryKey().$defaultFn(() => makeId(12)),
