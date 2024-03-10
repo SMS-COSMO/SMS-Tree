@@ -96,4 +96,12 @@ export const groupRouter = router({
     .mutation(async ({ ctx, input }) => {
       return (await ctx.groupController.setLeader(input.userId, input.groupId, ctx.user)).getMsgOrTRPCError();
     }),
+
+  removeLeader: protectedProcedure
+    .input(z.object({
+      groupId: z.string().min(1, '小组id不存在'),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return (await ctx.groupController.removeLeader(input.groupId, ctx.user)).getMsgOrTRPCError();
+    }),
 });

@@ -22,15 +22,15 @@
       <el-table :data="availableGroups" stripe>
         <el-table-column prop="leader" label="组长" width="200">
           <template #default="{ row }">
-            {{ row.leader ?? '还没有组长' }}
+            {{ row.leader ? row.leader.username : '还没有组长' }}
           </template>
         </el-table-column>
         <el-table-column prop="members" label="已有组员">
           <template #default="{ row }">
             <span v-if="!row.members.length">还没有组员~</span>
             <span v-else class="space-x-2">
-              <template v-for="member in row.members" :key="member">
-                <el-tag class="font-bold" disable-transitions size="large">{{ member }}</el-tag>
+              <template v-for="member in row.members" :key="member.id">
+                <el-tag class="font-bold" disable-transitions size="large">{{ member.username }}</el-tag>
               </template>
             </span>
           </template>
@@ -48,9 +48,16 @@
               <el-button type="danger" @click="leaveGroup({ userId: userStore.userId, groupId: row.id })">
                 退出小组
               </el-button>
-              <el-button type="primary" @click="becomeLeader({ userId: userStore.userId, groupId: row.id })">
-                成为组长
-              </el-button>
+              <template v-if="row.leader?.id === userStore.userId">
+                <el-button type="primary" @click="removeLeader({ groupId: row.id })">
+                  取消成为组长
+                </el-button>
+              </template>
+              <template v-else>
+                <el-button type="primary" @click="becomeLeader({ userId: userStore.userId, groupId: row.id })">
+                  成为组长
+                </el-button>
+              </template>
             </template>
             <el-button
               v-else
@@ -187,6 +194,15 @@ const { mutate: changeGroup } = useMutation({
 
 const { mutate: becomeLeader } = useMutation({
   mutationFn: $api.group.setLeader.mutate,
+  onSuccess: (message) => {
+    queryClient.invalidateQueries({ queryKey: ['availableGroups'] });
+    ElMessage.success(message);
+  },
+  onError: err => useErrorHandler(err),
+});
+
+const { mutate: removeLeader } = useMutation({
+  mutationFn: $api.group.removeLeader.mutate,
   onSuccess: (message) => {
     queryClient.invalidateQueries({ queryKey: ['availableGroups'] });
     ElMessage.success(message);
