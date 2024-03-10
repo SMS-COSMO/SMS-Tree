@@ -4,7 +4,7 @@
       ref="formRef"
       :rules="rules"
       :model="form"
-      class="mx-auto max-w-500px"
+      class="mx-auto max-w-[500px]"
       label-position="top"
     >
       <el-form-item prop="oldPassword">

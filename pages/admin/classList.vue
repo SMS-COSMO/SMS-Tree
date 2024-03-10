@@ -10,7 +10,11 @@
     </el-table-column>
     <el-table-column show-overflow-tooltip prop="className" label="名称">
       <template #header>
-        <el-input v-model="searchContent" placeholder="搜索班级" style="height: 35px !important;" />
+        <el-input
+          v-model="searchContent"
+          placeholder="搜索班级"
+          class="h-[35px]!"
+        />
       </template>
     </el-table-column>
     <el-table-column :width="150" label="人数">

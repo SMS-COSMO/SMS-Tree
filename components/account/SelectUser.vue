@@ -5,7 +5,7 @@
       placeholder="请选择"
       clearable collapse-tags :multiple="multiple"
       :max-collapse-tags="4"
-      class="w-[400px]"
+      class="w-100"
       @change="emit('update:modelValue', selected)"
     >
       <template #header>

@@ -3,7 +3,10 @@
     <template #header>
       用户信息
     </template>
-    <el-descriptions :column="isSmallScreen ? 2 : 4" size="large" style="margin-bottom: -20px;">
+    <el-descriptions
+      :column="isSmallScreen ? 2 : 4"
+      size="large" class="mb-[-16px]"
+    >
       <el-descriptions-item>
         <template #label>
           <div class="text-[16px]!">

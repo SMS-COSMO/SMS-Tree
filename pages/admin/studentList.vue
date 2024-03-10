@@ -47,7 +47,7 @@ const columns: AnyColumn[] = [
     width: 120,
     title: '学号',
     cellRenderer: ({ cellData: id }) => (
-      <span style="cursor: pointer" onClick={() => visitProfile(id)}>
+      <span class="cursor-pointer" onClick={() => visitProfile(id)}>
         {id}
       </span>
     ),

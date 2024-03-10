@@ -22,5 +22,6 @@
         "jsonc",
         "yaml",
         "toml"
-    ]
+    ],
+    "editor.tabSize": 2
 }

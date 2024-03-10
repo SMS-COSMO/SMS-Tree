@@ -129,7 +129,7 @@
       </el-col>
 
       <el-col :span="2">
-        <div class="h-500px">
+        <div class="h-[500px]">
           <client-only>
             <el-steps direction="vertical" :active="1">
               <el-step :icon="ElIconUpload" title="提交" />

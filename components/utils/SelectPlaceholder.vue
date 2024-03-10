@@ -1,7 +1,11 @@
 <template>
-  <el-skeleton animated style="line-height: 0;">
+  <el-skeleton animated class="leading-0">
     <template #template>
-      <el-skeleton-item variant="rect" :style="`height: 45px; border-radius: 10px; width: ${width === '' ? '100%' : `${width}px`}`" />
+      <el-skeleton-item
+        variant="rect"
+        class="`rounded h-[45px]!"
+        :style="`width: ${width === '' ? '100%' : `${width}px`}`"
+      />
     </template>
   </el-skeleton>
 </template>
