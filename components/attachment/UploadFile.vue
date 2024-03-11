@@ -1,9 +1,13 @@
 <template>
   <el-upload
-    v-model:file-list="fileList" action="" drag
+    v-model:file-list="fileList"
+    action="" drag
+    :multiple="multiple"
+    :limit="multiple ? 10 : 1"
     :http-request="handleUpload"
     :on-remove="handleRemove"
-    :multiple="multiple" class="w-full" :limit="multiple ? 10 : 1"
+    :on-exceed="handleExceed"
+    class="w-full"
   >
     <div class="el-upload__text">
       拖拽文件或 <strong>点击这里上传</strong>
@@ -24,9 +28,13 @@ import { nanoid } from 'nanoid';
 const props = withDefaults(defineProps<{
   isMainFile?: boolean;
   multiple?: boolean;
+  mainSizeLimit?: number;
+  secondarySizeLimit?: number;
 }>(), {
   isMainFile: false,
   multiple: false,
+  mainSizeLimit: 10000000, // 10MB
+  secondarySizeLimit: 30000000, // 30MB
 });
 const attachmentIdList = defineModel<string[]>({ default: [] });
 const fileUidToAttachmentId = new Map<number, string>();
@@ -35,14 +43,28 @@ const { $api } = useNuxtApp();
 
 const fileList = ref<UploadFiles>([]);
 // Get file with upload meta data
-function getFile(rawFile: UploadRawFile) {
+function getFile(rawFile: UploadRawFile): UploadFile | undefined {
   return fileList.value.find(file => file.uid === rawFile.uid);
+}
+
+function removeFileFromList(f: UploadFile | undefined, message: string) {
+  if (f)
+    fileList.value.splice(fileList.value.indexOf(f), 1);
+  ElMessage({ message, type: 'error', showClose: true });
 }
 
 async function handleUpload(option: UploadRequestOptions) {
   const key = `${nanoid(10)}-${option.file.name}`;
   const { file } = option;
   const f = getFile(file);
+
+  // f.size in bytes
+  const sizeLimit = props.isMainFile ? props.mainSizeLimit : props.secondarySizeLimit;
+  if (f?.size && f.size > sizeLimit) {
+    removeFileFromList(f, `文件大小不应超过 ${Math.round(sizeLimit / 10 ** 6)}MB，当前文件大小：${Math.round(f.size / 10 ** 6)}MB`);
+    handleRemove(f);
+    return;
+  }
 
   try {
     const url = await $api.s3.getStandardUploadPresignedUrl.mutate({ key });
@@ -65,9 +87,7 @@ async function handleUpload(option: UploadRequestOptions) {
     attachmentIdList.value.push(id);
     fileUidToAttachmentId.set(file.uid, id);
   } catch (err) {
-    if (f)
-      fileList.value.splice(fileList.value.indexOf(f), 1);
-    ElMessage({ message: '上传失败', type: 'error', showClose: true });
+    removeFileFromList(f, '上传失败');
   }
 }
 
@@ -79,4 +99,8 @@ function handleRemove(uploadFile: UploadFile) {
     1,
   );
 };
+
+function handleExceed() {
+  ElMessage({ message: '超出文件数量限制', type: 'error', showClose: true });
+}
 </script>
