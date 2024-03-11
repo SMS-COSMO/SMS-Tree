@@ -67,7 +67,6 @@
 
 <script setup lang="ts">
 import { vOnClickOutside } from '@vueuse/components';
-import { useSearch } from '~/composables/useSearch';
 import type { TPaperListWithAuthorItem } from '~/types/index';
 import type { TSearchOption } from '~/components/paper/SearchOptions.vue';
 

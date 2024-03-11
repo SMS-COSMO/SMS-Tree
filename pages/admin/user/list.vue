@@ -16,7 +16,6 @@
 
 <script setup lang="tsx">
 import { type Column, TableV2FixedDir } from 'element-plus';
-import { useUserSearch } from '~/composables/useSearch';
 
 const { $api } = useNuxtApp();
 useHeadSafe({

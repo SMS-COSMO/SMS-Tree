@@ -33,7 +33,6 @@
 </template>
 
 <script setup lang="ts">
-import { templateSearchOption, useSearch } from '~/composables/useSearch';
 import type { TClassListItem } from '~/types';
 
 const { $api } = useNuxtApp();

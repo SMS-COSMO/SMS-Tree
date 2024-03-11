@@ -34,7 +34,6 @@
 
 <script lang="ts" setup>
 import SelectPlaceholder from '../utils/SelectPlaceholder.vue';
-import { useUserSearch } from '~/composables/useSearch';
 
 const props = withDefaults(defineProps<{
   modelValue: string[] | string;
