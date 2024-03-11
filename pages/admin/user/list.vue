@@ -17,7 +17,6 @@
 <script setup lang="tsx">
 import { type Column, TableV2FixedDir } from 'element-plus';
 import { useUserSearch } from '~/composables/useSearch';
-import type { TUserListItem } from '~/types';
 
 const { $api } = useNuxtApp();
 useHeadSafe({

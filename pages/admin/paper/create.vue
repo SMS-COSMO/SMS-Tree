@@ -29,6 +29,7 @@
     <el-form-item label="附件">
       <UploadFile v-model="attachments" multiple />
     </el-form-item>
+    <el-form-item label="评语" />
     <el-form-item>
       <el-button color="#146E3C" :loading="buttonLoading" @click="create(formRef)">
         创建
@@ -53,6 +54,7 @@ const form = reactive<TPaperCreate>({
   abstract: '',
   canDownload: false,
   groupId: undefined,
+  comment: '',
 });
 
 const rules = reactive<FormRules<TPaperCreate>>({

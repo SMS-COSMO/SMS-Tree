@@ -16,6 +16,7 @@ export const paperRouter = router({
       abstract: z.string(),
       groupId: z.string().optional(),
       canDownload: z.boolean(),
+      comment: z.string().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
       return (await ctx.paperController.create(input)).getResOrTRPCError();
