@@ -26,7 +26,7 @@
           </el-icon>
           创建论文
         </el-menu-item>
-        <el-menu-item index="/admin/createClass">
+        <el-menu-item index="/admin/class/create">
           <el-icon>
             <ElIconCirclePlus />
           </el-icon>
@@ -41,7 +41,7 @@
       </el-icon>
       学生列表
     </el-menu-item>
-    <el-menu-item index="/admin/classList">
+    <el-menu-item index="/admin/class/list">
       <el-icon>
         <ElIconDocument />
       </el-icon>

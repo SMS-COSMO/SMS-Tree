@@ -17,14 +17,14 @@
         />
       </template>
     </el-table-column>
-    <el-table-column :width="150" label="人数">
+    <el-table-column :width="200" label="人数">
       <template #default="scope">
         {{ scope.row.students.length }}
       </template>
     </el-table-column>
-    <el-table-column :width="150" prop="teacher" label="教师" />
-    <el-table-column :width="150" prop="enterYear" label="入学年份" />
-    <el-table-column :width="150" show-overflow-tooltip label="状态">
+    <el-table-column :width="200" prop="teacher" label="教师" />
+    <el-table-column :width="200" prop="enterYear" label="入学年份" />
+    <el-table-column :width="200" show-overflow-tooltip label="状态">
       <template #default="scope">
         <StateBadge :state="scope.row.state" />
       </template>

@@ -15,9 +15,9 @@
 </template>
 
 <script setup lang="tsx">
-import { TableV2FixedDir } from 'element-plus';
-import type { AnyColumn } from 'element-plus/es/components/table-v2/src/common';
+import { type Column, TableV2FixedDir } from 'element-plus';
 import { useUserSearch } from '~/composables/useSearch';
+import type { TUserListItem } from '~/types';
 
 const { $api } = useNuxtApp();
 useHeadSafe({
@@ -26,10 +26,6 @@ useHeadSafe({
 
 const searchContent = ref('');
 const { listData, processedListData } = await useUserSearch(searchContent, 'student');
-
-function visitProfile(id: string) {
-  navigateTo(`/user/${id}`);
-}
 
 async function deleteUser(id: string) {
   try {
@@ -40,14 +36,14 @@ async function deleteUser(id: string) {
   }
 }
 
-const columns: AnyColumn[] = [
+const columns: Column<any>[] = [
   {
     key: 'id',
     dataKey: 'id',
     width: 120,
     title: '学号',
     cellRenderer: ({ cellData: id }) => (
-      <span class="cursor-pointer" onClick={() => visitProfile(id)}>
+      <span class="cursor-pointer" onClick={() => navigateTo(`/user/${id}`)}>
         {id}
       </span>
     ),
@@ -57,12 +53,22 @@ const columns: AnyColumn[] = [
     dataKey: 'username',
     width: 100,
     title: '姓名',
+    cellRenderer: ({ cellData: username, rowIndex }) => (
+      <span class="cursor-pointer" onClick={() => navigateTo(`/user/${processedListData.value[rowIndex].id}`)}>
+        {username}
+      </span>
+    ),
   },
   {
     key: 'className',
     dataKey: 'className',
     width: 120,
     title: '班级',
+    cellRenderer: ({ cellData: className, rowIndex }) => (
+      <span class="cursor-pointer" onClick={() => navigateTo(`/admin/class/${processedListData.value[rowIndex].classIds[0]}`)}>
+        {className}
+      </span>
+    ),
   },
   {
     key: 'projectName',
