@@ -20,8 +20,20 @@
     </div>
     <h3>学生列表</h3>
     <el-table :default-sort="{ prop: 'projectName', order: 'descending' }" :data="studentProfileList">
-      <el-table-column :width="200" label="学号" prop="id" />
-      <el-table-column :width="200" label="姓名" sortable prop="username" />
+      <el-table-column :width="200" label="学号" prop="id">
+        <template #default="scope">
+          <span class="cursor-pointer" @click="navigateTo(`/user/${scope.row.id}`)">
+            {{ scope.row.id }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column :width="200" label="姓名" sortable prop="username">
+        <template #default="scope">
+          <span class="cursor-pointer" @click="navigateTo(`/user/${scope.row.id}`)">
+            {{ scope.row.username }}
+          </span>
+        </template>
+      </el-table-column>
       <el-table-column label="课题" sortable prop="projectName" />
     </el-table>
   </div>

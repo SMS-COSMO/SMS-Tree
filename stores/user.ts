@@ -63,5 +63,7 @@ export const useUserStore = defineStore('user', () => {
     setGroupId,
   };
 }, {
-  persist: true,
+  persist: {
+    storage: persistedState.localStorage,
+  },
 });

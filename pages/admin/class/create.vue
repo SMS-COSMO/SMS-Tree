@@ -28,7 +28,7 @@ import type { TClassCreate } from '~/types';
 
 const { $api } = useNuxtApp();
 useHeadSafe({
-  title: '创建论文',
+  title: '创建班级',
 });
 
 const form = reactive<TClassCreate>({
