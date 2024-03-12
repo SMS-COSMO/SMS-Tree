@@ -31,34 +31,43 @@
       </Transition>
       <Transition name="mobile-search-result-transition">
         <div v-show="!showSearchOptions">
-          <TransitionGroup
-            v-infinite-scroll="load"
-            infinite-scroll-immediate="false"
-            infinite-scroll-distance="500"
-            name="list" tag="ul"
-            class="infinite-list fixed left-0 m-0 h-[calc(100svh-95px-65px-60px)] w-screen list-none overflow-x-hidden overflow-y-scroll p-0 scrollbar-hidden lg:h-[calc(100svh-95px-65px)]"
-          >
-            <li v-for="(paper, index) in processedListData.slice(0, count)" :key="index">
-              <div class="mx-auto max-w-[1300px] px-4 lg:px-5">
-                <el-row :gutter="20">
-                  <el-col :span="6" />
-                  <el-col :span="isSmallScreen ? 24 : 18">
-                    <PaperCard :paper="paper" :show-abstract="searchOptions.showAbstract" />
-                  </el-col>
-                </el-row>
+          <client-only>
+            <TransitionGroup
+              v-infinite-scroll="load"
+              infinite-scroll-immediate="false"
+              infinite-scroll-distance="500"
+              name="list" tag="ul"
+              class="infinite-list fixed left-0 m-0 h-[calc(100svh-95px-65px-60px)] w-screen list-none overflow-x-hidden overflow-y-scroll p-0 scrollbar-hidden lg:h-[calc(100svh-95px-65px)]"
+            >
+              <li v-for="(paper, index) in processedListData.slice(0, count)" :key="index">
+                <div class="mx-auto max-w-[1300px] px-4 lg:px-5">
+                  <el-row :gutter="20">
+                    <el-col :span="6" />
+                    <el-col :span="isSmallScreen ? 24 : 18">
+                      <PaperCard :paper="paper" :show-abstract="searchOptions.showAbstract" />
+                    </el-col>
+                  </el-row>
+                </div>
+              </li>
+              <li v-if="processedListData.length === 0" class="text-center">
+                <div class="mx-auto max-w-[1300px] px-4 lg:px-5">
+                  <el-row :gutter="20">
+                    <el-col :span="6" />
+                    <el-col :span="isSmallScreen ? 24 : 18">
+                      <el-empty description="无结果，换个搜索条件试试？" />
+                    </el-col>
+                  </el-row>
+                </div>
+              </li>
+            </TransitionGroup>
+            <template #fallback>
+              <div class="m-0 h-[calc(100svh-95px-65px-60px)] overflow-y-hidden p-0 lg:h-[calc(100svh-95px-65px)]">
+                <el-card v-for="n in 10" :key="n" class="mb-2.5 h-25">
+                  <el-skeleton :rows="1" animated />
+                </el-card>
               </div>
-            </li>
-            <li v-if="processedListData.length === 0" class="text-center">
-              <div class="mx-auto max-w-[1300px] px-4 lg:px-5">
-                <el-row :gutter="20">
-                  <el-col :span="6" />
-                  <el-col :span="isSmallScreen ? 24 : 18">
-                    <el-empty description="无结果，换个搜索条件试试？" />
-                  </el-col>
-                </el-row>
-              </div>
-            </li>
-          </TransitionGroup>
+            </template>
+          </client-only>
         </div>
       </Transition>
     </el-col>
