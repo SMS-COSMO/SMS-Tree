@@ -25,16 +25,16 @@ const classCount = Number(await rl.question('? Number of classes to create: '));
 await Promise.all(
   [...Array(studentCount)].map((_, i) => {
     return ctl.uc.register({
-      id: `Student${i}`,
-      username: `Student${i}`,
+      id: `StudentID${i}`,
+      username: `StudentName${i}`,
       password: defaultPwd,
       role: 'student',
     });
   }).concat(
     [...Array(classCount)].map((_, i) => {
       return ctl.uc.register({
-        id: `Teacher${i}`,
-        username: `Teacher${i}`,
+        id: `TeacherID${i}`,
+        username: `TeacherName${i}`,
         password: defaultPwd,
         role: 'teacher',
       });

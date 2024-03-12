@@ -13,26 +13,24 @@
         </el-icon>
         <span>创建</span>
       </template>
-      <el-menu-item-group>
-        <el-menu-item index="/admin/user/create">
-          <el-icon>
-            <ElIconCirclePlus />
-          </el-icon>
-          创建账户
-        </el-menu-item>
-        <el-menu-item index="/admin/paper/create">
-          <el-icon>
-            <ElIconCirclePlus />
-          </el-icon>
-          创建论文
-        </el-menu-item>
-        <el-menu-item index="/admin/class/create">
-          <el-icon>
-            <ElIconCirclePlus />
-          </el-icon>
-          创建班级
-        </el-menu-item>
-      </el-menu-item-group>
+      <el-menu-item index="/admin/user/create">
+        <el-icon>
+          <ElIconCirclePlus />
+        </el-icon>
+        创建账户
+      </el-menu-item>
+      <el-menu-item index="/admin/paper/create">
+        <el-icon>
+          <ElIconCirclePlus />
+        </el-icon>
+        创建论文
+      </el-menu-item>
+      <el-menu-item index="/admin/class/create">
+        <el-icon>
+          <ElIconCirclePlus />
+        </el-icon>
+        创建班级
+      </el-menu-item>
     </el-sub-menu>
 
     <el-menu-item index="/admin/user/list">

@@ -1,6 +1,6 @@
 <template>
   <el-card
-    class="mb-2.5 cursor-pointer hover:border-color-[#D4D7DE]! hover:bg-hover-bg!"
+    class="mb-2 cursor-pointer lg:mb-2.5 hover:border-color-[#D4D7DE]! hover:bg-hover-bg!"
     @click="navigateTo(`/paper/${paper.id}`)"
   >
     <el-row class="gap-[6px]">

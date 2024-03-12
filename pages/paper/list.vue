@@ -39,7 +39,7 @@
             class="infinite-list fixed left-0 m-0 h-[calc(100svh-95px-65px-60px)] w-screen list-none overflow-x-hidden overflow-y-scroll p-0 scrollbar-hidden lg:h-[calc(100svh-95px-65px)]"
           >
             <li v-for="(paper, index) in processedListData.slice(0, count)" :key="index">
-              <div class="mx-auto max-w-[1300px] px-5">
+              <div class="mx-auto max-w-[1300px] px-4 lg:px-5">
                 <el-row :gutter="20">
                   <el-col :span="6" />
                   <el-col :span="isSmallScreen ? 24 : 18">
@@ -49,7 +49,7 @@
               </div>
             </li>
             <li v-if="processedListData.length === 0" class="text-center">
-              <div class="mx-auto max-w-[1300px] px-5">
+              <div class="mx-auto max-w-[1300px] px-4 lg:px-5">
                 <el-row :gutter="20">
                   <el-col :span="6" />
                   <el-col :span="isSmallScreen ? 24 : 18">
