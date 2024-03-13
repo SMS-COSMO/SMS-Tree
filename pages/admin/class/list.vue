@@ -26,7 +26,7 @@
     <el-table-column :width="200" prop="enterYear" label="入学年份" />
     <el-table-column :width="200" show-overflow-tooltip label="状态">
       <template #default="scope">
-        <StateBadge :state="scope.row.state" />
+        <StateBadge :state="scope.row.state" size="large" />
       </template>
     </el-table-column>
   </el-table>
