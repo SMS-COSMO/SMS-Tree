@@ -16,18 +16,20 @@
         <el-menu-item index="/paper/list">
           论文列表
         </el-menu-item>
-        <el-menu-item
-          v-if="userStore.role === 'student'"
-          index="/group"
-        >
-          我的小组
-        </el-menu-item>
-        <el-menu-item
-          v-if="userStore.role === 'admin' || userStore.role === 'teacher'"
-          index="/admin"
-        >
-          管理
-        </el-menu-item>
+        <client-only>
+          <el-menu-item
+            v-if="userStore.role === 'student'"
+            index="/group"
+          >
+            我的小组
+          </el-menu-item>
+          <el-menu-item
+            v-if="userStore.role === 'admin' || userStore.role === 'teacher'"
+            index="/admin"
+          >
+            管理
+          </el-menu-item>
+        </client-only>
       </template>
       <div class="flex-grow" />
       <client-only>
@@ -45,11 +47,6 @@
         <el-menu-item v-else index="/user/login">
           登录
         </el-menu-item>
-        <template #fallback>
-          <el-menu-item>
-            {{ userStore.username }}
-          </el-menu-item>
-        </template>
       </client-only>
     </el-menu>
   </div>
