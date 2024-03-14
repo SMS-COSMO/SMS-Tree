@@ -1,17 +1,19 @@
 <template>
-  <el-input v-model="searchContent" placeholder="搜索学生" />
-  <div class="h-[calc(100vh-190px)]">
-    <el-auto-resizer>
-      <template #default="{ height, width }">
-        <el-table-v2
-          :columns="columns"
-          :data="processedListData"
-          :width="width"
-          :height="height"
-        />
-      </template>
-    </el-auto-resizer>
-  </div>
+  <el-card class="mb-5 w-full">
+    <el-input v-model="searchContent" placeholder="搜索学生" />
+    <div class="h-[calc(100vh-190px)]">
+      <el-auto-resizer>
+        <template #default="{ height, width }">
+          <el-table-v2
+            :columns="columns"
+            :data="processedListData"
+            :width="width"
+            :height="height"
+          />
+        </template>
+      </el-auto-resizer>
+    </div>
+  </el-card>
 </template>
 
 <script setup lang="tsx">
@@ -41,7 +43,7 @@ const columns: Column<any>[] = [
     width: 120,
     title: '学号',
     cellRenderer: ({ cellData: id }) => (
-      <span class="cursor-pointer" onClick={() => navigateTo(`/user/${id}`)}>
+      <span class="cursor-pointer" onClick={() => navigateTo(`/admin/user/${id}`)}>
         {id}
       </span>
     ),
@@ -52,7 +54,7 @@ const columns: Column<any>[] = [
     width: 100,
     title: '姓名',
     cellRenderer: ({ cellData: username, rowIndex }) => (
-      <span class="cursor-pointer" onClick={() => navigateTo(`/user/${processedListData.value[rowIndex].id}`)}>
+      <span class="cursor-pointer" onClick={() => navigateTo(`/admin/user/${processedListData.value[rowIndex].id}`)}>
         {username}
       </span>
     ),
@@ -84,7 +86,7 @@ const columns: Column<any>[] = [
     title: '操作',
     cellRenderer: ({ cellData: id }) => (
       <span>
-        <el-button size="small">
+        <el-button size="small" onClick={() => navigateTo(`/admin/user/${id}`)}>
           修改
         </el-button>
         <el-popconfirm

@@ -1,7 +1,9 @@
 <template>
-  <template v-if="classData">
-    <ClassUserList :data="classData" />
-  </template>
+  <el-card class="mb-5 w-full">
+    <template v-if="classData">
+      <ClassUserList :data="classData" />
+    </template>
+  </el-card>
 </template>
 
 <script lang="ts" setup>

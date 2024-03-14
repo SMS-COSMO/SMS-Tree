@@ -1,13 +1,19 @@
 <template>
   <div class="mb-22">
-    <el-tabs v-if="isMine" v-model="selectedTab" :tab-position="isSmallScreen ? 'top' : 'left'">
-      <el-tab-pane name="info" label="用户信息" class="lg:ml-4">
+    <el-tabs
+      v-if="isMine"
+      v-model="selectedTab"
+      class="w-full p-2"
+      :tab-position="isSmallScreen ? 'top' : 'left'"
+      @tab-change="$router.replace({ query: { action: selectedTab } })"
+    >
+      <el-tab-pane name="info" label="用户信息" class="lg:ml-3">
         <UserProfile :user-id="id" />
       </el-tab-pane>
-      <el-tab-pane name="password" label="修改密码" class="lg:ml-4">
+      <el-tab-pane name="password" label="修改密码" class="lg:ml-3">
         <ModifyPassword :user-id="id" />
       </el-tab-pane>
-      <el-tab-pane name="modify" label="修改用户信息" class="lg:ml-4" />
+      <el-tab-pane name="modify" label="修改用户信息" class="lg:ml-3" />
     </el-tabs>
     <UserProfile v-else :user-id="id" />
   </div>
