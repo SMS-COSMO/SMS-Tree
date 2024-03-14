@@ -5,8 +5,9 @@
         <UserProfile :user-id="id" />
       </el-tab-pane>
       <el-tab-pane label="修改密码" class="lg:ml-4">
-        <ModifyPassword />
+        <ModifyPassword :user-id="id" />
       </el-tab-pane>
+      <el-tab-pane label="修改用户信息" class="lg:ml-4" />
     </el-tabs>
     <UserProfile v-else :user-id="id" />
   </div>
@@ -25,5 +26,5 @@ const route = useRoute();
 const id = route.params.id.toString();
 const userStore = useUserStore();
 
-const isMine = userStore.userId === id;
+const isMine = userStore.userId === id || ['admin', 'teacher'].includes(userStore.role);
 </script>

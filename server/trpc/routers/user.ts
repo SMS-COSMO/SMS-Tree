@@ -26,9 +26,13 @@ export const userRouter = router({
     }),
 
   modifyPassword: protectedProcedure
-    .input(z.object({ oldPassword: z.string(), newPassword: z.string().min(8, { message: '用户密码长度应至少为8' }) }))
+    .input(z.object({
+      id: userIdZod,
+      oldPassword: z.string(),
+      newPassword: z.string().min(8, { message: '用户密码长度应至少为8' }),
+    }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.userController.modifyPassword(ctx.user, input.oldPassword, input.newPassword)).getMsgOrTRPCError();
+      return (await ctx.userController.modifyPassword(ctx.user, input.id, input.oldPassword, input.newPassword)).getMsgOrTRPCError();
     }),
 
   login: publicProcedure
