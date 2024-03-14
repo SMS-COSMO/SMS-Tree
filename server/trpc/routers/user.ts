@@ -60,6 +60,16 @@ export const userRouter = router({
       return (await ctx.userController.bulkRegister(input.users, input.randomPassword)).getMsgOrTRPCError();
     }),
 
+  modify: protectedProcedure
+    .input(z.object({
+      id: z.string().min(4, { message: '用户ID长度应至少为4' }).max(24, { message: '用户ID超出长度范围' }),
+      username: z.string().min(2, { message: '用户名长度应至少为2' }).max(15, { message: '用户名超出长度范围' }),
+      role: roleEnumZod,
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return (await ctx.userController.modify(input.id, input.username, input.role)).getMsgOrTRPCError();
+    }),
+
   profile: protectedProcedure
     .input(z.object({ id: userIdZod }))
     .query(async ({ ctx, input }) => {

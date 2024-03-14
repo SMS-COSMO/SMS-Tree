@@ -12,6 +12,7 @@ import { ctl } from '../context';
 import { Auth } from '../utils/auth';
 import { Result, Result500, ResultNoRes } from '../utils/result';
 import { makeId } from '../../trpc/utils/shared';
+import type { TRole } from '~/types';
 
 export class UserController {
   private auth: Auth;
@@ -142,6 +143,15 @@ export class UserController {
       return new Result(true, '获取成功', userSerializer(basicUser, groupIds, classIds, projectName, className));
     } catch (err) {
       return new ResultNoRes(false, '获取用户详细信息失败');
+    }
+  }
+
+  async modify(id: string, username: string, role: TRole) {
+    try {
+      await db.update(users).set({ username, role }).where(eq(users.id, id));
+      return new ResultNoRes(true, '修改成功');
+    } catch (err) {
+      return new Result500();
     }
   }
 

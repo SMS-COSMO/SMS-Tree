@@ -2,10 +2,12 @@
   <el-tabs
     v-model="selectedTab"
     tab-position="top"
-    class="w-full p-2"
+    class="w-full px-2"
     @tab-change="$router.replace({ query: { action: selectedTab } })"
   >
-    <el-tab-pane name="modify" label="修改用户信息" />
+    <el-tab-pane name="modify" label="修改用户信息">
+      <ModifyUser :user-id="id" />
+    </el-tab-pane>
     <el-tab-pane name="password" label="修改密码">
       <ModifyPassword :user-id="id" />
     </el-tab-pane>

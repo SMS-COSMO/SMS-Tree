@@ -13,7 +13,9 @@
       <el-tab-pane name="password" label="修改密码" class="lg:ml-3">
         <ModifyPassword :user-id="id" />
       </el-tab-pane>
-      <el-tab-pane name="modify" label="修改用户信息" class="lg:ml-3" />
+      <el-tab-pane name="modify" label="修改用户信息" class="lg:ml-3">
+        <ModifyUser :user-id="id" />
+      </el-tab-pane>
     </el-tabs>
     <UserProfile v-else :user-id="id" />
   </div>
