@@ -3,70 +3,75 @@
     <template #header>
       用户信息
     </template>
-    <el-descriptions
-      :column="isSmallScreen ? 2 : 4"
-      size="large" class="mb-[-16px]"
-    >
-      <el-descriptions-item>
-        <template #label>
-          <div class="text-[16px]!">
-            <el-icon>
-              <ElIconUser />
-            </el-icon>
-            姓名
-          </div>
-        </template>
-        <span class="text-[16px]!">
-          {{ info?.username }}
-        </span>
-      </el-descriptions-item>
-      <el-descriptions-item>
-        <template #label>
-          <div class="text-[16px]!">
-            <el-icon>
-              <ElIconUser />
-            </el-icon>
-            学号
-          </div>
-        </template>
-        <span class="text-[16px]!">
-          {{ info?.id }}
-        </span>
-      </el-descriptions-item>
-      <el-descriptions-item v-if="info?.role === 'student'">
-        <template #label>
-          <div class="text-[16px]!">
-            <el-icon>
-              <ElIconLocation />
-            </el-icon>
-            班级
-          </div>
-        </template>
-        <span class="text-[16px]!">
-          {{ info?.className }}
-        </span>
-      </el-descriptions-item>
-      <el-descriptions-item>
-        <template #label>
-          <div class="text-[16px]!">
-            <el-icon>
-              <ElIconTickets />
-            </el-icon>
-            账号权限
-          </div>
-        </template>
-        <el-tag size="small">
-          {{ roleName[info?.role ?? 'student'] }}
-        </el-tag>
-      </el-descriptions-item>
-    </el-descriptions>
+    <client-only>
+      <el-descriptions
+        :column="isSmallScreen ? 2 : 4"
+        size="large" class="mb-[-16px]"
+      >
+        <el-descriptions-item>
+          <template #label>
+            <div class="text-[16px]!">
+              <el-icon>
+                <ElIconUser />
+              </el-icon>
+              姓名
+            </div>
+          </template>
+          <span class="text-[16px]!">
+            {{ info?.username }}
+          </span>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="text-[16px]!">
+              <el-icon>
+                <ElIconUser />
+              </el-icon>
+              学号
+            </div>
+          </template>
+          <span class="text-[16px]!">
+            {{ info?.id }}
+          </span>
+        </el-descriptions-item>
+        <el-descriptions-item v-if="info?.role === 'student'">
+          <template #label>
+            <div class="text-[16px]!">
+              <el-icon>
+                <ElIconLocation />
+              </el-icon>
+              班级
+            </div>
+          </template>
+          <span class="text-[16px]!">
+            {{ info?.className }}
+          </span>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="text-[16px]!">
+              <el-icon>
+                <ElIconTickets />
+              </el-icon>
+              账号权限
+            </div>
+          </template>
+          <el-tag size="small">
+            {{ roleName[info?.role ?? 'student'] }}
+          </el-tag>
+        </el-descriptions-item>
+      </el-descriptions>
+      <template #fallback>
+        <el-skeleton :rows="1" animated />
+      </template>
+    </client-only>
   </el-card>
   <FoldableCard class="mt-5">
     <template #header>
       参与的论文
     </template>
     <el-skeleton :rows="10" :loading="paperLoading" animated>
-      <div :class="papers.length > 1 ? 'lg:columns-2' : ''">
+      <div :class="papers.length > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
         <div v-for="(paper, index) in papers" :key="index">
           <PaperCard :paper="paper" show-abstract />
         </div>
@@ -105,7 +110,7 @@ onMounted(async () => {
     for (const group of (info?.groupIds ?? []))
       paperIds = paperIds.concat((await $api.group.content.query({ id: group })).papers);
     for (const paper of paperIds)
-      papers.value.push(await $api.paper.contentWithAuthor.query({ id: paper }));
+      papers.value.push(await $api.paper.info.query({ id: paper }));
     paperLoading.value = false;
   } catch (err) {
     useErrorHandler(err);
