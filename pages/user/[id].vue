@@ -1,13 +1,13 @@
 <template>
   <div class="mb-22">
-    <el-tabs v-if="isMine" :tab-position="isSmallScreen ? 'top' : 'left'">
-      <el-tab-pane label="用户信息" class="lg:ml-4">
+    <el-tabs v-if="isMine" v-model="selectedTab" :tab-position="isSmallScreen ? 'top' : 'left'">
+      <el-tab-pane name="info" label="用户信息" class="lg:ml-4">
         <UserProfile :user-id="id" />
       </el-tab-pane>
-      <el-tab-pane label="修改密码" class="lg:ml-4">
+      <el-tab-pane name="password" label="修改密码" class="lg:ml-4">
         <ModifyPassword :user-id="id" />
       </el-tab-pane>
-      <el-tab-pane label="修改用户信息" class="lg:ml-4" />
+      <el-tab-pane name="modify" label="修改用户信息" class="lg:ml-4" />
     </el-tabs>
     <UserProfile v-else :user-id="id" />
   </div>
@@ -19,10 +19,10 @@ import { useUserStore } from '~/stores/user';
 useHeadSafe({
   title: '用户信息',
 });
-
 const isSmallScreen = useWindowWidth();
 
 const route = useRoute();
+const selectedTab = ref(route.query.action?.toString() ?? 'info');
 const id = route.params.id.toString();
 const userStore = useUserStore();
 
