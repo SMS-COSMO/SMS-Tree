@@ -22,16 +22,10 @@ export const paperRouter = router({
       return (await ctx.paperController.create(input)).getResOrTRPCError();
     }),
 
-  content: protectedProcedure
+  info: protectedProcedure
     .input(z.object({ id: paperIdZod }))
     .query(async ({ ctx, input }) => {
       return (await ctx.paperController.getContent(input.id)).getResOrTRPCError();
-    }),
-
-  contentWithAuthor: protectedProcedure
-    .input(z.object({ id: paperIdZod }))
-    .query(async ({ ctx, input }) => {
-      return (await ctx.paperController.getContentWithAuthor(input.id)).getResOrTRPCError();
     }),
 
   remove: protectedProcedure
@@ -44,11 +38,6 @@ export const paperRouter = router({
   list: protectedProcedure
     .query(async ({ ctx }) => {
       return (await ctx.paperController.getList()).getResOrTRPCError();
-    }),
-
-  listWithAuthor: protectedProcedure
-    .query(async ({ ctx }) => {
-      return (await ctx.paperController.getListWithAuthor()).getResOrTRPCError();
     }),
 
   attachments: protectedProcedure

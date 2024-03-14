@@ -1,11 +1,20 @@
 <template>
   <div class="mb-22">
-    <el-tabs v-if="isMine" :tab-position="isSmallScreen ? 'top' : 'left'">
-      <el-tab-pane label="用户信息" class="lg:ml-4">
+    <el-tabs
+      v-if="isMine"
+      v-model="selectedTab"
+      class="w-full p-2"
+      :tab-position="isSmallScreen ? 'top' : 'left'"
+      @tab-change="$router.replace({ query: { action: selectedTab } })"
+    >
+      <el-tab-pane name="info" label="用户信息" class="lg:ml-3">
         <UserProfile :user-id="id" />
       </el-tab-pane>
-      <el-tab-pane label="修改密码" class="lg:ml-4">
-        <ModifyPassword />
+      <el-tab-pane name="password" label="修改密码" class="lg:ml-3">
+        <ModifyPassword :user-id="id" />
+      </el-tab-pane>
+      <el-tab-pane name="modify" label="修改用户信息" class="lg:ml-3">
+        <ModifyUser :user-id="id" />
       </el-tab-pane>
     </el-tabs>
     <UserProfile v-else :user-id="id" />
@@ -18,12 +27,12 @@ import { useUserStore } from '~/stores/user';
 useHeadSafe({
   title: '用户信息',
 });
-
 const isSmallScreen = useWindowWidth();
 
 const route = useRoute();
+const selectedTab = ref(route.query.action?.toString() ?? 'info');
 const id = route.params.id.toString();
 const userStore = useUserStore();
 
-const isMine = userStore.userId === id;
+const isMine = userStore.userId === id || ['admin', 'teacher'].includes(userStore.role);
 </script>

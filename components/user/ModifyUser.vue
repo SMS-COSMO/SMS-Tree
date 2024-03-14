@@ -1,20 +1,11 @@
 <template>
-  <el-card class="mb-5 w-full">
+  <el-card>
     <el-form
       ref="formRef"
       label-position="top"
-      class="mx-auto max-w-[500px] py-5"
+      class="mx-auto max-w-[500px]"
       :model="form" :rules="rules"
     >
-      <el-form-item prop="id">
-        <div class="icon-label">
-          <el-icon :size="15">
-            <ElIconUser />
-          </el-icon>
-          学号 / 用户名
-        </div>
-        <el-input v-model="form.id" />
-      </el-form-item>
       <el-form-item prop="username">
         <div>
           <el-icon :size="15">
@@ -23,15 +14,6 @@
           姓名
         </div>
         <el-input v-model="form.username" />
-      </el-form-item>
-      <el-form-item prop="password">
-        <div>
-          <el-icon :size="15">
-            <ElIconKey />
-          </el-icon>
-          密码
-        </div>
-        <el-input v-model="form.password" type="text" />
       </el-form-item>
       <el-form-item>
         <div>
@@ -52,8 +34,8 @@
         </client-only>
       </el-form-item>
       <el-form-item>
-        <el-button color="#146E3C" :loading="isPending" @click="register(formRef)">
-          创建
+        <el-button color="#146E3C" :loading="isPending" @click="modify(formRef)">
+          修改
         </el-button>
       </el-form-item>
     </el-form>
@@ -65,6 +47,10 @@ import { useMutation } from '@tanstack/vue-query';
 import type { FormInstance, FormRules } from 'element-plus';
 import type { TUserRegister } from '~/types/index';
 
+const props = defineProps<{
+  userId: string;
+}>();
+
 useHeadSafe({
   title: '创建用户',
 });
@@ -72,41 +58,32 @@ useHeadSafe({
 const { $api } = useNuxtApp();
 
 const formRef = ref<FormInstance>();
-const form = reactive<TUserRegister>({
-  id: '',
-  username: '',
-  password: '',
-  role: 'student',
+const userInfo = await useTrpcAsyncData(() => $api.user.profile.query({ id: props.userId }));
+const form = reactive({
+  username: userInfo?.username ?? '',
+  role: userInfo?.role ?? 'student',
 });
 
-const rules = reactive<FormRules<TUserRegister>>({
-  id: [
-    { required: true, message: '学号 / 用户名不能为空', trigger: 'blur' },
-    { min: 4, max: 24, message: '学号 / 用户名长度应在 4~24 之间', trigger: 'blur' },
-  ],
+const rules = reactive<FormRules<TUserRegister>> ({
   username: [
     { required: true, message: '姓名不能为空', trigger: 'blur' },
     { min: 2, max: 15, message: '姓名长度应在 2~15 之间', trigger: 'blur' },
   ],
-  password: [
-    { required: true, message: '密码不能为空', trigger: 'blur' },
-    { min: 8, message: '密码至少 8 位', trigger: 'blur' },
-  ],
 });
 
-const { mutate: registerMutation, isPending } = useMutation({
-  mutationFn: $api.user.register.mutate,
+const { mutate: modifyMutation, isPending } = useMutation({
+  mutationFn: $api.user.modify.mutate,
   onSuccess: message => ElMessage({ message, type: 'success', showClose: true }),
   onError: err => useErrorHandler(err),
 });
 
-async function register(submittedForm: FormInstance | undefined) {
+async function modify(submittedForm: FormInstance | undefined) {
   if (!submittedForm)
     return;
 
   await submittedForm.validate(async (valid) => {
     if (valid)
-      registerMutation({ ...form });
+      modifyMutation({ id: props.userId, ...form });
     else
       ElMessage({ message: '表单内有错误，请修改后再提交', type: 'error', showClose: true });
   });

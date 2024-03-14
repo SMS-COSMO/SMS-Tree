@@ -1,5 +1,9 @@
 <template>
-  <el-tag :type="(stateTable[state].type as '' | 'info' | 'success' | 'warning' | 'danger')">
+  <el-tag
+    :type="(stateTable[state].type as '' | 'info' | 'success' | 'warning' | 'danger')"
+    :size="size"
+    :class="size === 'large' ? 'font-bold' : ''"
+  >
     {{ stateTable[state].name }}
   </el-tag>
 </template>
@@ -7,6 +11,7 @@
 <script setup lang="ts">
 export type TClassState = 'archived' | 'initialized' | 'selectGroup' | 'submitPaper';
 defineProps<{
+  size: 'default' | 'large';
   state: TClassState;
 }>();
 

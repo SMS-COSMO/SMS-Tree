@@ -31,8 +31,7 @@
         {{ paper?.title }}
       </el-text>
       <el-text>
-        <GroupMembers v-if="'groupId' in paper" :group-id="paper.groupId" type="text" :show-leader="false" />
-        <GroupMembers v-else :authors="paper.authors" type="text" :show-leader="false" />
+        <GroupMembers :authors="paper.authors" type="text" :show-leader="false" />
       </el-text>
     </el-row>
     <el-row v-if="showAbstract" class="mt-2.5">
@@ -44,10 +43,10 @@
 </template>
 
 <script setup lang="ts">
-import type { TPaperListItem, TPaperListWithAuthorItem } from '~/types/index';
+import type { TPaperListWithAuthorItem } from '~/types/index';
 
 withDefaults(defineProps<{
-  paper: TPaperListItem | TPaperListWithAuthorItem;
+  paper: TPaperListWithAuthorItem;
   showAbstract?: boolean;
   lineClamp?: number;
 }>(), {
