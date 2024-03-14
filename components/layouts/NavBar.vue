@@ -1,7 +1,7 @@
 <template>
   <div class="nav top-0 bg-primary-0">
     <el-menu
-      :class="`${route.matched[0].path === '/admin' ? '' : 'max-w-[1300px]'} mx-auto! border-none! pr-3`"
+      :class="`${isAdmin ? '' : 'max-w-[1300px]'} mx-auto! border-none! pr-3`"
       :ellipsis="false" mode="horizontal"
       background-color="#146E3C" text-color="#FFFFFF" active-text-color="#FFFFFF"
       :router="true" :default-active="$route.path"
@@ -91,7 +91,10 @@ import { useUserStore } from '~/stores/user';
 const userStore = useUserStore();
 const isSmallScreen = useWindowWidth();
 
-const route = useRoute();
+const isAdmin = ref(false);
+watch(() => useRoute().matched[0].path, (value) => {
+  isAdmin.value = value === '/admin';
+});
 
 function logout() {
   userStore.logout();
