@@ -22,6 +22,9 @@
       <el-text v-if="paper?.canDownload" type="info" size="small">
         下载次数：{{ paper?.downloadCount }}
       </el-text>
+      <el-text :type="rateColor(paper?.rate)" size="small">
+        论文分数：{{ paper?.rate }}
+      </el-text>
     </el-row>
     <el-row class="mt-2 gap-2">
       <el-text class="break-normal font-bold text-xl!">
@@ -51,4 +54,13 @@ withDefaults(defineProps<{
   showAbstract: false,
   lineClamp: 3,
 });
+
+function rateColor(rate: number): 'success' | 'warning' | 'info' | 'primary' | 'danger' {
+  if (rate >= 80)
+    return 'success';
+  else if (rate >= 60)
+    return 'warning';
+  else
+    return 'danger';
+}
 </script>
