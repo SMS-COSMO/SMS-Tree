@@ -23,7 +23,9 @@
           style="--el-switch-on-color: #13ce66; --el-switch-off-color: #db3131;"
         />
       </el-form-item>
-      <el-form-item label="作者" />
+      <el-form-item label="小组">
+        <SelectGroup v-model="form.groupId" />
+      </el-form-item>
       <el-form-item label="论文文件">
         <UploadFile v-model="paperFile" is-main-file />
       </el-form-item>

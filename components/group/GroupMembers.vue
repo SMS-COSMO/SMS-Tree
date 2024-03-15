@@ -20,10 +20,11 @@
 
 <script setup lang="ts">
 import type { TAuthor } from '~/server/trpc/serializer/paper';
+import type { TUser } from '~/server/trpc/serializer/user';
 
 withDefaults(defineProps<{
-  authors?: TAuthor[];
-  leader?: TAuthor;
+  authors?: TAuthor[] | TUser[];
+  leader?: TAuthor | TUser;
   type?: 'text' | 'link';
   showLeader?: boolean;
 }>(), {

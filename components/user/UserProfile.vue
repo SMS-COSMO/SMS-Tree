@@ -84,7 +84,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { TPaperListWithAuthor } from '~/types/index';
+import type { TPaperList } from '~/types/index';
 
 const props = defineProps<{
   userId: string;
@@ -101,7 +101,7 @@ const roleName = {
 };
 
 const info = await useTrpcAsyncData(() => $api.user.profile.query({ id: props.userId }));
-const papers = ref<TPaperListWithAuthor>([]);
+const papers = ref<TPaperList>([]);
 const paperLoading = ref(true);
 
 onMounted(async () => {

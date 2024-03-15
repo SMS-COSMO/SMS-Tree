@@ -30,7 +30,7 @@
     border-bottom: none !important;
 }
 
-.el-popper.is-light:not(.el-select__popper):not(.el-popover) {
+.el-popper.is-light:not(.el-select__popper):not(.el-popover):not(.el-cascader__dropdown) {
     border: none !important;
     background: none !important;
 }

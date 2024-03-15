@@ -44,10 +44,10 @@
 </template>
 
 <script setup lang="ts">
-import type { TPaperListWithAuthorItem } from '~/types/index';
+import type { TPaperListItem } from '~/types/index';
 
 withDefaults(defineProps<{
-  paper: TPaperListWithAuthorItem;
+  paper: TPaperListItem;
   showAbstract?: boolean;
   lineClamp?: number;
 }>(), {
