@@ -56,7 +56,7 @@
               账号权限
             </div>
           </template>
-          <el-tag size="small">
+          <el-tag>
             {{ roleName[info?.role ?? 'student'] }}
           </el-tag>
         </el-descriptions-item>

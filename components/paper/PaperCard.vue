@@ -16,14 +16,15 @@
         </el-icon>
         可下载
       </el-tag>
+      <el-tag :type="rateColor(paper?.rate)" disable-transitions>
+        <el-icon><ElIconHistogram /></el-icon>
+        分数：{{ paper?.rate }}
+      </el-tag>
       <el-tag type="info" disable-transitions>
         {{ paper?.createdAt?.toLocaleDateString('zh-CN') }}
       </el-tag>
       <el-text v-if="paper?.canDownload" type="info" size="small">
         下载次数：{{ paper?.downloadCount }}
-      </el-text>
-      <el-text :type="rateColor(paper?.rate)" size="small">
-        论文分数：{{ paper?.rate }}
       </el-text>
     </el-row>
     <el-row class="mt-2 gap-2">
@@ -54,7 +55,7 @@ withDefaults(defineProps<{
   lineClamp: 3,
 });
 
-function rateColor(rate: number): 'success' | 'warning' | 'info' | 'primary' | 'danger' {
+function rateColor(rate: number) {
   if (rate >= 80)
     return 'success';
   else if (rate >= 60)
