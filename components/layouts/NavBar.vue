@@ -90,10 +90,14 @@ import { useUserStore } from '~/stores/user';
 
 const userStore = useUserStore();
 const isSmallScreen = useWindowWidth();
+const route = useRoute();
 
 const isAdmin = ref(false);
-watch(() => useRoute().matched[0].path, (value) => {
+watch(() => route.matched[0].path, (value) => {
   isAdmin.value = value === '/admin';
+});
+onMounted(() => {
+  isAdmin.value = route.matched[0].path === '/admin';
 });
 
 function logout() {
