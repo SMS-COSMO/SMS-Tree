@@ -13,7 +13,7 @@ main:
 ---
 cta:
   - 开发者指南
-  - /developer/get-started
+  - /developer/introduction/getting-started
 secondary:
   - Star on GitHub →
   - https://github.com/sms-cosmo/sms-tree
