@@ -36,10 +36,12 @@ jobs:
           node-version: "18"
 
       - name: Install dependencies
-        run: pnpm install
+        run: cd docs && pnpm install
 
       - name: Build docs
         run: pnpm run docs:build
+        env:
+          NITRO_PRESET: github_pages
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
