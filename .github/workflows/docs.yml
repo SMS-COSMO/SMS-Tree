@@ -39,7 +39,7 @@ jobs:
         run: cd docs && pnpm install
 
       - name: Build docs
-        run: pnpm run docs:build
+        run: cd docs && pnpm run build
         env:
           NITRO_PRESET: github_pages
 

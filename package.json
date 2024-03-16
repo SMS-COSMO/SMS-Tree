@@ -16,10 +16,7 @@
     "db:push": "drizzle-kit push:sqlite",
     "test": "cp test.sqlite testRuntime.sqlite || copy test.sqlite testRuntime.sqlite && vitest",
     "test:ui": "cp test.sqlite testRuntime.sqlite || copy test.sqlite testRuntime.sqlite && vitest --ui",
-    "coverage": "cp test.sqlite testRuntime.sqlite || copy test.sqlite testRuntime.sqlite && vitest run --coverage",
-    "docs:dev": "cd docs && nuxt dev",
-    "docs:build": "cd docs && nuxt build",
-    "docs:preview": "cd docs && nuxt preview"
+    "coverage": "cp test.sqlite testRuntime.sqlite || copy test.sqlite testRuntime.sqlite && vitest run --coverage"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.529.1",
