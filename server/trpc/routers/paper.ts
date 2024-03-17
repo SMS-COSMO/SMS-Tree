@@ -21,8 +21,25 @@ export const paperRouter = router({
       isFeatured: z.boolean().optional().default(false),
       // TODO: status
     }))
+    .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
       return (await ctx.paperController.create(input)).getResOrTRPCError();
+    }),
+
+  createSafe: protectedProcedure
+    .input(z.object({
+      title: z
+        .string()
+        .min(1, { message: '请输入论文标题' })
+        .max(256, { message: '论文标题长度不应超过 256' }),
+      keywords: z
+        .array(z.string().max(8, { message: '关键词最长为8个字符' }))
+        .max(8, { message: '最多8个关键词' }),
+      abstract: z.string(),
+      canDownload: z.boolean(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return (await ctx.paperController.createSafe(input, ctx.user)).getResOrTRPCError();
     }),
 
   info: protectedProcedure

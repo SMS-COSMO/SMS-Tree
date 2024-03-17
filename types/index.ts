@@ -14,6 +14,7 @@ export type TPaperContent = RouterOutput['paper']['info'];
 export type TPaperList = RouterOutput['paper']['list'];
 export type TPaperListItem = RouterOutput['paper']['list'][0];
 export type TPaperCreate = RouterInput['paper']['create'];
+export type TPaperCreateSafe = RouterInput['paper']['createSafe'];
 
 export type TClassContent = RouterOutput['class']['content'];
 export type TClassList = RouterOutput['class']['list'];

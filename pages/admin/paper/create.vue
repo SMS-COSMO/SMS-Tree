@@ -2,7 +2,7 @@
   <el-card class="mb-5 w-full">
     <el-form
       ref="formRef"
-      class="mx-auto w-[700px] py-5"
+      class="mx-auto max-w-[800px] py-5"
       :model="form" :rules="rules"
       label-width="120px"
     >
