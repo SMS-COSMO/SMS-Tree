@@ -138,8 +138,8 @@ const { processedListData } = await useSearch<TPaperListItem>(
   (a: TPaperListItem, b: TPaperListItem) => {
     if (searchOptions.sortOption === 'default')
       return 0; // Keep original order
-    if (searchOptions.sortOption === 'rate')
-      return b.rate - a.rate; // Greater first
+    if (searchOptions.sortOption === 'score')
+      return (b.score ?? 0) - (a.score ?? 0); // Greater first
     if (searchOptions.sortOption === 'time')
       return a.createdAt > b.createdAt ? -1 : 1; // Newest first
     if (searchOptions.sortOption === 'downloadCount')

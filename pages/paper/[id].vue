@@ -15,12 +15,12 @@
         {{ info?.title }}
       </h1>
       <el-space :size="20" class="mb-2 lg:mb-0">
-        <el-statistic :value="info?.rate">
+        <el-statistic v-if="info?.score" :value="info?.score">
           <template #title>
             分数
           </template>
         </el-statistic>
-        <el-divider direction="vertical" class="h-10!" />
+        <el-divider v-if="info?.score" direction="vertical" class="h-10!" />
         <el-statistic :value="info?.downloadCount">
           <template #title>
             下载次数

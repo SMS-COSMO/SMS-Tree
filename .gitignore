@@ -27,8 +27,8 @@ logs
 drizzle/
 
 # local sqlite file
-local.sqlite
-testRuntime.sqlite
+*.sqlite
+!test.sqlite
 
 # vitest coverage folder
 coverage/

@@ -7,7 +7,7 @@ export const papers = sqliteTable('papers', {
   keywords: text('keywords', { mode: 'json' }).notNull().$type<string[]>(),
   abstract: text('abstract', { mode: 'text' }).notNull(),
   status: integer('status').notNull().default(0),
-  rate: integer('rate').notNull().default(0),
+  score: integer('score'),
   isFeatured: integer('is_featured', { mode: 'boolean' }).notNull().default(false),
   canDownload: integer('can_download', { mode: 'boolean' }).notNull().default(false),
   downloadCount: integer('download_count').notNull().default(0),

@@ -16,9 +16,9 @@
         </el-icon>
         可下载
       </el-tag>
-      <el-tag :type="rateColor(paper?.rate)" disable-transitions>
+      <el-tag v-if="paper?.score" :type="scoreColor(paper?.score)" disable-transitions>
         <el-icon><ElIconHistogram /></el-icon>
-        分数：{{ paper?.rate }}
+        分数：{{ paper?.score }}
       </el-tag>
       <el-tag type="info" disable-transitions>
         {{ paper?.createdAt?.toLocaleDateString('zh-CN') }}
@@ -55,10 +55,10 @@ withDefaults(defineProps<{
   lineClamp: 3,
 });
 
-function rateColor(rate: number) {
-  if (rate >= 80)
+function scoreColor(score: number) {
+  if (score >= 80)
     return 'success';
-  else if (rate >= 60)
+  else if (score >= 60)
     return 'warning';
   else
     return 'danger';
