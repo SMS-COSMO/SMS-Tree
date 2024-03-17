@@ -13,7 +13,7 @@ export const paperRouter = router({
       keywords: z
         .array(z.string().max(8, { message: '关键词最长为8个字符' }))
         .max(8, { message: '最多8个关键词' }),
-      abstract: z.string(),
+      abstract: z.string().max(5000, '摘要最长5000字'),
       groupId: z.string().optional(),
       canDownload: z.boolean(),
       score: z.number().int().optional(),
@@ -35,7 +35,7 @@ export const paperRouter = router({
       keywords: z
         .array(z.string().max(8, { message: '关键词最长为8个字符' }))
         .max(8, { message: '最多8个关键词' }),
-      abstract: z.string(),
+      abstract: z.string().max(5000, '摘要最长5000字'),
       canDownload: z.boolean(),
     }))
     .mutation(async ({ ctx, input }) => {
@@ -72,6 +72,8 @@ export const paperRouter = router({
       return (await ctx.paperController.updateDownloadCount(input.id, ctx.user)).getMsgOrTRPCError();
     }),
 
+  // TODO: should be turned into 'scoring'
+  // allow admin to set score / isFeatured / comment
   setComment: protectedProcedure
     .use(requireRoles(['admin', 'teacher']))
     .input(z.object({
