@@ -1,4 +1,5 @@
 import { UserController } from '~/server/trpc/controllers/user';
+import { makeId } from '~/server/trpc/utils/shared';
 
 const userController = new UserController();
 const password = makeId(10);

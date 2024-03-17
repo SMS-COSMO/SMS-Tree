@@ -16,6 +16,7 @@ export const paperRouter = router({
       abstract: z.string(),
       groupId: z.string().optional(),
       canDownload: z.boolean(),
+      score: z.number().int().optional(),
       comment: z.string().optional(),
     }))
     .mutation(async ({ ctx, input }) => {

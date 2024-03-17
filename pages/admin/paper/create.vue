@@ -23,6 +23,9 @@
           style="--el-switch-on-color: #13ce66; --el-switch-off-color: #db3131;"
         />
       </el-form-item>
+      <el-form-item label="分数">
+        <el-input-number v-model="form.score" placeholder="可留空" step-strictly />
+      </el-form-item>
       <el-form-item label="小组">
         <SelectGroup v-model="form.groupId" />
       </el-form-item>
@@ -58,7 +61,8 @@ const form = reactive<TPaperCreate>({
   abstract: '',
   canDownload: false,
   groupId: undefined,
-  comment: '',
+  comment: undefined,
+  score: undefined,
 });
 
 const rules = reactive<FormRules<TPaperCreate>>({
