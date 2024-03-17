@@ -10,7 +10,7 @@
         <el-input v-model="form.title" />
       </el-form-item>
       <el-form-item prop="abstract" label="摘要">
-        <el-input v-model="form.abstract" :autosize="{ minRows: 3, maxRows: 6 }" type="textarea" />
+        <el-input v-model="form.abstract" :autosize="{ minRows: 4, maxRows: 8 }" type="textarea" />
       </el-form-item>
       <el-form-item prop="keywords" label="关键词">
         <keywordEditor v-model="form.keywords" />
@@ -20,7 +20,15 @@
           v-model="form.canDownload"
           size="large"
           active-text="是" inactive-text="否" inline-prompt
-          style="--el-switch-on-color: #13ce66; --el-switch-off-color: #db3131;"
+          style="--el-switch-on-color: #146E3C; --el-switch-off-color: #db3131;"
+        />
+      </el-form-item>
+      <el-form-item prop="canDownload" label="优秀作业">
+        <el-switch
+          v-model="form.isFeatured"
+          size="large"
+          active-text="是" inactive-text="否" inline-prompt
+          style="--el-switch-on-color: #146E3C; --el-switch-off-color: #db3131;"
         />
       </el-form-item>
       <el-form-item label="分数">
@@ -35,7 +43,9 @@
       <el-form-item label="附件">
         <UploadFile v-model="attachments" multiple />
       </el-form-item>
-      <el-form-item label="评语" />
+      <el-form-item label="评语">
+        <el-input v-model="form.comment" :autosize="{ minRows: 4, maxRows: 8 }" type="textarea" />
+      </el-form-item>
       <el-form-item>
         <el-button color="#146E3C" :loading="buttonLoading" @click="create(formRef)">
           创建
@@ -63,6 +73,7 @@ const form = reactive<TPaperCreate>({
   groupId: undefined,
   comment: undefined,
   score: undefined,
+  isFeatured: false,
 });
 
 const rules = reactive<FormRules<TPaperCreate>>({
