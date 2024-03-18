@@ -85,22 +85,21 @@ export class GroupController {
       if (!info)
         return new ResultNoRes(false, '小组不存在');
 
-      const members = (
-        await db.select().from(usersToGroups)
-          .where(eq(usersToGroups.groupId, id))
+      const members = await db.select().from(usersToGroups).where(eq(usersToGroups.groupId, id));
+      const membersWithInfo = await Promise.all(
+        members.map(
+          async item => (await ctl.uc.getProfile(item.userId)).getResOrTRPCError('INTERNAL_SERVER_ERROR'),
+        ),
       );
 
-      const membersWithInfo = await Promise.all(members.map(
-        async item => (
-          await ctl.uc.getProfile(item.userId)).getResOrTRPCError('INTERNAL_SERVER_ERROR'),
-      ));
+      const papers = await db.select().from(papersToGroups).where(eq(papersToGroups.groupId, id));
+      const papersWithInfo = await Promise.all(
+        papers.map(
+          async item => (await ctl.pc.getBasicInfo(item.paperId)).getResOrTRPCError('INTERNAL_SERVER_ERROR'),
+        ),
+      );
 
-      const papers = (
-        await db.select().from(papersToGroups)
-          .where(eq(papersToGroups.groupId, id))
-      ).map(item => item.paperId);
-
-      const group = groupSerializer(info, membersWithInfo, papers);
+      const group = groupSerializer(info, membersWithInfo, papersWithInfo);
       return new Result(true, '查询成功', group);
     } catch (err) {
       return new ResultNoRes(false, '小组不存在');
@@ -126,24 +125,8 @@ export class GroupController {
         classId
           ? await db.select().from(groups).where(eq(groups.classId, classId))
           : await db.select().from(groups).all()
-      ) {
-        const members = (
-          await db.select().from(usersToGroups)
-            .where(eq(usersToGroups.groupId, info.id))
-        );
-
-        const membersWithInfo = await Promise.all(members.map(
-          async item => (
-            await ctl.uc.getProfile(item.userId)).getResOrTRPCError('INTERNAL_SERVER_ERROR'),
-        ));
-
-        const papers = (
-          await db.select().from(papersToGroups)
-            .where(eq(papersToGroups.groupId, info.id))
-        ).map(item => item.paperId);
-
-        res.push(groupSerializer(info, membersWithInfo, papers));
-      }
+      )
+        res.push((await this.getContent(info.id)).getResOrTRPCError('INTERNAL_SERVER_ERROR'));
 
       return new Result(true, '查询成功', res);
     } catch (err) {

@@ -31,7 +31,7 @@
       <el-text class="break-normal font-bold text-xl!">
         {{ paper?.title }}
       </el-text>
-      <el-text>
+      <el-text v-if="'authors' in paper">
         <GroupMembers :authors="paper.authors" type="text" :show-leader="false" />
       </el-text>
     </el-row>
@@ -44,10 +44,11 @@
 </template>
 
 <script setup lang="ts">
+import type { TRawPaper } from '~/server/db/db';
 import type { TPaperListItem } from '~/types/index';
 
 withDefaults(defineProps<{
-  paper: TPaperListItem;
+  paper: TPaperListItem | TRawPaper;
   showAbstract?: boolean;
   lineClamp?: number;
 }>(), {

@@ -70,6 +70,15 @@ export class PaperController {
     return new Result(true, '查询成功', { authors, leader });
   }
 
+  async getBasicInfo(id: string) {
+    try {
+      const info = await db.select().from(papers).where(eq(papers.id, id)).get();
+      return new Result(true, '查询成功', info);
+    } catch (err) {
+      return new ResultNoRes(false, '论文不存在');
+    }
+  }
+
   async getContent(id: string, info?: TRawPaper) {
     try {
       const realInfo = info ?? await db.select().from(papers).where(eq(papers.id, id)).get();

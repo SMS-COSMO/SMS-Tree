@@ -70,21 +70,19 @@
     <template #header>
       参与的论文
     </template>
-    <el-skeleton :rows="10" :loading="paperLoading" animated>
-      <div :class="papers.length > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
-        <div v-for="(paper, index) in papers" :key="index">
-          <PaperCard :paper="paper" show-abstract />
-        </div>
+    <div v-if="!papers?.length">
+      <el-empty :image-size="130" description="暂无论文" />
+    </div>
+    <div v-else :class="papers?.length > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
+      <div v-for="(paper, index) in papers" :key="index">
+        <PaperCard :paper="paper" show-abstract />
       </div>
-      <div v-if="!papers.length">
-        <el-empty :image-size="130" description="暂无论文" />
-      </div>
-    </el-skeleton>
+    </div>
   </FoldableCard>
 </template>
 
 <script lang="ts" setup>
-import type { TPaperList } from '~/types/index';
+import type { TRawPaper } from '~/server/db/db';
 
 const props = defineProps<{
   userId: string;
@@ -100,20 +98,12 @@ const roleName = {
   admin: '管理员',
 };
 
-const info = await useTrpcAsyncData(() => $api.user.profile.query({ id: props.userId }));
-const papers = ref<TPaperList>([]);
-const paperLoading = ref(true);
+const { info, papers } = await useTrpcAsyncData(async () => {
+  const info = await $api.user.profile.query({ id: props.userId });
+  let papers: TRawPaper[] = [];
+  for (const group of (info?.groupIds ?? []))
+    papers = papers.concat((await $api.group.content.query({ id: group })).papers);
 
-onMounted(async () => {
-  try {
-    let paperIds: string[] = [];
-    for (const group of (info?.groupIds ?? []))
-      paperIds = paperIds.concat((await $api.group.content.query({ id: group })).papers);
-    for (const paper of paperIds)
-      papers.value.push(await $api.paper.info.query({ id: paper }));
-    paperLoading.value = false;
-  } catch (err) {
-    useErrorHandler(err);
-  }
-});
+  return { info, papers };
+}) ?? { info: undefined, papers: undefined };
 </script>
