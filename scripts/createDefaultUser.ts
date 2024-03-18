@@ -1,6 +1,5 @@
 import { nanoid } from 'nanoid';
 import { UserController } from '~/server/trpc/controllers/user';
-import { makeId } from '~/server/trpc/utils/shared';
 
 const userController = new UserController();
 const password = nanoid(10);
