@@ -13,25 +13,39 @@ export const paperRouter = router({
       keywords: z
         .array(z.string().max(8, { message: '关键词最长为8个字符' }))
         .max(8, { message: '最多8个关键词' }),
-      abstract: z.string(),
+      abstract: z.string().max(5000, '摘要最长5000字'),
       groupId: z.string().optional(),
       canDownload: z.boolean(),
+      score: z.number().int().optional(),
       comment: z.string().optional(),
+      isFeatured: z.boolean().optional().default(false),
+      // TODO: status
     }))
+    .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
       return (await ctx.paperController.create(input)).getResOrTRPCError();
     }),
 
-  content: protectedProcedure
+  createSafe: protectedProcedure
+    .input(z.object({
+      title: z
+        .string()
+        .min(1, { message: '请输入论文标题' })
+        .max(256, { message: '论文标题长度不应超过 256' }),
+      keywords: z
+        .array(z.string().max(8, { message: '关键词最长为8个字符' }))
+        .max(8, { message: '最多8个关键词' }),
+      abstract: z.string().max(5000, '摘要最长5000字'),
+      canDownload: z.boolean(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return (await ctx.paperController.createSafe(input, ctx.user)).getResOrTRPCError();
+    }),
+
+  info: protectedProcedure
     .input(z.object({ id: paperIdZod }))
     .query(async ({ ctx, input }) => {
       return (await ctx.paperController.getContent(input.id)).getResOrTRPCError();
-    }),
-
-  contentWithAuthor: protectedProcedure
-    .input(z.object({ id: paperIdZod }))
-    .query(async ({ ctx, input }) => {
-      return (await ctx.paperController.getContentWithAuthor(input.id)).getResOrTRPCError();
     }),
 
   remove: protectedProcedure
@@ -46,11 +60,6 @@ export const paperRouter = router({
       return (await ctx.paperController.getList()).getResOrTRPCError();
     }),
 
-  listWithAuthor: protectedProcedure
-    .query(async ({ ctx }) => {
-      return (await ctx.paperController.getListWithAuthor()).getResOrTRPCError();
-    }),
-
   attachments: protectedProcedure
     .input(z.object({ id: paperIdZod }))
     .query(async ({ ctx, input }) => {
@@ -63,6 +72,8 @@ export const paperRouter = router({
       return (await ctx.paperController.updateDownloadCount(input.id, ctx.user)).getMsgOrTRPCError();
     }),
 
+  // TODO: should be turned into 'scoring'
+  // allow admin to set score / isFeatured / comment
   setComment: protectedProcedure
     .use(requireRoles(['admin', 'teacher']))
     .input(z.object({

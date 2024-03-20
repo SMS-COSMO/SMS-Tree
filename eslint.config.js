@@ -9,6 +9,7 @@ export default antfu({
   },
   typescript: true,
   vue: true,
+  ignores: ['.github/**/*', 'docs/**/*'],
 }, {
   rules: {
     'style/brace-style': ['warn', '1tbs', { allowSingleLine: true }],
@@ -16,5 +17,4 @@ export default antfu({
       order: ['template', 'script', 'style'],
     }],
   },
-  ignores: ['.github/**/*'],
 });

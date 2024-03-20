@@ -3,7 +3,7 @@ import { db } from '../../db/db';
 import type { TNewPaper, TRawPaper, TRawUser } from '../../db/db';
 
 import { papers } from '../../db/schema/paper';
-import { paperSerializer, paperWithAuthorSerializer } from '../serializer/paper';
+import { paperSerializer } from '../serializer/paper';
 import { papersToGroups } from '../../db/schema/paperToGroup';
 import { attachmentSerializer } from '../serializer/attachment';
 import { ctl } from '../context';
@@ -24,6 +24,22 @@ export class PaperController {
     }
   }
 
+  async createSafe(
+    newPaper: Omit<TNewPaper, 'id' | 'isFeatured' | 'status' | 'score' | 'comment'>,
+    user: TRawUser,
+  ) {
+    const groupId = (await ctl.uc.getFullUser(user)).getResOrTRPCError().groupIds[0];
+
+    try {
+      const insertedId = (await db.insert(papers).values(newPaper).returning({ id: papers.id }).get()).id;
+      if (groupId)
+        await db.insert(papersToGroups).values({ groupId, paperId: insertedId });
+      return new Result(true, '创建成功', insertedId);
+    } catch (err) {
+      return new Result500();
+    }
+  }
+
   async remove(id: string) {
     try {
       await db.delete(papersToGroups).where(eq(papersToGroups.paperId, id));
@@ -36,7 +52,9 @@ export class PaperController {
 
   async getAuthors(groupId: string) {
     const group = (await ctl.gc.getContent(groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
-    const leader = group.leader ?? undefined;
+    const leader = group.leader
+      ? { id: group.leader.id, username: group.leader.username }
+      : undefined;
     const authors = await Promise.all(
       (group.members ?? [])
         .map(async (author) => {
@@ -49,22 +67,19 @@ export class PaperController {
         }),
     );
 
-    return new Result(true, '查询成功', { authors, leader: leader ? { ...leader } : undefined });
+    return new Result(true, '查询成功', { authors, leader });
   }
 
-  async getContent(id: string) {
+  async getBasicInfo(id: string) {
     try {
       const info = await db.select().from(papers).where(eq(papers.id, id)).get();
-      if (!info)
-        return new ResultNoRes(false, '论文不存在');
-      const groups = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, id));
-      return new Result(true, '查询成功', paperSerializer(info, groups[0]?.groupId));
+      return new Result(true, '查询成功', info);
     } catch (err) {
       return new ResultNoRes(false, '论文不存在');
     }
   }
 
-  async getContentWithAuthor(id: string, info?: TRawPaper) {
+  async getContent(id: string, info?: TRawPaper) {
     try {
       const realInfo = info ?? await db.select().from(papers).where(eq(papers.id, id)).get();
       if (!realInfo)
@@ -76,7 +91,7 @@ export class PaperController {
         res = (await this.getAuthors(groups[0].groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
       } catch (err) { }
 
-      return new Result(true, '查询成功', paperWithAuthorSerializer(realInfo, res?.authors, res?.leader));
+      return new Result(true, '查询成功', paperSerializer(realInfo, res?.authors, res?.leader));
     } catch (err) {
       return new ResultNoRes(false, '论文不存在');
     }
@@ -87,22 +102,7 @@ export class PaperController {
       const res = await Promise.all(
         (await db.select().from(papers))
           .map(async (paper) => {
-            const groups = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, paper.id));
-            return paperSerializer(paper, groups.length ? groups[0].groupId : '');
-          }),
-      );
-      return new Result(true, '查询成功', res);
-    } catch (err) {
-      return new Result500();
-    }
-  }
-
-  async getListWithAuthor() {
-    try {
-      const res = await Promise.all(
-        (await db.select().from(papers))
-          .map(async (paper) => {
-            return (await this.getContentWithAuthor(paper.id, paper)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+            return (await this.getContent(paper.id, paper)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
           }),
       );
       return new Result(true, '查询成功', res);
@@ -140,7 +140,7 @@ export class PaperController {
 
   async hasUser(id: string, userId: string) {
     try {
-      const { authors } = (await this.getContentWithAuthor(id)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+      const { authors } = (await this.getContent(id)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
       if (authors)
         return authors.some(x => x.id === userId);
       return false;

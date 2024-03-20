@@ -51,6 +51,9 @@ import { useMutation } from '@tanstack/vue-query';
 import type { FormInstance, FormRules } from 'element-plus';
 import { useUserStore } from '~/stores/user';
 
+const props = defineProps<{
+  userId: string;
+}>();
 const { $api } = useNuxtApp();
 
 const formRef = ref<FormInstance>();
@@ -109,7 +112,11 @@ async function modify(formEl: FormInstance | undefined) {
           showClose: true,
         });
       }
-      changePassword({ oldPassword: form.oldPassword, newPassword: form.newPassword });
+      changePassword({
+        id: props.userId,
+        oldPassword: form.oldPassword,
+        newPassword: form.newPassword,
+      });
     }
   });
 }

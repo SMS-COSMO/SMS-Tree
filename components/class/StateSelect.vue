@@ -17,7 +17,7 @@
         :label="item.label"
         :value="item.value"
       >
-        <StateBadge :state="(item.value as TClassState)" />
+        <StateBadge :state="(item.value as TClassState)" size="default" />
       </el-option>
     </el-select>
     <template #fallback>

@@ -16,6 +16,10 @@
         </el-icon>
         可下载
       </el-tag>
+      <el-tag v-if="paper?.score" :type="scoreColor(paper?.score)" disable-transitions>
+        <el-icon><ElIconHistogram /></el-icon>
+        分数：{{ paper?.score }}
+      </el-tag>
       <el-tag type="info" disable-transitions>
         {{ paper?.createdAt?.toLocaleDateString('zh-CN') }}
       </el-tag>
@@ -27,9 +31,8 @@
       <el-text class="break-normal font-bold text-xl!">
         {{ paper?.title }}
       </el-text>
-      <el-text>
-        <GroupMembers v-if="'groupId' in paper" :group-id="paper.groupId" type="text" :show-leader="false" />
-        <GroupMembers v-else :authors="paper.authors" type="text" :show-leader="false" />
+      <el-text v-if="'authors' in paper">
+        <GroupMembers :authors="paper.authors" type="text" :show-leader="false" />
       </el-text>
     </el-row>
     <el-row v-if="showAbstract" class="mt-2.5">
@@ -41,14 +44,24 @@
 </template>
 
 <script setup lang="ts">
-import type { TPaperListItem, TPaperListWithAuthorItem } from '~/types/index';
+import type { TRawPaper } from '~/server/db/db';
+import type { TPaperListItem } from '~/types/index';
 
 withDefaults(defineProps<{
-  paper: TPaperListItem | TPaperListWithAuthorItem;
+  paper: TPaperListItem | TRawPaper;
   showAbstract?: boolean;
   lineClamp?: number;
 }>(), {
   showAbstract: false,
   lineClamp: 3,
 });
+
+function scoreColor(score: number) {
+  if (score >= 80)
+    return 'success';
+  else if (score >= 60)
+    return 'warning';
+  else
+    return 'danger';
+}
 </script>

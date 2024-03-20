@@ -1,7 +1,8 @@
+import { nanoid } from 'nanoid';
 import { UserController } from '~/server/trpc/controllers/user';
 
 const userController = new UserController();
-const password = makeId(10);
+const password = nanoid(10);
 await userController.register({ id: 'admin', username: 'admin', role: 'admin', password });
 console.log(`Created default admin user. \nUserID: 'admin' \nPassword: '${password}'`);
 

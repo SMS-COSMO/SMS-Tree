@@ -1,5 +1,7 @@
 <template>
-  home
+  <el-card class="mb-5 w-full">
+    home
+  </el-card>
 </template>
 
 <script setup lang="ts">

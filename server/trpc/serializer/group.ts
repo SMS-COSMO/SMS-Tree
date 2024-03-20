@@ -1,9 +1,9 @@
-import type { TRawGroup } from '../../db/db';
+import type { TRawGroup, TRawPaper } from '../../db/db';
 import type { TUser } from './user';
 
 export type TGroup = ReturnType<typeof groupSerializer>;
 
-export function groupSerializer(basicGroup: TRawGroup, members: TUser[], papers: string[]) {
+export function groupSerializer(basicGroup: TRawGroup, members: TUser[], papers: TRawPaper[]) {
   const { leader: leaderId, ...rest } = basicGroup;
   const leader = members.find(member => member.id === leaderId);
   return {

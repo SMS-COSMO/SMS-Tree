@@ -1,73 +1,99 @@
 <template>
-  <el-row :gutter="20">
-    <el-col :span="22">
-      <el-space direction="vertical" class="w-full" :size="20" fill>
-        <el-row :gutter="20">
-          <el-col :span="8">
-            <el-card>
-              <el-descriptions :column="2" :border="true">
-                <el-descriptions-item label="班级" />
-                <el-descriptions-item label="" />
-                <el-descriptions-item label="小组成员" :span="2" />
-              </el-descriptions>
-            </el-card>
-          </el-col>
-          <el-col :span="16">
-            <el-card>
-              <template #header>
-                Stats
-              </template>
-            </el-card>
-          </el-col>
-        </el-row>
+  <el-card class="mb-5 w-full">
+    <template #header>
+      <span class="text-xl font-bold">提交论文</span>
+    </template>
 
-        <el-tabs v-model="activeTab" type="border-card">
-          <el-tab-pane label="上传" name="first">
-            <el-upload drag multiple>
-              <el-icon class="el-icon--upload">
-                <ElIconUploadFilled />
-              </el-icon>
-              <div class="el-upload__text">
-                拖拽文件或 <em>点击这里上传</em>
-              </div>
-              <template #tip>
-                <div class="el-upload__tip">
-                  Place Holder
-                </div>
-              </template>
-            </el-upload>
-          </el-tab-pane>
-          <el-tab-pane label="已上传文件" name="second">
-            <client-only>
-              <el-collapse>
-                <el-collapse-item title="Placeholder">
-                  placeholder
-                </el-collapse-item>
-              </el-collapse>
-            </client-only>
-          </el-tab-pane>
-        </el-tabs>
-
-        <el-card>
-          laos
-        </el-card>
-      </el-space>
-    </el-col>
-
-    <el-col :span="2">
-      <div class="h-[500px]">
-        <client-only>
-          <el-steps direction="vertical" :active="1">
-            <el-step :icon="ElIconUpload" title="提交" />
-            <el-step :icon="ElIconCircleCheck" title="查重" />
-            <el-step :icon="ElIconEdit" title="批改" />
-          </el-steps>
-        </client-only>
-      </div>
-    </el-col>
-  </el-row>
+    <el-form
+      ref="formRef"
+      class="mx-auto max-w-[800px] py-5"
+      :model="form" :rules="rules"
+      label-width="120px"
+    >
+      <el-form-item prop="title" label="标题">
+        <el-input v-model="form.title" />
+      </el-form-item>
+      <el-form-item prop="abstract" label="摘要">
+        <el-input v-model="form.abstract" :autosize="{ minRows: 4, maxRows: 8 }" type="textarea" />
+      </el-form-item>
+      <el-form-item prop="keywords" label="关键词">
+        <keywordEditor v-model="form.keywords" />
+      </el-form-item>
+      <el-form-item prop="canDownload" label="允许下载">
+        <el-switch
+          v-model="form.canDownload"
+          size="large"
+          active-text="是" inactive-text="否" inline-prompt
+          style="--el-switch-on-color: #146E3C; --el-switch-off-color: #db3131;"
+        />
+      </el-form-item>
+      <el-form-item label="论文文件">
+        <UploadFile v-model="paperFile" is-main-file />
+      </el-form-item>
+      <el-form-item label="附件">
+        <UploadFile v-model="attachments" multiple />
+      </el-form-item>
+      <el-form-item>
+        <el-button color="#146E3C" :loading="buttonLoading" @click="create(formRef)">
+          提交
+        </el-button>
+      </el-form-item>
+    </el-form>
+  </el-card>
 </template>
 
 <script setup lang="ts">
-const activeTab = ref('first');
+import type { FormInstance, FormRules } from 'element-plus';
+import type { TPaperCreateSafe } from '~/types/index';
+
+const { $api } = useNuxtApp();
+useHeadSafe({
+  title: '提交论文',
+});
+
+const formRef = ref<FormInstance>();
+const form = reactive<TPaperCreateSafe>({
+  title: '',
+  keywords: [],
+  abstract: '',
+  canDownload: false,
+});
+
+const rules = reactive<FormRules<TPaperCreateSafe>>({
+  title: [
+    { required: true, message: '论文标题不能为空', trigger: 'blur' },
+    { min: 1, max: 256, message: '论文标题长度不应超过 256', trigger: 'blur' },
+  ],
+  abstract: [
+    { required: true, message: '摘要不能为空', trigger: 'blur' },
+    { min: 1, max: 5000, message: '摘要不应超过5000个字', trigger: 'blur' },
+  ],
+});
+const paperFile = ref<string[]>([]);
+const attachments = ref<string[]>([]);
+
+const buttonLoading = ref(false);
+async function create(submittedForm: FormInstance | undefined) {
+  if (!submittedForm)
+    return;
+
+  await submittedForm.validate(async (valid) => {
+    if (valid) {
+      try {
+        buttonLoading.value = true;
+        const paperId = await $api.paper.createSafe.mutate(form);
+        await $api.attachment.batchMoveToPaper.mutate({
+          ids: paperFile.value.concat(attachments.value),
+          paperId,
+        });
+        ElMessage({ message: '创建成功', type: 'success', showClose: true });
+      } catch (err) {
+        useErrorHandler(err);
+      }
+      buttonLoading.value = false;
+    } else {
+      ElMessage({ message: '表单内有错误，请修改后再提交', type: 'error', showClose: true });
+    }
+  });
+}
 </script>

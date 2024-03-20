@@ -1,0 +1,109 @@
+<template>
+  <el-card>
+    <template #header>
+      用户信息
+    </template>
+    <client-only>
+      <el-descriptions
+        :column="isSmallScreen ? 2 : 4"
+        size="large" class="mb-[-16px]"
+      >
+        <el-descriptions-item>
+          <template #label>
+            <div class="text-[16px]!">
+              <el-icon>
+                <ElIconUser />
+              </el-icon>
+              姓名
+            </div>
+          </template>
+          <span class="text-[16px]!">
+            {{ info?.username }}
+          </span>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="text-[16px]!">
+              <el-icon>
+                <ElIconUser />
+              </el-icon>
+              学号
+            </div>
+          </template>
+          <span class="text-[16px]!">
+            {{ info?.id }}
+          </span>
+        </el-descriptions-item>
+        <el-descriptions-item v-if="info?.role === 'student'">
+          <template #label>
+            <div class="text-[16px]!">
+              <el-icon>
+                <ElIconLocation />
+              </el-icon>
+              班级
+            </div>
+          </template>
+          <span class="text-[16px]!">
+            {{ info?.className }}
+          </span>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="text-[16px]!">
+              <el-icon>
+                <ElIconTickets />
+              </el-icon>
+              账号权限
+            </div>
+          </template>
+          <el-tag>
+            {{ roleName[info?.role ?? 'student'] }}
+          </el-tag>
+        </el-descriptions-item>
+      </el-descriptions>
+      <template #fallback>
+        <el-skeleton :rows="1" animated />
+      </template>
+    </client-only>
+  </el-card>
+  <FoldableCard class="mt-5">
+    <template #header>
+      参与的论文
+    </template>
+    <div v-if="!papers?.length">
+      <el-empty :image-size="130" description="暂无论文" />
+    </div>
+    <div v-else :class="papers?.length > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
+      <div v-for="(paper, index) in papers" :key="index">
+        <PaperCard :paper="paper" show-abstract />
+      </div>
+    </div>
+  </FoldableCard>
+</template>
+
+<script lang="ts" setup>
+import type { TRawPaper } from '~/server/db/db';
+
+const props = defineProps<{
+  userId: string;
+}>();
+
+const { $api } = useNuxtApp();
+
+const isSmallScreen = useWindowWidth();
+
+const roleName = {
+  student: '学生',
+  teacher: '老师',
+  admin: '管理员',
+};
+
+const { info, papers } = await useTrpcAsyncData(async () => {
+  const info = await $api.user.profile.query({ id: props.userId });
+  let papers: TRawPaper[] = [];
+  for (const group of (info?.groupIds ?? []))
+    papers = papers.concat((await $api.group.content.query({ id: group })).papers);
+
+  return { info, papers };
+}) ?? { info: undefined, papers: undefined };
+</script>

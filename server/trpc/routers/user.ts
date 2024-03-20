@@ -26,9 +26,13 @@ export const userRouter = router({
     }),
 
   modifyPassword: protectedProcedure
-    .input(z.object({ oldPassword: z.string(), newPassword: z.string().min(8, { message: '用户密码长度应至少为8' }) }))
+    .input(z.object({
+      id: userIdZod,
+      oldPassword: z.string(),
+      newPassword: z.string().min(8, { message: '用户密码长度应至少为8' }),
+    }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.userController.modifyPassword(ctx.user, input.oldPassword, input.newPassword)).getMsgOrTRPCError();
+      return (await ctx.userController.modifyPassword(ctx.user, input.id, input.oldPassword, input.newPassword)).getMsgOrTRPCError();
     }),
 
   login: publicProcedure
@@ -54,6 +58,16 @@ export const userRouter = router({
     }))
     .mutation(async ({ ctx, input }) => {
       return (await ctx.userController.bulkRegister(input.users, input.randomPassword)).getMsgOrTRPCError();
+    }),
+
+  modify: protectedProcedure
+    .input(z.object({
+      id: z.string().min(4, { message: '用户ID长度应至少为4' }).max(24, { message: '用户ID超出长度范围' }),
+      username: z.string().min(2, { message: '用户名长度应至少为2' }).max(15, { message: '用户名超出长度范围' }),
+      role: roleEnumZod,
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return (await ctx.userController.modify(input.id, input.username, input.role)).getMsgOrTRPCError();
     }),
 
   profile: protectedProcedure

@@ -12,6 +12,7 @@ import { ctl } from '../context';
 import { Auth } from '../utils/auth';
 import { Result, Result500, ResultNoRes } from '../utils/result';
 import { makeId } from '../../trpc/utils/shared';
+import type { TRole } from '~/types';
 
 export class UserController {
   private auth: Auth;
@@ -73,13 +74,20 @@ export class UserController {
     return new ResultNoRes(true, '创建成功');
   }
 
-  async modifyPassword(user: TRawUser, oldPassword: string, newPassword: string) {
-    if (!await bcrypt.compare(oldPassword, user.password))
-      return new ResultNoRes(false, '旧密码不正确');
+  async modifyPassword(user: TRawUser, id: string, oldPassword: string, newPassword: string) {
+    if (!['admin', 'teacher'].includes(user.role) && user.id !== id)
+      return new ResultNoRes(false, '无修改权限');
+
+    const targetUser = user.id === id ? user : await db.select().from(users).where(eq(users.id, id)).get();
+    if (!targetUser)
+      return new ResultNoRes(false, '用户不存在');
+
     if (newPassword === oldPassword)
       return new ResultNoRes(false, '新密码不能与旧密码相同');
+    if (!await bcrypt.compare(oldPassword, targetUser.password))
+      return new ResultNoRes(false, '旧密码不正确');
 
-    await db.update(users).set({ password: await bcrypt.hash(newPassword, 8) }).where(eq(users.id, user.id));
+    await db.update(users).set({ password: await bcrypt.hash(newPassword, 8) }).where(eq(users.id, id));
     return new ResultNoRes(true, '修改成功');
   }
 
@@ -135,6 +143,15 @@ export class UserController {
       return new Result(true, '获取成功', userSerializer(basicUser, groupIds, classIds, projectName, className));
     } catch (err) {
       return new ResultNoRes(false, '获取用户详细信息失败');
+    }
+  }
+
+  async modify(id: string, username: string, role: TRole) {
+    try {
+      await db.update(users).set({ username, role }).where(eq(users.id, id));
+      return new ResultNoRes(true, '修改成功');
+    } catch (err) {
+      return new Result500();
     }
   }
 

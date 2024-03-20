@@ -76,7 +76,7 @@
 
 <script setup lang="ts">
 import { vOnClickOutside } from '@vueuse/components';
-import type { TPaperListWithAuthorItem } from '~/types/index';
+import type { TPaperListItem } from '~/types/index';
 import type { TSearchOption } from '~/components/paper/SearchOptions.vue';
 
 useHeadSafe({
@@ -118,12 +118,12 @@ const fuseOptions = computed(() => {
   };
 });
 
-const { processedListData } = await useSearch<TPaperListWithAuthorItem>(
+const { processedListData } = await useSearch<TPaperListItem>(
   searchContent,
   fuseOptions,
-  $api.paper.listWithAuthor.query,
+  $api.paper.list.query,
   e => e.item,
-  (o: TPaperListWithAuthorItem) => {
+  (o: TPaperListItem) => {
     if (searchOptions.filter.onlyCanDownload && !o.canDownload)
       return false;
     if (searchOptions.filter.onlyFeatured && !o.isFeatured)
@@ -135,11 +135,11 @@ const { processedListData } = await useSearch<TPaperListWithAuthorItem>(
       return false;
     return true;
   },
-  (a: TPaperListWithAuthorItem, b: TPaperListWithAuthorItem) => {
+  (a: TPaperListItem, b: TPaperListItem) => {
     if (searchOptions.sortOption === 'default')
       return 0; // Keep original order
-    if (searchOptions.sortOption === 'rate')
-      return b.rate - a.rate; // Greater first
+    if (searchOptions.sortOption === 'score')
+      return (b.score ?? 0) - (a.score ?? 0); // Greater first
     if (searchOptions.sortOption === 'time')
       return a.createdAt > b.createdAt ? -1 : 1; // Newest first
     if (searchOptions.sortOption === 'downloadCount')

@@ -1,7 +1,7 @@
 <template>
   <div class="nav top-0 bg-primary-0">
     <el-menu
-      :class="`${route.matched[0].path === '/admin' ? '' : 'max-w-[1300px]'} mx-auto! border-none! pr-3`"
+      :class="`${isAdmin ? '' : 'max-w-[1300px]'} mx-auto! border-none! pr-3`"
       :ellipsis="false" mode="horizontal"
       background-color="#146E3C" text-color="#FFFFFF" active-text-color="#FFFFFF"
       :router="true" :default-active="$route.path"
@@ -16,18 +16,20 @@
         <el-menu-item index="/paper/list">
           论文列表
         </el-menu-item>
-        <el-menu-item
-          v-if="userStore.role === 'student'"
-          index="/group"
-        >
-          我的小组
-        </el-menu-item>
-        <el-menu-item
-          v-if="userStore.role === 'admin' || userStore.role === 'teacher'"
-          index="/admin"
-        >
-          管理
-        </el-menu-item>
+        <client-only>
+          <el-menu-item
+            v-if="userStore.role === 'student'"
+            index="/group"
+          >
+            我的小组
+          </el-menu-item>
+          <el-menu-item
+            v-if="userStore.role === 'admin' || userStore.role === 'teacher'"
+            index="/admin"
+          >
+            管理
+          </el-menu-item>
+        </client-only>
       </template>
       <div class="flex-grow" />
       <client-only>
@@ -45,11 +47,6 @@
         <el-menu-item v-else index="/user/login">
           登录
         </el-menu-item>
-        <template #fallback>
-          <el-menu-item>
-            {{ userStore.username }}
-          </el-menu-item>
-        </template>
       </client-only>
     </el-menu>
   </div>
@@ -93,8 +90,15 @@ import { useUserStore } from '~/stores/user';
 
 const userStore = useUserStore();
 const isSmallScreen = useWindowWidth();
-
 const route = useRoute();
+
+const isAdmin = ref(false);
+watch(() => route.matched[0].path, (value) => {
+  isAdmin.value = value === '/admin';
+});
+onMounted(() => {
+  isAdmin.value = route.matched[0].path === '/admin';
+});
 
 function logout() {
   userStore.logout();

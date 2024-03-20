@@ -36,7 +36,7 @@
     <el-radio-button label="time">
       时间
     </el-radio-button>
-    <el-radio-button label="rate">
+    <el-radio-button label="score">
       分数
     </el-radio-button>
     <el-radio-button label="downloadCount">
@@ -62,7 +62,7 @@ export interface TSearchOption {
   };
   searchSelectValue: string[];
   showAbstract: false;
-  sortOption: 'default' | 'time' | 'rate' | 'downloadCount';
+  sortOption: 'default' | 'time' | 'score' | 'downloadCount';
 }
 
 const modelValue = ref(props.modelValue);
