@@ -157,4 +157,22 @@ export class PaperController {
       return new Result500();
     }
   }
+
+  async setCanDownload(id: string, canDownload: boolean) {
+    try {
+      await db.update(papers).set({ canDownload }).where(eq(papers.id, id));
+      return new ResultNoRes(true, '修改成功');
+    } catch {
+      return new Result500();
+    }
+  }
+
+  async setIsFeatured(id: string, isFeatured: boolean) {
+    try {
+      await db.update(papers).set({ isFeatured }).where(eq(papers.id, id));
+      return new ResultNoRes(true, '修改成功');
+    } catch {
+      return new Result500();
+    }
+  }
 }

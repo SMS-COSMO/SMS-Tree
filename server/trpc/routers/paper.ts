@@ -77,10 +77,30 @@ export const paperRouter = router({
   setComment: protectedProcedure
     .use(requireRoles(['admin', 'teacher']))
     .input(z.object({
-      paperId: z.string().min(1, '小组id不存在'),
+      paperId: z.string().min(1, '论文id不存在'),
       comment: z.string().min(1, '评语长度不能为零').max(500, '评论最长为500'),
     }))
     .mutation(async ({ ctx, input }) => {
       return (await ctx.paperController.setComment(input.paperId, input.comment)).getMsgOrTRPCError();
+    }),
+
+  setCanDownload: protectedProcedure
+    .use(requireRoles(['admin', 'teacher']))
+    .input(z.object({
+      paperId: z.string().min(1, '论文id不存在'),
+      canDownload: z.boolean(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return (await ctx.paperController.setCanDownload(input.paperId, input.canDownload)).getMsgOrTRPCError();
+    }),
+
+  setIsFeatured: protectedProcedure
+    .use(requireRoles(['admin', 'teacher']))
+    .input(z.object({
+      paperId: z.string().min(1, '论文id不存在'),
+      isFeatured: z.boolean(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return (await ctx.paperController.setIsFeatured(input.paperId, input.isFeatured)).getMsgOrTRPCError();
     }),
 });
