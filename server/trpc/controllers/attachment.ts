@@ -5,6 +5,29 @@ import { ctl } from '../context';
 import { Result, Result500, ResultNoRes } from '../utils/result';
 import { attachments } from '~/server/db/schema/attachment';
 
+const allowedMainFileTypes = [
+  'application/msword',
+  'application/wps-office.docx',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/pdf',
+];
+
+const allowedSecondaryFileTypes = [
+  ...allowedMainFileTypes,
+  'image/png',
+  'image/jpeg',
+  'video/mp4',
+  'text/plain',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'application/vnd.ms-powerpoint',
+  'application/x-zip-compressed',
+  'image/bmp',
+  'application/x-compressed',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  '',
+];
+
 export class AttachmentController {
   async hasPerm(paperId: string | undefined | null, user: TRawUser) {
     if (!paperId)
@@ -14,6 +37,12 @@ export class AttachmentController {
 
   async create(newAttachment: TNewAttachment, user: TRawUser) {
     try {
+      if (
+        (newAttachment.isMainFile && !allowedMainFileTypes.includes(newAttachment.fileType))
+        || (!newAttachment.isMainFile && !allowedSecondaryFileTypes.includes(newAttachment.fileType))
+      )
+        return new ResultNoRes(false, '不允许的文件类型');
+
       if (await this.hasPerm(newAttachment.paperId, user)) {
         const id = (await db.insert(attachments).values(newAttachment).returning({ id: attachments.id }).get()).id;
         return new Result(true, '创建成功', id);
