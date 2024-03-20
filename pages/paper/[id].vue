@@ -33,6 +33,7 @@
       <el-col :span="isSmallScreen ? 24 : 6">
         <FoldableCard :can-fold="isSmallScreen" class="box-border h-full">
           <template #header>
+            <el-icon><ElIconInfoFilled /></el-icon>
             论文信息
           </template>
           <el-descriptions :column="1">
@@ -57,6 +58,7 @@
       <el-col :span="isSmallScreen ? 24 : 18" class="mt-3 lg:mt-0">
         <FoldableCard :can-fold="isSmallScreen" class="box-border h-full">
           <template #header>
+            <el-icon><ElIconList /></el-icon>
             摘要
           </template>
           <div class="text-justify text-[15px] leading-normal lg:text-base">

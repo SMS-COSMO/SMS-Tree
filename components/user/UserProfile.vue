@@ -1,6 +1,7 @@
 <template>
   <el-card>
     <template #header>
+      <el-icon><ElIconSetUp /></el-icon>
       用户信息
     </template>
     <client-only>
@@ -68,6 +69,7 @@
   </el-card>
   <FoldableCard class="mt-5">
     <template #header>
+      <el-icon><ElIconDocumentCopy /></el-icon>
       参与的论文
     </template>
     <div v-if="!papers?.length">

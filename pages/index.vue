@@ -14,6 +14,7 @@
       <el-col :span="isSmallScreen ? 24 : 7">
         <el-card>
           <template #header>
+            <el-icon><ElIconZoomIn /></el-icon>
             快速搜索
           </template>
           <el-row :gutter="10">
@@ -29,6 +30,7 @@
       <el-col :span="isSmallScreen ? 24 : 17" class="mt-3 lg:mt-0">
         <el-card>
           <template #header>
+            <el-icon><ElIconDataAnalysis /></el-icon>
             作业进度
           </template>
         </el-card>

@@ -1,7 +1,10 @@
 <template>
   <el-card v-if="canFold">
-    <div class="flex items-center justify-between">
-      <slot name="header" />
+    <div class="flex">
+      <div class="space-x-1">
+        <slot name="header" />
+      </div>
+      <div class="flex-grow" />
       <el-button
         class="h-8! w-7!"
         text bg size="small"
