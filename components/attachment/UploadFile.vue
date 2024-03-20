@@ -24,6 +24,7 @@
 import type { UploadFile, UploadFiles, UploadRawFile, UploadRequestOptions } from 'element-plus';
 import axios from 'axios';
 import { nanoid } from 'nanoid';
+import { allowedMainFileTypes, allowedSecondaryFileTypes } from '~/constants/fileType';
 
 const props = withDefaults(defineProps<{
   isMainFile?: boolean;
@@ -52,29 +53,6 @@ function removeFileFromList(f: UploadFile | undefined, message: string) {
     fileList.value.splice(fileList.value.indexOf(f), 1);
   ElMessage({ message, type: 'error', showClose: true });
 }
-
-const allowedMainFileTypes = [
-  'application/msword',
-  'application/wps-office.docx',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/pdf',
-];
-
-const allowedSecondaryFileTypes = [
-  ...allowedMainFileTypes,
-  'image/png',
-  'image/jpeg',
-  'video/mp4',
-  'text/plain',
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  'application/vnd.ms-powerpoint',
-  'application/x-zip-compressed',
-  'image/bmp',
-  'application/x-compressed',
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  '',
-];
 
 async function handleUpload(option: UploadRequestOptions) {
   const key = `${nanoid(10)}-${option.file.name}`;

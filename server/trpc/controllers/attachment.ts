@@ -4,29 +4,7 @@ import { db } from '../../db/db';
 import { ctl } from '../context';
 import { Result, Result500, ResultNoRes } from '../utils/result';
 import { attachments } from '~/server/db/schema/attachment';
-
-const allowedMainFileTypes = [
-  'application/msword',
-  'application/wps-office.docx',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/pdf',
-];
-
-const allowedSecondaryFileTypes = [
-  ...allowedMainFileTypes,
-  'image/png',
-  'image/jpeg',
-  'video/mp4',
-  'text/plain',
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  'application/vnd.ms-powerpoint',
-  'application/x-zip-compressed',
-  'image/bmp',
-  'application/x-compressed',
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  '',
-];
+import { allowedMainFileTypes, allowedSecondaryFileTypes } from '~/constants/fileType';
 
 export class AttachmentController {
   async hasPerm(paperId: string | undefined | null, user: TRawUser) {
