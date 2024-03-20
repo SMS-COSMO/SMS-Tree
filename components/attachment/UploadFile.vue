@@ -53,10 +53,43 @@ function removeFileFromList(f: UploadFile | undefined, message: string) {
   ElMessage({ message, type: 'error', showClose: true });
 }
 
+const allowedMainFileTypes = [
+  'application/msword',
+  'application/wps-office.docx',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/pdf',
+];
+
+const allowedSecondaryFileTypes = [
+  ...allowedMainFileTypes,
+  'image/png',
+  'image/jpeg',
+  'video/mp4',
+  'text/plain',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'application/vnd.ms-powerpoint',
+  'application/x-zip-compressed',
+  'image/bmp',
+  'application/x-compressed',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  '',
+];
+
 async function handleUpload(option: UploadRequestOptions) {
   const key = `${nanoid(10)}-${option.file.name}`;
   const { file } = option;
   const f = getFile(file);
+
+  if (
+    (props.isMainFile && !allowedMainFileTypes.includes(file.type))
+    || (!props.isMainFile && !allowedSecondaryFileTypes.includes(file.type))
+  ) {
+    removeFileFromList(f, '不支持的文件类型');
+    if (f)
+      handleRemove(f);
+    return;
+  }
 
   // f.size in bytes
   const sizeLimit = props.isMainFile ? props.mainSizeLimit : props.secondarySizeLimit;
