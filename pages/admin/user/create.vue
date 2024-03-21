@@ -31,7 +31,7 @@
           </el-icon>
           密码
         </div>
-        <el-input v-model="form.password" type="text" />
+        <el-input v-model="form.password" type="password" />
       </el-form-item>
       <el-form-item>
         <div>
@@ -64,6 +64,7 @@
 import { useMutation } from '@tanstack/vue-query';
 import type { FormInstance, FormRules } from 'element-plus';
 import type { TUserRegister } from '~/types/index';
+import { passwordRegex } from '~/constants/user';
 
 useHeadSafe({
   title: '创建用户',
@@ -90,7 +91,8 @@ const rules = reactive<FormRules<TUserRegister>>({
   ],
   password: [
     { required: true, message: '密码不能为空', trigger: 'blur' },
-    { min: 8, message: '密码至少 8 位', trigger: 'blur' },
+    { min: 8, message: '密码至少 8 位' },
+    { pattern: passwordRegex, message: '密码必须包含大小写字母、数字与特殊符号' },
   ],
 });
 
