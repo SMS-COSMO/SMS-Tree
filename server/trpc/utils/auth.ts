@@ -17,7 +17,7 @@ export class Auth {
     const jwt = await new jose.SignJWT({})
       .setSubject(id.toString())
       .setIssuedAt()
-      .setExpirationTime('24h')
+      .setExpirationTime(env.TOKEN_EXPIRATION_TIME)
       .setIssuer('sms-tree')
       .setJti(makeId(32))
       .setProtectedHeader({
