@@ -30,16 +30,16 @@
     排序
   </el-divider>
   <el-radio-group v-model="modelValue.sortOption" :size="isSmallScreen ? 'large' : ''">
-    <el-radio-button label="default">
+    <el-radio-button value="default">
       默认
     </el-radio-button>
-    <el-radio-button label="time">
+    <el-radio-button value="time">
       时间
     </el-radio-button>
-    <el-radio-button label="score">
+    <el-radio-button value="score">
       分数
     </el-radio-button>
-    <el-radio-button label="downloadCount">
+    <el-radio-button value="downloadCount">
       下载
     </el-radio-button>
   </el-radio-group>

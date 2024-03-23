@@ -104,7 +104,7 @@
     border-top-left-radius: 8px !important;
     border-bottom-left-radius: 8px !important;
     border-right-width: 2px !important;
-    top: 1.5px !important;
+    top: 2px !important;
     bottom: 2px !important;
     left: 2px !important;
 }
@@ -113,12 +113,19 @@
     border-top-right-radius: 8px !important;
     border-bottom-right-radius: 8px !important;
     border-left-width: 2px !important;
-    top: 1.5px !important;
+    top: 2px !important;
     bottom: 2px !important;
     right: 2px !important;
 }
 
 /* Select */
+.el-select__wrapper {
+    border-radius: 10px !important;
+    box-shadow: none !important;
+    border: 2px solid var(--el-border-color);
+    height: 45px !important;
+}
+
 .el-select__popper {
     border-radius: 10px !important;
 }
