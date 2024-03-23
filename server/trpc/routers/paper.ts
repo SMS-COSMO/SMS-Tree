@@ -45,7 +45,7 @@ export const paperRouter = router({
   info: protectedProcedure
     .input(z.object({ id: paperIdZod }))
     .query(async ({ ctx, input }) => {
-      return (await ctx.paperController.getContent(input.id)).getResOrTRPCError();
+      return (await ctx.paperController.getContent(input.id, ctx.user)).getResOrTRPCError();
     }),
 
   remove: protectedProcedure
@@ -57,7 +57,7 @@ export const paperRouter = router({
 
   listSafe: protectedProcedure
     .query(async ({ ctx }) => {
-      return (await ctx.paperController.getListSafe()).getResOrTRPCError();
+      return (await ctx.paperController.getListSafe(ctx.user)).getResOrTRPCError();
     }),
 
   attachments: protectedProcedure

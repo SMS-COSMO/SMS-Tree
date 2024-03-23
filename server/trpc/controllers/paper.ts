@@ -8,6 +8,7 @@ import { papersToGroups } from '../../db/schema/paperToGroup';
 import { attachmentSerializer } from '../serializer/attachment';
 import { ctl } from '../context';
 import { Result, Result500, ResultNoRes } from '../utils/result';
+import { requireTeacherOrThrow } from '../utils/shared';
 import { attachments } from '~/server/db/schema/attachment';
 
 export class PaperController {
@@ -85,17 +86,20 @@ export class PaperController {
     }
   }
 
-  async getContent(id: string, info?: TRawPaper) {
+  async getContent(id: string, user: TRawUser, info?: TRawPaper) {
     try {
       const realInfo = info ?? await db.select().from(papers).where(eq(papers.id, id)).get();
       if (!realInfo)
         return new ResultNoRes(false, '论文不存在');
 
-      const groups = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, id));
+      const group = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, id)).get();
       let res;
-      try {
-        res = (await this.getAuthors(groups[0].groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
-      } catch (err) { }
+      if (group) {
+        res = (await this.getAuthors(group.groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+
+        if (!realInfo?.isPublic && !(await this.hasUser(group.groupId, user.id)))
+          requireTeacherOrThrow(user);
+      }
 
       return new Result(true, '查询成功', paperSerializer(realInfo, res?.authors, res?.leader));
     } catch (err) {
@@ -103,12 +107,12 @@ export class PaperController {
     }
   }
 
-  async getListSafe() {
+  async getListSafe(user: TRawUser) {
     try {
       const res = await Promise.all(
         (await db.select().from(papers).where(eq(papers.isPublic, true)).all())
           .map(async (paper) => {
-            return (await this.getContent(paper.id, paper)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+            return (await this.getContent(paper.id, user, paper)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
           }),
       );
       return new Result(true, '查询成功', res);
@@ -119,9 +123,17 @@ export class PaperController {
 
   async getAttachments(id: string, user: TRawUser) {
     try {
-      const { canDownload } = (await this.getContent(id)).getResOrTRPCError('INTERNAL_SERVER_ERROR') ?? { canDownload: false, downloadCount: 0 };
+      const { canDownload }
+        = (await this.getContent(id, user)).getResOrTRPCError('INTERNAL_SERVER_ERROR')
+        ?? { canDownload: false, isPublic: false };
       const isOwned = await this.hasUser(id, user.id);
-      const res = (await db.select().from(attachments).where(eq(attachments.paperId, id))).map(
+
+      const res = (
+        await db
+          .select()
+          .from(attachments)
+          .where(eq(attachments.paperId, id))
+      ).map(
         x => attachmentSerializer(x, canDownload || ['teacher', 'admin'].includes(user.role) || isOwned),
       );
 
@@ -131,9 +143,10 @@ export class PaperController {
     }
   }
 
+  // TODO: This seems unsafe
   async updateDownloadCount(id: string, user: TRawUser) {
     try {
-      const { canDownload, downloadCount } = (await this.getContent(id)).getResOrTRPCError('INTERNAL_SERVER_ERROR') ?? { canDownload: false, downloadCount: 0 };
+      const { canDownload, downloadCount } = (await this.getBasicInfo(id)).getResOrTRPCError('INTERNAL_SERVER_ERROR') ?? { canDownload: false, downloadCount: 0 };
       const isOwned = await this.hasUser(id, user.id);
       if (canDownload && !isOwned && !['teacher', 'admin'].includes(user.role))
         await db.update(papers).set({ downloadCount: downloadCount + 1 }).where(eq(papers.id, id));
@@ -144,9 +157,9 @@ export class PaperController {
     }
   }
 
-  async hasUser(id: string, userId: string) {
+  async hasUser(groupId: string, userId: string) {
     try {
-      const { authors } = (await this.getContent(id)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+      const { authors } = (await this.getAuthors(groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
       if (authors)
         return authors.some(x => x.id === userId);
       return false;
