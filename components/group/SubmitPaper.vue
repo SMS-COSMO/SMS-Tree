@@ -1,7 +1,7 @@
 <template>
   <el-card class="mb-5 w-full">
     <template #header>
-      <span class="text-xl font-bold">提交论文</span>
+      提交论文
     </template>
 
     <el-form

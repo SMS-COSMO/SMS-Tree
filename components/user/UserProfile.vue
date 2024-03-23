@@ -76,9 +76,9 @@
       <el-empty :image-size="130" description="暂无论文" />
     </div>
     <div v-else :class="papers?.length > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
-      <div v-for="(paper, index) in papers" :key="index">
+      <template v-for="paper in papers" :key="paper.id">
         <PaperCard :paper="paper" show-abstract />
-      </div>
+      </template>
     </div>
   </FoldableCard>
 </template>

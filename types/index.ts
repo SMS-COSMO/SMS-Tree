@@ -30,4 +30,5 @@ export type TAttachmentContent = TAttachmentListItem;
 
 export type TRole = 'student' | 'teacher' | 'admin';
 
+export type TGroupContent = RouterOutput['group']['content'];
 export type TGroupList = RouterOutput['group']['list'];
