@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { db } from '../../db/db';
 import type { TNewPaper, TRawPaper, TRawUser } from '../../db/db';
 
@@ -99,7 +99,6 @@ export class PaperController {
     }
   }
 
-  // TODO: merge with this.getContent
   async getAttachments(id: string, user: TRawUser) {
     try {
       const rawPaper = await db
@@ -113,17 +112,27 @@ export class PaperController {
         .get();
       if (!rawPaper)
         return new ResultNoRes(false, '论文不存在');
+
       const isOwned = await this.hasUser(user.id, rawPaper.groupId);
+      const isAdmin = ['teacher', 'admin'].includes(user.role);
       if (!rawPaper.isPublic && !isOwned)
         requireTeacherOrThrow(user);
 
       const res = (
-        await db
-          .select()
-          .from(attachments)
-          .where(eq(attachments.paperId, id))
+        (isOwned || isAdmin)
+          ? await db
+            .select().from(attachments)
+            .where(eq(attachments.paperId, id))
+          : await db // Students cannot access secondary files
+            .select().from(attachments)
+            .where(
+              and(
+                eq(attachments.isMainFile, true),
+                eq(attachments.paperId, id),
+              ),
+            )
       ).map(
-        x => attachmentSerializer(x, rawPaper.canDownload || ['teacher', 'admin'].includes(user.role) || isOwned),
+        x => attachmentSerializer(x, rawPaper.canDownload || isAdmin || isOwned),
       );
 
       return new Result(true, '查询成功', res);

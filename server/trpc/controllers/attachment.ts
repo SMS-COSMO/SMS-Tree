@@ -9,12 +9,18 @@ import { papers } from '~/server/db/schema/paper';
 
 export class AttachmentController {
   async hasPerm(paperId: string | undefined | null, user: TRawUser) {
+    // Teachers have all the perm
+    if (['teacher', 'admin'].includes(user.role))
+      return true;
+
+    // Allowed when attachment is not attached to any paper (needed for paper creation)
     if (!paperId)
-      return false;
+      return true;
+
     const paper = await db.select({ groupId: papers.groupId }).from(papers).where(eq(papers.id, paperId)).get();
     if (!paper?.groupId)
       return false;
-    return await ctl.pc.hasUser(user.id, paper?.groupId) || ['teacher', 'admin'].includes(user.role);
+    return await ctl.pc.hasUser(user.id, paper?.groupId);
   };
 
   async create(newAttachment: TNewAttachment, user: TRawUser) {
