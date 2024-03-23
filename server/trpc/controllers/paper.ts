@@ -25,13 +25,19 @@ export class PaperController {
   }
 
   async createSafe(
-    newPaper: Omit<TNewPaper, 'id' | 'isFeatured' | 'status' | 'score' | 'comment'>,
+    newPaper: Omit<TNewPaper, 'id' | 'isFeatured' | 'isPublic' | 'score' | 'comment'>,
     user: TRawUser,
   ) {
     const groupId = (await ctl.uc.getFullUser(user)).getResOrTRPCError().groupIds[0];
 
     try {
-      const insertedId = (await db.insert(papers).values(newPaper).returning({ id: papers.id }).get()).id;
+      const insertedId = (
+        await db
+          .insert(papers)
+          .values({ ...newPaper, isPublic: false })
+          .returning({ id: papers.id })
+          .get()
+      ).id;
       if (groupId)
         await db.insert(papersToGroups).values({ groupId, paperId: insertedId });
       return new Result(true, '创建成功', insertedId);

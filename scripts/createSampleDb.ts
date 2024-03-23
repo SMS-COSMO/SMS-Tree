@@ -103,6 +103,7 @@ await Promise.all(
       keywords: [...Array(5)].map(_ => nanoid(5)),
       canDownload: Math.random() < 0.5,
       isFeatured: Math.random() < 0.3,
+      isPublic: Math.random() < 0.8,
       score: Math.round(Math.random() * 100),
       groupId: groupList[Math.abs(Math.round(Math.random() * groupList.length) - 1)].id,
     });

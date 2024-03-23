@@ -19,7 +19,7 @@ export const paperRouter = router({
       score: z.number().int().optional(),
       comment: z.string().optional(),
       isFeatured: z.boolean().optional().default(false),
-      // TODO: status
+      isPublic: z.boolean().optional().default(false),
     }))
     .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
