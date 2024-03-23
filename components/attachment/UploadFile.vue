@@ -14,7 +14,7 @@
     </div>
     <template #tip>
       <div class="el-upload__tip">
-        最多上传 {{ multiple ? 10 : 1 }} 个文件
+        最多上传 {{ multiple ? 10 : 1 }} 个文件，大小不超过 {{ isMainFile ? '30MB' : '50MB' }}{{ isMainFile ? '，仅允许上传 PDF' : '' }}
       </div>
     </template>
   </el-upload>
@@ -34,8 +34,8 @@ const props = withDefaults(defineProps<{
 }>(), {
   isMainFile: false,
   multiple: false,
-  mainSizeLimit: 10000000, // 10MB
-  secondarySizeLimit: 30000000, // 30MB
+  mainSizeLimit: 30000000, // 30MB
+  secondarySizeLimit: 50000000, // 50MB
 });
 const attachmentIdList = defineModel<string[]>({ default: [] });
 const fileUidToAttachmentId = new Map<number, string>();

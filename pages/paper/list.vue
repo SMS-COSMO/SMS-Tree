@@ -76,7 +76,7 @@
 
 <script setup lang="ts">
 import { vOnClickOutside } from '@vueuse/components';
-import type { TPaperListItem } from '~/types/index';
+import type { TPaperListSafeItem } from '~/types/index';
 import type { TSearchOption } from '~/components/paper/SearchOptions.vue';
 
 useHeadSafe({
@@ -118,12 +118,12 @@ const fuseOptions = computed(() => {
   };
 });
 
-const { processedListData } = await useSearch<TPaperListItem>(
+const { processedListData } = await useSearch<TPaperListSafeItem>(
   searchContent,
   fuseOptions,
   $api.paper.listSafe.query,
   e => e.item,
-  (o: TPaperListItem) => {
+  (o: TPaperListSafeItem) => {
     if (searchOptions.filter.onlyCanDownload && !o.canDownload)
       return false;
     if (searchOptions.filter.onlyFeatured && !o.isFeatured)
@@ -135,7 +135,7 @@ const { processedListData } = await useSearch<TPaperListItem>(
       return false;
     return true;
   },
-  (a: TPaperListItem, b: TPaperListItem) => {
+  (a: TPaperListSafeItem, b: TPaperListSafeItem) => {
     if (searchOptions.sortOption === 'default')
       return 0; // Keep original order
     if (searchOptions.sortOption === 'score')

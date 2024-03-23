@@ -1,12 +1,12 @@
 export const allowedMainFileTypes = [
-  'application/msword',
-  'application/wps-office.docx',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   'application/pdf',
 ];
 
 export const allowedSecondaryFileTypes = [
   ...allowedMainFileTypes,
+  'application/msword',
+  'application/wps-office.docx',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   'image/png',
   'image/jpeg',
   'video/mp4',
