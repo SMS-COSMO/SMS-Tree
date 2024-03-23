@@ -37,13 +37,13 @@
             论文信息
           </template>
           <el-descriptions :column="1">
-            <el-descriptions-item label="作者">
+            <el-descriptions-item v-if="info?.authors" label="作者">
               <GroupMembers :authors="info?.authors" :leader="info?.leader" type="link" class="inline" />
             </el-descriptions-item>
             <el-descriptions-item label="发布时间">
               {{ info?.createdAt.toLocaleDateString('zh-CN') }}
             </el-descriptions-item>
-            <el-descriptions-item label="关键词">
+            <el-descriptions-item v-if="info?.keywords.length" label="关键词">
               <el-tag
                 v-for="(keyword, index) in info?.keywords" :key="index" class="m-0.75 cursor-pointer" type="info"
                 effect="plain" @click="searchTag(keyword)"

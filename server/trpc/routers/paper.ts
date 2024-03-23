@@ -55,9 +55,9 @@ export const paperRouter = router({
       return (await ctx.paperController.remove(input.id)).getMsgOrTRPCError();
     }),
 
-  list: protectedProcedure
+  listSafe: protectedProcedure
     .query(async ({ ctx }) => {
-      return (await ctx.paperController.getList()).getResOrTRPCError();
+      return (await ctx.paperController.getListSafe()).getResOrTRPCError();
     }),
 
   attachments: protectedProcedure

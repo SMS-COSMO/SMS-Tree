@@ -121,7 +121,7 @@ const fuseOptions = computed(() => {
 const { processedListData } = await useSearch<TPaperListItem>(
   searchContent,
   fuseOptions,
-  $api.paper.list.query,
+  $api.paper.listSafe.query,
   e => e.item,
   (o: TPaperListItem) => {
     if (searchOptions.filter.onlyCanDownload && !o.canDownload)

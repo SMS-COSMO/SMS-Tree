@@ -1,11 +1,6 @@
 <template>
   <el-card class="mb-5 w-full">
-    <el-form
-      ref="formRef"
-      class="mx-auto max-w-[800px] py-5"
-      :model="form" :rules="rules"
-      label-width="120px"
-    >
+    <el-form ref="formRef" class="mx-auto max-w-[800px] py-5" :model="form" :rules="rules" label-width="120px">
       <el-form-item prop="title" label="标题">
         <el-input v-model="form.title" />
       </el-form-item>
@@ -15,19 +10,21 @@
       <el-form-item prop="keywords" label="关键词">
         <keywordEditor v-model="form.keywords" />
       </el-form-item>
-      <el-form-item prop="canDownload" label="允许下载">
+      <el-form-item prop="isPublic" label="是否公开">
         <el-switch
-          v-model="form.canDownload"
-          size="large"
-          active-text="是" inactive-text="否" inline-prompt
+          v-model="form.isPublic" size="large" active-text="是" inactive-text="否" inline-prompt
           style="--el-switch-on-color: #146E3C; --el-switch-off-color: #db3131;"
         />
       </el-form-item>
-      <el-form-item prop="canDownload" label="优秀作业">
+      <el-form-item prop="canDownload" label="允许下载">
         <el-switch
-          v-model="form.isFeatured"
-          size="large"
-          active-text="是" inactive-text="否" inline-prompt
+          v-model="form.canDownload" size="large" active-text="是" inactive-text="否" inline-prompt
+          style="--el-switch-on-color: #146E3C; --el-switch-off-color: #db3131;"
+        />
+      </el-form-item>
+      <el-form-item prop="isFeatured" label="优秀作业">
+        <el-switch
+          v-model="form.isFeatured" size="large" active-text="是" inactive-text="否" inline-prompt
           style="--el-switch-on-color: #146E3C; --el-switch-off-color: #db3131;"
         />
       </el-form-item>
@@ -74,6 +71,7 @@ const form = reactive<TPaperCreate>({
   comment: undefined,
   score: undefined,
   isFeatured: false,
+  isPublic: false,
 });
 
 const rules = reactive<FormRules<TPaperCreate>>({

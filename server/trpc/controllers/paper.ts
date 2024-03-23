@@ -103,10 +103,10 @@ export class PaperController {
     }
   }
 
-  async getList() {
+  async getListSafe() {
     try {
       const res = await Promise.all(
-        (await db.select().from(papers))
+        (await db.select().from(papers).where(eq(papers.isPublic, true)).all())
           .map(async (paper) => {
             return (await this.getContent(paper.id, paper)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
           }),
