@@ -7,13 +7,13 @@ import { classSerializer } from '../serializer/class';
 import { ctl } from '../context';
 import { Result, Result500, ResultNoRes } from '../utils/result';
 
-type TState = 'archived' | 'initialized' | 'selectGroup' | 'submitPaper';
+type TClassState = 'archived' | 'initialized' | 'selectGroup' | 'submitPaper';
 
 export class ClassController {
   async create(newClass: {
     index: number;
     enterYear: number;
-    state: TState;
+    state: TClassState;
     students: string[];
     teacher: string;
   }) {
@@ -80,7 +80,7 @@ export class ClassController {
     }
   }
 
-  async modifyState(id: string, newState: TState) {
+  async modifyState(id: string, newState: TClassState) {
     try {
       await db.update(classes).set({ state: newState }).where(eq(classes.id, id));
     } catch (err) {

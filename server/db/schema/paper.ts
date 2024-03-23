@@ -1,11 +1,13 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { makeId } from '../../trpc/utils/shared';
+import { groups } from './group';
 
 export const papers = sqliteTable('papers', {
   id: text('id', { mode: 'text' }).primaryKey().$defaultFn(() => makeId(12)),
   title: text('title', { mode: 'text' }).notNull(),
   keywords: text('keywords', { mode: 'json' }).notNull().$type<string[]>(),
   abstract: text('abstract', { mode: 'text' }).notNull(),
+  groupId: text('group_id', { mode: 'text' }).notNull().references(() => groups.id),
   isPublic: integer('is_public', { mode: 'boolean' }).notNull().default(false),
   score: integer('score'),
   isFeatured: integer('is_featured', { mode: 'boolean' }).notNull().default(false),

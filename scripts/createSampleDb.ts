@@ -2,8 +2,11 @@ import * as readline from 'node:readline/promises';
 import process from 'node:process';
 import { nanoid } from 'nanoid';
 
+import { eq } from 'drizzle-orm';
 import { ctl } from '~/server/trpc/context';
 import { env } from '~/server/env';
+import { db } from '~/server/db/db';
+import { users } from '~/server/db/schema/user';
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
@@ -18,6 +21,9 @@ await ctl.uc.register({
   password: defaultPwd,
   role: 'admin',
 });
+const admin = await db.select().from(users).where(eq(users.id, 'admin')).get();
+if (!admin)
+  process.exit(0);
 
 const studentCount = Number(await rl.question('? Number of students to create: '));
 const classCount = Number(await rl.question('? Number of classes to create: '));
@@ -92,7 +98,7 @@ await Promise.all(
   }),
 );
 
-const groupList = (await ctl.gc.getList()).getResOrTRPCError();
+const groupList = (await ctl.gc.getList(admin)).getResOrTRPCError();
 
 const paperCount = Number(await rl.question('? Number of papers to create: '));
 await Promise.all(

@@ -1,22 +1,22 @@
 import { and, eq, inArray } from 'drizzle-orm';
 import { LibsqlError } from '@libsql/client';
-import type { TNewGroup, TRawUser } from '../../db/db';
+import type { TNewGroup, TRawGroup, TRawUser } from '../../db/db';
 import { db } from '../../db/db';
 import { groups } from '../../db/schema/group';
 import type { TGroup } from '../serializer/group';
 import { groupSerializer } from '../serializer/group';
 import { usersToGroups } from '../../db/schema/userToGroup';
-import { papersToGroups } from '../../db/schema/paperToGroup';
 import { Result, Result500, ResultNoRes } from '../utils/result';
 import { requireEqualOrThrow } from '../utils/shared';
 import { ctl } from '../context';
+import { papers } from '~/server/db/schema/paper';
+import { users } from '~/server/db/schema/user';
 
 export class GroupController {
   async create(newGroup: TNewGroup & {
     members?: string[];
-    papers?: string[];
   }) {
-    const { members, papers, ...group } = newGroup;
+    const { members, ...group } = newGroup;
     group.archived = group.archived ?? false;
 
     let insertedId: string;
@@ -35,26 +35,12 @@ export class GroupController {
       return new ResultNoRes(false, '用户不存在');
     }
 
-    try {
-      if (papers?.length) {
-        await db.insert(papersToGroups).values(papers.map(item => ({
-          groupId: insertedId,
-          paperId: item,
-        })));
-      }
-    } catch (err) {
-      return new ResultNoRes(false, '论文不存在');
-    }
-
     return new ResultNoRes(true, '创建成功');
   }
 
   async remove(id: string) {
     try {
-      await Promise.all([
-        db.delete(usersToGroups).where(eq(usersToGroups.groupId, id)),
-        db.delete(papersToGroups).where(eq(papersToGroups.groupId, id)),
-      ]);
+      await db.delete(usersToGroups).where(eq(usersToGroups.groupId, id));
       await db.delete(groups).where(eq(groups.id, id));
       return new ResultNoRes(true, '删除成功');
     } catch (err) {
@@ -67,9 +53,11 @@ export class GroupController {
       return new ResultNoRes(false, '组长需要包含于组员中');
     if (!(await db.select().from(groups).where(eq(groups.id, groupId))).length)
       return new ResultNoRes(false, '小组id不存在');
+
     try {
       await db.update(groups).set({ leader: newLeader }).where(eq(groups.id, groupId));
       await db.delete(usersToGroups).where(eq(usersToGroups.groupId, groupId));
+
       await Promise.all(newMembers.map(userId => db.insert(usersToGroups).values({ userId, groupId })));
       return new ResultNoRes(true, '修改成功');
     } catch (err) {
@@ -79,27 +67,42 @@ export class GroupController {
     }
   }
 
-  async getContent(id: string) {
+  async getMembers(id: string, info?: TRawGroup) {
+    try {
+      info ??= await db.select().from(groups).where(eq(groups.id, id)).get();
+      if (!info)
+        return new ResultNoRes(false, '小组不存在');
+
+      const rawMembers = await db.select().from(usersToGroups).where(eq(usersToGroups.groupId, id)).all();
+      const members = await Promise.all(
+        rawMembers.map(
+          async item => await db.select({ id: users.id, username: users.username }).from(users).where(eq(users.id, item.userId)).get(),
+        ),
+      );
+      const leader = info.leader
+        ? await db.select({ id: users.id, username: users.username }).from(users).where(eq(users.id, info.leader)).get()
+        : undefined;
+      return new Result(true, '查询成功', { members, leader });
+    } catch (err) {
+      return new ResultNoRes(false, '小组不存在');
+    }
+  }
+
+  async getContent(id: string, user: TRawUser) {
     try {
       const info = await db.select().from(groups).where(eq(groups.id, id)).get();
       if (!info)
         return new ResultNoRes(false, '小组不存在');
 
-      const members = await db.select().from(usersToGroups).where(eq(usersToGroups.groupId, id));
-      const membersWithInfo = await Promise.all(
-        members.map(
-          async item => (await ctl.uc.getProfile(item.userId)).getResOrTRPCError('INTERNAL_SERVER_ERROR'),
-        ),
-      );
-
-      const papers = await db.select().from(papersToGroups).where(eq(papersToGroups.groupId, id));
+      const rawPapers = await db.select().from(papers).where(eq(papers.groupId, id));
       const papersWithInfo = await Promise.all(
-        papers.map(
-          async item => (await ctl.pc.getBasicInfo(item.paperId)).getResOrTRPCError('INTERNAL_SERVER_ERROR'),
+        rawPapers.map(
+          async item => (await ctl.pc.getContent(item.id, user, item)).getResOrTRPCError('INTERNAL_SERVER_ERROR'),
         ),
       );
 
-      const group = groupSerializer(info, membersWithInfo, papersWithInfo);
+      const { members, leader } = (await this.getMembers(info.id, info)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+      const group = groupSerializer(info, papersWithInfo, members, leader);
       return new Result(true, '查询成功', group);
     } catch (err) {
       return new ResultNoRes(false, '小组不存在');
@@ -118,7 +121,7 @@ export class GroupController {
     }
   }
 
-  async getList(classId?: string) {
+  async getList(user: TRawUser, classId?: string) {
     try {
       const res: Array<TGroup> = [];
       for (const info of
@@ -126,7 +129,7 @@ export class GroupController {
           ? await db.select().from(groups).where(eq(groups.classId, classId))
           : await db.select().from(groups).all()
       )
-        res.push((await this.getContent(info.id)).getResOrTRPCError('INTERNAL_SERVER_ERROR'));
+        res.push((await this.getContent(info.id, user)).getResOrTRPCError('INTERNAL_SERVER_ERROR'));
 
       return new Result(true, '查询成功', res);
     } catch (err) {

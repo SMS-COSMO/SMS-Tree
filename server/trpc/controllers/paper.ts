@@ -3,22 +3,19 @@ import { db } from '../../db/db';
 import type { TNewPaper, TRawPaper, TRawUser } from '../../db/db';
 
 import { papers } from '../../db/schema/paper';
+import type { TMinimalUser } from '../serializer/paper';
 import { paperSerializer } from '../serializer/paper';
-import { papersToGroups } from '../../db/schema/paperToGroup';
 import { attachmentSerializer } from '../serializer/attachment';
 import { ctl } from '../context';
 import { Result, Result500, ResultNoRes } from '../utils/result';
 import { requireTeacherOrThrow } from '../utils/shared';
 import { attachments } from '~/server/db/schema/attachment';
+import { usersToGroups } from '~/server/db/schema/userToGroup';
 
 export class PaperController {
-  async create(newPaper: TNewPaper & { groupId?: string }) {
-    const { groupId, ...paper } = newPaper;
-
+  async create(newPaper: TNewPaper) {
     try {
-      const insertedId = (await db.insert(papers).values(paper).returning({ id: papers.id }).get()).id;
-      if (groupId)
-        await db.insert(papersToGroups).values({ groupId, paperId: insertedId });
+      const insertedId = (await db.insert(papers).values(newPaper).returning({ id: papers.id }).get()).id;
       return new Result(true, '创建成功', insertedId);
     } catch (err) {
       return new Result500();
@@ -26,21 +23,27 @@ export class PaperController {
   }
 
   async createSafe(
-    newPaper: Omit<TNewPaper, 'id' | 'isFeatured' | 'isPublic' | 'score' | 'comment'>,
+    newPaper: Omit<TNewPaper, 'id' | 'isFeatured' | 'isPublic' | 'score' | 'comment' | 'groupId'>,
     user: TRawUser,
   ) {
-    const groupId = (await ctl.uc.getFullUser(user)).getResOrTRPCError().groupIds[0];
+    const group = (
+      await db
+        .select({ groupId: usersToGroups.groupId })
+        .from(usersToGroups)
+        .where(eq(usersToGroups.userId, user.id))
+        .get()
+    );
+    if (!group)
+      return new ResultNoRes(false, '用户无小组');
 
     try {
       const insertedId = (
         await db
           .insert(papers)
-          .values({ ...newPaper, isPublic: false })
+          .values({ ...newPaper, groupId: group.groupId, isPublic: false })
           .returning({ id: papers.id })
           .get()
       ).id;
-      if (groupId)
-        await db.insert(papersToGroups).values({ groupId, paperId: insertedId });
       return new Result(true, '创建成功', insertedId);
     } catch (err) {
       return new Result500();
@@ -49,32 +52,11 @@ export class PaperController {
 
   async remove(id: string) {
     try {
-      await db.delete(papersToGroups).where(eq(papersToGroups.paperId, id));
       await db.delete(papers).where(eq(papers.id, id));
       return new ResultNoRes(true, '删除成功');
     } catch (err) {
       return new ResultNoRes(false, '论文不存在');
     }
-  }
-
-  async getAuthors(groupId: string) {
-    const group = (await ctl.gc.getContent(groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
-    const leader = group.leader
-      ? { id: group.leader.id, username: group.leader.username }
-      : undefined;
-    const authors = await Promise.all(
-      (group.members ?? [])
-        .map(async (author) => {
-          if (!author)
-            return { id: '', username: '' };
-          return {
-            id: author.id,
-            username: author.username,
-          };
-        }),
-    );
-
-    return new Result(true, '查询成功', { authors, leader });
   }
 
   async getBasicInfo(id: string) {
@@ -88,20 +70,16 @@ export class PaperController {
 
   async getContent(id: string, user: TRawUser, info?: TRawPaper) {
     try {
-      const realInfo = info ?? await db.select().from(papers).where(eq(papers.id, id)).get();
-      if (!realInfo)
+      info ??= await db.select().from(papers).where(eq(papers.id, id)).get();
+      if (!info)
         return new ResultNoRes(false, '论文不存在');
 
-      const group = await db.select().from(papersToGroups).where(eq(papersToGroups.paperId, id)).get();
-      let res;
-      if (group) {
-        res = (await this.getAuthors(group.groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+      const members = (await ctl.gc.getMembers(info.groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+      const isOwned = await this.hasUser(user.id, info.groupId, members);
+      if (!info?.isPublic && !isOwned)
+        requireTeacherOrThrow(user);
 
-        if (!realInfo?.isPublic && !(await this.hasUser(group.groupId, user.id)))
-          requireTeacherOrThrow(user);
-      }
-
-      return new Result(true, '查询成功', paperSerializer(realInfo, res?.authors, res?.leader));
+      return new Result(true, '查询成功', paperSerializer(info, members?.members, members?.leader));
     } catch (err) {
       return new ResultNoRes(false, '论文不存在');
     }
@@ -121,12 +99,13 @@ export class PaperController {
     }
   }
 
+  // TODO: merge with this.getContent
   async getAttachments(id: string, user: TRawUser) {
     try {
-      const { canDownload }
-        = (await this.getContent(id, user)).getResOrTRPCError('INTERNAL_SERVER_ERROR')
-        ?? { canDownload: false, isPublic: false };
-      const isOwned = await this.hasUser(id, user.id);
+      const rawPaper = (await this.getBasicInfo(id)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+      const isOwned = await this.hasUser(user.id, rawPaper.groupId);
+      if (!rawPaper.isPublic && !isOwned)
+        requireTeacherOrThrow(user);
 
       const res = (
         await db
@@ -134,7 +113,7 @@ export class PaperController {
           .from(attachments)
           .where(eq(attachments.paperId, id))
       ).map(
-        x => attachmentSerializer(x, canDownload || ['teacher', 'admin'].includes(user.role) || isOwned),
+        x => attachmentSerializer(x, rawPaper.canDownload || ['teacher', 'admin'].includes(user.role) || isOwned),
       );
 
       return new Result(true, '查询成功', res);
@@ -146,10 +125,10 @@ export class PaperController {
   // TODO: This seems unsafe
   async updateDownloadCount(id: string, user: TRawUser) {
     try {
-      const { canDownload, downloadCount } = (await this.getBasicInfo(id)).getResOrTRPCError('INTERNAL_SERVER_ERROR') ?? { canDownload: false, downloadCount: 0 };
-      const isOwned = await this.hasUser(id, user.id);
-      if (canDownload && !isOwned && !['teacher', 'admin'].includes(user.role))
-        await db.update(papers).set({ downloadCount: downloadCount + 1 }).where(eq(papers.id, id));
+      const paper = (await this.getBasicInfo(id)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+      const isOwned = await this.hasUser(user.id, paper.groupId);
+      if (paper.canDownload && !isOwned && !['teacher', 'admin'].includes(user.role))
+        await db.update(papers).set({ downloadCount: paper.downloadCount + 1 }).where(eq(papers.id, id));
 
       return new ResultNoRes(true, '修改成功');
     } catch (err) {
@@ -157,11 +136,18 @@ export class PaperController {
     }
   }
 
-  async hasUser(groupId: string, userId: string) {
+  async hasUser(
+    userId: string,
+    groupId: string,
+    members?: {
+      members: TMinimalUser[];
+      leader: TMinimalUser;
+    },
+  ) {
     try {
-      const { authors } = (await this.getAuthors(groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
-      if (authors)
-        return authors.some(x => x.id === userId);
+      members ??= (await ctl.gc.getMembers(groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+      if (members.members)
+        return members.members.some(x => x?.id === userId);
       return false;
     } catch (err) {
       return false;

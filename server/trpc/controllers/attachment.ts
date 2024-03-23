@@ -5,12 +5,16 @@ import { ctl } from '../context';
 import { Result, Result500, ResultNoRes } from '../utils/result';
 import { attachments } from '~/server/db/schema/attachment';
 import { allowedMainFileTypes, allowedSecondaryFileTypes } from '~/constants/fileType';
+import { papers } from '~/server/db/schema/paper';
 
 export class AttachmentController {
   async hasPerm(paperId: string | undefined | null, user: TRawUser) {
     if (!paperId)
-      return true;
-    return await ctl.pc.hasUser(paperId, user.id) || ['teacher', 'admin'].includes(user.role);
+      return false;
+    const paper = await db.select({ groupId: papers.groupId }).from(papers).where(eq(papers.id, paperId)).get();
+    if (!paper?.groupId)
+      return false;
+    return await ctl.pc.hasUser(user.id, paper?.groupId) || ['teacher', 'admin'].includes(user.role);
   };
 
   async create(newAttachment: TNewAttachment, user: TRawUser) {

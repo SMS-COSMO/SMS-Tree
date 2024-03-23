@@ -68,7 +68,7 @@
       </el-col>
     </el-row>
 
-    <el-card v-if="attachments?.length">
+    <el-card v-if="attachments?.length && (attachments?.findIndex(e => e.S3FileId) !== -1)">
       <Preview :attachment="attachments?.filter(a => a.isMainFile)[0]" full-height />
     </el-card>
 

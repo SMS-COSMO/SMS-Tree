@@ -14,7 +14,7 @@ export const paperRouter = router({
         .array(z.string().max(8, { message: '关键词最长为8个字符' }))
         .max(8, { message: '最多8个关键词' }),
       abstract: z.string().max(5000, '摘要最长5000字'),
-      groupId: z.string().optional(),
+      groupId: z.string(),
       canDownload: z.boolean(),
       score: z.number().int().optional(),
       comment: z.string().optional(),

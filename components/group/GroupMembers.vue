@@ -19,12 +19,12 @@
 </template>
 
 <script setup lang="ts">
-import type { TAuthor } from '~/server/trpc/serializer/paper';
+import type { TMinimalUser } from '~/server/trpc/serializer/paper';
 import type { TUser } from '~/server/trpc/serializer/user';
 
 withDefaults(defineProps<{
-  authors?: TAuthor[] | TUser[];
-  leader?: TAuthor | TUser;
+  authors?: TMinimalUser[] | TUser[];
+  leader?: TMinimalUser | TUser;
   type?: 'text' | 'link';
   showLeader?: boolean;
 }>(), {
