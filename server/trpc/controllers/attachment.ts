@@ -38,7 +38,13 @@ export class AttachmentController {
 
   async modify(id: string, newAttachment: TNewAttachment, user: TRawUser) {
     try {
-      const oldPaperId = (await db.select({ paperId: attachments.paperId }).from(attachments).where(eq(attachments.id, id)).get())?.paperId;
+      const oldPaperId = (
+        await db
+          .select({ paperId: attachments.paperId })
+          .from(attachments)
+          .where(eq(attachments.id, id))
+          .get()
+      )?.paperId;
       if (await this.hasPerm(oldPaperId, user) && await this.hasPerm(newAttachment.paperId, user))
         await db.update(attachments).set(newAttachment).where(eq(attachments.id, id));
       else

@@ -78,7 +78,9 @@ export class UserController {
     if (!['admin', 'teacher'].includes(user.role) && user.id !== id)
       return new ResultNoRes(false, '无修改权限');
 
-    const targetUser = user.id === id ? user : await db.select().from(users).where(eq(users.id, id)).get();
+    const targetUser = user.id === id
+      ? user
+      : await db.select().from(users).where(eq(users.id, id)).get();
     if (!targetUser)
       return new ResultNoRes(false, '用户不存在');
 
@@ -127,11 +129,11 @@ export class UserController {
   async getFullUser(basicUser: TRawUser) {
     try {
       const groupIds = (
-        await db.select().from(usersToGroups).where(eq(usersToGroups.userId, basicUser.id))
+        await db.select({ groupId: usersToGroups.groupId }).from(usersToGroups).where(eq(usersToGroups.userId, basicUser.id))
       ).map(item => item.groupId);
 
       const classIds = (
-        await db.select().from(classesToUsers).where(eq(classesToUsers.userId, basicUser.id))
+        await db.select({ classId: classesToUsers.classId }).from(classesToUsers).where(eq(classesToUsers.userId, basicUser.id))
       ).map(item => item.classId);
 
       let projectName, className;

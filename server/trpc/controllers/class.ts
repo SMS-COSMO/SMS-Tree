@@ -67,13 +67,31 @@ export class ClassController {
         return new ResultNoRes(false, '班级不存在');
 
       const students = (
-        await db.select({ userId: classesToUsers.userId }).from(classesToUsers)
-          .where(and(eq(classesToUsers.classId, basicClass.id), eq(classesToUsers.type, 'student')))
+        await db
+          .select({ userId: classesToUsers.userId })
+          .from(classesToUsers)
+          .where(
+            and(
+              eq(classesToUsers.classId, basicClass.id),
+              eq(classesToUsers.type, 'student'),
+            ),
+          )
       ).map(item => item.userId);
-      const teacher = (await db.select({ userId: classesToUsers.userId }).from(classesToUsers)
-        .where(and(eq(classesToUsers.classId, basicClass.id), eq(classesToUsers.type, 'teacher'))).get())?.userId;
-      const className = (await this.getString('', basicClass)).getResOrTRPCError();
 
+      const teacher = (
+        await db
+          .select({ userId: classesToUsers.userId })
+          .from(classesToUsers)
+          .where(
+            and(
+              eq(classesToUsers.classId, basicClass.id),
+              eq(classesToUsers.type, 'teacher'),
+            ),
+          )
+          .get()
+      )?.userId;
+
+      const className = (await this.getString('', basicClass)).getResOrTRPCError();
       return new Result(true, '', classSerializer(basicClass, students, teacher, className));
     } catch (err) {
       return new Result500();

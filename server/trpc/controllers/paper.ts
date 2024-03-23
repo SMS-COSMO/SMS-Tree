@@ -102,7 +102,17 @@ export class PaperController {
   // TODO: merge with this.getContent
   async getAttachments(id: string, user: TRawUser) {
     try {
-      const rawPaper = (await this.getBasicInfo(id)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+      const rawPaper = await db
+        .select({
+          groupId: papers.groupId,
+          isPublic: papers.isPublic,
+          canDownload: papers.canDownload,
+        })
+        .from(papers)
+        .where(eq(papers.id, id))
+        .get();
+      if (!rawPaper)
+        return new ResultNoRes(false, '论文不存在');
       const isOwned = await this.hasUser(user.id, rawPaper.groupId);
       if (!rawPaper.isPublic && !isOwned)
         requireTeacherOrThrow(user);
@@ -125,10 +135,21 @@ export class PaperController {
   // TODO: This seems unsafe
   async updateDownloadCount(id: string, user: TRawUser) {
     try {
-      const paper = (await this.getBasicInfo(id)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
-      const isOwned = await this.hasUser(user.id, paper.groupId);
-      if (paper.canDownload && !isOwned && !['teacher', 'admin'].includes(user.role))
-        await db.update(papers).set({ downloadCount: paper.downloadCount + 1 }).where(eq(papers.id, id));
+      const rawPaper = await db
+        .select({
+          groupId: papers.groupId,
+          downloadCount: papers.downloadCount,
+          canDownload: papers.canDownload,
+        })
+        .from(papers)
+        .where(eq(papers.id, id))
+        .get();
+      if (!rawPaper)
+        return new ResultNoRes(false, '论文不存在');
+
+      const isOwned = await this.hasUser(user.id, rawPaper.groupId);
+      if (rawPaper.canDownload && !isOwned && !['teacher', 'admin'].includes(user.role))
+        await db.update(papers).set({ downloadCount: rawPaper.downloadCount + 1 }).where(eq(papers.id, id));
 
       return new ResultNoRes(true, '修改成功');
     } catch (err) {
