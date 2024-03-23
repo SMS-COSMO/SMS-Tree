@@ -6,7 +6,7 @@
     <client-only>
       <el-descriptions
         :column="2"
-        size="large" class="mb-[-16px]"
+        size="large"
       >
         <el-descriptions-item>
           <template #label>
@@ -35,6 +35,24 @@
           <span class="space-x-2 text-[16px]!">
             <GroupMembers :authors="info?.members" :leader="info?.leader" type="link" class="inline" />
           </span>
+        </el-descriptions-item>
+      </el-descriptions>
+      <el-descriptions
+        :column="1"
+        size="large" class="mb-[-16px]"
+      >
+        <el-descriptions-item>
+          <template #label>
+            <div class="mb-[-12px] text-[16px]!">
+              <el-icon>
+                <ElIconEditPen />
+              </el-icon>
+              会议纪要
+            </div>
+          </template>
+          <el-card class="w-full">
+            TODO
+          </el-card>
         </el-descriptions-item>
         <el-descriptions-item v-if="info?.papers?.length">
           <template #label>

@@ -1,6 +1,6 @@
 <template>
   <client-only>
-    <div class="flex flex-row gap-8">
+    <div class="box-border flex flex-row gap-8 px-0">
       <div class="mb-5 w-full space-y-4">
         <el-card v-if="classInfo?.state === 'initialized'">
           <template #header>
@@ -13,12 +13,19 @@
           <GroupInfo :info="groupInfo" />
           <template v-if="classInfo?.state === 'submitPaper'">
             <SubmitPaper v-if="!groupInfo?.papers.length" />
+            <el-card v-else>
+              <el-result
+                icon="success"
+                title="论文已提交"
+                sub-title="等待老师批改论文"
+              />
+            </el-card>
           </template>
         </template>
       </div>
       <div class="box-border h-content max-w-80px py-2">
         <el-steps :active="step.indexOf(classInfo?.state ?? '')" finish-status="wait" direction="vertical">
-          <el-step :icon="ElIconRefresh" title="等待老师开放分组" />
+          <el-step :icon="ElIconClock" title="等待老师开放分组" />
           <el-step :icon="ElIconUser" title="选择小组" />
           <el-step :icon="ElIconUpload" title="提交论文" />
           <el-step :icon="ElIconCheck" title="论文查重" />
