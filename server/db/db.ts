@@ -10,7 +10,7 @@ import type { notes } from './schema/note';
 
 const options = (() => {
   switch (env.DATABASE_CONNECTION_TYPE) {
-    case 'local': return { url: 'file:local.sqlite' };
+    case 'local': return { url: env.DATABASE_URL };
     case 'remote': return { url: env.DATABASE_URL, authToken: env.DATABASE_AUTH_TOKEN };
   }
 })();
