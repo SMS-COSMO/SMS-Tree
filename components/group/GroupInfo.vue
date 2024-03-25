@@ -50,9 +50,9 @@
               会议纪要
             </div>
           </template>
-          <el-card class="w-full" @click="test">
-            TODO
-          </el-card>
+          <template v-for="note in info?.notes" :key="note.id">
+            <NoteCard :note="note" />
+          </template>
         </el-descriptions-item>
         <el-descriptions-item v-if="info?.papers?.length">
           <template #label>
@@ -63,13 +63,11 @@
               论文
             </div>
           </template>
-          <span class="text-[16px]!">
-            <div :class="info?.papers?.length > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
-              <template v-for="paper in info.papers" :key="paper.id">
-                <PaperCard :paper="paper" />
-              </template>
-            </div>
-          </span>
+          <div :class="info?.papers?.length > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
+            <template v-for="paper in info.papers" :key="paper.id">
+              <PaperCard :paper="paper" />
+            </template>
+          </div>
         </el-descriptions-item>
       </el-descriptions>
       <template #fallback>
@@ -83,17 +81,4 @@
 import type { TGroupContent } from '~/types';
 
 defineProps<{ info?: TGroupContent }>();
-const { $api } = useNuxtApp();
-
-async function test() {
-  await $api.note.createSafe.mutate({
-    content: 'dasdsa',
-    followUp: 'asdas',
-    newDiscussion: 'sadas',
-    plans: 'asdas',
-    reflections: 'dasdas',
-    time: new Date(),
-    title: 'first note',
-  });
-}
 </script>
