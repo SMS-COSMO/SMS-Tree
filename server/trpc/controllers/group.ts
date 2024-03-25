@@ -9,8 +9,10 @@ import { usersToGroups } from '../../db/schema/userToGroup';
 import { Result, Result500, ResultNoRes } from '../utils/result';
 import { requireEqualOrThrow } from '../utils/shared';
 import { ctl } from '../context';
+import type { TMinimalUser } from '../serializer/paper';
 import { papers } from '~/server/db/schema/paper';
 import { users } from '~/server/db/schema/user';
+import { notes } from '~/server/db/schema/note';
 
 export class GroupController {
   async create(newGroup: TNewGroup & {
@@ -92,6 +94,8 @@ export class GroupController {
       info ??= await db.select().from(groups).where(eq(groups.id, id)).get();
       if (!info)
         return new ResultNoRes(false, '小组不存在');
+      const { members, leader } = (await this.getMembers(info.id, info.leader)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+      const isOwned = await this.hasUser(user.id, id, { members, leader });
 
       const rawPapers = await db.select().from(papers).where(eq(papers.groupId, id));
       const papersWithInfo = await Promise.all(
@@ -100,8 +104,11 @@ export class GroupController {
         ),
       );
 
-      const { members, leader } = (await this.getMembers(info.id, info.leader)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
-      const group = groupSerializer(info, papersWithInfo, members, leader);
+      let rawNotes;
+      if (isOwned)
+        rawNotes = await db.select().from(notes).where(eq(notes.groupId, id));
+
+      const group = groupSerializer(info, papersWithInfo, members, leader, rawNotes);
       return new Result(true, '查询成功', group);
     } catch (err) {
       return new ResultNoRes(false, '小组不存在');
@@ -267,6 +274,24 @@ export class GroupController {
         await this._removeLeader(groupId);
     } catch (err) {
       // swallow
+    }
+  }
+
+  async hasUser(
+    userId: string,
+    groupId: string,
+    members?: {
+      members: TMinimalUser[];
+      leader: TMinimalUser;
+    },
+  ) {
+    try {
+      members ??= (await this.getMembers(groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+      if (members.members)
+        return members.members.some(x => x?.id === userId);
+      return false;
+    } catch (err) {
+      return false;
     }
   }
 }

@@ -1,4 +1,4 @@
-import type { TRawGroup } from '../../db/db';
+import type { TRawGroup, TRawNote } from '../../db/db';
 import type { TMinimalUser, TPaper } from './paper';
 
 export type TGroup = ReturnType<typeof groupSerializer>;
@@ -8,6 +8,7 @@ export function groupSerializer(
   papers: TPaper[],
   members: TMinimalUser[],
   leader: TMinimalUser,
+  notes?: TRawNote[],
 ) {
   const { leader: _, ...rest } = basicGroup;
   return {
@@ -15,5 +16,6 @@ export function groupSerializer(
     leader,
     members,
     papers,
+    notes,
   };
 }

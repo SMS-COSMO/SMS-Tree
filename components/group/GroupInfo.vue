@@ -50,7 +50,7 @@
               会议纪要
             </div>
           </template>
-          <el-card class="w-full">
+          <el-card class="w-full" @click="test">
             TODO
           </el-card>
         </el-descriptions-item>
@@ -83,4 +83,17 @@
 import type { TGroupContent } from '~/types';
 
 defineProps<{ info?: TGroupContent }>();
+const { $api } = useNuxtApp();
+
+async function test() {
+  await $api.note.createSafe.mutate({
+    content: 'dasdsa',
+    followUp: 'asdas',
+    newDiscussion: 'sadas',
+    plans: 'asdas',
+    reflections: 'dasdas',
+    time: new Date(),
+    title: 'first note',
+  });
+}
 </script>

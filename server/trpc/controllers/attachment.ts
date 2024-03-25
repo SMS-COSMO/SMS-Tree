@@ -20,7 +20,7 @@ export class AttachmentController {
     const paper = await db.select({ groupId: papers.groupId }).from(papers).where(eq(papers.id, paperId)).get();
     if (!paper?.groupId)
       return false;
-    return await ctl.pc.hasUser(user.id, paper?.groupId);
+    return await ctl.gc.hasUser(user.id, paper?.groupId);
   };
 
   async create(newAttachment: TNewAttachment, user: TRawUser) {

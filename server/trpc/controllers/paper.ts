@@ -75,7 +75,7 @@ export class PaperController {
         return new ResultNoRes(false, '论文不存在');
 
       const members = (await ctl.gc.getMembers(info.groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
-      const isOwned = await this.hasUser(user.id, info.groupId, members);
+      const isOwned = await ctl.gc.hasUser(user.id, info.groupId, members);
       if (!info?.isPublic && !isOwned)
         requireTeacherOrThrow(user);
 
@@ -113,7 +113,7 @@ export class PaperController {
       if (!rawPaper)
         return new ResultNoRes(false, '论文不存在');
 
-      const isOwned = await this.hasUser(user.id, rawPaper.groupId);
+      const isOwned = await ctl.gc.hasUser(user.id, rawPaper.groupId);
       const isAdmin = ['teacher', 'admin'].includes(user.role);
       if (!rawPaper.isPublic && !isOwned)
         requireTeacherOrThrow(user);
@@ -156,31 +156,13 @@ export class PaperController {
       if (!rawPaper)
         return new ResultNoRes(false, '论文不存在');
 
-      const isOwned = await this.hasUser(user.id, rawPaper.groupId);
+      const isOwned = await ctl.gc.hasUser(user.id, rawPaper.groupId);
       if (rawPaper.canDownload && !isOwned && !['teacher', 'admin'].includes(user.role))
         await db.update(papers).set({ downloadCount: rawPaper.downloadCount + 1 }).where(eq(papers.id, id));
 
       return new ResultNoRes(true, '修改成功');
     } catch (err) {
       return new Result500();
-    }
-  }
-
-  async hasUser(
-    userId: string,
-    groupId: string,
-    members?: {
-      members: TMinimalUser[];
-      leader: TMinimalUser;
-    },
-  ) {
-    try {
-      members ??= (await ctl.gc.getMembers(groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
-      if (members.members)
-        return members.members.some(x => x?.id === userId);
-      return false;
-    } catch (err) {
-      return false;
     }
   }
 

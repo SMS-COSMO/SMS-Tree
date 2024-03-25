@@ -35,6 +35,7 @@ export const groupRouter = router({
 
   list: protectedProcedure
     .input(z.object({ classId: z.string().optional() }))
+    .use(requireRoles(['admin', 'teacher']))
     .query(async ({ ctx, input }) => {
       return (await ctx.groupController.getList(ctx.user, input.classId)).getResOrTRPCError();
     }),

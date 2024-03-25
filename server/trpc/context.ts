@@ -8,9 +8,11 @@ import { PaperController } from './controllers/paper';
 import { GroupController } from './controllers/group';
 import { ClassController } from './controllers/class';
 import { AttachmentController } from './controllers/attachment';
+import { NoteController } from './controllers/note';
 
 const newGlobal = globalThis as unknown as {
   userController: UserController | undefined;
+  noteController: NoteController | undefined;
   paperController: PaperController | undefined;
   groupController: GroupController | undefined;
   classController: ClassController | undefined;
@@ -18,6 +20,7 @@ const newGlobal = globalThis as unknown as {
 };
 
 const userController = newGlobal.userController ?? new UserController();
+const noteController = newGlobal.noteController ?? new NoteController();
 const paperController = newGlobal.paperController ?? new PaperController();
 const groupController = newGlobal.groupController ?? new GroupController();
 const classController = newGlobal.classController ?? new ClassController();
@@ -25,6 +28,7 @@ const attachmentController = newGlobal.attachmentController ?? new AttachmentCon
 
 if (process.env.NODE_ENV !== 'production') {
   newGlobal.userController = userController;
+  newGlobal.noteController = noteController;
   newGlobal.paperController = paperController;
   newGlobal.groupController = groupController;
   newGlobal.classController = classController;
@@ -46,6 +50,7 @@ export function createInnerContext(opts: CreateContextOptions) {
     db,
     s3,
     userController,
+    noteController,
     paperController,
     groupController,
     classController,
@@ -55,6 +60,7 @@ export function createInnerContext(opts: CreateContextOptions) {
 
 export const ctl = {
   uc: userController,
+  nc: noteController,
   pc: paperController,
   gc: groupController,
   cc: classController,
