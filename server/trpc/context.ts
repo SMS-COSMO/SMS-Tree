@@ -3,7 +3,7 @@ import type * as trpcExpress from '@trpc/server/adapters/express';
 import type { inferAsyncReturnType } from '@trpc/server';
 import { type TRawUser, db } from '../db/db';
 import { UserController } from './controllers/user';
-import { s3 } from './controllers/s3';
+import { S3Controller } from './controllers/s3';
 import { PaperController } from './controllers/paper';
 import { GroupController } from './controllers/group';
 import { ClassController } from './controllers/class';
@@ -17,6 +17,7 @@ const newGlobal = globalThis as unknown as {
   groupController: GroupController | undefined;
   classController: ClassController | undefined;
   attachmentController: AttachmentController | undefined;
+  s3Controller: S3Controller | undefined;
 };
 
 const userController = newGlobal.userController ?? new UserController();
@@ -25,6 +26,7 @@ const paperController = newGlobal.paperController ?? new PaperController();
 const groupController = newGlobal.groupController ?? new GroupController();
 const classController = newGlobal.classController ?? new ClassController();
 const attachmentController = newGlobal.attachmentController ?? new AttachmentController();
+const s3Controller = new S3Controller();
 
 if (process.env.NODE_ENV !== 'production') {
   newGlobal.userController = userController;
@@ -33,6 +35,7 @@ if (process.env.NODE_ENV !== 'production') {
   newGlobal.groupController = groupController;
   newGlobal.classController = classController;
   newGlobal.attachmentController = attachmentController;
+  newGlobal.s3Controller = s3Controller;
 }
 
 interface CreateContextOptions {
@@ -48,7 +51,7 @@ export function createInnerContext(opts: CreateContextOptions) {
   return {
     user: opts.user,
     db,
-    s3,
+    s3Controller,
     userController,
     noteController,
     paperController,
@@ -65,6 +68,7 @@ export const ctl = {
   gc: groupController,
   cc: classController,
   ac: attachmentController,
+  s3: s3Controller,
 };
 
 /**

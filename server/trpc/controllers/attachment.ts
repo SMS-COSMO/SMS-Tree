@@ -33,7 +33,10 @@ export class AttachmentController {
 
       if (await this.hasPerm(newAttachment.paperId, user)) {
         const id = (await db.insert(attachments).values(newAttachment).returning({ id: attachments.id }).get()).id;
-        return new Result(true, '创建成功', id);
+        const url = await ctl.s3.getStandardUploadPresignedUrl(newAttachment.S3FileId);
+        if (!url)
+          return new Result500();
+        return new Result(true, '创建成功', { id, url });
       } else {
         return new ResultNoRes(false, '超出权限范围');
       }
@@ -91,6 +94,52 @@ export class AttachmentController {
     try {
       const l = await db.select().from(attachments).all();
       return new Result(true, '查询成功', l);
+    } catch (err) {
+      return new Result500();
+    }
+  }
+
+  /**
+   * Retrieves the file URL for a given attachment ID without performing permission checks.
+   * @param id - The ID of the attachment.
+   * @returns A promise that resolves to a Result object containing the file URL if successful, or a Result object with an error message if unsuccessful.
+   */
+  async getFileUrlUncheckedPerm(id: string) {
+    try {
+      const attachment = await db.select({ S3FileId: attachments.S3FileId }).from(attachments).where(eq(attachments.id, id)).get();
+      if (!attachment || !attachment.S3FileId)
+        return new ResultNoRes(false, '附件不存在');
+      const url = await ctl.s3.getFileUrl(attachment.S3FileId);
+      if (!url)
+        return new Result500();
+      return new Result(true, '查询成功', url);
+    } catch (err) {
+      return new Result500();
+    }
+  }
+
+  /**
+   * Retrieves the file URL for a given attachment ID.
+   *
+   * Will check if the paper is downloadable before returning the URL.
+   * If you want to bypass this check, use `getFileUrlUncheckedPerm` instead.
+   *
+   * @param id - The ID of the attachment.
+   * @returns A Promise that resolves to a Result object containing the file URL if successful, or an error Result object if unsuccessful.
+   */
+  async getFileUrl(id: string, user: TRawUser) {
+    try {
+      const attachment = await db.select({ S3FileId: attachments.S3FileId, paperId: attachments.paperId }).from(attachments).where(eq(attachments.id, id)).get();
+      if (!attachment || !attachment.S3FileId || !attachment.paperId)
+        return new ResultNoRes(false, '附件不存在');
+      const paper = await db.select({ canDownload: papers.canDownload }).from(papers).where(eq(papers.id, attachment.paperId)).get();
+      const canDownload = ['teacher','admin'].includes(user.role) || paper?.canDownload;
+      if (!paper || canDownload)
+        return new ResultNoRes(false, '无权限下载');
+      const url = await ctl.s3.getFileUrl(attachment.S3FileId);
+      if (!url)
+        return new Result500();
+      return new Result(true, '查询成功', url);
     } catch (err) {
       return new Result500();
     }
