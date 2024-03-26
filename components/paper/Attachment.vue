@@ -5,13 +5,9 @@
 
   <client-only>
     <el-dialog v-model="showDialog" title="文件下载">
-      <el-collapse>
+      <el-collapse v-if="attachments?.length">
         <el-collapse-item
-          v-for="attachment in attachments?.toSorted((a, b) => {
-            if (a.isMainFile) return -1;
-            else if (b.isMainFile) return 1;
-            else return 0;
-          })"
+          v-for="attachment in attachments"
           :key="attachment.id"
         >
           <template #title>
@@ -33,6 +29,7 @@
           <Preview :attachment="attachment" />
         </el-collapse-item>
       </el-collapse>
+      <el-empty v-else :image-size="150" description="无文件" />
     </el-dialog>
   </client-only>
 </template>
