@@ -11,11 +11,13 @@
   <client-only>
     <el-dialog
       v-model="dialogVisible"
+      align-center
+      draggable
       title="创建活动记录"
     >
       <el-form
         ref="formRef"
-        class="mx-auto max-w-[800px] py-5"
+        class="mx-auto max-w-[800px] px-4 py-4"
         :model="form" :rules="rules"
         label-width="120px"
       >

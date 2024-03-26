@@ -146,13 +146,7 @@ export class AttachmentController {
       if (!attachment || !attachment.S3FileId || !attachment.paperId)
         return new ResultNoRes(false, '附件不存在');
 
-      const paper = await db
-        .select({ canDownload: papers.canDownload })
-        .from(papers)
-        .where(eq(papers.id, attachment.paperId))
-        .get();
-      const canDownload = ['teacher', 'admin'].includes(user.role) || paper?.canDownload;
-      if (!paper || canDownload)
+      if (!await this.hasPerm(attachment.paperId, user))
         return new ResultNoRes(false, '无权限下载');
 
       const url = await ctl.s3.getFileUrl(attachment.S3FileId);
