@@ -42,16 +42,23 @@
 </template>
 
 <script lang="ts" setup>
+import { useQuery } from '@tanstack/vue-query';
+
 const { $api } = useNuxtApp();
 const userStore = useUserStore();
 
 const step = ['initialized', 'selectGroup', 'submitPaper'];
 
-const [classInfo, userInfo, groupInfo] = await useTrpcAsyncData(() => Promise.all([
+const [classInfo, userInfo] = await useTrpcAsyncData(() => Promise.all([
   $api.class.content.query({ id: userStore.classIds[0] }),
   $api.user.profile.query({ id: userStore.userId }),
-  $api.group.content.query({ id: userStore.groupIds[0] }),
 ])) ?? [];
+
+const { data: groupInfo, suspense: groupInfoSuspense } = useQuery({
+  queryKey: ['groupInfo'],
+  queryFn: () => useTrpcAsyncData(() => $api.group.content.query({ id: userStore.groupIds[0] })),
+});
+await groupInfoSuspense();
 
 onMounted(() => {
   if (userInfo)

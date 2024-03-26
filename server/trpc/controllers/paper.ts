@@ -3,7 +3,6 @@ import { db } from '../../db/db';
 import type { TNewPaper, TRawPaper, TRawUser } from '../../db/db';
 
 import { papers } from '../../db/schema/paper';
-import type { TMinimalUser } from '../serializer/paper';
 import { paperSerializer } from '../serializer/paper';
 import { attachmentSerializer } from '../serializer/attachment';
 import { ctl } from '../context';

@@ -47,12 +47,13 @@
               <el-icon>
                 <ElIconEditPen />
               </el-icon>
-              会议纪要
+              活动记录
             </div>
           </template>
           <template v-for="note in info?.notes" :key="note.id">
             <NoteCard :note="note" />
           </template>
+          <NewNote />
         </el-descriptions-item>
         <el-descriptions-item v-if="info?.papers?.length">
           <template #label>

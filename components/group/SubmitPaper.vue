@@ -43,6 +43,7 @@
 </template>
 
 <script setup lang="ts">
+import { useQueryClient } from '@tanstack/vue-query';
 import type { FormInstance, FormRules } from 'element-plus';
 import type { TPaperCreateSafeForm } from '~/types/index';
 
@@ -68,13 +69,14 @@ const rules = reactive<FormRules<TPaperCreateSafeForm>>({
   ],
   abstract: [
     { required: true, message: '摘要不能为空', trigger: 'blur' },
-    { min: 1, max: 5000, message: '摘要不应超过5000个字', trigger: 'blur' },
+    { min: 1, max: 1000, message: '摘要不应超过1000个字', trigger: 'blur' },
   ],
   canDownload: [{ required: true }],
   keywords: [{ required: true, message: '关键词不能为空', trigger: 'blur' }],
   paperFile: [{ required: true, message: '请上传论文文件' }],
 });
 
+const queryClient = useQueryClient();
 const buttonLoading = ref(false);
 async function create(submittedForm: FormInstance | undefined) {
   if (!submittedForm)
@@ -89,6 +91,7 @@ async function create(submittedForm: FormInstance | undefined) {
           ids: form.paperFile.concat(form.attachments),
           paperId,
         });
+        queryClient.invalidateQueries({ queryKey: ['groupInfo'] });
         ElMessage({ message: '创建成功', type: 'success', showClose: true });
       } catch (err) {
         useErrorHandler(err);
