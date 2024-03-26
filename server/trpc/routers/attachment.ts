@@ -48,6 +48,6 @@ export const attachmentRouter = router({
   fileUrl: protectedProcedure
     .input(attachmentIdZod)
     .query(async ({ ctx, input }) => {
-      return (await ctx.attachmentController.getFileUrl(input,ctx.user)).getResOrTRPCError();
+      return (await ctx.attachmentController.getFileUrl(input, ctx.user)).getResOrTRPCError();
     }),
 });

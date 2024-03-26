@@ -79,7 +79,13 @@ export class AttachmentController {
 
   async remove(id: string, user: TRawUser) {
     try {
-      const paperId = (await db.select({ paperId: attachments.paperId }).from(attachments).where(eq(attachments.id, id)).get())?.paperId;
+      const paperId = (
+        await db
+          .select({ paperId: attachments.paperId })
+          .from(attachments)
+          .where(eq(attachments.id, id))
+          .get()
+      )?.paperId;
       if (await this.hasPerm(paperId, user))
         await db.delete(attachments).where(eq(attachments.id, id));
       else
@@ -129,13 +135,26 @@ export class AttachmentController {
    */
   async getFileUrl(id: string, user: TRawUser) {
     try {
-      const attachment = await db.select({ S3FileId: attachments.S3FileId, paperId: attachments.paperId }).from(attachments).where(eq(attachments.id, id)).get();
+      const attachment = await db
+        .select({
+          S3FileId: attachments.S3FileId,
+          paperId: attachments.paperId,
+        })
+        .from(attachments)
+        .where(eq(attachments.id, id))
+        .get();
       if (!attachment || !attachment.S3FileId || !attachment.paperId)
         return new ResultNoRes(false, '附件不存在');
-      const paper = await db.select({ canDownload: papers.canDownload }).from(papers).where(eq(papers.id, attachment.paperId)).get();
-      const canDownload = ['teacher','admin'].includes(user.role) || paper?.canDownload;
+
+      const paper = await db
+        .select({ canDownload: papers.canDownload })
+        .from(papers)
+        .where(eq(papers.id, attachment.paperId))
+        .get();
+      const canDownload = ['teacher', 'admin'].includes(user.role) || paper?.canDownload;
       if (!paper || canDownload)
         return new ResultNoRes(false, '无权限下载');
+
       const url = await ctl.s3.getFileUrl(attachment.S3FileId);
       if (!url)
         return new Result500();
