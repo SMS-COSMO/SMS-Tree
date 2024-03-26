@@ -82,16 +82,36 @@
           {{ note.reflections }}
         </el-descriptions-item>
       </el-descriptions>
+      <template #footer>
+        <el-button type="primary">
+          修改
+        </el-button>
+        <el-button type="danger" :loading="isPending" @click="removeNote({ id: note.id })">
+          删除
+        </el-button>
+      </template>
     </el-dialog>
   </client-only>
 </template>
 
 <script setup lang="ts">
+import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import type { TRawNote } from '~/server/db/db';
 
 defineProps<{ note: TRawNote }>();
+const { $api } = useNuxtApp();
 
 const dialogVisible = ref(false);
+
+const queryClient = useQueryClient();
+const { mutate: removeNote, isPending } = useMutation({
+  mutationFn: $api.note.remove.mutate,
+  onSuccess: (message) => {
+    queryClient.invalidateQueries({ queryKey: ['groupInfo'] });
+    ElMessage({ message, type: 'success', showClose: true });
+  },
+  onError: err => useErrorHandler(err),
+});
 </script>
 
 <style>
