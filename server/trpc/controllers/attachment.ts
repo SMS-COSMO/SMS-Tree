@@ -8,7 +8,7 @@ import { allowedMainFileTypes, allowedSecondaryFileTypes } from '~/constants/fil
 import { papers } from '~/server/db/schema/paper';
 
 export class AttachmentController {
-  async hasPerm(paperId: string | undefined | null, user: TRawUser) {
+  async hasPerm(paperId: string | undefined | null, user: TRawUser, allowPublic: boolean = false) {
     // Teachers have all the perm
     if (['teacher', 'admin'].includes(user.role))
       return true;
@@ -17,10 +17,17 @@ export class AttachmentController {
     if (!paperId)
       return true;
 
-    const paper = await db.select({ groupId: papers.groupId }).from(papers).where(eq(papers.id, paperId)).get();
+    const paper = await db
+      .select({
+        groupId: papers.groupId,
+        canDownload: papers.canDownload,
+      })
+      .from(papers)
+      .where(eq(papers.id, paperId))
+      .get();
     if (!paper?.groupId)
       return false;
-    return await ctl.gc.hasUser(user.id, paper?.groupId);
+    return (allowPublic && paper.canDownload) || await ctl.gc.hasUser(user.id, paper?.groupId);
   };
 
   async create(newAttachment: TNewAttachment, user: TRawUser) {
@@ -146,7 +153,7 @@ export class AttachmentController {
       if (!attachment || !attachment.S3FileId || !attachment.paperId)
         return new ResultNoRes(false, '附件不存在');
 
-      if (!await this.hasPerm(attachment.paperId, user))
+      if (!await this.hasPerm(attachment.paperId, user, true))
         return new ResultNoRes(false, '无权限下载');
 
       const url = await ctl.s3.getFileUrl(attachment.S3FileId);

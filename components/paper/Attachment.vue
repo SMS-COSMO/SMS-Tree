@@ -1,9 +1,12 @@
 <template>
-  <el-button v-if="canDownload" color="#146E3C" class="mt-1 w-full" plain @click="showDialog = true;">
-    下载
-  </el-button>
-
   <client-only>
+    <el-button
+      v-if="canDownload || ['teacher', 'admin'].includes(userStore.role)"
+      color="#146E3C" class="mt-1 w-full" plain @click="showDialog = true;"
+    >
+      下载
+    </el-button>
+
     <el-dialog v-model="showDialog" title="文件下载">
       <el-collapse v-if="attachments?.length">
         <el-collapse-item
@@ -44,6 +47,7 @@ const props = defineProps<{
 }>();
 
 const { $api } = useNuxtApp();
+const userStore = useUserStore();
 
 let firstOpen = true;
 const showDialog = ref(false);
