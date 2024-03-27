@@ -1,4 +1,5 @@
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
+import { TRPCError } from '@trpc/server';
 import { db } from '../../db/db';
 import type { TNewNote, TRawNote, TRawUser } from '../../db/db';
 
@@ -19,19 +20,29 @@ export class NoteController {
     }
   }
 
+  async getUserGroup(user: TRawUser) {
+    let group;
+    try {
+      group = (
+        await db
+          .select({ groupId: usersToGroups.groupId })
+          .from(usersToGroups)
+          .where(eq(usersToGroups.userId, user.id))
+          .get()
+      );
+    } catch (err) {
+      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+    }
+    if (!group)
+      throw new TRPCError({ message: '用户无小组', code: 'UNAUTHORIZED' });
+    return group;
+  }
+
   async createSafe(
     newNote: Omit<TNewNote, 'id' | 'groupId'>,
     user: TRawUser,
   ) {
-    const group = (
-      await db
-        .select({ groupId: usersToGroups.groupId })
-        .from(usersToGroups)
-        .where(eq(usersToGroups.userId, user.id))
-        .get()
-    );
-    if (!group)
-      return new ResultNoRes(false, '用户无小组');
+    const group = await this.getUserGroup(user);
 
     try {
       const insertedId = (
@@ -42,6 +53,28 @@ export class NoteController {
           .get()
       ).id;
       return new Result(true, '创建成功', insertedId);
+    } catch (err) {
+      return new Result500();
+    }
+  }
+
+  async modifySafe(
+    newNote: Omit<TRawNote, 'groupId'>,
+    user: TRawUser,
+  ) {
+    const group = await this.getUserGroup(user);
+
+    try {
+      await db
+        .update(notes)
+        .set(newNote)
+        .where(
+          and(
+            eq(notes.groupId, group.groupId),
+            eq(notes.id, newNote.id),
+          ),
+        );
+      return new ResultNoRes(true, '创建成功');
     } catch (err) {
       return new Result500();
     }

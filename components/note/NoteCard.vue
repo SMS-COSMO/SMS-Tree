@@ -83,13 +83,21 @@
         </el-descriptions-item>
       </el-descriptions>
       <template #footer>
-        <el-button type="primary">
+        <el-button type="primary" @click="modifyDialogVisible = true">
           修改
         </el-button>
         <el-button type="danger" :loading="isPending" @click="removeNote({ id: note.id })">
           删除
         </el-button>
       </template>
+    </el-dialog>
+    <el-dialog
+      v-model="modifyDialogVisible"
+      align-center
+      draggable
+      title="修改活动记录"
+    >
+      <NoteForm type="modify" :old-note="note" />
     </el-dialog>
   </client-only>
 </template>
@@ -102,6 +110,7 @@ defineProps<{ note: TRawNote }>();
 const { $api } = useNuxtApp();
 
 const dialogVisible = ref(false);
+const modifyDialogVisible = ref(false);
 
 const queryClient = useQueryClient();
 const { mutate: removeNote, isPending } = useMutation({
