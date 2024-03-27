@@ -9,7 +9,7 @@ export const papers = sqliteTable('papers', {
   abstract: text('abstract', { mode: 'text' }).notNull(),
   groupId: text('group_id', { mode: 'text' }).notNull().references(() => groups.id),
   isPublic: integer('is_public', { mode: 'boolean' }).notNull().default(false),
-  score: integer('score'),
+  score: text('score', { enum: ['A', 'B', 'C', 'D'] }),
   canDownload: integer('can_download', { mode: 'boolean' }).notNull().default(false),
   isFeatured: integer('is_featured', { mode: 'boolean' }).notNull().default(false),
   downloadCount: integer('download_count').notNull().default(0),

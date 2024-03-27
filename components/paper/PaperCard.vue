@@ -16,7 +16,7 @@
         </el-icon>
         可下载
       </el-tag>
-      <el-tag v-if="paper?.score" :type="scoreColor(paper?.score)" disable-transitions>
+      <el-tag :type="scoreColor(paper?.score)" disable-transitions>
         <el-icon><ElIconHistogram /></el-icon>
         分数：{{ paper?.score }}
       </el-tag>
@@ -56,10 +56,10 @@ withDefaults(defineProps<{
   lineClamp: 3,
 });
 
-function scoreColor(score: number) {
-  if (score >= 80)
+function scoreColor(score: 'A' | 'B' | 'C' | 'D' | null) {
+  if (score === 'A')
     return 'success';
-  else if (score >= 60)
+  else if (score === 'B')
     return 'warning';
   else
     return 'danger';

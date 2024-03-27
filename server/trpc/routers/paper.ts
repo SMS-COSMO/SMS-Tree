@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { protectedProcedure, requireRoles, router } from '../trpc';
 
 const paperIdZod = z.string().min(1, '论文id不存在');
+const scoreEnumZod = z.enum(['A', 'B', 'C', 'D'], { errorMap: () => ({ message: '请输入正确的等级' }) }).optional();
 
 export const paperRouter = router({
   create: protectedProcedure
@@ -16,7 +17,7 @@ export const paperRouter = router({
       abstract: z.string().max(5000, '摘要最长5000字'),
       groupId: z.string(),
       canDownload: z.boolean(),
-      score: z.number().int().optional(),
+      score: scoreEnumZod,
       comment: z.string().optional(),
       isFeatured: z.boolean().optional().default(false),
       isPublic: z.boolean().optional().default(false),

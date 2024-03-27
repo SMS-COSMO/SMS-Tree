@@ -100,6 +100,11 @@ await Promise.all(
 
 const groupList = (await ctl.gc.getList(admin)).getResOrTRPCError();
 
+function getScore() {
+  const possible: ('A' | 'B' | 'C' | 'D')[] = ['A', 'B', 'C', 'D'];
+  return possible[Math.round((Math.random() * 100)) % 4];
+}
+
 const paperCount = Number(await rl.question('? Number of papers to create: '));
 await Promise.all(
   [...Array(paperCount)].map((_, i) => {
@@ -110,7 +115,7 @@ await Promise.all(
       canDownload: Math.random() < 0.5,
       isFeatured: Math.random() < 0.3,
       isPublic: Math.random() < 0.8,
-      score: Math.round(Math.random() * 100),
+      score: getScore(),
       groupId: groupList[Math.abs(Math.round(Math.random() * groupList.length) - 1)].id,
     });
   }),
