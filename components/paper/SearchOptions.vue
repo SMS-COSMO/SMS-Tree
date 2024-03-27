@@ -45,10 +45,10 @@
   </el-radio-group>
   <div class="mb-2 flex items-center text-sm">
     <el-radio-group v-model="modelValue.isAsc" class="ml-4">
-      <el-radio :label="1" size="large">
+      <el-radio :value="1" size="large">
         顺序
       </el-radio>
-      <el-radio :label="-1" size="large">
+      <el-radio :value="-1" size="large">
         逆序
       </el-radio>
     </el-radio-group>

@@ -86,9 +86,13 @@
         <el-button type="primary" @click="modifyDialogVisible = true">
           修改
         </el-button>
-        <el-button type="danger" :loading="isPending" @click="removeNote({ id: note.id })">
-          删除
-        </el-button>
+        <el-popconfirm width="200" title="确定要删除吗" @confirm="removeNote({ id: note.id })">
+          <template #reference>
+            <el-button type="danger" :loading="isPending">
+              删除
+            </el-button>
+          </template>
+        </el-popconfirm>
       </template>
     </el-dialog>
     <el-dialog
