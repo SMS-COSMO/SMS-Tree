@@ -33,16 +33,17 @@
       <el-col :span="isSmallScreen ? 24 : 6">
         <FoldableCard :can-fold="isSmallScreen" class="box-border h-full">
           <template #header>
+            <el-icon><ElIconInfoFilled /></el-icon>
             论文信息
           </template>
           <el-descriptions :column="1">
-            <el-descriptions-item label="作者">
+            <el-descriptions-item v-if="info?.authors" label="作者">
               <GroupMembers :authors="info?.authors" :leader="info?.leader" type="link" class="inline" />
             </el-descriptions-item>
             <el-descriptions-item label="发布时间">
               {{ info?.createdAt.toLocaleDateString('zh-CN') }}
             </el-descriptions-item>
-            <el-descriptions-item label="关键词">
+            <el-descriptions-item v-if="info?.keywords.length" label="关键词">
               <el-tag
                 v-for="(keyword, index) in info?.keywords" :key="index" class="m-0.75 cursor-pointer" type="info"
                 effect="plain" @click="searchTag(keyword)"
@@ -57,6 +58,7 @@
       <el-col :span="isSmallScreen ? 24 : 18" class="mt-3 lg:mt-0">
         <FoldableCard :can-fold="isSmallScreen" class="box-border h-full">
           <template #header>
+            <el-icon><ElIconList /></el-icon>
             摘要
           </template>
           <div class="text-justify text-[15px] leading-normal lg:text-base">
@@ -66,7 +68,7 @@
       </el-col>
     </el-row>
 
-    <el-card v-if="attachments?.length">
+    <el-card v-if="attachments?.length && (attachments?.findIndex(e => e.S3FileId) !== -1)">
       <Preview :attachment="attachments?.filter(a => a.isMainFile)[0]" full-height />
     </el-card>
 

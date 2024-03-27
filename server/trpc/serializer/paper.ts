@@ -1,12 +1,12 @@
 import type { TRawPaper } from '../../db/db';
 
-export interface TAuthor {
+export type TMinimalUser = {
   username: string;
   id: string;
-};
+} | undefined;
 
 export type TPaper = ReturnType<typeof paperSerializer>;
-export function paperSerializer(content: TRawPaper, authors?: TAuthor[], leader?: TAuthor) {
+export function paperSerializer(content: TRawPaper, authors?: TMinimalUser[], leader?: TMinimalUser) {
   return {
     ...content,
     authors,

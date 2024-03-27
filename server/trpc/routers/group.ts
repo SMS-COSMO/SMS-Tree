@@ -30,13 +30,14 @@ export const groupRouter = router({
   content: protectedProcedure
     .input(z.object({ id: z.string().min(1, '小组id不存在') }))
     .query(async ({ ctx, input }) => {
-      return (await ctx.groupController.getContent(input.id)).getResOrTRPCError();
+      return (await ctx.groupController.getContent(input.id, ctx.user)).getResOrTRPCError();
     }),
 
   list: protectedProcedure
     .input(z.object({ classId: z.string().optional() }))
+    .use(requireRoles(['admin', 'teacher']))
     .query(async ({ ctx, input }) => {
-      return (await ctx.groupController.getList(input.classId)).getResOrTRPCError();
+      return (await ctx.groupController.getList(ctx.user, input.classId)).getResOrTRPCError();
     }),
 
   modify: protectedProcedure

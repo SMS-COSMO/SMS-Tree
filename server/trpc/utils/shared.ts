@@ -1,5 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { customAlphabet } from 'nanoid';
+import type { TRawUser } from '~/server/db/db';
 
 /**
  * Checks if two values are equal and throws an error if they are not.
@@ -12,6 +13,11 @@ import { customAlphabet } from 'nanoid';
 export function requireEqualOrThrow(a: any, b: any, message: string, code: TRPCError['code'] = 'BAD_REQUEST') {
   if (a !== b)
     throw new TRPCError({ code, message });
+}
+
+export function requireTeacherOrThrow(user: TRawUser) {
+  if (!['admin', 'teacher'].includes(user.role))
+    throw new TRPCError({ code: 'UNAUTHORIZED', message: '超出权限范围' });
 }
 
 export const makeId = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 12);

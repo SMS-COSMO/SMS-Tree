@@ -49,6 +49,7 @@
 <script setup lang="ts">
 import { useMutation } from '@tanstack/vue-query';
 import type { FormInstance, FormRules } from 'element-plus';
+import { passwordRegex } from '~/constants/user';
 import { useUserStore } from '~/stores/user';
 
 const props = defineProps<{
@@ -69,6 +70,7 @@ const rules = reactive<FormRules<typeof form>>({
   ],
   newPassword: [
     { required: true, message: '密码不能为空', trigger: 'blur' },
+    { pattern: passwordRegex, message: '密码必须包含大小写字母、数字与特殊符号' },
     { min: 8, message: '密码至少 8 位', trigger: 'change' },
     { validator: (_, value: any, callback: any) => {
       if (value === form.oldPassword)

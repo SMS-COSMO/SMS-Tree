@@ -14,12 +14,12 @@ export const paperRouter = router({
         .array(z.string().max(8, { message: '关键词最长为8个字符' }))
         .max(8, { message: '最多8个关键词' }),
       abstract: z.string().max(5000, '摘要最长5000字'),
-      groupId: z.string().optional(),
+      groupId: z.string(),
       canDownload: z.boolean(),
       score: z.number().int().optional(),
       comment: z.string().optional(),
       isFeatured: z.boolean().optional().default(false),
-      // TODO: status
+      isPublic: z.boolean().optional().default(false),
     }))
     .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
@@ -45,7 +45,7 @@ export const paperRouter = router({
   info: protectedProcedure
     .input(z.object({ id: paperIdZod }))
     .query(async ({ ctx, input }) => {
-      return (await ctx.paperController.getContent(input.id)).getResOrTRPCError();
+      return (await ctx.paperController.getContent(input.id, ctx.user)).getResOrTRPCError();
     }),
 
   remove: protectedProcedure
@@ -55,9 +55,9 @@ export const paperRouter = router({
       return (await ctx.paperController.remove(input.id)).getMsgOrTRPCError();
     }),
 
-  list: protectedProcedure
+  listSafe: protectedProcedure
     .query(async ({ ctx }) => {
-      return (await ctx.paperController.getList()).getResOrTRPCError();
+      return (await ctx.paperController.getListSafe(ctx.user)).getResOrTRPCError();
     }),
 
   attachments: protectedProcedure
@@ -77,10 +77,30 @@ export const paperRouter = router({
   setComment: protectedProcedure
     .use(requireRoles(['admin', 'teacher']))
     .input(z.object({
-      paperId: z.string().min(1, '小组id不存在'),
+      paperId: z.string().min(1, '论文id不存在'),
       comment: z.string().min(1, '评语长度不能为零').max(500, '评论最长为500'),
     }))
     .mutation(async ({ ctx, input }) => {
       return (await ctx.paperController.setComment(input.paperId, input.comment)).getMsgOrTRPCError();
+    }),
+
+  setCanDownload: protectedProcedure
+    .use(requireRoles(['admin', 'teacher']))
+    .input(z.object({
+      paperId: z.string().min(1, '论文id不存在'),
+      canDownload: z.boolean(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return (await ctx.paperController.setCanDownload(input.paperId, input.canDownload)).getMsgOrTRPCError();
+    }),
+
+  setIsFeatured: protectedProcedure
+    .use(requireRoles(['admin', 'teacher']))
+    .input(z.object({
+      paperId: z.string().min(1, '论文id不存在'),
+      isFeatured: z.boolean(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return (await ctx.paperController.setIsFeatured(input.paperId, input.isFeatured)).getMsgOrTRPCError();
     }),
 });

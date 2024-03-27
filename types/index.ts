@@ -11,10 +11,12 @@ export type TUserListItem = RouterOutput['user']['list'][0];
 export type TUserRegister = RouterInput['user']['register'];
 
 export type TPaperContent = RouterOutput['paper']['info'];
-export type TPaperList = RouterOutput['paper']['list'];
-export type TPaperListItem = RouterOutput['paper']['list'][0];
+export type TPaperListSafe = RouterOutput['paper']['listSafe'];
+export type TPaperListSafeItem = RouterOutput['paper']['listSafe'][0];
 export type TPaperCreate = RouterInput['paper']['create'];
 export type TPaperCreateSafe = RouterInput['paper']['createSafe'];
+export type TPaperCreateForm = TPaperCreate & { paperFile: string[]; attachments: string[] };
+export type TPaperCreateSafeForm = TPaperCreateSafe & { paperFile: string[]; attachments: string[] };
 
 export type TClassContent = RouterOutput['class']['content'];
 export type TClassList = RouterOutput['class']['list'];
@@ -28,4 +30,8 @@ export type TAttachmentContent = TAttachmentListItem;
 
 export type TRole = 'student' | 'teacher' | 'admin';
 
+export type TGroupContent = RouterOutput['group']['content'];
 export type TGroupList = RouterOutput['group']['list'];
+
+export type TNoteInfo = RouterOutput['note']['info'];
+export type TNoteCreateSafe = RouterInput['note']['createSafe'];

@@ -14,7 +14,7 @@
     </div>
     <template #tip>
       <div class="el-upload__tip">
-        最多上传 {{ multiple ? 10 : 1 }} 个文件
+        最多上传 {{ multiple ? 10 : 1 }} 个文件，大小不超过 {{ isMainFile ? '30MB' : '50MB' }}{{ isMainFile ? '，仅允许上传 PDF' : '' }}
       </div>
     </template>
   </el-upload>
@@ -24,6 +24,7 @@
 import type { UploadFile, UploadFiles, UploadRawFile, UploadRequestOptions } from 'element-plus';
 import axios from 'axios';
 import { nanoid } from 'nanoid';
+import { allowedMainFileTypes, allowedSecondaryFileTypes } from '~/constants/fileType';
 
 const props = withDefaults(defineProps<{
   isMainFile?: boolean;
@@ -33,8 +34,8 @@ const props = withDefaults(defineProps<{
 }>(), {
   isMainFile: false,
   multiple: false,
-  mainSizeLimit: 10000000, // 10MB
-  secondarySizeLimit: 30000000, // 30MB
+  mainSizeLimit: 30000000, // 30MB
+  secondarySizeLimit: 50000000, // 50MB
 });
 const attachmentIdList = defineModel<string[]>({ default: [] });
 const fileUidToAttachmentId = new Map<number, string>();
@@ -54,9 +55,18 @@ function removeFileFromList(f: UploadFile | undefined, message: string) {
 }
 
 async function handleUpload(option: UploadRequestOptions) {
-  const key = `${nanoid(10)}-${option.file.name}`;
   const { file } = option;
   const f = getFile(file);
+
+  if (
+    (props.isMainFile && !allowedMainFileTypes.includes(file.type))
+    || (!props.isMainFile && !allowedSecondaryFileTypes.includes(file.type))
+  ) {
+    removeFileFromList(f, '不支持的文件类型');
+    if (f)
+      handleRemove(f);
+    return;
+  }
 
   // f.size in bytes
   const sizeLimit = props.isMainFile ? props.mainSizeLimit : props.secondarySizeLimit;
@@ -67,7 +77,15 @@ async function handleUpload(option: UploadRequestOptions) {
   }
 
   try {
-    const url = await $api.s3.getStandardUploadPresignedUrl.mutate({ key });
+    const key = `${nanoid(10)}-${option.file.name}`;
+    const { id, url } = await $api.attachment.create.mutate({
+      isMainFile: props.isMainFile,
+      fileType: file.type,
+      name: file.name,
+      S3FileId: key, // fake id because it's generated on server
+    });
+    attachmentIdList.value.push(id);
+    fileUidToAttachmentId.set(file.uid, id);
     await axios.put(url, file.slice(), {
       headers: { 'Content-Type': file.type },
       onUploadProgress: (p) => {
@@ -77,15 +95,6 @@ async function handleUpload(option: UploadRequestOptions) {
         }
       },
     });
-
-    const id = await $api.attachment.create.mutate({
-      isMainFile: props.isMainFile,
-      fileType: file.type,
-      name: file.name,
-      S3FileId: url.split('?')[0],
-    });
-    attachmentIdList.value.push(id);
-    fileUidToAttachmentId.set(file.uid, id);
   } catch (err) {
     removeFileFromList(f, '上传失败');
   }

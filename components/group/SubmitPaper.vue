@@ -1,7 +1,7 @@
 <template>
-  <el-card class="mb-5 w-full">
+  <el-card class="mb-5">
     <template #header>
-      <span class="text-xl font-bold">提交论文</span>
+      提交论文
     </template>
 
     <el-form
@@ -27,11 +27,11 @@
           style="--el-switch-on-color: #146E3C; --el-switch-off-color: #db3131;"
         />
       </el-form-item>
-      <el-form-item label="论文文件">
-        <UploadFile v-model="paperFile" is-main-file />
+      <el-form-item prop="paperFile" label="论文文件">
+        <UploadFile v-model="form.paperFile" is-main-file />
       </el-form-item>
       <el-form-item label="附件">
-        <UploadFile v-model="attachments" multiple />
+        <UploadFile v-model="form.attachments" multiple />
       </el-form-item>
       <el-form-item>
         <el-button color="#146E3C" :loading="buttonLoading" @click="create(formRef)">
@@ -43,8 +43,9 @@
 </template>
 
 <script setup lang="ts">
+import { useQueryClient } from '@tanstack/vue-query';
 import type { FormInstance, FormRules } from 'element-plus';
-import type { TPaperCreateSafe } from '~/types/index';
+import type { TPaperCreateSafeForm } from '~/types/index';
 
 const { $api } = useNuxtApp();
 useHeadSafe({
@@ -52,26 +53,30 @@ useHeadSafe({
 });
 
 const formRef = ref<FormInstance>();
-const form = reactive<TPaperCreateSafe>({
+const form = reactive<TPaperCreateSafeForm>({
   title: '',
   keywords: [],
   abstract: '',
   canDownload: false,
+  paperFile: [],
+  attachments: [],
 });
 
-const rules = reactive<FormRules<TPaperCreateSafe>>({
+const rules = reactive<FormRules<TPaperCreateSafeForm>>({
   title: [
     { required: true, message: '论文标题不能为空', trigger: 'blur' },
     { min: 1, max: 256, message: '论文标题长度不应超过 256', trigger: 'blur' },
   ],
   abstract: [
     { required: true, message: '摘要不能为空', trigger: 'blur' },
-    { min: 1, max: 5000, message: '摘要不应超过5000个字', trigger: 'blur' },
+    { min: 1, max: 1000, message: '摘要不应超过1000个字', trigger: 'blur' },
   ],
+  canDownload: [{ required: true }],
+  keywords: [{ required: true, message: '关键词不能为空', trigger: 'blur' }],
+  paperFile: [{ required: true, message: '请上传论文文件' }],
 });
-const paperFile = ref<string[]>([]);
-const attachments = ref<string[]>([]);
 
+const queryClient = useQueryClient();
 const buttonLoading = ref(false);
 async function create(submittedForm: FormInstance | undefined) {
   if (!submittedForm)
@@ -83,9 +88,10 @@ async function create(submittedForm: FormInstance | undefined) {
         buttonLoading.value = true;
         const paperId = await $api.paper.createSafe.mutate(form);
         await $api.attachment.batchMoveToPaper.mutate({
-          ids: paperFile.value.concat(attachments.value),
+          ids: form.paperFile.concat(form.attachments),
           paperId,
         });
+        queryClient.invalidateQueries({ queryKey: ['groupInfo'] });
         ElMessage({ message: '创建成功', type: 'success', showClose: true });
       } catch (err) {
         useErrorHandler(err);

@@ -6,10 +6,11 @@ import type { papers } from './schema/paper';
 import type { groups } from './schema/group';
 import type { classes } from './schema/class';
 import type { attachments } from './schema/attachment';
+import type { notes } from './schema/note';
 
 const options = (() => {
   switch (env.DATABASE_CONNECTION_TYPE) {
-    case 'local': return { url: 'file:local.sqlite' };
+    case 'local': return { url: env.DATABASE_URL };
     case 'remote': return { url: env.DATABASE_URL, authToken: env.DATABASE_AUTH_TOKEN };
   }
 })();
@@ -32,3 +33,6 @@ export type TNewClass = typeof classes.$inferInsert;
 
 export type TRawAttachment = typeof attachments.$inferSelect;
 export type TNewAttachment = typeof attachments.$inferInsert;
+
+export type TRawNote = typeof notes.$inferSelect;
+export type TNewNote = typeof notes.$inferInsert;

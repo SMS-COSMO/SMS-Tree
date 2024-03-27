@@ -45,10 +45,10 @@
 
 <script setup lang="ts">
 import type { TRawPaper } from '~/server/db/db';
-import type { TPaperListItem } from '~/types/index';
+import type { TPaperListSafeItem } from '~/types/index';
 
 withDefaults(defineProps<{
-  paper: TPaperListItem | TRawPaper;
+  paper: TPaperListSafeItem | TRawPaper;
   showAbstract?: boolean;
   lineClamp?: number;
 }>(), {

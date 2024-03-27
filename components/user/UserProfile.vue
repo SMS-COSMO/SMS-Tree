@@ -1,6 +1,7 @@
 <template>
   <el-card>
     <template #header>
+      <el-icon><ElIconSetUp /></el-icon>
       用户信息
     </template>
     <client-only>
@@ -68,15 +69,16 @@
   </el-card>
   <FoldableCard class="mt-5">
     <template #header>
+      <el-icon><ElIconDocumentCopy /></el-icon>
       参与的论文
     </template>
     <div v-if="!papers?.length">
       <el-empty :image-size="130" description="暂无论文" />
     </div>
     <div v-else :class="papers?.length > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
-      <div v-for="(paper, index) in papers" :key="index">
+      <template v-for="paper in papers" :key="paper.id">
         <PaperCard :paper="paper" show-abstract />
-      </div>
+      </template>
     </div>
   </FoldableCard>
 </template>

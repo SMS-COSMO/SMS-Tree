@@ -7,13 +7,13 @@ import { classSerializer } from '../serializer/class';
 import { ctl } from '../context';
 import { Result, Result500, ResultNoRes } from '../utils/result';
 
-type TState = 'archived' | 'initialized' | 'selectGroup' | 'submitPaper';
+type TClassState = 'archived' | 'initialized' | 'selectGroup' | 'submitPaper';
 
 export class ClassController {
   async create(newClass: {
     index: number;
     enterYear: number;
-    state: TState;
+    state: TClassState;
     students: string[];
     teacher: string;
   }) {
@@ -67,20 +67,38 @@ export class ClassController {
         return new ResultNoRes(false, '班级不存在');
 
       const students = (
-        await db.select({ userId: classesToUsers.userId }).from(classesToUsers)
-          .where(and(eq(classesToUsers.classId, basicClass.id), eq(classesToUsers.type, 'student')))
+        await db
+          .select({ userId: classesToUsers.userId })
+          .from(classesToUsers)
+          .where(
+            and(
+              eq(classesToUsers.classId, basicClass.id),
+              eq(classesToUsers.type, 'student'),
+            ),
+          )
       ).map(item => item.userId);
-      const teacher = (await db.select({ userId: classesToUsers.userId }).from(classesToUsers)
-        .where(and(eq(classesToUsers.classId, basicClass.id), eq(classesToUsers.type, 'teacher'))).get())?.userId;
-      const className = (await this.getString('', basicClass)).getResOrTRPCError();
 
+      const teacher = (
+        await db
+          .select({ userId: classesToUsers.userId })
+          .from(classesToUsers)
+          .where(
+            and(
+              eq(classesToUsers.classId, basicClass.id),
+              eq(classesToUsers.type, 'teacher'),
+            ),
+          )
+          .get()
+      )?.userId;
+
+      const className = (await this.getString('', basicClass)).getResOrTRPCError();
       return new Result(true, '', classSerializer(basicClass, students, teacher, className));
     } catch (err) {
       return new Result500();
     }
   }
 
-  async modifyState(id: string, newState: TState) {
+  async modifyState(id: string, newState: TClassState) {
     try {
       await db.update(classes).set({ state: newState }).where(eq(classes.id, id));
     } catch (err) {
