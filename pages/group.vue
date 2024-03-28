@@ -1,7 +1,19 @@
 <template>
   <client-only>
+    <el-steps
+      v-if="device.isMobileOrTablet"
+      :active="step.indexOf(classInfo?.state ?? '')"
+      finish-status="wait"
+      class="mb-2 text-sm!"
+    >
+      <el-step :icon="ElIconClock" title="等待分组" />
+      <el-step :icon="ElIconUser" title="选择小组" />
+      <el-step :icon="ElIconDataBoard" title="开题报告" />
+      <el-step :icon="ElIconDataLine" title="结题报告" />
+      <el-step :icon="ElIconUpload" title="提交论文" />
+    </el-steps>
     <div class="box-border flex flex-row gap-8 px-0">
-      <div class="mb-5 w-full space-y-4">
+      <div class="mb-20 w-full lg:mb-5 space-y-4">
         <el-card v-if="classInfo?.state === 'initialized'">
           <template #header>
             <span class="text-xl font-bold">等待老师开启小组选择</span>
@@ -23,9 +35,9 @@
           </template>
         </template>
       </div>
-      <div class="box-border h-content max-w-80px py-2">
+      <div v-if="device.isDesktop" class="box-border h-content max-w-80px py-2">
         <el-steps :active="step.indexOf(classInfo?.state ?? '')" finish-status="wait" direction="vertical">
-          <el-step :icon="ElIconClock" title="等待老师开放分组" />
+          <el-step :icon="ElIconClock" title="等待分组" />
           <el-step :icon="ElIconUser" title="选择小组" />
           <el-step :icon="ElIconDataBoard" title="开题报告" />
           <el-step :icon="ElIconDataLine" title="结题报告" />
@@ -46,6 +58,7 @@ import { useQuery } from '@tanstack/vue-query';
 
 const { $api } = useNuxtApp();
 const userStore = useUserStore();
+const device = useDevice();
 
 const step = [
   'initialized', // 初始化

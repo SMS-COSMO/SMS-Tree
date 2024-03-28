@@ -14,6 +14,7 @@
       align-center
       draggable
       title="创建活动记录"
+      class="my-4"
     >
       <NoteForm type="create" />
     </el-dialog>

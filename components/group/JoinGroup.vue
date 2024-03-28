@@ -4,13 +4,13 @@
       <span class="text-xl font-bold">请选择一个小组加入</span>
     </template>
 
-    <el-table :data="availableGroups" stripe>
-      <el-table-column prop="leader" label="组长" width="200">
+    <el-table :data="availableGroups">
+      <el-table-column prop="leader" label="组长" width="150">
         <template #default="{ row }">
           {{ row.leader ? row.leader.username : '还没有组长' }}
         </template>
       </el-table-column>
-      <el-table-column prop="members" label="已有组员">
+      <el-table-column prop="members" label="已有组员" min-width="400">
         <template #default="{ row }">
           <span v-if="!row.members.length">还没有组员~</span>
           <span v-else class="space-x-2">

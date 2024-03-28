@@ -20,6 +20,7 @@
     >
       <el-descriptions
         :column="1"
+        :direction="device.isMobileOrTablet ? 'vertical' : 'horizontal'"
         size="large"
         border
       >
@@ -97,8 +98,7 @@
     </el-dialog>
     <el-dialog
       v-model="modifyDialogVisible"
-      align-center
-      draggable
+      draggable align-center
       title="修改活动记录"
     >
       <NoteForm type="modify" :old-note="note" />
@@ -112,6 +112,7 @@ import type { TRawNote } from '~/server/db/db';
 
 defineProps<{ note: TRawNote }>();
 const { $api } = useNuxtApp();
+const device = useDevice();
 
 const dialogVisible = ref(false);
 const modifyDialogVisible = ref(false);

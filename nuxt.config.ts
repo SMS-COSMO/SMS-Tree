@@ -20,6 +20,9 @@ export default defineNuxtConfig({
   build: {
     transpile: ['trpc-nuxt'],
   },
+  device: {
+    refreshOnResize: true,
+  },
   nitro: {
     esbuild: {
       options: {

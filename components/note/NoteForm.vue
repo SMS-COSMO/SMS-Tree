@@ -2,7 +2,9 @@
   <el-form
     ref="formRef"
     class="mx-auto max-w-[800px] px-4 py-4"
-    :model="form" :rules="rules"
+    :label-position="device.isMobileOrTablet ? 'top' : 'right'"
+    :model="form"
+    :rules="rules"
     label-width="120px"
   >
     <el-form-item prop="title" label="标题">
@@ -50,6 +52,7 @@ const props = defineProps<{
 }>();
 
 const { $api } = useNuxtApp();
+const device = useDevice();
 const formRef = ref<FormInstance>();
 const form = ref<TNoteCreateSafe>({
   title: '',
