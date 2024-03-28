@@ -1,5 +1,5 @@
 <template>
-  <el-backtop :right="isSmallScreen ? 30 : 100" :bottom="100" />
+  <el-backtop :right="device.isMobileOrTablet ? 30 : 100" :bottom="100" />
 
   <div class="mb-22 lg:mb-8 space-y-3 lg:space-y-4">
     <div class="lg:flex">
@@ -30,8 +30,8 @@
     </div>
 
     <el-row :gutter="20">
-      <el-col :span="isSmallScreen ? 24 : 6">
-        <FoldableCard :can-fold="isSmallScreen" class="box-border h-full">
+      <el-col :span="device.isMobileOrTablet ? 24 : 6">
+        <FoldableCard :can-fold="device.isMobileOrTablet" class="box-border h-full">
           <template #header>
             <el-icon><ElIconInfoFilled /></el-icon>
             论文信息
@@ -55,8 +55,8 @@
           <Attachment :can-download="info?.canDownload" :paper-id="info?.id" :attachments="attachments" />
         </FoldableCard>
       </el-col>
-      <el-col :span="isSmallScreen ? 24 : 18" class="mt-3 lg:mt-0">
-        <FoldableCard :can-fold="isSmallScreen" class="box-border h-full">
+      <el-col :span="device.isMobileOrTablet ? 24 : 18" class="mt-3 lg:mt-0">
+        <FoldableCard :can-fold="device.isMobileOrTablet" class="box-border h-full">
           <template #header>
             <el-icon><ElIconList /></el-icon>
             摘要
@@ -90,7 +90,7 @@ const { $api } = useNuxtApp();
 const route = useRoute();
 
 const id = route.params.id.toString();
-const isSmallScreen = useWindowWidth();
+const device = useDevice();
 
 const [info, attachments] = await useTrpcAsyncData(() => Promise.all([
   $api.paper.info.query({ id }),

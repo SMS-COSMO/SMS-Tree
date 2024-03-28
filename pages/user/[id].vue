@@ -4,7 +4,7 @@
       v-if="isMine"
       v-model="selectedTab"
       class="w-full p-2"
-      :tab-position="isSmallScreen ? 'top' : 'left'"
+      :tab-position="device.isMobileOrTablet ? 'top' : 'left'"
       @tab-change="$router.replace({ query: { action: selectedTab } })"
     >
       <el-tab-pane name="info" label="用户信息" class="lg:ml-3">
@@ -27,7 +27,7 @@ import { useUserStore } from '~/stores/user';
 useHeadSafe({
   title: '用户信息',
 });
-const isSmallScreen = useWindowWidth();
+const device = useDevice();
 
 const route = useRoute();
 const selectedTab = ref(route.query.action?.toString() ?? 'info');

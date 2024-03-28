@@ -9,7 +9,7 @@
       <el-menu-item disabled class="cursor-default! opacity-100!">
         <NuxtImg preload src="/logo.png" class="h-[30px]" />
       </el-menu-item>
-      <template v-if="!isSmallScreen">
+      <template v-if="!device.isMobileOrTablet">
         <el-menu-item index="/">
           首页
         </el-menu-item>
@@ -52,7 +52,7 @@
   </div>
 
   <!-- Mobile Bottom Nav Bar -->
-  <div v-if="isSmallScreen" class="nav bottom-0 border-t-1 border-t-border-light border-t-solid bg-white">
+  <div v-if="device.isMobileOrTablet" class="nav bottom-0 border-t-1 border-t-border-light border-t-solid bg-white">
     <el-row :gutter="5" class="px-2">
       <MobileNavButton label="首页" href="/">
         <template #icon>
@@ -89,8 +89,8 @@
 import { useUserStore } from '~/stores/user';
 
 const userStore = useUserStore();
-const isSmallScreen = useWindowWidth();
 const route = useRoute();
+const device = useDevice();
 
 const isAdmin = ref(false);
 watch(() => route.matched[0].path, (value) => {

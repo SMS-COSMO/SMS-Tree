@@ -1,19 +1,19 @@
 <template>
   <el-row :gutter="20">
-    <el-col v-if="!isSmallScreen" :span="isSmallScreen ? 24 : 6">
+    <el-col v-if="!device.isMobileOrTablet" :span="device.isMobileOrTablet ? 24 : 6">
       <el-card>
         <div class="relative z-10">
           <SearchOptions v-model="searchOptions" />
         </div>
       </el-card>
     </el-col>
-    <el-col v-on-click-outside="closeSearchOptions" :span="isSmallScreen ? 24 : 18">
+    <el-col v-on-click-outside="closeSearchOptions" :span="device.isMobileOrTablet ? 24 : 18">
       <el-input
-        v-model="searchContent" placeholder="搜索论文" clearable class="mb-2.5" :suffix-icon="isSmallScreen ? ElIconSearch : ''"
+        v-model="searchContent" placeholder="搜索论文" clearable class="mb-2.5" :suffix-icon="device.isMobileOrTablet ? ElIconSearch : ''"
         @change="$router.replace({ query: { search: searchContent } });"
       >
         <template #prepend>
-          <el-icon v-if="!isSmallScreen">
+          <el-icon v-if="!device.isMobileOrTablet">
             <ElIconSearch />
           </el-icon>
           <el-button v-else @click="showSearchOptions = !showSearchOptions">
@@ -43,7 +43,7 @@
                 <div class="mx-auto max-w-[1300px] px-4 lg:px-5">
                   <el-row :gutter="20">
                     <el-col :span="6" />
-                    <el-col :span="isSmallScreen ? 24 : 18">
+                    <el-col :span="device.isMobileOrTablet ? 24 : 18">
                       <PaperCard :paper="paper" :show-abstract="searchOptions.showAbstract" />
                     </el-col>
                   </el-row>
@@ -53,7 +53,7 @@
                 <div class="mx-auto max-w-[1300px] px-4 lg:px-5">
                   <el-row :gutter="20">
                     <el-col :span="6" />
-                    <el-col :span="isSmallScreen ? 24 : 18">
+                    <el-col :span="device.isMobileOrTablet ? 24 : 18">
                       <el-empty description="无结果，换个搜索条件试试？" />
                     </el-col>
                   </el-row>
@@ -85,7 +85,7 @@ useHeadSafe({
 
 const { $api } = useNuxtApp();
 const route = useRoute();
-const isSmallScreen = useWindowWidth();
+const device = useDevice();
 
 const count = ref(10);
 

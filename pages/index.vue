@@ -11,7 +11,7 @@
     </div>
 
     <el-row :gutter="20">
-      <el-col :span="isSmallScreen ? 24 : 7">
+      <el-col :span="device.isMobileOrTablet ? 24 : 7">
         <el-card>
           <template #header>
             <el-icon><ElIconZoomIn /></el-icon>
@@ -27,7 +27,7 @@
           </el-row>
         </el-card>
       </el-col>
-      <el-col :span="isSmallScreen ? 24 : 17" class="mt-3 lg:mt-0">
+      <el-col :span="device.isMobileOrTablet ? 24 : 17" class="mt-3 lg:mt-0">
         <el-card>
           <template #header>
             <el-icon><ElIconDataAnalysis /></el-icon>
@@ -37,7 +37,7 @@
       </el-col>
     </el-row>
   </el-space>
-  <FooterBar v-if="!isSmallScreen" />
+  <FooterBar v-if="!device.isMobileOrTablet" />
 </template>
 
 <script setup lang="ts">
@@ -45,7 +45,7 @@ useHeadSafe({
   title: '首页',
 });
 
-const isSmallScreen = useWindowWidth();
+const device = useDevice();
 const quickSearchContent = ref('');
 
 function quickSearch() {

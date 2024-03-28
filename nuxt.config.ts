@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     '@element-plus/nuxt',
     '@vueuse/nuxt',
     '@nuxt/image',
+    '@nuxtjs/device',
     '@nuxt/test-utils/module',
   ],
   components: [

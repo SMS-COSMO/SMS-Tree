@@ -6,7 +6,7 @@
     </template>
     <client-only>
       <el-descriptions
-        :column="isSmallScreen ? 2 : 4"
+        :column="device.isMobileOrTablet ? 2 : 4"
         size="large" class="mb-[-16px]"
       >
         <el-descriptions-item>
@@ -92,7 +92,7 @@ const props = defineProps<{
 
 const { $api } = useNuxtApp();
 
-const isSmallScreen = useWindowWidth();
+const device = useDevice();
 
 const roleName = {
   student: '学生',

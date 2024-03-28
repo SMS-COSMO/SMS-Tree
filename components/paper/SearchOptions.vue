@@ -29,7 +29,7 @@
   <el-divider content-position="left">
     排序
   </el-divider>
-  <el-radio-group v-model="modelValue.sortOption" :size="isSmallScreen ? 'large' : ''">
+  <el-radio-group v-model="modelValue.sortOption" :size="device.isMobileOrTablet ? 'large' : ''">
     <el-radio-button value="default">
       默认
     </el-radio-button>
@@ -62,7 +62,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:modelValue']);
 
-const isSmallScreen = useWindowWidth();
+const device = useDevice();
 
 export interface TSearchOption {
   filter: {
