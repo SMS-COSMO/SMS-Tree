@@ -27,7 +27,10 @@
       <el-table-column :width="200" prop="enterYear" label="入学年份" />
       <el-table-column :width="200" show-overflow-tooltip label="状态">
         <template #default="scope">
-          <StateBadge :state="scope.row.state" size="large" />
+          <StateBadge
+            :state="stateTable.find(s => s.value === scope.row.state) ?? { label: '未知', type: 'info', value: '' }"
+            size="large"
+          />
         </template>
       </el-table-column>
     </el-table>
@@ -35,6 +38,7 @@
 </template>
 
 <script setup lang="ts">
+import { stateTable } from '~/constants/class';
 import type { TClassListItem } from '~/types';
 
 const { $api } = useNuxtApp();
