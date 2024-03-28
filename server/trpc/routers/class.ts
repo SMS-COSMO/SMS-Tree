@@ -2,7 +2,14 @@ import { z } from 'zod';
 import { protectedProcedure, requireRoles, router } from '../trpc';
 
 const classIdZod = z.string().min(1, '班级id不存在');
-const stateZod = z.enum(['initialized', 'selectGroup', 'submitPaper', 'archived']);
+const stateZod = z.enum([
+  'initialized', // 初始化
+  'selectGroup', // 选择小组
+  'thesisProposal', // 开题报告
+  'concludingReport', // 结题报告
+  'submitPaper', // 提交论文
+  'archived', // 归档
+]);
 
 export const classRouter = router({
   create: protectedProcedure

@@ -6,8 +6,7 @@ import { classesToUsers } from '../../db/schema/classToUser';
 import { classSerializer } from '../serializer/class';
 import { ctl } from '../context';
 import { Result, Result500, ResultNoRes } from '../utils/result';
-
-type TClassState = 'archived' | 'initialized' | 'selectGroup' | 'submitPaper';
+import type { TClassState } from '~/types';
 
 export class ClassController {
   async create(newClass: {

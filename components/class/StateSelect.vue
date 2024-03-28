@@ -7,17 +7,12 @@
       class="w-60"
     >
       <el-option
-        v-for="item in [
-          { label: '已归档', value: 'archived' },
-          { label: '初始化', value: 'initialized' },
-          { label: '选择小组', value: 'selectGroup' },
-          { label: '提交论文', value: 'submitPaper' },
-        ]"
+        v-for="item in stateTable"
         :key="item.value"
         :label="item.label"
         :value="item.value"
       >
-        <StateBadge :state="(item.value as TClassState)" size="default" />
+        <StateBadge :state="item" size="default" />
       </el-option>
     </el-select>
     <template #fallback>
@@ -27,7 +22,8 @@
 </template>
 
 <script setup lang="ts">
-import type { TClassState } from './StateBadge.vue';
+import { stateTable } from '~/constants/class';
+import type { TClassState } from '~/types';
 
 const model = defineModel<TClassState>({ required: true });
 </script>

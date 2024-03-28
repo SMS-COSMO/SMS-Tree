@@ -1,24 +1,16 @@
 <template>
   <el-tag
-    :type="(stateTable[state].type as '' | 'info' | 'success' | 'warning' | 'danger')"
+    :type="(state.type as 'primary' | 'info' | 'success' | 'warning' | 'danger')"
     :size="size"
     :class="size === 'large' ? 'font-bold' : ''"
   >
-    {{ stateTable[state].name }}
+    {{ state.label }}
   </el-tag>
 </template>
 
 <script setup lang="ts">
-export type TClassState = 'archived' | 'initialized' | 'selectGroup' | 'submitPaper';
 defineProps<{
   size: 'default' | 'large';
-  state: TClassState;
+  state: { label: string; value: string; type: string };
 }>();
-
-const stateTable = {
-  archived: { name: '已归档', type: 'info' },
-  initialized: { name: '初始化', type: '' },
-  selectGroup: { name: '选择小组', type: 'success' },
-  submitPaper: { name: '提交论文', type: 'warning' },
-};
 </script>

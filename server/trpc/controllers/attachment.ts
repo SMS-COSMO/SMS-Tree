@@ -4,7 +4,7 @@ import { db } from '../../db/db';
 import { ctl } from '../context';
 import { Result, Result500, ResultNoRes } from '../utils/result';
 import { attachments } from '~/server/db/schema/attachment';
-import { allowedMainFileTypes, allowedSecondaryFileTypes } from '~/constants/fileType';
+import { allowedMainFileTypes, allowedSecondaryFileTypes } from '~/constants/attachment';
 import { papers } from '~/server/db/schema/paper';
 
 export class AttachmentController {

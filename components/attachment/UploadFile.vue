@@ -24,7 +24,7 @@
 import type { UploadFile, UploadFiles, UploadRawFile, UploadRequestOptions } from 'element-plus';
 import axios from 'axios';
 import { nanoid } from 'nanoid';
-import { allowedMainFileTypes, allowedSecondaryFileTypes } from '~/constants/fileType';
+import { allowedMainFileTypes, allowedSecondaryFileTypes } from '~/constants/attachment';
 
 const props = withDefaults(defineProps<{
   isMainFile?: boolean;
