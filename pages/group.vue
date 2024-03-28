@@ -11,7 +11,7 @@
         <JoinGroup v-else-if="classInfo?.state === 'selectGroup'" />
         <template v-else>
           <GroupInfo :info="groupInfo" />
-          <template v-if="classInfo?.state === 'submitPaper'">
+          <template v-if="classInfo?.state === 'submitPaper' && groupInfo?.papers">
             <SubmitPaper v-if="!groupInfo?.papers.length" />
             <el-card v-else>
               <el-result

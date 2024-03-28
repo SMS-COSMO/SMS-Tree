@@ -30,7 +30,7 @@ export const groupRouter = router({
   content: protectedProcedure
     .input(z.object({ id: z.string().min(1, '小组id不存在') }))
     .query(async ({ ctx, input }) => {
-      return (await ctx.groupController.getContent(input.id, ctx.user)).getResOrTRPCError();
+      return (await ctx.groupController.getContent(input.id, ctx.user, true)).getResOrTRPCError();
     }),
 
   list: protectedProcedure

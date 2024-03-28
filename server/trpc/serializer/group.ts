@@ -5,10 +5,10 @@ export type TGroup = ReturnType<typeof groupSerializer>;
 
 export function groupSerializer(
   basicGroup: TRawGroup,
-  papers: TPaper[],
+  papers: TPaper[] | undefined,
   members: TMinimalUser[],
   leader: TMinimalUser,
-  notes?: TRawNote[],
+  notes: TRawNote[] | undefined,
 ) {
   const { leader: _, ...rest } = basicGroup;
   return {

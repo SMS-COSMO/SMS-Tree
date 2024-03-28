@@ -89,7 +89,7 @@ export class GroupController {
     }
   }
 
-  async getContent(id: string, user: TRawUser, info?: TRawGroup) {
+  async getContent(id: string, user: TRawUser, getPaper: boolean, info?: TRawGroup) {
     try {
       info ??= await db.select().from(groups).where(eq(groups.id, id)).get();
       if (!info)
@@ -97,12 +97,15 @@ export class GroupController {
       const { members, leader } = (await this.getMembers(info.id, info.leader)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
       const isOwned = await this.hasUser(user.id, id, { members, leader });
 
-      const rawPapers = await db.select().from(papers).where(eq(papers.groupId, id));
-      const papersWithInfo = await Promise.all(
-        rawPapers.map(
-          async item => (await ctl.pc.getContent(item.id, user, item)).getResOrTRPCError('INTERNAL_SERVER_ERROR'),
-        ),
-      );
+      let papersWithInfo;
+      if (getPaper) {
+        const rawPapers = await db.select().from(papers).where(eq(papers.groupId, id));
+        papersWithInfo = await Promise.all(
+          rawPapers.map(
+            async item => (await ctl.pc.getContent(item.id, user, item)).getResOrTRPCError('INTERNAL_SERVER_ERROR'),
+          ),
+        );
+      }
 
       let rawNotes;
       if (isOwned)
@@ -140,7 +143,7 @@ export class GroupController {
           ? await db.select().from(groups).where(eq(groups.classId, classId))
           : await db.select().from(groups).all()
       )
-        res.push((await this.getContent(info.id, user, info)).getResOrTRPCError('INTERNAL_SERVER_ERROR'));
+        res.push((await this.getContent(info.id, user, false, info)).getResOrTRPCError('INTERNAL_SERVER_ERROR'));
 
       return new Result(true, '查询成功', res);
     } catch (err) {
