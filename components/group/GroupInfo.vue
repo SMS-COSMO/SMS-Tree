@@ -39,7 +39,7 @@
       </el-descriptions>
       <el-descriptions
         :column="1"
-        size="large" class="mb-[-16px]"
+        size="large" class="mb-[-16px] max-w-full!"
       >
         <el-descriptions-item>
           <template #label>

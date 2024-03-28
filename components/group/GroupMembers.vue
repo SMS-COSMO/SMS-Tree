@@ -1,5 +1,5 @@
 <template>
-  <span class="space-x-1.5">
+  <span class="text-wrap space-x-1.5">
     <span
       v-for="(author, index) of authors" :key="index"
       :class="`${showLeader && author?.id === leader?.id ? 'font-bold!' : ''}`"

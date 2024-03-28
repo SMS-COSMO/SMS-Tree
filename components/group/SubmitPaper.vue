@@ -6,8 +6,10 @@
 
     <el-form
       ref="formRef"
-      class="mx-auto max-w-[800px] py-5"
-      :model="form" :rules="rules"
+      class="mx-auto max-w-[800px] lg:py-4"
+      :label-position="device.isMobileOrTablet ? 'top' : 'right'"
+      :model="form"
+      :rules="rules"
       label-width="120px"
     >
       <el-form-item prop="title" label="标题">
@@ -48,6 +50,7 @@ import type { FormInstance, FormRules } from 'element-plus';
 import type { TPaperCreateSafeForm } from '~/types/index';
 
 const { $api } = useNuxtApp();
+const device = useDevice();
 useHeadSafe({
   title: '提交论文',
 });

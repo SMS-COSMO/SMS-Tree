@@ -13,7 +13,7 @@
       <el-step :icon="ElIconUpload" title="提交论文" />
     </el-steps>
     <div class="box-border flex flex-row gap-8 px-0">
-      <div class="mb-20 w-full lg:mb-5 space-y-4">
+      <div class="mb-22 w-full lg:mb-5 space-y-4">
         <el-card v-if="classInfo?.state === 'initialized'">
           <template #header>
             <span class="text-xl font-bold">等待老师开启小组选择</span>
@@ -23,7 +23,7 @@
         <JoinGroup v-else-if="classInfo?.state === 'selectGroup'" />
         <template v-else>
           <GroupInfo :info="groupInfo" />
-          <template v-if="classInfo?.state === 'submitPaper' && groupInfo?.papers">
+          <template v-if="classInfo?.state === 'submitPaper' && groupInfo?.papers !== undefined">
             <SubmitPaper v-if="!groupInfo?.papers.length" />
             <el-card v-else>
               <el-result
@@ -32,6 +32,9 @@
                 sub-title="等待老师批改论文"
               />
             </el-card>
+          </template>
+          <template v-else-if="classInfo?.state === 'thesisProposal'">
+            <SubmitReport />
           </template>
         </template>
       </div>
