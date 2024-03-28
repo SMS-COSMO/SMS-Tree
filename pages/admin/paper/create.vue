@@ -28,10 +28,15 @@
           style="--el-switch-on-color: #146E3C; --el-switch-off-color: #db3131;"
         />
       </el-form-item>
-      <el-form-item label="分数">
-        <el-input-number v-model="form.score" placeholder="可留空" step-strictly />
+      <el-form-item prop="score" label="分数">
+        <el-radio-group v-model="form.score" size="large">
+          <el-radio-button label="A" value="A" />
+          <el-radio-button label="B" value="B" />
+          <el-radio-button label="C" value="C" />
+          <el-radio-button label="D" value="D" />
+        </el-radio-group>
       </el-form-item>
-      <el-form-item label="小组">
+      <el-form-item prop="groupId" label="小组">
         <SelectGroup v-model="form.groupId" />
       </el-form-item>
       <el-form-item prop="paperFile" label="论文文件">
@@ -67,7 +72,7 @@ const form = reactive<TPaperCreateForm>({
   keywords: [],
   abstract: '',
   canDownload: false,
-  groupId: undefined,
+  groupId: '',
   comment: undefined,
   score: undefined,
   isFeatured: false,
@@ -86,6 +91,7 @@ const rules = reactive<FormRules<TPaperCreateForm>>({
     { min: 1, max: 5000, message: '摘要不应超过5000个字', trigger: 'blur' },
   ],
   canDownload: [{ required: true }],
+  groupId: [{ required: true }],
   isPublic: [{ required: true }],
   isFeatured: [{ required: true }],
   keywords: [{ required: true, message: '关键词不能为空', trigger: 'blur' }],
