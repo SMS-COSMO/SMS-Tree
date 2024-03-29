@@ -1,43 +1,45 @@
 <template>
-  <el-form
-    ref="formRef"
-    class="mx-auto max-w-[800px] px-4 py-4"
-    :label-position="device.isMobileOrTablet ? 'top' : 'right'"
-    :model="form"
-    :rules="rules"
-    label-width="120px"
-  >
-    <el-form-item prop="title" label="标题">
-      <el-input v-model="form.title" />
-    </el-form-item>
-    <el-form-item prop="time" label="时间">
-      <el-date-picker
-        v-model="form.time"
-        type="date"
-        placeholder="选择日期"
-      />
-    </el-form-item>
-    <el-form-item prop="followUp" label="上次活动跟进">
-      <el-input v-model="form.followUp" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea" />
-    </el-form-item>
-    <el-form-item prop="newDiscussion" label="新的讨论内容">
-      <el-input v-model="form.newDiscussion" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea" />
-    </el-form-item>
-    <el-form-item prop="content" label="活动笔记">
-      <el-input v-model="form.content" :autosize="{ minRows: 3, maxRows: 8 }" type="textarea" />
-    </el-form-item>
-    <el-form-item prop="plans" label="下次活动计划">
-      <el-input v-model="form.plans" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea" />
-    </el-form-item>
-    <el-form-item prop="reflections" label="反思">
-      <el-input v-model="form.reflections" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea" />
-    </el-form-item>
-    <el-form-item>
-      <el-button color="#146E3C" :loading="isSubmitPending || isModifyPending" @click="submit(formRef)">
-        {{ type === 'create' ? '创建' : '修改' }}
-      </el-button>
-    </el-form-item>
-  </el-form>
+  <el-scrollbar height="80svh">
+    <el-form
+      ref="formRef"
+      class="mx-auto max-w-[800px] lg:p-4"
+      :label-position="device.isMobileOrTablet ? 'top' : 'right'"
+      :model="form"
+      :rules="rules"
+      label-width="120px"
+    >
+      <el-form-item prop="title" label="标题">
+        <el-input v-model="form.title" />
+      </el-form-item>
+      <el-form-item prop="time" label="时间">
+        <el-date-picker
+          v-model="form.time"
+          type="date"
+          placeholder="选择日期"
+        />
+      </el-form-item>
+      <el-form-item prop="followUp" label="上次活动跟进">
+        <el-input v-model="form.followUp" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea" />
+      </el-form-item>
+      <el-form-item prop="newDiscussion" label="新的讨论内容">
+        <el-input v-model="form.newDiscussion" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea" />
+      </el-form-item>
+      <el-form-item prop="content" label="活动笔记">
+        <el-input v-model="form.content" :autosize="{ minRows: 3, maxRows: 8 }" type="textarea" />
+      </el-form-item>
+      <el-form-item prop="plans" label="下次活动计划">
+        <el-input v-model="form.plans" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea" />
+      </el-form-item>
+      <el-form-item prop="reflections" label="反思">
+        <el-input v-model="form.reflections" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea" />
+      </el-form-item>
+      <el-form-item>
+        <el-button color="#146E3C" :loading="isSubmitPending || isModifyPending" @click="submit(formRef)">
+          {{ type === 'create' ? '创建' : '修改' }}
+        </el-button>
+      </el-form-item>
+    </el-form>
+  </el-scrollbar>
 </template>
 
 <script setup lang="ts">
