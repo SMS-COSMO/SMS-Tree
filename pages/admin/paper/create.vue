@@ -1,6 +1,13 @@
 <template>
   <el-card class="mb-5 w-full">
-    <el-form ref="formRef" class="mx-auto max-w-[800px] py-5" :model="form" :rules="rules" label-width="120px">
+    <el-form
+      ref="formRef"
+      :label-position="device.isMobileOrTablet ? 'top' : 'right'"
+      class="mx-auto max-w-[800px] py-5"
+      :model="form"
+      :rules="rules"
+      label-width="120px"
+    >
       <el-form-item prop="title" label="标题">
         <el-input v-model="form.title" />
       </el-form-item>
@@ -62,6 +69,7 @@ import type { FormInstance, FormRules } from 'element-plus';
 import type { TPaperCreateForm } from '~/types/index';
 
 const { $api } = useNuxtApp();
+const device = useDevice();
 useHeadSafe({
   title: '创建论文',
 });

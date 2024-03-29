@@ -5,7 +5,7 @@
       :rules="rules"
       :model="form"
       class="mx-auto max-w-[500px]"
-      label-position="top"
+      :label-position="device.isMobileOrTablet ? 'top' : 'right'"
     >
       <el-form-item prop="oldPassword">
         <div>
@@ -56,6 +56,7 @@ const props = defineProps<{
   userId: string;
 }>();
 const { $api } = useNuxtApp();
+const device = useDevice();
 
 const formRef = ref<FormInstance>();
 const form = reactive({

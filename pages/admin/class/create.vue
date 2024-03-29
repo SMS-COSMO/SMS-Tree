@@ -1,6 +1,11 @@
 <template>
   <el-card class="mb-5 w-full">
-    <el-form class="mx-auto w-[700px] py-5" :model="form" label-width="120px">
+    <el-form
+      class="mx-auto w-[700px] py-5"
+      :label-position="device.isMobileOrTablet ? 'top' : 'right'"
+      :model="form"
+      label-width="120px"
+    >
       <el-form-item prop="enterYear" label="入学年份">
         <el-input-number v-model="form.enterYear" :min="2000" :max="3000" />
       </el-form-item>
@@ -29,6 +34,7 @@
 import type { TClassCreate } from '~/types';
 
 const { $api } = useNuxtApp();
+const device = useDevice();
 useHeadSafe({
   title: '创建班级',
 });

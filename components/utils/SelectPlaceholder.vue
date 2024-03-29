@@ -4,7 +4,7 @@
       <el-skeleton-item
         variant="rect"
         class="`rounded h-[45px]!"
-        :style="`width: ${width === '' ? '100%' : `${width}px`}`"
+        :style="`max-width: ${width === '' ? '100%' : `${width}px`}`"
       />
     </template>
   </el-skeleton>

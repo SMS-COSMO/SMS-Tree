@@ -8,7 +8,7 @@
       <template #header>
         登录
       </template>
-      <el-form label-position="top">
+      <el-form :label-position="device.isMobileOrTablet ? 'top' : 'right'">
         <el-form-item>
           <div>
             <el-icon :size="15">
@@ -50,6 +50,7 @@ useHeadSafe({
 
 const { $api } = useNuxtApp();
 const userStore = useUserStore();
+const device = useDevice();
 
 const form = reactive({
   id: '',

@@ -64,23 +64,25 @@
           <ElIconTickets />
         </template>
       </MobileNavButton>
-      <MobileNavButton
-        v-if="userStore.role === 'student'"
-        label="我的小组"
-        href="/group"
-      >
-        <template #icon>
-          <ElIconReading />
-        </template>
-      </MobileNavButton>
-      <MobileNavButton
-        v-if="userStore.role === 'admin' || userStore.role === 'teacher'" label="管理"
-        href="/admin"
-      >
-        <template #icon>
-          <ElIconEditPen />
-        </template>
-      </MobileNavButton>
+      <client-only>
+        <MobileNavButton
+          v-if="userStore.role === 'student'"
+          label="我的小组"
+          href="/group"
+        >
+          <template #icon>
+            <ElIconReading />
+          </template>
+        </MobileNavButton>
+        <MobileNavButton
+          v-if="userStore.role === 'admin' || userStore.role === 'teacher'" label="管理"
+          href="/admin"
+        >
+          <template #icon>
+            <ElIconEditPen />
+          </template>
+        </MobileNavButton>
+      </client-only>
     </el-row>
   </div>
 </template>

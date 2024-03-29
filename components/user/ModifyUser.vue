@@ -2,7 +2,7 @@
   <el-card>
     <el-form
       ref="formRef"
-      label-position="top"
+      :label-position="device.isMobileOrTablet ? 'top' : 'right'"
       class="mx-auto max-w-[500px]"
       :model="form" :rules="rules"
     >
@@ -56,6 +56,7 @@ useHeadSafe({
 });
 
 const { $api } = useNuxtApp();
+const device = useDevice();
 
 const formRef = ref<FormInstance>();
 const userInfo = await useTrpcAsyncData(() => $api.user.profile.query({ id: props.userId }));
