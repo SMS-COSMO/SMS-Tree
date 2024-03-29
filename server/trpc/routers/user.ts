@@ -68,6 +68,7 @@ export const userRouter = router({
       username: z.string().min(2, { message: '用户名长度应至少为2' }).max(15, { message: '用户名超出长度范围' }),
       role: roleEnumZod,
     }))
+    .use(requireRoles(['teacher', 'admin']))
     .mutation(async ({ ctx, input }) => {
       return (await ctx.userController.modify(input.id, input.username, input.role)).getMsgOrTRPCError();
     }),
