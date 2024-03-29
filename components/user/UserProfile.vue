@@ -77,14 +77,14 @@
     </div>
     <div v-else :class="papers?.length > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
       <template v-for="paper in papers" :key="paper.id">
-        <PaperCard :paper="paper" show-abstract />
+        <PaperCard v-if="paper" :paper="paper" show-abstract />
       </template>
     </div>
   </FoldableCard>
 </template>
 
 <script lang="ts" setup>
-import type { TRawPaper } from '~/server/db/db';
+import type { TPaperListSafeItem } from '~/types';
 
 const props = defineProps<{
   userId: string;
@@ -102,7 +102,7 @@ const roleName = {
 
 const { info, papers } = await useTrpcAsyncData(async () => {
   const info = await $api.user.profile.query({ id: props.userId });
-  let papers: TRawPaper[] = [];
+  let papers: (TPaperListSafeItem | undefined)[] = [];
   for (const group of (info?.groupIds ?? []))
     papers = papers.concat((await $api.group.content.query({ id: group })).papers);
 

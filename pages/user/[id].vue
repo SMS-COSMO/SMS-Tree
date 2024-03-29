@@ -3,7 +3,7 @@
     <el-tabs
       v-if="isMine"
       v-model="selectedTab"
-      class="w-full p-2"
+      class="box-border w-full"
       :tab-position="device.isMobileOrTablet ? 'top' : 'left'"
       @tab-change="$router.replace({ query: { action: selectedTab } })"
     >
