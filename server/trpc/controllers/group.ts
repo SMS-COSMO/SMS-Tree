@@ -140,13 +140,17 @@ export class GroupController {
     return projectNames.reduce((a, c) => `${a}《${c}》`, '');
   }
 
-  async getList(user: TRawUser, classId?: string) {
-    const classList = classId
-      ? await db.select().from(groups).where(eq(groups.classId, classId))
-      : await db.select().from(groups).all();
+  async getList(user: TRawUser, classId: string) {
+    const classInfo = await ctl.cc.getFullContent(classId);
+    if (!['teacher', 'admin'].includes(user.role) && !classInfo.students.includes(user.id))
+      throw TRPCForbidden;
+
+    const groupList = classId
+      ? await useTry(() => db.select().from(groups).where(eq(groups.classId, classId)))
+      : await useTry(() => db.select().from(groups).all());
 
     const res = await Promise.all(
-      classList.map(async info => await this.getContent(info.id, user, false, info)),
+      groupList.map(async info => await this.getContent(info.id, user, false, info)),
     );
 
     return res;
