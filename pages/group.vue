@@ -59,6 +59,10 @@
 <script lang="ts" setup>
 import { useQuery } from '@tanstack/vue-query';
 
+useHeadSafe({
+  title: '我的小组',
+});
+
 const { $api } = useNuxtApp();
 const userStore = useUserStore();
 const device = useDevice();

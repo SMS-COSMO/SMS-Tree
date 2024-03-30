@@ -21,13 +21,16 @@ export class GroupController {
     const insertedId = await useTry(
       async () => (await db.insert(groups).values(group).returning({ id: groups.id }).get()).id,
     );
-    await useTry(
-      () =>
-        db.insert(usersToGroups).values((members ?? []).map(item => ({
-          groupId: insertedId,
-          userId: item,
-        }))),
-    );
+
+    if (members) {
+      await useTry(
+        () =>
+          db.insert(usersToGroups).values(members.map(item => ({
+            groupId: insertedId,
+            userId: item,
+          }))),
+      );
+    }
 
     return '创建成功';
   }
