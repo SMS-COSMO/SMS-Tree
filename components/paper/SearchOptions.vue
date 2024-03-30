@@ -30,9 +30,6 @@
     排序
   </el-divider>
   <el-radio-group v-model="modelValue.sortOption" :size="device.isMobileOrTablet ? 'large' : ''">
-    <el-radio-button value="default">
-      默认
-    </el-radio-button>
     <el-radio-button value="time">
       时间
     </el-radio-button>
@@ -73,7 +70,7 @@ export interface TSearchOption {
   isAsc: -1 | 1;
   searchSelectValue: string[];
   showAbstract: false;
-  sortOption: 'default' | 'time' | 'score' | 'downloadCount';
+  sortOption: 'time' | 'score' | 'downloadCount';
 }
 
 const modelValue = ref(props.modelValue);

@@ -104,7 +104,7 @@ const searchOptions = reactive<TSearchOption>({
   isAsc: 1,
   searchSelectValue: ['title', 'keywords'],
   showAbstract: false,
-  sortOption: 'default',
+  sortOption: 'time',
 });
 
 const fuseOptions = computed(() => {
@@ -137,14 +137,12 @@ const { processedListData } = await useSearch<TPaperListSafeItem>(
     return true;
   },
   (a: TPaperListSafeItem, b: TPaperListSafeItem) => {
-    if (searchOptions.sortOption === 'default')
-      return 0; // Keep original order
     if (searchOptions.sortOption === 'score')
-      return ((b.score ?? 0) - (a.score ?? 0)) * searchOptions.isAsc; // Greater first
+      return ((a.score?.charCodeAt(0) ?? 68) - (b.score?.charCodeAt(0) ?? 68)) * searchOptions.isAsc; // Greater
     if (searchOptions.sortOption === 'time')
-      return (a.createdAt > b.createdAt ? -1 : 1) * searchOptions.isAsc; // Newest first
+      return (a.createdAt > b.createdAt ? -1 : 1) * searchOptions.isAsc; // Newest
     if (searchOptions.sortOption === 'downloadCount')
-      return (b.downloadCount - a.downloadCount) * searchOptions.isAsc; // Greater first
+      return (b.downloadCount - a.downloadCount) * searchOptions.isAsc; // Greater
     return 0;
   },
 );
