@@ -75,7 +75,7 @@ export class NoteController {
       ?? {};
 
       if (!groupId || !await ctl.gc.hasUser(user.id, groupId))
-        return TRPCForbidden;
+        throw TRPCForbidden;
     }
 
     await useTry(() => db.delete(notes).where(eq(notes.id, id)));

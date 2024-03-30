@@ -5,9 +5,44 @@
     </template>
     <client-only>
       <el-descriptions
-        :column="2"
+        :column="device.isMobileOrTablet ? 1 : 3"
         size="large"
       >
+        <el-descriptions-item>
+          <template #label>
+            <div class="text-[15px]!">
+              <el-icon>
+                <ElIconNotebook />
+              </el-icon>
+              课题名
+              <el-popover
+                v-if="info"
+                placement="bottom"
+                title="修改课题名"
+                :width="300"
+                trigger="click"
+              >
+                <template #reference>
+                  <el-link :icon="ElIconEdit" class="ml-2 text-[16px]!">
+                    修改
+                  </el-link>
+                </template>
+                <el-input v-model="newProjectName" @blur="edit = false">
+                  <template #append>
+                    <el-button :loading="isPending" @click="modifyProjectName({ groupId: info.id, newProjectName })">
+                      <el-icon>
+                        <ElIconCheck />
+                      </el-icon>
+                    </el-button>
+                  </template>
+                </el-input>
+              </el-popover>
+            </div>
+          </template>
+          <span class="text-[16px]!">
+            {{ info?.projectName ?? '待填写' }}
+          </span>
+        </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
             <div class="text-[16px]!">
@@ -79,7 +114,27 @@
 </template>
 
 <script setup lang="ts">
+import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import type { TGroupContent } from '~/types';
 
-defineProps<{ info?: TGroupContent }>();
+const props = defineProps<{ info?: TGroupContent }>();
+const { $api } = useNuxtApp();
+const device = useDevice();
+
+const edit = ref(false);
+const newProjectName = ref();
+
+const queryClient = useQueryClient();
+const { mutate: modifyProjectName, isPending } = useMutation({
+  mutationFn: $api.group.modifyProjectName.mutate,
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['groupInfo'] });
+    ElMessage({ message: '修改成功', type: 'success', showClose: true });
+  },
+  onError: err => useErrorHandler(err),
+});
+
+onMounted(() => {
+  newProjectName.value = props.info?.projectName;
+});
 </script>

@@ -53,6 +53,15 @@ export const groupRouter = router({
       ));
     }),
 
+  modifyProjectName: protectedProcedure
+    .input(z.object({
+      groupId: z.string().min(1, '不可以传入空ID'),
+      newProjectName: z.string().max(50, '课题名称最长为50'),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.groupController.modifyProjectName(input.groupId, input.newProjectName, ctx.user);
+    }),
+
   remove: protectedProcedure
     .input(z.object({ id: z.string().min(1, '小组id不存在') }))
     .use(requireRoles(['admin', 'teacher']))

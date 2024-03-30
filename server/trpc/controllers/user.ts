@@ -77,7 +77,7 @@ export class UserController {
 
   async modifyPassword(user: TRawUser, id: string, oldPassword: string, newPassword: string) {
     if (!['admin', 'teacher'].includes(user.role) && user.id !== id)
-      return TRPCForbidden;
+      throw TRPCForbidden;
 
     const targetUser = user.id === id
       ? user

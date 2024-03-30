@@ -73,7 +73,7 @@ export class AttachmentController {
 
   async bulkMoveToPaper(ids: string[], paperId: string, user: TRawUser) {
     if (!(await this.hasPerm(paperId, user)))
-      return TRPCForbidden;
+      throw TRPCForbidden;
 
     try {
       await Promise.all(

@@ -6,7 +6,7 @@ import { db } from '../../db/db';
 import { groups } from '../../db/schema/group';
 import { groupSerializer } from '../serializer/group';
 import { usersToGroups } from '../../db/schema/userToGroup';
-import { requireEqualOrThrow, useTry } from '../utils/shared';
+import { TRPCForbidden, requireEqualOrThrow, useTry } from '../utils/shared';
 import { ctl } from '../context';
 import type { TMinimalUser } from '../serializer/paper';
 import { papers } from '~/server/db/schema/paper';
@@ -62,6 +62,14 @@ export class GroupController {
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '用户id不存在' });
       throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '修改失败' });
     }
+  }
+
+  async modifyProjectName(groupId: string, newProjectName: string, user: TRawUser) {
+    if (!['teacher', 'admin'].includes(user.role) && !(await this.hasUser(user.id, groupId)))
+      throw TRPCForbidden;
+
+    await useTry(() => db.update(groups).set({ projectName: newProjectName }));
+    return '修改成功';
   }
 
   async getMembers(id: string, leaderId?: string | null) {
