@@ -5,7 +5,6 @@ import type { TNewNote, TRawNote, TRawUser } from '../../db/db';
 import { ctl } from '../context';
 import { TRPCForbidden, requireTeacherOrThrow, useTry } from '../utils/shared';
 import { noteSerializer } from '../serializer/note';
-import { usersToGroups } from '~/server/db/schema/userToGroup';
 import { notes } from '~/server/db/schema/note';
 
 export class NoteController {
