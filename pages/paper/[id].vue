@@ -15,6 +15,7 @@
         {{ info?.title }}
       </h1>
       <el-space :size="20" class="mb-2 lg:mb-0">
+        <!-- bug: Element only supports number in statistic -->
         <el-statistic v-if="info?.score" :value="info?.score">
           <template #title>
             分数
@@ -69,7 +70,7 @@
     </el-row>
 
     <el-card v-if="attachments?.length && (attachments?.findIndex(e => e.S3FileId) !== -1)">
-      <Preview :attachment="attachments?.filter(a => a.isMainFile)[0]" full-height />
+      <Preview :attachment="attachments?.filter(a => a.category === 'paperDocument')[0]" full-height />
     </el-card>
 
     <el-card v-if="info?.comment">

@@ -12,6 +12,7 @@ import type { TMinimalUser } from '../serializer/paper';
 import { papers } from '~/server/db/schema/paper';
 import { users } from '~/server/db/schema/user';
 import { notes } from '~/server/db/schema/note';
+import { reports } from '~/server/db/schema/report';
 
 export class GroupController {
   async create(newGroup: TNewGroup & { members?: string[] }) {
@@ -96,7 +97,7 @@ export class GroupController {
     return { members, leader };
   }
 
-  async getContent(id: string, user: TRawUser, getPaper: boolean, info?: TRawGroup) {
+  async getContent(id: string, user: TRawUser, getDetail: boolean, info?: TRawGroup) {
     info ??= await useTry(() => db.select().from(groups).where(eq(groups.id, id)).get());
     if (!info)
       throw new TRPCError({ code: 'NOT_FOUND', message: '小组不存在' });
@@ -104,12 +105,18 @@ export class GroupController {
     const { members, leader } = await this.getMembers(info.id, info.leader);
     const isOwned = await this.hasUser(user.id, id, { members, leader });
 
-    let papersWithInfo;
-    if (getPaper) {
+    let papersWithInfo, reportsWithInfo;
+    if (getDetail) {
       const rawPapers = await useTry(() => db.select().from(papers).where(eq(papers.groupId, id)));
       papersWithInfo = await Promise.all(
         rawPapers.map(
           async item => await ctl.pc.getContent(item.id, user, item),
+        ),
+      );
+      const rawReports = await useTry(() => db.select().from(reports).where(eq(reports.groupId, id)));
+      reportsWithInfo = await Promise.all(
+        rawReports.map(
+          async item => await ctl.rc.getContent(item.id, user, item),
         ),
       );
     }
@@ -118,7 +125,7 @@ export class GroupController {
     if (isOwned)
       rawNotes = await useTry(() => db.select().from(notes).where(eq(notes.groupId, id)));
 
-    return groupSerializer(info, papersWithInfo, members, leader, rawNotes);
+    return groupSerializer(info, members, leader, papersWithInfo, rawNotes, reportsWithInfo);
   }
 
   async projectName(groupIds: string[]) {
@@ -140,10 +147,16 @@ export class GroupController {
     return projectNames.reduce((a, c) => `${a}《${c}》`, '');
   }
 
-  async getList(user: TRawUser, classId: string) {
-    const classInfo = await ctl.cc.getFullContent(classId);
-    if (!['teacher', 'admin'].includes(user.role) && !classInfo.students.includes(user.id))
+  async getList(user: TRawUser, classId?: string) {
+    // Allow admins to leave classId empty
+    if (!classId && !['teacher', 'admin'].includes(user.role))
       throw TRPCForbidden;
+
+    if (classId) {
+      const classInfo = await ctl.cc.getFullContent(classId);
+      if (!['teacher', 'admin'].includes(user.role) && !classInfo.students.includes(user.id))
+        throw TRPCForbidden;
+    }
 
     const groupList = classId
       ? await useTry(() => db.select().from(groups).where(eq(groups.classId, classId)))
@@ -282,5 +295,18 @@ export class GroupController {
     } catch (err) {
       return false;
     }
+  }
+
+  async getUserGroup(user: TRawUser) {
+    const group = await useTry(
+      () => db
+        .select({ groupId: usersToGroups.groupId })
+        .from(usersToGroups)
+        .where(eq(usersToGroups.userId, user.id))
+        .get(),
+    );
+    if (!group)
+      throw new TRPCError({ message: '用户无小组', code: 'FORBIDDEN' });
+    return group;
   }
 }

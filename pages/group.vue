@@ -34,7 +34,30 @@
             </el-card>
           </template>
           <template v-else-if="classInfo?.state === 'thesisProposal'">
-            <SubmitReport />
+            <SubmitReport
+              v-if="!groupInfo?.reports?.some(x => x.category === 'thesisProposal')"
+              category="thesisProposal"
+            />
+            <el-card v-else>
+              <el-result
+                icon="success"
+                title="开题报告已提交"
+                sub-title="等待老师反馈"
+              />
+            </el-card>
+          </template>
+          <template v-else-if="classInfo?.state === 'concludingReport'">
+            <SubmitReport
+              v-if="!groupInfo?.reports?.some(x => x.category === 'concludingReport')"
+              category="concludingReport"
+            />
+            <el-card v-else>
+              <el-result
+                icon="success"
+                title="结题报告已提交"
+                sub-title="等待老师反馈"
+              />
+            </el-card>
           </template>
         </template>
       </div>

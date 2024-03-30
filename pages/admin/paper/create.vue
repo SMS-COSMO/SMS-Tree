@@ -47,10 +47,10 @@
         <SelectGroup v-model="form.groupId" />
       </el-form-item>
       <el-form-item prop="paperFile" label="论文文件">
-        <UploadFile v-model="form.paperFile" is-main-file />
+        <UploadFile v-model="form.paperFile" category="paperDocument" />
       </el-form-item>
       <el-form-item prop="attachments" label="附件">
-        <UploadFile v-model="form.attachments" multiple />
+        <UploadFile v-model="form.attachments" multiple category="paperAttachment" />
       </el-form-item>
       <el-form-item label="评语">
         <el-input v-model="form.comment" :autosize="{ minRows: 4, maxRows: 8 }" type="textarea" />

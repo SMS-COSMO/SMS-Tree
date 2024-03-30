@@ -12,4 +12,5 @@ export const notes = sqliteTable('notes', {
   content: text('content', { mode: 'text' }).notNull(), // 活动笔记
   plans: text('plans', { mode: 'text' }).notNull(), // 下次活动计划
   reflections: text('reflections', { mode: 'text' }).notNull(), // 反思
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });

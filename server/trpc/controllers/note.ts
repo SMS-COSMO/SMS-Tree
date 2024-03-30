@@ -16,24 +16,11 @@ export class NoteController {
     return insertedId;
   }
 
-  async getUserGroup(user: TRawUser) {
-    const group = await useTry(
-      () => db
-        .select({ groupId: usersToGroups.groupId })
-        .from(usersToGroups)
-        .where(eq(usersToGroups.userId, user.id))
-        .get(),
-    );
-    if (!group)
-      throw new TRPCError({ message: '用户无小组', code: 'FORBIDDEN' });
-    return group;
-  }
-
   async createSafe(
     newNote: Omit<TNewNote, 'id' | 'groupId'>,
     user: TRawUser,
   ) {
-    const group = await this.getUserGroup(user);
+    const group = await ctl.gc.getUserGroup(user);
 
     const insertedId = (
       await useTry(
@@ -48,10 +35,10 @@ export class NoteController {
   }
 
   async modifySafe(
-    newNote: Omit<TRawNote, 'groupId'>,
+    newNote: Omit<TRawNote, 'groupId' | 'createdAt'>,
     user: TRawUser,
   ) {
-    const group = await this.getUserGroup(user);
+    const group = await ctl.gc.getUserGroup(user);
 
     await useTry(
       () => db

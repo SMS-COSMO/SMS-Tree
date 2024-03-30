@@ -6,7 +6,7 @@ import { papers } from '../../db/schema/paper';
 import { paperSerializer } from '../serializer/paper';
 import { attachmentSerializer } from '../serializer/attachment';
 import { ctl } from '../context';
-import { TRPCForbidden, requireTeacherOrThrow, useTry } from '../utils/shared';
+import { requireTeacherOrThrow, useTry } from '../utils/shared';
 import { attachments } from '~/server/db/schema/attachment';
 import { usersToGroups } from '~/server/db/schema/userToGroup';
 
@@ -103,11 +103,11 @@ export class PaperController {
       ? await useTry(() => db
         .select().from(attachments)
         .where(eq(attachments.paperId, id)))
-      : await useTry(() => db // Students cannot access secondary files
+      : await useTry(() => db // Students only access paperDocuments
         .select().from(attachments)
         .where(
           and(
-            eq(attachments.isMainFile, true),
+            eq(attachments.category, 'paperDocument'),
             eq(attachments.paperId, id),
           ),
         ));
@@ -139,8 +139,6 @@ export class PaperController {
     const isOwned = await ctl.gc.hasUser(user.id, rawPaper.groupId);
     if (rawPaper.canDownload && !isOwned && !['teacher', 'admin'].includes(user.role))
       await useTry(() => db.update(papers).set({ downloadCount: rawPaper.downloadCount + 1 }).where(eq(papers.id, id)));
-    else
-      throw TRPCForbidden;
 
     return '修改成功';
   }

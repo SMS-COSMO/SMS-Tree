@@ -5,40 +5,51 @@ import { db } from '../../db/db';
 import { ctl } from '../context';
 import { TRPCForbidden, useTry } from '../utils/shared';
 import { attachments } from '~/server/db/schema/attachment';
-import { allowedMainFileTypes, allowedSecondaryFileTypes } from '~/constants/attachment';
+import { allowFileType } from '~/constants/attachment';
 import { papers } from '~/server/db/schema/paper';
+import { reports } from '~/server/db/schema/report';
 
 export class AttachmentController {
-  async hasPerm(paperId: string | undefined | null, user: TRawUser, allowPublic: boolean = false) {
+  async hasPerm(
+    user: TRawUser,
+    id: { paperId?: string | undefined | null; reportId?: string | undefined | null },
+    allowPublic: boolean = false,
+  ) {
     // Teachers have all the perm
     if (['teacher', 'admin'].includes(user.role))
       return true;
 
     // Allowed when attachment is not attached to any paper (needed for paper creation)
-    if (!paperId)
+    if (!id.paperId && !id.reportId)
       return true;
 
-    const paper = await db
-      .select({
-        groupId: papers.groupId,
-        canDownload: papers.canDownload,
-      })
-      .from(papers)
-      .where(eq(papers.id, paperId))
-      .get();
-    if (!paper?.groupId)
-      return false;
-    return (allowPublic && paper.canDownload) || await ctl.gc.hasUser(user.id, paper?.groupId);
+    if (id.paperId) {
+      const paper = await db
+        .select({
+          groupId: papers.groupId,
+          canDownload: papers.canDownload,
+        })
+        .from(papers)
+        .where(eq(papers.id, id.paperId))
+        .get();
+      if (!paper?.groupId)
+        return false;
+      return (allowPublic && paper.canDownload) || await ctl.gc.hasUser(user.id, paper?.groupId);
+    }
+
+    if (id.reportId) {
+      const report = await db.select({ groupId: reports.groupId }).from(reports).where(eq(reports.id, id.reportId)).get();
+      if (!report?.groupId)
+        return false;
+      return allowPublic || await ctl.gc.hasUser(user.id, report.groupId);
+    }
   };
 
   async create(newAttachment: TNewAttachment, user: TRawUser) {
-    if (
-      (newAttachment.isMainFile && !allowedMainFileTypes.includes(newAttachment.fileType))
-      || (!newAttachment.isMainFile && !allowedSecondaryFileTypes.includes(newAttachment.fileType))
-    )
+    if (!allowFileType[newAttachment.category].includes(newAttachment.fileType))
       throw new TRPCError({ code: 'BAD_REQUEST', message: '不允许的文件类型' });
 
-    if (!await this.hasPerm(newAttachment.paperId, user))
+    if (!await this.hasPerm(user, { paperId: newAttachment.paperId, reportId: newAttachment.reportId }))
       throw TRPCForbidden;
 
     const id = await useTry(
@@ -50,61 +61,19 @@ export class AttachmentController {
     return { id, url };
   }
 
-  async modify(id: string, newAttachment: TNewAttachment, user: TRawUser) {
-    const oldPaperId = (
-      await useTry(
-        () =>
-          db
-            .select({ paperId: attachments.paperId })
-            .from(attachments)
-            .where(eq(attachments.id, id))
-            .get(),
-        { code: 'INTERNAL_SERVER_ERROR', message: '无法获取附件' },
-      )
-    )?.paperId;
-
-    if (await this.hasPerm(oldPaperId, user) && await this.hasPerm(newAttachment.paperId, user))
-      await useTry(() => db.update(attachments).set(newAttachment).where(eq(attachments.id, id)));
-    else
-      throw TRPCForbidden;
-
-    return '修改成功';
-  }
-
-  async bulkMoveToPaper(ids: string[], paperId: string, user: TRawUser) {
-    if (!(await this.hasPerm(paperId, user)))
+  async batchMove(ids: string[], user: TRawUser, target: { paperId?: string; reportId?: string }) {
+    if (!(await this.hasPerm(user, target)))
       throw TRPCForbidden;
 
     try {
       await Promise.all(
-        ids.map(id => db.update(attachments).set({ paperId }).where(eq(attachments.id, id))),
+        ids.map(id => db.update(attachments).set(target).where(eq(attachments.id, id))),
       );
     } catch (err) {
       throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '无法更新附件' });
     }
 
     return '修改成功';
-  }
-
-  async remove(id: string, user: TRawUser) {
-    const oldPaperId = (
-      await useTry(
-        () =>
-          db
-            .select({ paperId: attachments.paperId })
-            .from(attachments)
-            .where(eq(attachments.id, id))
-            .get(),
-        { code: 'INTERNAL_SERVER_ERROR', message: '无法获取附件' },
-      )
-    )?.paperId;
-
-    if (await this.hasPerm(oldPaperId, user))
-      await useTry(() => db.delete(attachments).where(eq(attachments.id, id)));
-    else
-      throw TRPCForbidden;
-
-    return '删除成功';
   }
 
   async list() {
@@ -147,16 +116,17 @@ export class AttachmentController {
         .select({
           S3FileId: attachments.S3FileId,
           paperId: attachments.paperId,
+          reportId: attachments.reportId,
         })
         .from(attachments)
         .where(eq(attachments.id, id))
         .get(),
       { code: 'INTERNAL_SERVER_ERROR', message: '无法获取附件' },
     );
-    if (!attachment || !attachment.S3FileId || !attachment.paperId)
+    if (!attachment || !attachment.S3FileId || (!attachment.paperId && !attachment.reportId))
       throw new TRPCError({ code: 'NOT_FOUND', message: '附件不存在' });
 
-    if (!await this.hasPerm(attachment.paperId, user, true))
+    if (!await this.hasPerm(user, { paperId: attachment.paperId, reportId: attachment.reportId }, true))
       throw new TRPCError({ code: 'FORBIDDEN', message: '无下载权限' });
 
     const url = await ctl.s3.getFileUrl(attachment.S3FileId);

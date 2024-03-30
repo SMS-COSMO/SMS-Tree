@@ -14,7 +14,8 @@
     </div>
     <template #tip>
       <div class="el-upload__tip">
-        最多上传 {{ multiple ? 10 : 1 }} 个文件，大小不超过 {{ isMainFile ? '30MB' : '50MB' }}{{ isMainFile ? '，仅允许上传 PDF' : '' }}
+        最多上传 {{ multiple ? 10 : 1 }} 个文件，大小不超过
+        {{ category === 'paperAttachment' ? '50MB' : '30MB' }}{{ category === 'paperAttachment' ? '' : '，仅允许上传 PDF' }}
       </div>
     </template>
   </el-upload>
@@ -24,23 +25,23 @@
 import type { UploadFile, UploadFiles, UploadRawFile, UploadRequestOptions } from 'element-plus';
 import axios from 'axios';
 import { nanoid } from 'nanoid';
-import { allowedMainFileTypes, allowedSecondaryFileTypes } from '~/constants/attachment';
+import type { TAttachmentCategory } from '~/types';
+import { allowFileType } from '~/constants/attachment';
 
 const props = withDefaults(defineProps<{
-  isMainFile?: boolean;
+  category: TAttachmentCategory;
   multiple?: boolean;
-  mainSizeLimit?: number;
-  secondarySizeLimit?: number;
+  documentSizeLimit?: number;
+  attachmentSizeLimit?: number;
 }>(), {
-  isMainFile: false,
   multiple: false,
-  mainSizeLimit: 30000000, // 30MB
-  secondarySizeLimit: 50000000, // 50MB
+  documentSizeLimit: 30000000, // 30MB
+  attachmentSizeLimit: 50000000, // 50MB
 });
 const attachmentIdList = defineModel<string[]>({ default: [] });
-const fileUidToAttachmentId = new Map<number, string>();
-
 const { $api } = useNuxtApp();
+
+const fileUidToAttachmentId = new Map<number, string>();
 
 const fileList = ref<UploadFiles>([]);
 // Get file with upload meta data
@@ -58,10 +59,7 @@ async function handleUpload(option: UploadRequestOptions) {
   const { file } = option;
   const f = getFile(file);
 
-  if (
-    (props.isMainFile && !allowedMainFileTypes.includes(file.type))
-    || (!props.isMainFile && !allowedSecondaryFileTypes.includes(file.type))
-  ) {
+  if (!allowFileType[props.category].includes(file.type)) {
     removeFileFromList(f, '不支持的文件类型');
     if (f)
       handleRemove(f);
@@ -69,7 +67,7 @@ async function handleUpload(option: UploadRequestOptions) {
   }
 
   // f.size in bytes
-  const sizeLimit = props.isMainFile ? props.mainSizeLimit : props.secondarySizeLimit;
+  const sizeLimit = props.category === 'paperAttachment' ? props.attachmentSizeLimit : props.documentSizeLimit;
   if (f?.size && f.size > sizeLimit) {
     removeFileFromList(f, `文件大小不应超过 ${Math.round(sizeLimit / 10 ** 6)}MB，当前文件大小：${Math.round(f.size / 10 ** 6)}MB`);
     handleRemove(f);
@@ -79,7 +77,7 @@ async function handleUpload(option: UploadRequestOptions) {
   try {
     const key = `${nanoid(10)}-${option.file.name}`;
     const { id, url } = await $api.attachment.create.mutate({
-      isMainFile: props.isMainFile,
+      category: props.category,
       fileType: file.type,
       name: file.name,
       S3FileId: key, // fake id because it's generated on server

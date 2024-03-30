@@ -13,6 +13,6 @@ export const papers = sqliteTable('papers', {
   canDownload: integer('can_download', { mode: 'boolean' }).notNull().default(false),
   isFeatured: integer('is_featured', { mode: 'boolean' }).notNull().default(false),
   downloadCount: integer('download_count').notNull().default(0),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
   comment: text('comment', { mode: 'text' }),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });

@@ -56,8 +56,8 @@ function splitToNChunks<T>(array: T[], n: number) {
   return result;
 }
 
-const studentList = (await ctl.uc.getList('student')).getResOrTRPCError();
-const teacherList = (await ctl.uc.getList('teacher')).getResOrTRPCError();
+const studentList = await ctl.uc.getList('student');
+const teacherList = await ctl.uc.getList('teacher');
 const sepStudentList = splitToNChunks(studentList, classCount);
 
 await Promise.all(
@@ -72,7 +72,7 @@ await Promise.all(
   }),
 );
 
-const classList = (await ctl.cc.getList()).getResOrTRPCError();
+const classList = await ctl.cc.getList();
 
 const groupCount = Number(await rl.question('? Number of groups (per class) to create: '));
 await Promise.all(
@@ -98,7 +98,7 @@ await Promise.all(
   }),
 );
 
-const groupList = (await ctl.gc.getList(admin)).getResOrTRPCError();
+const groupList = await ctl.gc.getList(admin);
 
 function getScore() {
   const possible: ('A' | 'B' | 'C' | 'D')[] = ['A', 'B', 'C', 'D'];

@@ -4,9 +4,10 @@ import { protectedProcedure, requireRoles, router } from '../trpc';
 const attachmentIdZod = z.string().min(0, '附件不存在');
 const attachmentZod = z.object({
   paperId: z.string().optional(),
+  reportId: z.string().optional(),
   name: z.string().min(0, '文件名最短为1').max(100, '文件名最长为100'),
-  isMainFile: z.boolean(),
   fileType: z.string(),
+  category: z.enum(['paperDocument', 'paperAttachment', 'reportDocument', 'reportPresentation']),
   S3FileId: z.string().min(0, '请上传文件'),
 });
 
@@ -17,25 +18,22 @@ export const attachmentRouter = router({
       return await ctx.attachmentController.create(input, ctx.user);
     }),
 
-  modify: protectedProcedure
-    .input(z.object({ id: attachmentIdZod, newAttachment: attachmentZod }))
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.attachmentController.modify(input.id, input.newAttachment, ctx.user);
-    }),
-
   batchMoveToPaper: protectedProcedure
     .input(z.object({
       ids: z.array(z.string()),
       paperId: z.string(),
     }))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.attachmentController.bulkMoveToPaper(input.ids, input.paperId, ctx.user);
+      return await ctx.attachmentController.batchMove(input.ids, ctx.user, { paperId: input.paperId });
     }),
 
-  remove: protectedProcedure
-    .input(z.object({ id: attachmentIdZod }))
+  batchMoveToReport: protectedProcedure
+    .input(z.object({
+      ids: z.array(z.string()),
+      reportId: z.string(),
+    }))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.attachmentController.remove(input.id, ctx.user);
+      return await ctx.attachmentController.batchMove(input.ids, ctx.user, { reportId: input.reportId });
     }),
 
   list: protectedProcedure

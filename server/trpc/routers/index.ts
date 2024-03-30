@@ -5,14 +5,16 @@ import { groupRouter } from './group';
 import { classRouter } from './class';
 import { attachmentRouter } from './attachment';
 import { noteRouter } from './note';
+import { reportRouter } from './report';
 
 export const appRouter = router({
   user: userRouter,
+  note: noteRouter,
   paper: paperRouter,
   group: groupRouter,
   class: classRouter,
+  report: reportRouter,
   attachment: attachmentRouter,
-  note: noteRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -31,7 +31,7 @@
       <el-text class="break-normal font-bold text-xl!">
         {{ paper?.title }}
       </el-text>
-      <el-text v-if="'authors' in paper">
+      <el-text v-if="showAuthors && 'authors' in paper">
         <GroupMembers :authors="paper.authors" type="text" :show-leader="false" />
       </el-text>
     </el-row>
@@ -51,9 +51,11 @@ withDefaults(defineProps<{
   paper: TPaperListSafeItem | TRawPaper;
   showAbstract?: boolean;
   lineClamp?: number;
+  showAuthors?: boolean;
 }>(), {
   showAbstract: false,
   lineClamp: 3,
+  showAuthors: true,
 });
 
 function scoreColor(score: 'A' | 'B' | 'C' | 'D' | null) {

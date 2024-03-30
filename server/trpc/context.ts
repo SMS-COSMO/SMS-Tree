@@ -9,33 +9,37 @@ import { GroupController } from './controllers/group';
 import { ClassController } from './controllers/class';
 import { AttachmentController } from './controllers/attachment';
 import { NoteController } from './controllers/note';
+import { ReportController } from './controllers/report';
 
 const newGlobal = globalThis as unknown as {
+  s3Controller: S3Controller | undefined;
   userController: UserController | undefined;
   noteController: NoteController | undefined;
   paperController: PaperController | undefined;
   groupController: GroupController | undefined;
   classController: ClassController | undefined;
+  reportController: ReportController | undefined;
   attachmentController: AttachmentController | undefined;
-  s3Controller: S3Controller | undefined;
 };
 
+const s3Controller = new S3Controller();
 const userController = newGlobal.userController ?? new UserController();
 const noteController = newGlobal.noteController ?? new NoteController();
 const paperController = newGlobal.paperController ?? new PaperController();
 const groupController = newGlobal.groupController ?? new GroupController();
 const classController = newGlobal.classController ?? new ClassController();
+const reportController = newGlobal.reportController ?? new ReportController();
 const attachmentController = newGlobal.attachmentController ?? new AttachmentController();
-const s3Controller = new S3Controller();
 
 if (process.env.NODE_ENV !== 'production') {
+  newGlobal.s3Controller = s3Controller;
   newGlobal.userController = userController;
   newGlobal.noteController = noteController;
   newGlobal.paperController = paperController;
   newGlobal.groupController = groupController;
   newGlobal.classController = classController;
+  newGlobal.reportController = reportController;
   newGlobal.attachmentController = attachmentController;
-  newGlobal.s3Controller = s3Controller;
 }
 
 interface CreateContextOptions {
@@ -49,26 +53,28 @@ interface CreateContextOptions {
  */
 export function createInnerContext(opts: CreateContextOptions) {
   return {
-    user: opts.user,
     db,
+    user: opts.user,
     s3Controller,
     userController,
     noteController,
     paperController,
     groupController,
     classController,
+    reportController,
     attachmentController,
   };
 }
 
 export const ctl = {
+  s3: s3Controller,
   uc: userController,
   nc: noteController,
   pc: paperController,
   gc: groupController,
   cc: classController,
+  rc: reportController,
   ac: attachmentController,
-  s3: s3Controller,
 };
 
 /**

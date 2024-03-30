@@ -7,6 +7,7 @@ import type { groups } from './schema/group';
 import type { classes } from './schema/class';
 import type { attachments } from './schema/attachment';
 import type { notes } from './schema/note';
+import type { reports } from './schema/report';
 
 const options = (() => {
   switch (env.DATABASE_CONNECTION_TYPE) {
@@ -36,3 +37,6 @@ export type TNewAttachment = typeof attachments.$inferInsert;
 
 export type TRawNote = typeof notes.$inferSelect;
 export type TNewNote = typeof notes.$inferInsert;
+
+export type TRawReport = typeof reports.$inferSelect;
+export type TNewReport = typeof reports.$inferInsert;

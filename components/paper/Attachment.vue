@@ -21,7 +21,7 @@
                 target="_blank"
                 :icon="ElIconDownload" size="small" text bg circle
               />
-              <el-tag v-if="attachment.isMainFile" type="success">
+              <el-tag v-if="attachment.category === 'paperDocument'" type="success">
                 <el-icon><ElIconStar /></el-icon>
               </el-tag>
               <span class="text-[15px]">

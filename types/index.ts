@@ -27,6 +27,9 @@ export type TAttachmentList = RouterOutput['paper']['attachments'];
 export type TAttachmentListItem = RouterOutput['paper']['attachments'][0];
 export type TAttachmentCreate = RouterInput['attachment']['create'];
 export type TAttachmentContent = TAttachmentListItem;
+export type TAttachmentCategory = 'paperDocument' | 'paperAttachment' | 'reportDocument' | 'reportPresentation';
+
+export type TReportCategory = 'thesisProposal' | 'concludingReport';
 
 export type TRole = 'student' | 'teacher' | 'admin';
 export type TClassState =

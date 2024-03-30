@@ -5,8 +5,41 @@
     </template>
     <client-only>
       <el-descriptions
-        :column="device.isMobileOrTablet ? 1 : 3"
+        :column="device.isMobileOrTablet ? 1 : 2"
         size="large"
+      >
+        <el-descriptions-item>
+          <template #label>
+            <div class="text-[16px]!">
+              <el-icon>
+                <ElIconUser />
+              </el-icon>
+              组长
+            </div>
+          </template>
+          <span class="text-[16px]!">
+            <el-link :href="`/user/${info?.leader?.id}`">
+              {{ info?.leader?.username }}
+            </el-link>
+          </span>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="text-[16px]!">
+              <el-icon>
+                <ElIconUser />
+              </el-icon>
+              小组成员
+            </div>
+          </template>
+          <span class="space-x-2 text-[16px]!">
+            <GroupMembers :authors="info?.members" :leader="info?.leader" type="link" class="inline" />
+          </span>
+        </el-descriptions-item>
+      </el-descriptions>
+      <el-descriptions
+        :column="1"
+        size="large" class="mb-[-16px] max-w-full!"
       >
         <el-descriptions-item>
           <template #label>
@@ -45,39 +78,6 @@
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
-            <div class="text-[16px]!">
-              <el-icon>
-                <ElIconUser />
-              </el-icon>
-              组长
-            </div>
-          </template>
-          <span class="text-[16px]!">
-            <el-link :href="`/user/${info?.leader?.id}`">
-              {{ info?.leader?.username }}
-            </el-link>
-          </span>
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label>
-            <div class="text-[16px]!">
-              <el-icon>
-                <ElIconUser />
-              </el-icon>
-              小组成员
-            </div>
-          </template>
-          <span class="space-x-2 text-[16px]!">
-            <GroupMembers :authors="info?.members" :leader="info?.leader" type="link" class="inline" />
-          </span>
-        </el-descriptions-item>
-      </el-descriptions>
-      <el-descriptions
-        :column="1"
-        size="large" class="mb-[-16px] max-w-full!"
-      >
-        <el-descriptions-item>
-          <template #label>
             <div class="mb-[-12px] text-[16px]!">
               <el-icon>
                 <ElIconEditPen />
@@ -90,6 +90,21 @@
           </template>
           <NewNote />
         </el-descriptions-item>
+        <el-descriptions-item v-if="info?.reports?.length">
+          <template #label>
+            <div class="mb-[-12px] text-[16px]!">
+              <el-icon>
+                <ElIconDataBoard />
+              </el-icon>
+              报告
+            </div>
+          </template>
+          <div :class="info?.reports?.length ?? 0 > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
+            <template v-for="report in info?.reports" :key="report.id">
+              <ReportCard :report="report" />
+            </template>
+          </div>
+        </el-descriptions-item>
         <el-descriptions-item v-if="info?.papers?.length">
           <template #label>
             <div class="mb-[-12px] text-[16px]!">
@@ -101,7 +116,7 @@
           </template>
           <div :class="info?.papers?.length > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
             <template v-for="paper in info.papers" :key="paper.id">
-              <PaperCard :paper="paper" />
+              <PaperCard :paper="paper" :show-authors="false" />
             </template>
           </div>
         </el-descriptions-item>
