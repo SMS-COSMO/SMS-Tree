@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { protectedProcedure, requireRoles, router } from '../trpc';
 
 const noteIdZod = z.string().min(1, '活动记录id不存在');
-const createSafeZod = {
+const createSafeZod = z.object({
   title: z
     .string()
     .min(1, { message: '请输入活动记录主题' })
@@ -13,30 +13,24 @@ const createSafeZod = {
   content: z.string().max(1000, '活动笔记最长1000字'),
   plans: z.string().max(1000, '下次活动计划最长1000字'),
   reflections: z.string().max(1000, '反思最长1000字'),
-};
+});
 
 export const noteRouter = router({
   create: protectedProcedure
-    .input(z.object({
-      ...createSafeZod,
-      groupId: z.string(),
-    }))
+    .input(createSafeZod.extend({ groupId: z.string() }))
     .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
       return await ctx.noteController.create(input);
     }),
 
   createSafe: protectedProcedure
-    .input(z.object(createSafeZod))
+    .input(createSafeZod)
     .mutation(async ({ ctx, input }) => {
       return await ctx.noteController.createSafe(input, ctx.user);
     }),
 
   modifySafe: protectedProcedure
-    .input(z.object({
-      id: z.string(),
-      ...createSafeZod,
-    }))
+    .input(createSafeZod.extend({ id: noteIdZod }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.noteController.modifySafe(input, ctx.user);
     }),
