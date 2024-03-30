@@ -1,13 +1,12 @@
 import { and, eq, inArray } from 'drizzle-orm';
 import { LibsqlError } from '@libsql/client';
+import { TRPCError } from '@trpc/server';
 import type { TNewGroup, TRawGroup, TRawUser } from '../../db/db';
 import { db } from '../../db/db';
 import { groups } from '../../db/schema/group';
-import type { TGroup } from '../serializer/group';
 import { groupSerializer } from '../serializer/group';
 import { usersToGroups } from '../../db/schema/userToGroup';
-import { Result, Result500, ResultNoRes } from '../utils/result';
-import { requireEqualOrThrow } from '../utils/shared';
+import { requireEqualOrThrow, useTry } from '../utils/shared';
 import { ctl } from '../context';
 import type { TMinimalUser } from '../serializer/paper';
 import { papers } from '~/server/db/schema/paper';
@@ -15,193 +14,175 @@ import { users } from '~/server/db/schema/user';
 import { notes } from '~/server/db/schema/note';
 
 export class GroupController {
-  async create(newGroup: TNewGroup & {
-    members?: string[];
-  }) {
+  async create(newGroup: TNewGroup & { members?: string[] }) {
     const { members, ...group } = newGroup;
     group.archived = group.archived ?? false;
 
-    let insertedId: string;
-    try {
-      insertedId = (await db.insert(groups).values(group).returning({ id: groups.id }).get()).id;
-    } catch (err) {
-      return new Result500();
-    }
+    const insertedId = await useTry(
+      async () => (await db.insert(groups).values(group).returning({ id: groups.id }).get()).id,
+    );
+    await useTry(
+      () =>
+        db.insert(usersToGroups).values((members ?? []).map(item => ({
+          groupId: insertedId,
+          userId: item,
+        }))),
+    );
 
-    try {
-      await db.insert(usersToGroups).values((members ?? []).map(item => ({
-        groupId: insertedId,
-        userId: item,
-      })));
-    } catch (err) {
-      return new ResultNoRes(false, '用户不存在');
-    }
-
-    return new ResultNoRes(true, '创建成功');
+    return '创建成功';
   }
 
   async remove(id: string) {
     try {
       await db.delete(usersToGroups).where(eq(usersToGroups.groupId, id));
       await db.delete(groups).where(eq(groups.id, id));
-      return new ResultNoRes(true, '删除成功');
+      return '删除成功';
     } catch (err) {
-      return new ResultNoRes(false, '小组不存在');
+      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '删除失败' });
     }
   }
 
   async modifyMembers(groupId: string, newMembers: string[], newLeader: string) {
     if (!newMembers.includes(newLeader))
-      return new ResultNoRes(false, '组长需要包含于组员中');
+      throw new TRPCError({ code: 'BAD_REQUEST', message: '组长需要包含于组员中' });
     if (!(await db.select().from(groups).where(eq(groups.id, groupId))).length)
-      return new ResultNoRes(false, '小组id不存在');
+      throw new TRPCError({ code: 'BAD_REQUEST', message: '小组id不存在' });
 
     try {
       await db.update(groups).set({ leader: newLeader }).where(eq(groups.id, groupId));
       await db.delete(usersToGroups).where(eq(usersToGroups.groupId, groupId));
 
       await Promise.all(newMembers.map(userId => db.insert(usersToGroups).values({ userId, groupId })));
-      return new ResultNoRes(true, '修改成功');
+      return '修改成功';
     } catch (err) {
       if (err instanceof LibsqlError && err.code === 'SQLITE_CONSTRAINT_FOREIGNKEY')
-        return new ResultNoRes(false, '用户id不存在');
-      return new Result500();
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '用户id不存在' });
+      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '修改失败' });
     }
   }
 
   async getMembers(id: string, leaderId?: string | null) {
-    try {
-      leaderId ??= (await db.select({ l: groups.leader }).from(groups).where(eq(groups.id, id)).get())?.l;
+    leaderId ??= await useTry(
+      async () => (await db.select({ l: groups.leader }).from(groups).where(eq(groups.id, id)).get())?.l,
+    );
 
-      const rawMembers = await db.select({ userId: usersToGroups.userId }).from(usersToGroups).where(eq(usersToGroups.groupId, id)).all();
-      const members = await Promise.all(
-        rawMembers.map(
-          async item => await db.select({ id: users.id, username: users.username }).from(users).where(eq(users.id, item.userId)).get(),
+    const rawMembers = await useTry(
+      () => db.select({ userId: usersToGroups.userId }).from(usersToGroups).where(eq(usersToGroups.groupId, id)).all(),
+    );
+    const members = await Promise.all(
+      rawMembers.map(
+        async item => await useTry(
+          () => db.select({ id: users.id, username: users.username }).from(users).where(eq(users.id, item.userId)).get(),
         ),
-      );
+      ),
+    );
 
-      const leader = leaderId
+    const leader = await useTry(
+      async () => leaderId
         ? await db.select({ id: users.id, username: users.username }).from(users).where(eq(users.id, leaderId)).get()
-        : undefined;
-      return new Result(true, '查询成功', { members, leader });
-    } catch (err) {
-      return new ResultNoRes(false, '小组不存在');
-    }
+        : undefined,
+    );
+    return { members, leader };
   }
 
   async getContent(id: string, user: TRawUser, getPaper: boolean, info?: TRawGroup) {
-    try {
-      info ??= await db.select().from(groups).where(eq(groups.id, id)).get();
-      if (!info)
-        return new ResultNoRes(false, '小组不存在');
-      const { members, leader } = (await this.getMembers(info.id, info.leader)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
-      const isOwned = await this.hasUser(user.id, id, { members, leader });
+    info ??= await useTry(() => db.select().from(groups).where(eq(groups.id, id)).get());
+    if (!info)
+      throw new TRPCError({ code: 'NOT_FOUND', message: '小组不存在' });
 
-      let papersWithInfo;
-      if (getPaper) {
-        const rawPapers = await db.select().from(papers).where(eq(papers.groupId, id));
-        papersWithInfo = await Promise.all(
-          rawPapers.map(
-            async item => (await ctl.pc.getContent(item.id, user, item)).getResOrTRPCError('INTERNAL_SERVER_ERROR'),
-          ),
-        );
-      }
+    const { members, leader } = await this.getMembers(info.id, info.leader);
+    const isOwned = await this.hasUser(user.id, id, { members, leader });
 
-      let rawNotes;
-      if (isOwned)
-        rawNotes = await db.select().from(notes).where(eq(notes.groupId, id));
-
-      const group = groupSerializer(info, papersWithInfo, members, leader, rawNotes);
-      return new Result(true, '查询成功', group);
-    } catch (err) {
-      return new ResultNoRes(false, '小组不存在');
+    let papersWithInfo;
+    if (getPaper) {
+      const rawPapers = await useTry(() => db.select().from(papers).where(eq(papers.groupId, id)));
+      papersWithInfo = await Promise.all(
+        rawPapers.map(
+          async item => await ctl.pc.getContent(item.id, user, item),
+        ),
+      );
     }
+
+    let rawNotes;
+    if (isOwned)
+      rawNotes = await useTry(() => db.select().from(notes).where(eq(notes.groupId, id)));
+
+    return groupSerializer(info, papersWithInfo, members, leader, rawNotes);
   }
 
   async projectName(groupIds: string[]) {
-    try {
-      if (!groupIds.length)
-        return new Result(true, '查询成功', '');
-      const projectNames = (
+    if (!groupIds.length)
+      return '';
+    const projectNames = await useTry(
+      async () => (
         await db
           .select({ projectName: groups.projectName })
           .from(groups)
-          .where(inArray(groups.id, groupIds))
-      ).map(n => n.projectName);
-      const res = projectNames.reduce((a, c) => `${a}《${c}》`, '');
-      return new Result(true, '查询成功', res);
-    } catch (err) {
-      return new Result500();
-    }
+          .where(
+            and(
+              inArray(groups.id, groupIds),
+              eq(groups.archived, false),
+            ),
+          )
+      ).map(n => n.projectName),
+    );
+    return projectNames.reduce((a, c) => `${a}《${c}》`, '');
   }
 
   async getList(user: TRawUser, classId?: string) {
-    try {
-      const res: Array<TGroup> = [];
-      for (const info of
-        classId
-          ? await db.select().from(groups).where(eq(groups.classId, classId))
-          : await db.select().from(groups).all()
-      )
-        res.push((await this.getContent(info.id, user, false, info)).getResOrTRPCError('INTERNAL_SERVER_ERROR'));
+    const classList = classId
+      ? await db.select().from(groups).where(eq(groups.classId, classId))
+      : await db.select().from(groups).all();
 
-      return new Result(true, '查询成功', res);
-    } catch (err) {
-      return new Result500();
-    }
+    const res = await Promise.all(
+      classList.map(async info => await this.getContent(info.id, user, false, info)),
+    );
+
+    return res;
   }
 
   async joinGroup(userId: string, groupId: string) {
     try {
       await db.insert(usersToGroups).values({ userId, groupId });
-      return new ResultNoRes(true, '加入成功');
+      return '加入成功';
     } catch (err) {
       if (err instanceof LibsqlError && err.code === 'SQLITE_CONSTRAINT_PRIMARYKEY')
-        return new ResultNoRes(false, '已加入，请勿重复加入');
-      return new Result500();
+        throw new TRPCError({ code: 'BAD_REQUEST', message: '已加入，请勿重复加入' });
+      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '无法加入小组' });
     }
   }
 
   async leaveGroup(userId: string, groupId: string) {
-    try {
-      await db.delete(usersToGroups).where(
+    await useTry(
+      () => db.delete(usersToGroups).where(
         and(
           eq(usersToGroups.userId, userId),
           eq(usersToGroups.groupId, groupId),
         ),
-      );
+      ),
+    );
 
-      await this._removeIfLeaderLeaves(userId, groupId);
-      return new ResultNoRes(true, '退出成功');
-    } catch (err) {
-      return new Result500();
-    }
+    await this._removeIfLeaderLeaves(userId, groupId);
+    return '退出成功';
   }
 
   async changeGroup(userId: string, oldGroupId: string, newGroupId: string) {
-    try {
-      await db.update(usersToGroups).set({ groupId: newGroupId }).where(
+    await useTry(
+      () => db.update(usersToGroups).set({ groupId: newGroupId }).where(
         and(
           eq(usersToGroups.userId, userId),
           eq(usersToGroups.groupId, oldGroupId),
         ),
-      );
+      ),
+    );
 
-      await this._removeIfLeaderLeaves(userId, oldGroupId);
-
-      return new ResultNoRes(true, '修改成功');
-    } catch (err) {
-      return new Result500();
-    }
+    await this._removeIfLeaderLeaves(userId, oldGroupId);
+    return '修改成功';
   }
 
   async _setLeader(userId: string, groupId: string) {
-    try {
-      await db.update(groups).set({ leader: userId }).where(eq(groups.id, groupId));
-      return new ResultNoRes(true, '修改成功');
-    } catch (err) {
-      return new Result500();
-    }
+    await useTry(() => db.update(groups).set({ leader: userId }).where(eq(groups.id, groupId)));
+    return '修改成功';
   }
 
   /**
@@ -218,23 +199,15 @@ export class GroupController {
    */
   async setLeader(userId: string, groupId: string, user: TRawUser) {
     if (!['admin', 'teacher'].includes(user.role))
-      requireEqualOrThrow(userId, user.id, '只能将自己设为组长', 'FORBIDDEN');
+      requireEqualOrThrow(userId, user.id, { message: '只能将自己设为组长', code: 'FORBIDDEN' });
 
-    try {
-      await db.update(groups).set({ leader: userId }).where(eq(groups.id, groupId));
-      return new ResultNoRes(true, '修改成功');
-    } catch (err) {
-      return new Result500();
-    }
+    await useTry(() => db.update(groups).set({ leader: userId }).where(eq(groups.id, groupId)));
+    return '修改成功';
   }
 
   async _removeLeader(groupId: string) {
-    try {
-      await db.update(groups).set({ leader: null }).where(eq(groups.id, groupId));
-      return new ResultNoRes(true, '修改成功');
-    } catch (err) {
-      return new Result500();
-    }
+    await useTry(() => db.update(groups).set({ leader: null }).where(eq(groups.id, groupId)));
+    return '修改成功';
   }
 
   /**
@@ -252,17 +225,15 @@ export class GroupController {
     if (!['admin', 'teacher'].includes(user.role)) {
       requireEqualOrThrow(
         user.id,
-        (await db.select({ leader: groups.leader }).from(groups).where(eq(groups.id, groupId)).get())?.leader,
-        '只能将自己移出组长',
-        'FORBIDDEN',
+        await useTry(
+          async () => (await db.select({ leader: groups.leader }).from(groups).where(eq(groups.id, groupId)).get())?.leader,
+        ),
+        { message: '只能将自己移出组长', code: 'FORBIDDEN' },
       );
     }
-    try {
-      await db.update(groups).set({ leader: null }).where(eq(groups.id, groupId));
-      return new ResultNoRes(true, '修改成功');
-    } catch (err) {
-      return new Result500();
-    }
+
+    await useTry(() => db.update(groups).set({ leader: null }).where(eq(groups.id, groupId)));
+    return '修改成功';
   }
 
   /**
@@ -289,7 +260,7 @@ export class GroupController {
     },
   ) {
     try {
-      members ??= (await this.getMembers(groupId)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
+      members ??= await this.getMembers(groupId);
       if (members.members)
         return members.members.some(x => x?.id === userId);
       return false;

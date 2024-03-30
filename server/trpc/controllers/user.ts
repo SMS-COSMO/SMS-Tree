@@ -2,16 +2,16 @@ import { LibsqlError } from '@libsql/client';
 import bcrypt from 'bcrypt';
 import { and, eq } from 'drizzle-orm';
 import type { CreateExpressContextOptions } from '@trpc/server/adapters/express';
+import { TRPCError } from '@trpc/server';
 import type { TNewUser, TRawUser } from '../../db/db';
 import { db } from '../../db/db';
 import { refreshTokens, users } from '../../db/schema/user';
-import { type TUser, userSerializer } from '../serializer/user';
+import { userSerializer } from '../serializer/user';
 import { usersToGroups } from '../../db/schema/userToGroup';
 import { classesToUsers } from '../../db/schema/classToUser';
 import { ctl } from '../context';
 import { Auth } from '../utils/auth';
-import { Result, Result500, ResultNoRes } from '../utils/result';
-import { makeId } from '../../trpc/utils/shared';
+import { TRPCForbidden, makeId, useTry } from '../../trpc/utils/shared';
 import type { TRole } from '~/types';
 
 export class UserController {
@@ -43,21 +43,22 @@ export class UserController {
           })),
         );
       }
-      return new ResultNoRes(true, '注册成功');
+      return '注册成功';
     } catch (err) {
       if (err instanceof LibsqlError && err.code === 'SQLITE_CONSTRAINT_PRIMARYKEY')
-        return new ResultNoRes(false, '用户ID出现重复');
-      else return new Result500();
+        throw new TRPCError({ code: 'BAD_REQUEST', message: '用户ID出现重复' });
+      else
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '注册失败' });
     }
   }
 
   async bulkRegister(inputUsers: { id: string; username: string }[], randomPassword?: boolean) {
     if ((new Set(inputUsers.map(user => user.id))).size !== inputUsers.length)
-      return new ResultNoRes(false, '用户ID出现重复');
+      throw new TRPCError({ code: 'BAD_REQUEST', message: '用户ID出现重复' });
 
     for (const user of inputUsers) {
-      if ((await db.select().from(users).where(eq(users.id, user.id))).length > 0)
-        return new ResultNoRes(false, '用户ID出现重复');
+      if ((await useTry(() => db.select().from(users).where(eq(users.id, user.id)))).length > 0)
+        throw new TRPCError({ code: 'BAD_REQUEST', message: '用户ID出现重复' });
     }
 
     const newUsers = await Promise.all(inputUsers.map(async ({ id, username }) => {
@@ -70,118 +71,95 @@ export class UserController {
         groupIds: [],
       } as TNewUser & { groupIds: string[] };
     }));
-    await db.insert(users).values(newUsers);
-    return new ResultNoRes(true, '创建成功');
+    await useTry(() => db.insert(users).values(newUsers));
+    return '创建成功';
   }
 
   async modifyPassword(user: TRawUser, id: string, oldPassword: string, newPassword: string) {
     if (!['admin', 'teacher'].includes(user.role) && user.id !== id)
-      return new ResultNoRes(false, '无修改权限');
+      return TRPCForbidden;
 
     const targetUser = user.id === id
       ? user
-      : await db.select().from(users).where(eq(users.id, id)).get();
+      : await useTry(() => db.select().from(users).where(eq(users.id, id)).get());
     if (!targetUser)
-      return new ResultNoRes(false, '用户不存在');
+      throw new TRPCError({ code: 'NOT_FOUND', message: '用户不存在' });
 
     if (newPassword === oldPassword)
-      return new ResultNoRes(false, '新密码不能与旧密码相同');
+      throw new TRPCError({ code: 'BAD_REQUEST', message: '新密码不能与旧密码相同' });
     if (!await bcrypt.compare(oldPassword, targetUser.password))
-      return new ResultNoRes(false, '旧密码不正确');
+      throw new TRPCError({ code: 'BAD_REQUEST', message: '旧密码不正确' });
 
-    await db.update(users).set({ password: await bcrypt.hash(newPassword, 8) }).where(eq(users.id, id));
-    return new ResultNoRes(true, '修改成功');
+    await useTry(async () => db.update(users).set({ password: await bcrypt.hash(newPassword, 8) }).where(eq(users.id, id)));
+    return '修改成功';
   }
 
   async login(id: string, password: string) {
-    try {
-      const user = await db.select().from(users).where(eq(users.id, id)).get();
-      if (!(user && (await bcrypt.compare(password, user.password))))
-        return new ResultNoRes(false, '用户名或密码错误');
-      const accessToken = await this.auth.produceAccessToken(user.id);
-      const refreshToken = await this.auth.produceRefreshToken(user.id);
-      return new Result(true, '登陆成功', {
-        ...(await this.getFullUser(user)).getResOrTRPCError('INTERNAL_SERVER_ERROR'),
-        accessToken,
-        refreshToken,
-      });
-    } catch (err) {
-      return new Result500();
-    }
+    const user = await useTry(async () => db.select().from(users).where(eq(users.id, id)).get());
+    if (!(user && (await bcrypt.compare(password, user.password))))
+      throw new TRPCError({ code: 'UNAUTHORIZED', message: '用户名或密码错误' });
+
+    const accessToken = await this.auth.produceAccessToken(user.id);
+    const refreshToken = await this.auth.produceRefreshToken(user.id);
+    return {
+      ...(await this.getFullUser(user)),
+      accessToken,
+      refreshToken,
+    };
   }
 
   async refreshAccessToken(refreshToken: string, id: string) {
-    try {
-      const token = await db
+    const token = await useTry(
+      async () => db
         .delete(refreshTokens)
         .where(and(eq(refreshTokens.token, refreshToken), eq(refreshTokens.owner, id)))
-        .returning();
-      if (!token[0])
-        return new ResultNoRes(false, '请重新登陆');
-      const newRefreshToken = await this.auth.produceRefreshToken(id);
-      const newAccessToken = await this.auth.produceAccessToken(id);
-      return new Result(true, '刷新成功', { accessToken: newAccessToken, refreshToken: newRefreshToken });
-    } catch (err) {
-      return new Result500();
-    }
+        .returning(),
+    );
+    if (!token[0])
+      throw new TRPCError({ code: 'UNAUTHORIZED', message: '请重新登陆' });
+
+    const newRefreshToken = await this.auth.produceRefreshToken(id);
+    const newAccessToken = await this.auth.produceAccessToken(id);
+    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
   }
 
   async getFullUser(basicUser: TRawUser) {
-    try {
-      const groupIds = (
-        await db.select({ groupId: usersToGroups.groupId }).from(usersToGroups).where(eq(usersToGroups.userId, basicUser.id))
-      ).map(item => item.groupId);
+    const groupIds = (
+      await useTry(() => db.select({ groupId: usersToGroups.groupId }).from(usersToGroups).where(eq(usersToGroups.userId, basicUser.id)))
+    ).map(item => item.groupId);
 
-      const classIds = (
-        await db.select({ classId: classesToUsers.classId }).from(classesToUsers).where(eq(classesToUsers.userId, basicUser.id))
-      ).map(item => item.classId);
+    const classIds = (
+      await useTry(() => db.select({ classId: classesToUsers.classId }).from(classesToUsers).where(eq(classesToUsers.userId, basicUser.id)))
+    ).map(item => item.classId);
 
-      let projectName, className;
-      if (basicUser.role === 'student') {
-        if (classIds.length)
-          className = (await ctl.cc.getString(classIds[0])).getResOrTRPCError();
-        projectName = (await ctl.gc.projectName(groupIds)).getResOrTRPCError();
-      }
-      return new Result(true, '获取成功', userSerializer(basicUser, groupIds, classIds, projectName, className));
-    } catch (err) {
-      return new ResultNoRes(false, '获取用户详细信息失败');
+    let projectName, className;
+    if (basicUser.role === 'student') {
+      if (classIds.length)
+        className = await ctl.cc.getString(classIds[0]);
+      projectName = await ctl.gc.projectName(groupIds);
     }
+    return userSerializer(basicUser, groupIds, classIds, projectName, className);
   }
 
   async modify(id: string, username: string, role: TRole) {
-    try {
-      await db.update(users).set({ username, role }).where(eq(users.id, id));
-      return new ResultNoRes(true, '修改成功');
-    } catch (err) {
-      return new Result500();
-    }
+    await useTry(() => db.update(users).set({ username, role }).where(eq(users.id, id)));
+    return '修改成功';
   }
 
   async getProfile(id: string) {
-    try {
-      const basicUser = await db.select().from(users).where(eq(users.id, id)).get();
-      if (!basicUser)
-        return new ResultNoRes(false, '用户不存在');
-      return new Result(true, '获取成功', (await this.getFullUser(basicUser)).getResOrTRPCError('INTERNAL_SERVER_ERROR'));
-    } catch (err) {
-      return new ResultNoRes(false, '用户不存在');
-    }
+    const basicUser = await useTry(() => db.select().from(users).where(eq(users.id, id)).get());
+    if (!basicUser)
+      throw new TRPCError({ code: 'NOT_FOUND', message: '用户不存在' });
+    return await this.getFullUser(basicUser);
   }
 
   async getList(role: 'student' | 'teacher' | 'admin' | 'all') {
-    try {
-      const res: Array<TUser> = [];
-      for (const basicUser of
-        role === 'all'
-          ? await db.select().from(users).all()
-          : await db.select().from(users).where(eq(users.role, role))
-      )
-        res.push((await this.getFullUser(basicUser)).getResOrTRPCError('INTERNAL_SERVER_ERROR'));
+    const userList = role === 'all'
+      ? await useTry(() => db.select().from(users).all())
+      : await useTry(() => db.select().from(users).where(eq(users.role, role)));
 
-      return new Result(true, '获取成功', res);
-    } catch (err) {
-      return new Result500();
-    }
+    const res = await Promise.all(userList.map(async basicUser => this.getFullUser(basicUser)));
+    return res;
   }
 
   async remove(id: string) {
@@ -191,9 +169,9 @@ export class UserController {
         db.delete(classesToUsers).where(eq(classesToUsers.userId, id)),
       ]);
       await db.delete(users).where(eq(users.id, id));
-      return new ResultNoRes(true, '删除成功');
+      return '删除成功';
     } catch (err) {
-      return new ResultNoRes(false, '用户不存在');
+      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '删除失败' });
     }
   }
 }

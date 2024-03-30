@@ -24,7 +24,7 @@ export const paperRouter = router({
     }))
     .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.paperController.create(input)).getResOrTRPCError();
+      return await ctx.paperController.create(input);
     }),
 
   createSafe: protectedProcedure
@@ -40,37 +40,37 @@ export const paperRouter = router({
       canDownload: z.boolean(),
     }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.paperController.createSafe(input, ctx.user)).getResOrTRPCError();
+      return await ctx.paperController.createSafe(input, ctx.user);
     }),
 
   info: protectedProcedure
     .input(z.object({ id: paperIdZod }))
     .query(async ({ ctx, input }) => {
-      return (await ctx.paperController.getContent(input.id, ctx.user)).getResOrTRPCError();
+      return await ctx.paperController.getContent(input.id, ctx.user);
     }),
 
   remove: protectedProcedure
     .input(z.object({ id: paperIdZod }))
     .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.paperController.remove(input.id)).getMsgOrTRPCError();
+      return await ctx.paperController.remove(input.id);
     }),
 
   listSafe: protectedProcedure
     .query(async ({ ctx }) => {
-      return (await ctx.paperController.getListSafe(ctx.user)).getResOrTRPCError();
+      return await ctx.paperController.getListSafe(ctx.user);
     }),
 
   attachments: protectedProcedure
     .input(z.object({ id: paperIdZod }))
     .query(async ({ ctx, input }) => {
-      return (await ctx.paperController.getAttachments(input.id, ctx.user)).getResOrTRPCError();
+      return await ctx.paperController.getAttachments(input.id, ctx.user);
     }),
 
   updateDownloadCount: protectedProcedure
     .input(z.object({ id: paperIdZod }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.paperController.updateDownloadCount(input.id, ctx.user)).getMsgOrTRPCError();
+      return await ctx.paperController.updateDownloadCount(input.id, ctx.user);
     }),
 
   // TODO: should be turned into 'scoring'
@@ -82,7 +82,7 @@ export const paperRouter = router({
       comment: z.string().min(1, '评语长度不能为零').max(500, '评论最长为500'),
     }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.paperController.setComment(input.paperId, input.comment)).getMsgOrTRPCError();
+      return await ctx.paperController.setComment(input.paperId, input.comment);
     }),
 
   setCanDownload: protectedProcedure
@@ -92,7 +92,7 @@ export const paperRouter = router({
       canDownload: z.boolean(),
     }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.paperController.setCanDownload(input.paperId, input.canDownload)).getMsgOrTRPCError();
+      return await ctx.paperController.setCanDownload(input.paperId, input.canDownload);
     }),
 
   setIsFeatured: protectedProcedure
@@ -102,6 +102,6 @@ export const paperRouter = router({
       isFeatured: z.boolean(),
     }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.paperController.setIsFeatured(input.paperId, input.isFeatured)).getMsgOrTRPCError();
+      return await ctx.paperController.setIsFeatured(input.paperId, input.isFeatured);
     }),
 });

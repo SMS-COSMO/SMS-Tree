@@ -1,23 +1,41 @@
 import { TRPCError } from '@trpc/server';
+import type { TRPC_ERROR_CODE_KEY } from '@trpc/server/rpc';
 import { customAlphabet } from 'nanoid';
 import type { TRawUser } from '~/server/db/db';
 
-/**
- * Checks if two values are equal and throws an error if they are not.
- * @param a - The first value to compare.
- * @param b - The second value to compare.
- * @param message - The error message to throw if the values are not equal.
- * @param code - The error code to use when throwing the error. Defaults to 'BAD_REQUEST'.
- * @throws {TRPCError} - Throws a TRPCError if the values are not equal.
- */
-export function requireEqualOrThrow(a: any, b: any, message: string, code: TRPCError['code'] = 'BAD_REQUEST') {
+export function requireEqualOrThrow(
+  a: any,
+  b: any,
+  opts?: {
+    message?: string;
+    cause?: unknown;
+    code: TRPC_ERROR_CODE_KEY;
+  },
+) {
   if (a !== b)
-    throw new TRPCError({ code, message });
+    throw new TRPCError(opts ?? { code: 'FORBIDDEN' });
 }
 
 export function requireTeacherOrThrow(user: TRawUser) {
   if (!['admin', 'teacher'].includes(user.role))
-    throw new TRPCError({ code: 'UNAUTHORIZED', message: '超出权限范围' });
+    throw new TRPCError({ code: 'FORBIDDEN', message: '超出权限范围' });
+}
+
+export const TRPCForbidden = new TRPCError({ code: 'FORBIDDEN', message: '超出权限范围' });
+export async function useTry<T>(
+  handler: () => Promise<T>,
+  opts?: {
+    message?: string;
+    cause?: unknown;
+    code: TRPC_ERROR_CODE_KEY;
+  },
+) {
+  try {
+    return await handler();
+  } catch (err) {
+    // TODO: detailed db error handling
+    throw new TRPCError(opts ?? { code: 'INTERNAL_SERVER_ERROR' });
+  }
 }
 
 export const makeId = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 12);

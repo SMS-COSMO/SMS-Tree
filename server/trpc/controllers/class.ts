@@ -1,11 +1,12 @@
 import { and, eq } from 'drizzle-orm';
+import { TRPCError } from '@trpc/server';
 import type { TRawClass } from '../../db/db';
 import { db } from '../../db/db';
 import { classes } from '../../db/schema/class';
 import { classesToUsers } from '../../db/schema/classToUser';
 import { classSerializer } from '../serializer/class';
 import { ctl } from '../context';
-import { Result, Result500, ResultNoRes } from '../utils/result';
+import { useTry } from '../utils/shared';
 import type { TClassState } from '~/types';
 
 export class ClassController {
@@ -16,23 +17,31 @@ export class ClassController {
     students: string[];
     teacher: string;
   }) {
-    let insertedId: string;
-    try {
-      insertedId = (await db.insert(classes).values(newClass).returning({ id: classes.id }).get()).id;
-    } catch (err) {
-      return new Result500();
-    }
+    const insertedId = await useTry(
+      async () => (await db.insert(classes).values(newClass).returning({ id: classes.id }).get()).id,
+    );
 
     try {
-      await db.insert(classesToUsers).values(newClass.students.map(item => ({
-        classId: insertedId,
-        userId: item,
-      })));
-      await db.insert(classesToUsers).values({ classId: insertedId, userId: newClass.teacher, type: 'teacher' });
+      await db.insert(classesToUsers).values(
+        newClass.students.map(
+          item => ({
+            classId: insertedId,
+            userId: item,
+          }),
+        ),
+      );
+      await db
+        .insert(classesToUsers)
+        .values({
+          classId: insertedId,
+          userId: newClass.teacher,
+          type: 'teacher',
+        });
     } catch (err) {
-      return new ResultNoRes(false, '用户不存在');
+      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '无法将用户加入班级' });
     }
-    return new ResultNoRes(true, '创建成功');
+
+    return '创建成功';
   }
 
   async remove(id: string) {
@@ -40,32 +49,30 @@ export class ClassController {
       await db.delete(classesToUsers).where(eq(classesToUsers.classId, id));
       await db.delete(classes).where(eq(classes.id, id));
     } catch (err) {
-      return new ResultNoRes(false, '班级不存在');
+      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '删除失败' });
     }
-    return new ResultNoRes(true, '删除成功');
+
+    return '删除成功';
   }
 
   async getString(id: string, classInfo?: TRawClass) {
-    try {
-      if (!classInfo && !id)
-        return new Result(true, '查询成功', '未知');
-      classInfo ??= (await this.getContent(id)).getResOrTRPCError();
-      const now = new Date();
-      const yearString = ['新高一', '高一', '高二', '高三', '毕业'];
-      const year = now.getFullYear() - classInfo.enterYear + (now.getMonth() > 8 ? 1 : 0);
+    classInfo ??= await this.getContent(id);
+    if (!classInfo)
+      return '未知';
 
-      return new Result(true, '查询成功', `${yearString[year]}（${classInfo.index}）`);
-    } catch (err) {
-      return new Result500();
-    }
+    const now = new Date();
+    const yearString = ['新高一', '高一', '高二', '高三', '毕业'];
+    const year = now.getFullYear() - classInfo.enterYear + (now.getMonth() > 8 ? 1 : 0);
+
+    return `${yearString[year]}（${classInfo.index}）`;
   }
 
   private async getFullClass(basicClass: TRawClass | undefined) {
-    try {
-      if (!basicClass)
-        return new ResultNoRes(false, '班级不存在');
+    if (!basicClass)
+      throw new TRPCError({ code: 'NOT_FOUND', message: '班级不存在' });
 
-      const students = (
+    const students = await useTry(
+      async () => (
         await db
           .select({ userId: classesToUsers.userId })
           .from(classesToUsers)
@@ -75,9 +82,12 @@ export class ClassController {
               eq(classesToUsers.type, 'student'),
             ),
           )
-      ).map(item => item.userId);
+      ).map(item => item.userId),
+      { code: 'INTERNAL_SERVER_ERROR', message: '无法获取学生' },
+    );
 
-      const teacher = (
+    const teacher = await useTry(
+      async () => (
         await db
           .select({ userId: classesToUsers.userId })
           .from(classesToUsers)
@@ -88,55 +98,38 @@ export class ClassController {
             ),
           )
           .get()
-      )?.userId;
+      )?.userId,
+      { code: 'INTERNAL_SERVER_ERROR', message: '无法获取教师' },
+    );
 
-      const className = (await this.getString('', basicClass)).getResOrTRPCError();
-      return new Result(true, '', classSerializer(basicClass, students, teacher, className));
-    } catch (err) {
-      return new Result500();
-    }
+    const className = await this.getString('', basicClass);
+    return classSerializer(basicClass, students, teacher, className);
   }
 
   async modifyState(id: string, newState: TClassState) {
-    try {
-      await db.update(classes).set({ state: newState }).where(eq(classes.id, id));
-    } catch (err) {
-      return new Result500();
-    }
-    return new ResultNoRes(true, '修改成功');
+    await useTry(() => db.update(classes).set({ state: newState }).where(eq(classes.id, id)));
+    return '修改成功';
   }
 
   async getContent(id: string) {
-    try {
-      const res = await db.select().from(classes).where(eq(classes.id, id)).get();
-      return new Result(true, '查询成功', res);
-    } catch (err) {
-      return new ResultNoRes(false, '班级不存在');
-    }
+    const res = await useTry(() => db.select().from(classes).where(eq(classes.id, id)).get());
+    return res;
   }
 
   async getFullContent(id: string) {
-    try {
-      const basicClass = await db.select().from(classes).where(eq(classes.id, id)).get();
-      const res = (await this.getFullClass(basicClass)).getResOrTRPCError('INTERNAL_SERVER_ERROR');
-      return new Result(true, '查询成功', res);
-    } catch (err) {
-      return new ResultNoRes(false, '班级不存在');
-    }
+    const basicClass = await useTry(() => db.select().from(classes).where(eq(classes.id, id)).get());
+    const res = await this.getFullClass(basicClass);
+    return res;
   }
 
   async getList() {
-    try {
-      const res = await Promise.all(
-        (await db.select().from(classes)).map(
-          async basicClass => (await this.getFullClass(basicClass)).getResOrTRPCError('INTERNAL_SERVER_ERROR'),
-        ),
-      );
+    const res = await Promise.all(
+      (await db.select().from(classes)).map(
+        async basicClass => await this.getFullClass(basicClass),
+      ),
+    );
 
-      return new Result(true, '查询成功', res);
-    } catch (err) {
-      return new Result500();
-    }
+    return res;
   }
 
   async initGroups(id: string, amount: number) {
@@ -144,9 +137,9 @@ export class ClassController {
       await Promise.all(
         [...Array(amount)].map(() => ctl.gc.create({ classId: id })),
       );
-      return new ResultNoRes(true, '创建成功');
+      return '创建成功';
     } catch (err) {
-      return new Result500();
+      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '无法创建小组' });
     }
   }
 }

@@ -24,19 +24,19 @@ export const groupRouter = router({
       archived: z.boolean().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.groupController.create(input)).getMsgOrTRPCError();
+      return await ctx.groupController.create(input);
     }),
 
   content: protectedProcedure
     .input(z.object({ id: z.string().min(1, '小组id不存在') }))
     .query(async ({ ctx, input }) => {
-      return (await ctx.groupController.getContent(input.id, ctx.user, true)).getResOrTRPCError();
+      return await ctx.groupController.getContent(input.id, ctx.user, true);
     }),
 
   list: protectedProcedure
     .input(z.object({ classId: z.string().optional() }))
     .query(async ({ ctx, input }) => {
-      return (await ctx.groupController.getList(ctx.user, input.classId)).getResOrTRPCError();
+      return await ctx.groupController.getList(ctx.user, input.classId);
     }),
 
   modify: protectedProcedure
@@ -50,14 +50,14 @@ export const groupRouter = router({
         input.groupId,
         input.newMembers,
         input.newLeader,
-      )).getMsgOrTRPCError();
+      ));
     }),
 
   remove: protectedProcedure
     .input(z.object({ id: z.string().min(1, '小组id不存在') }))
     .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.groupController.remove(input.id)).getMsgOrTRPCError();
+      return await ctx.groupController.remove(input.id);
     }),
 
   join: protectedProcedure
@@ -66,7 +66,7 @@ export const groupRouter = router({
       userId: z.string().min(1, '用户id不存在'),
     }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.groupController.joinGroup(input.userId, input.groupId)).getMsgOrTRPCError();
+      return await ctx.groupController.joinGroup(input.userId, input.groupId);
     }),
 
   leave: protectedProcedure
@@ -75,7 +75,7 @@ export const groupRouter = router({
       userId: z.string().min(1, '用户id不存在'),
     }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.groupController.leaveGroup(input.userId, input.groupId)).getMsgOrTRPCError();
+      return await ctx.groupController.leaveGroup(input.userId, input.groupId);
     }),
 
   change: protectedProcedure
@@ -85,7 +85,7 @@ export const groupRouter = router({
       newGroupId: z.string().min(1, '新小组id不存在'),
     }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.groupController.changeGroup(input.userId, input.oldGroupId, input.newGroupId)).getMsgOrTRPCError();
+      return await ctx.groupController.changeGroup(input.userId, input.oldGroupId, input.newGroupId);
     }),
 
   setLeader: protectedProcedure
@@ -94,7 +94,7 @@ export const groupRouter = router({
       userId: z.string().min(1, '用户id不存在'),
     }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.groupController.setLeader(input.userId, input.groupId, ctx.user)).getMsgOrTRPCError();
+      return await ctx.groupController.setLeader(input.userId, input.groupId, ctx.user);
     }),
 
   removeLeader: protectedProcedure
@@ -102,6 +102,6 @@ export const groupRouter = router({
       groupId: z.string().min(1, '小组id不存在'),
     }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.groupController.removeLeader(input.groupId, ctx.user)).getMsgOrTRPCError();
+      return await ctx.groupController.removeLeader(input.groupId, ctx.user);
     }),
 });

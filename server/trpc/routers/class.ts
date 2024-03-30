@@ -22,40 +22,40 @@ export const classRouter = router({
     }))
     .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.classController.create(input)).getMsgOrTRPCError();
+      return await ctx.classController.create(input);
     }),
 
   modifyState: protectedProcedure
     .use(requireRoles(['admin', 'teacher']))
     .input(z.object({ id: classIdZod, newState: stateZod }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.classController.modifyState(input.id, input.newState)).getMsgOrTRPCError();
+      return await ctx.classController.modifyState(input.id, input.newState);
     }),
 
   content: protectedProcedure
     .input(z.object({ id: classIdZod }))
     .query(async ({ ctx, input }) => {
-      return (await ctx.classController.getContent(input.id)).getResOrTRPCError();
+      return await ctx.classController.getContent(input.id);
     }),
 
   fullContent: protectedProcedure
     .input(z.object({ id: classIdZod }))
     .use(requireRoles(['admin', 'teacher']))
     .query(async ({ ctx, input }) => {
-      return (await ctx.classController.getFullContent(input.id)).getResOrTRPCError();
+      return await ctx.classController.getFullContent(input.id);
     }),
 
   list: protectedProcedure
     .use(requireRoles(['admin', 'teacher']))
     .query(async ({ ctx }) => {
-      return (await ctx.classController.getList()).getResOrTRPCError();
+      return await ctx.classController.getList();
     }),
 
   remove: protectedProcedure
     .input(z.object({ id: classIdZod }))
     .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.classController.remove(input.id)).getResOrTRPCError();
+      return await ctx.classController.remove(input.id);
     }),
 
   initGroups: protectedProcedure
@@ -65,6 +65,6 @@ export const classRouter = router({
       amount: z.number().int().gt(0).lte(20, '最多创建二十个班级'),
     }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.classController.initGroups(input.id, input.amount)).getMsgOrTRPCError();
+      return await ctx.classController.initGroups(input.id, input.amount);
     }),
 });

@@ -17,14 +17,14 @@ export const userRouter = router({
       groupIds: z.array(z.string()).optional(),
     }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.userController.register(input)).getMsgOrTRPCError();
+      return await ctx.userController.register(input);
     }),
 
   remove: protectedProcedure
     .input(z.object({ id: userIdZod }))
     .use(requireRoles(['teacher', 'admin']))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.userController.remove(input.id)).getMsgOrTRPCError();
+      return await ctx.userController.remove(input.id);
     }),
 
   modifyPassword: protectedProcedure
@@ -34,13 +34,13 @@ export const userRouter = router({
       newPassword: newPasswordZod,
     }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.userController.modifyPassword(ctx.user, input.id, input.oldPassword, input.newPassword)).getMsgOrTRPCError();
+      return await ctx.userController.modifyPassword(ctx.user, input.id, input.oldPassword, input.newPassword);
     }),
 
   login: publicProcedure
     .input(z.object({ id: z.string(), password: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.userController.login(input.id, input.password)).getResOrTRPCError();
+      return await ctx.userController.login(input.id, input.password);
     }),
 
   tokenValidity: protectedProcedure
@@ -49,7 +49,7 @@ export const userRouter = router({
   refreshAccessToken: publicProcedure
     .input(z.object({ username: z.string(), refreshToken: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.userController.refreshAccessToken(input.refreshToken, input.username)).getResOrTRPCError();
+      return await ctx.userController.refreshAccessToken(input.refreshToken, input.username);
     }),
 
   bulkRegister: protectedProcedure
@@ -59,7 +59,7 @@ export const userRouter = router({
       randomPassword: z.boolean().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.userController.bulkRegister(input.users, input.randomPassword)).getMsgOrTRPCError();
+      return await ctx.userController.bulkRegister(input.users, input.randomPassword);
     }),
 
   modify: protectedProcedure
@@ -70,19 +70,19 @@ export const userRouter = router({
     }))
     .use(requireRoles(['teacher', 'admin']))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.userController.modify(input.id, input.username, input.role)).getMsgOrTRPCError();
+      return await ctx.userController.modify(input.id, input.username, input.role);
     }),
 
   profile: protectedProcedure
     .input(z.object({ id: userIdZod }))
     .query(async ({ ctx, input }) => {
-      return (await ctx.userController.getProfile(input.id)).getResOrTRPCError();
+      return await ctx.userController.getProfile(input.id);
     }),
 
   list: protectedProcedure
     .input(z.object({ role: roleEnumZod.optional() }))
     .use(requireRoles(['teacher', 'admin']))
     .query(async ({ ctx, input }) => {
-      return (await ctx.userController.getList(input.role ?? 'all')).getResOrTRPCError();
+      return await ctx.userController.getList(input.role ?? 'all');
     }),
 });

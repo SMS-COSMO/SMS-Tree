@@ -23,13 +23,13 @@ export const noteRouter = router({
     }))
     .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.noteController.create(input)).getResOrTRPCError();
+      return await ctx.noteController.create(input);
     }),
 
   createSafe: protectedProcedure
     .input(z.object(createSafeZod))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.noteController.createSafe(input, ctx.user)).getResOrTRPCError();
+      return await ctx.noteController.createSafe(input, ctx.user);
     }),
 
   modifySafe: protectedProcedure
@@ -38,18 +38,18 @@ export const noteRouter = router({
       ...createSafeZod,
     }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.noteController.modifySafe(input, ctx.user)).getMsgOrTRPCError();
+      return await ctx.noteController.modifySafe(input, ctx.user);
     }),
 
   info: protectedProcedure
     .input(z.object({ id: noteIdZod }))
     .query(async ({ ctx, input }) => {
-      return (await ctx.noteController.getContent(input.id, ctx.user)).getResOrTRPCError();
+      return await ctx.noteController.getContent(input.id, ctx.user);
     }),
 
   remove: protectedProcedure
     .input(z.object({ id: noteIdZod }))
     .mutation(async ({ ctx, input }) => {
-      return (await ctx.noteController.remove(input.id, ctx.user)).getMsgOrTRPCError();
+      return await ctx.noteController.remove(input.id, ctx.user);
     }),
 });

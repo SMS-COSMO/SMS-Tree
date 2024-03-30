@@ -41,7 +41,7 @@ export function requireRoles(roles: string[]) {
   //  @see https://trpc.io/docs/server/middlewares#extending-middlewares
   return enforceUserIsAuthed.unstable_pipe(({ ctx, next }) => {
     if (!roles.includes(ctx.user.role))
-      throw new TRPCError({ code: 'UNAUTHORIZED', message: '超出权限范围' });
+      throw new TRPCError({ code: 'FORBIDDEN', message: '超出权限范围' });
     return next({
       ctx: {
         user: ctx.user,
