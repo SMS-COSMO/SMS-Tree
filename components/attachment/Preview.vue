@@ -1,17 +1,17 @@
 <template>
-  <div v-if="attachment">
+  <div v-if="props.attachment">
     <iframe
-      v-if="docxFileTypes.includes(attachment.fileType)"
+      v-if="docxFileTypes.includes(props.attachment.fileType)"
       :src="`https://view.officeapps.live.com/op/embed.aspx?src=${fileUrl}`" frameborder="0"
       :class="`w-full ${fullHeight ? 'h-[calc(100vh-200px)]' : 'h-125'}`"
     />
     <iframe
-      v-else-if="pdfFileTypes.includes(attachment.fileType)"
+      v-else-if="pdfFileTypes.includes(props.attachment.fileType)"
       :src="fileUrl" frameborder="0"
       :class="`w-full ${fullHeight ? 'h-[calc(100vh-200px)]' : 'h-125'}`"
     />
     <el-image
-      v-else-if="/^image*/.test(attachment.fileType)"
+      v-else-if="/^image*/.test(props.attachment.fileType)"
       class="h-40 w-40 shadow transition-all rounded hover:shadow-md"
       :src="fileUrl"
       :zoom-rate="1.2"
@@ -21,10 +21,10 @@
       :preview-src-list="[fileUrl!]"
       fit="cover"
     />
-    <video v-else-if="/^video*/.test(attachment.fileType)" controls width="100%">
-      <source :src="fileUrl" :type="attachment.fileType">
+    <video v-else-if="/^video*/.test(props.attachment.fileType)" controls width="100%">
+      <source :src="fileUrl" :type="props.attachment.fileType">
     </video>
-    <audio v-else-if="/^audio*/.test(attachment.fileType)" controls :src="fileUrl" />
+    <audio v-else-if="/^audio*/.test(props.attachment.fileType)" controls :src="fileUrl" />
     <el-empty v-else :image-size="100" description="暂无预览" class="h-40" />
   </div>
 </template>
@@ -40,11 +40,9 @@ const props = withDefaults(defineProps<{
   fullHeight: false,
 });
 
-const { attachment, fullHeight } = toRefs(props);
-
 const { $api } = useNuxtApp();
 
-const fileUrl = attachment ? await (useTrpcAsyncData<string>(() => $api.attachment.fileUrl.query(attachment.id))) : undefined;
+const fileUrl = props.attachment ? await (useTrpcAsyncData<string>(() => $api.attachment.fileUrl.query(props.attachment.id))) : undefined;
 
 const docxFileTypes = [
   'application/msword',
