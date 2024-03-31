@@ -33,12 +33,14 @@
 import { useTrpcAsyncData } from '../../composables/trpcAsyncData';
 import type { TAttachmentContent } from '~/types';
 
-const { attachment, fullHeight } = withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   attachment?: TAttachmentContent;
   fullHeight?: boolean;
 }>(), {
   fullHeight: false,
 });
+
+const { attachment, fullHeight } = toRefs(props);
 
 const { $api } = useNuxtApp();
 
