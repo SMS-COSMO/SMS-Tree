@@ -42,7 +42,7 @@ const props = withDefaults(defineProps<{
 
 const { $api } = useNuxtApp();
 
-const fileUrl = props.attachment ? await (useTrpcAsyncData<string>(() => $api.attachment.fileUrl.query(props.attachment.id))) : undefined;
+const fileUrl = props.attachment ? await (useTrpcAsyncData<string>(() => $api.attachment.fileUrl.query(props.attachment!.id))) : undefined;
 
 const docxFileTypes = [
   'application/msword',
