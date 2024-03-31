@@ -15,41 +15,35 @@
   <client-only>
     <el-dialog
       v-model="dialogVisible"
-      title="报告"
-      width="500"
+      :title="report.category === 'thesisProposal' ? '开题报告' : '结题报告'"
+      width="1000"
     >
-      <el-descriptions
-        :column="1"
-        direction="vertical"
-        size="large"
-      >
-        <el-descriptions-item>
-          <template #label>
-            <div class="font-bold">
-              创建时间
-            </div>
-          </template>
-          <el-tag type="info" disable-transitions>
-            {{ report.createdAt.toLocaleDateString('zh-CN') }}
-          </el-tag>
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label>
-            <div class="font-bold">
-              报告文档
-            </div>
-          </template>
-          <Preview :attachment="attachments?.filter(a => a.category === 'reportDocument')[0]" />
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label>
-            <div class="font-bold">
-              报告PPT
-            </div>
-          </template>
-          <Preview :attachment="attachments?.filter(a => a.category === 'reportPresentation')[0]" />
-        </el-descriptions-item>
-      </el-descriptions>
+      <div class="mb-2 text-lg font-bold">
+        创建时间
+      </div>
+      <el-tag type="info" disable-transitions>
+        {{ report.createdAt.toLocaleDateString('zh-CN') }}
+      </el-tag>
+      <div class="mb-2 mt-4 text-lg font-bold">
+        报告文档
+      </div>
+      <Preview :attachment="reportDocument" />
+      <div class="mb-2 mt-4 text-lg font-bold">
+        报告PPT
+      </div>
+      <Preview :attachment="reportPresentation" />
+      <template #footer>
+        <el-button color="#146E3C" @click="modifyDialogVisible = true">
+          修改
+        </el-button>
+      </template>
+    </el-dialog>
+    <el-dialog
+      v-model="modifyDialogVisible"
+      draggable align-center
+      title="修改报告"
+    >
+      <ReportForm :category="report.category" type="modify" :report-id="report.id" />
     </el-dialog>
   </client-only>
 </template>
@@ -60,13 +54,11 @@ import type { TRawReport } from '~/server/db/db';
 const props = defineProps<{ report: TRawReport }>();
 const { $api } = useNuxtApp();
 
-const dialogVisible = ref(false);
-
 const attachments = await useTrpcAsyncData(() => $api.report.attachments.query({ id: props.report.id }));
-</script>
 
-<style>
-.el-descriptions__label {
-  width: 200px;
-}
-</style>
+const dialogVisible = ref(false);
+const modifyDialogVisible = ref(false);
+
+const reportDocument = computed(() => attachments?.filter(a => a.category === 'reportDocument')[0]);
+const reportPresentation = computed(() => attachments?.filter(a => a.category === 'reportPresentation')[0]);
+</script>

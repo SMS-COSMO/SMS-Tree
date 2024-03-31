@@ -16,7 +16,6 @@
     <el-dialog
       v-model="dialogVisible"
       title="活动记录"
-      width="500"
     >
       <el-descriptions
         :column="1"
@@ -84,7 +83,7 @@
         </el-descriptions-item>
       </el-descriptions>
       <template #footer>
-        <el-button type="primary" @click="modifyDialogVisible = true">
+        <el-button color="#146E3C" @click="modifyDialogVisible = true">
           修改
         </el-button>
         <el-popconfirm width="200" title="确定要删除吗" @confirm="removeNote({ id: note.id })">

@@ -1,6 +1,4 @@
 <template>
-  <el-backtop :right="device.isMobileOrTablet ? 30 : 100" :bottom="100" />
-
   <div class="mb-22 lg:mb-8 space-y-3 lg:space-y-4">
     <div class="lg:flex">
       <h1 class="w-full text-2xl lg:pr-[2em] lg:text-4xl">

@@ -294,8 +294,8 @@
 /* Dialog */
 .el-dialog {
     border-radius: 10px !important;
-    max-width: 800px !important;
-    width: calc(100% - 40px) !important;
+    /* max-width: 800px !important; */
+    /* width: calc(100% - 40px) !important; */
 }
 
 .el-dialog__header {

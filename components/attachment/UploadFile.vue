@@ -80,7 +80,7 @@ async function handleUpload(option: UploadRequestOptions) {
       category: props.category,
       fileType: file.type,
       name: file.name,
-      S3FileId: key, // fake id because it's generated on server
+      S3FileId: key,
     });
     attachmentIdList.value.push(id);
     fileUidToAttachmentId.set(file.uid, id);

@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import type { TNewAttachment, TRawUser } from '../../db/db';
 import { db } from '../../db/db';
@@ -8,6 +8,7 @@ import { attachments } from '~/server/db/schema/attachment';
 import { allowFileType } from '~/constants/attachment';
 import { papers } from '~/server/db/schema/paper';
 import { reports } from '~/server/db/schema/report';
+import type { TAttachmentCategory } from '~/types';
 
 export class AttachmentController {
   async hasPerm(
@@ -19,7 +20,7 @@ export class AttachmentController {
     if (['teacher', 'admin'].includes(user.role))
       return true;
 
-    // Allowed when attachment is not attached to any paper (needed for paper creation)
+    // Allowed when attachment is not attached to any paper (needed for paper/report creation)
     if (!id.paperId && !id.reportId)
       return true;
 
@@ -61,9 +62,43 @@ export class AttachmentController {
     return { id, url };
   }
 
-  async batchMove(ids: string[], user: TRawUser, target: { paperId?: string; reportId?: string }) {
+  async batchMove(
+    ids: string[],
+    user: TRawUser,
+    target: { paperId?: string; reportId?: string },
+    replaceOption: { replace: boolean; category?: TAttachmentCategory },
+  ) {
+    for (const id of ids) {
+      const info = await useTry(
+        () => db
+          .select({
+            paperId: attachments.paperId,
+            reportId: attachments.reportId,
+          })
+          .from(attachments)
+          .where(eq(attachments.id, id))
+          .get(),
+      );
+      if (!await this.hasPerm(user, { paperId: info?.paperId, reportId: info?.reportId }))
+        throw TRPCForbidden;
+    }
+
     if (!(await this.hasPerm(user, target)))
       throw TRPCForbidden;
+
+    if (replaceOption.replace) {
+      if (replaceOption.category) {
+        if (target.paperId)
+          await db.delete(attachments).where(and(eq(attachments.paperId, target.paperId), eq(attachments.category, replaceOption.category)));
+        if (target.reportId)
+          await db.delete(attachments).where(and(eq(attachments.reportId, target.reportId), eq(attachments.category, replaceOption.category)));
+      } else {
+        if (target.paperId)
+          await db.delete(attachments).where(eq(attachments.paperId, target.paperId));
+        if (target.reportId)
+          await db.delete(attachments).where(eq(attachments.reportId, target.reportId));
+      }
+    }
 
     try {
       await Promise.all(

@@ -16,9 +16,9 @@
         </el-icon>
         可下载
       </el-tag>
-      <el-tag :type="scoreColor(paper?.score)" disable-transitions>
+      <el-tag v-if="paper?.score" :type="scoreColor(paper.score)" disable-transitions>
         <el-icon><ElIconHistogram /></el-icon>
-        分数：{{ paper?.score }}
+        分数：{{ paper.score }}
       </el-tag>
       <el-tag type="info" disable-transitions>
         {{ paper?.createdAt?.toLocaleDateString('zh-CN') }}
