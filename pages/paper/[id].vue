@@ -67,9 +67,9 @@
       </el-col>
     </el-row>
 
-    <el-card v-if="attachments?.length && (attachments?.findIndex(e => e.S3FileId) !== -1)">
+    <template v-if="attachments?.length && (attachments?.findIndex(e => e.S3FileId) !== -1)">
       <Preview :attachment="attachments?.filter(a => a.category === 'paperDocument')[0]" full-height />
-    </el-card>
+    </template>
 
     <el-card v-if="info?.comment">
       <template #header>
