@@ -3,6 +3,7 @@ import superjson from 'superjson';
 import type { TRPCPanelMeta } from 'trpc-panel';
 import { ZodError } from 'zod';
 import type { Context } from './context';
+import { localizeError } from './utils/zod';
 
 const t = initTRPC
   .context<Context>()
@@ -11,13 +12,22 @@ const t = initTRPC
     transformer: superjson,
     errorFormatter(opts) {
       const { shape, error } = opts;
+
       return {
         ...shape,
         data: {
           ...shape.data,
           zodError:
             error.code === 'BAD_REQUEST' && error.cause instanceof ZodError
-              ? error.cause.errors
+              ? error.cause.errors.map((x) => {
+                const { message, ...rest } = x;
+                return {
+                  // only replace strings without Chinese characters
+                  // silly, but it works lol
+                  message: /[\u4E00-\u9FA5]+/g.test(message) ? message : localizeError(x).message,
+                  ...rest,
+                };
+              })
               : null,
         },
       };
@@ -31,9 +41,11 @@ export const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   if (!ctx.user)
     throw new TRPCError({ code: 'UNAUTHORIZED', message: '用户未登录' });
 
-  return next({ ctx: {
-    user: ctx.user,
-  } });
+  return next({
+    ctx: {
+      user: ctx.user,
+    },
+  });
 });
 
 export function requireRoles(roles: string[]) {
