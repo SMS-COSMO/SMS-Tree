@@ -1,0 +1,3 @@
+[submodule "public/pdfjs-dist"]
+	path = public/pdfjs-dist
+	url = https://github.com/SMS-COSMO/pdfjs-dist

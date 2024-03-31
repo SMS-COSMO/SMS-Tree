@@ -7,7 +7,7 @@
     />
     <iframe
       v-else-if="pdfFileTypes.includes(props.attachment.fileType)"
-      :src="`/pdfjs/web/viewer.html?file=${fileUrl}`" frameborder="0"
+      :src="`/pdfjs-dist/web/viewer.html?file=${fileUrl}`" frameborder="0"
       :class="`w-full ${fullHeight ? 'h-[calc(100vh-200px)]' : 'h-125'} border-normal rounded box-border`"
     />
     <el-image
