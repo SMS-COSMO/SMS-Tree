@@ -2,6 +2,9 @@
   <div class="mb-22 lg:mb-8 space-y-3 lg:space-y-4">
     <div class="lg:flex">
       <h1 class="w-full text-2xl lg:pr-[2em] lg:text-4xl">
+        {{ info?.title }}
+      </h1>
+      <el-space :size="10" class="mb-2 lg:mb-0">
         <el-tag v-if="info?.isFeatured" type="success" size="large">
           <el-text style="color: var(--el-color-success);">
             <el-icon>
@@ -10,16 +13,17 @@
             优秀作业
           </el-text>
         </el-tag>
-        {{ info?.title }}
-      </h1>
-      <el-space :size="10" class="mb-2 lg:mb-0">
-        <el-tag v-if="info?.score" size="large" :type="useScoreColor(info.score)" disable-transitions class="font-bold">
-          <el-icon><ElIconHistogram /></el-icon>
-          分数：{{ info.score }}
+        <el-tag v-if="info?.score" size="large" :type="useScoreColor(info.score)" disable-transitions>
+          <el-text :style="`color: var(--el-color-${useScoreColor(info.score)});`">
+            <el-icon><ElIconHistogram /></el-icon>
+            分数：{{ info.score }}
+          </el-text>
         </el-tag>
-        <el-tag v-if="info?.canDownload" type="info" size="large" disable-transitions class="font-bold">
-          <el-icon><ElIconDownload /></el-icon>
-          下载次数：{{ info?.downloadCount ?? 0 }}
+        <el-tag v-if="info?.canDownload" type="info" size="large" disable-transitions>
+          <el-text style="color: var(--el-color-info);">
+            <el-icon><ElIconDownload /></el-icon>
+            下载次数：{{ info?.downloadCount ?? 0 }}
+          </el-text>
         </el-tag>
       </el-space>
     </div>
