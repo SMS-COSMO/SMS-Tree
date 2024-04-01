@@ -13,6 +13,7 @@
       <el-select v-model="modelValue.searchSelectValue" placeholder="搜索内容" multiple class="w-full" @change="updateValue">
         <el-option v-for="item in searchSelectOptions" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
+      <CategorySelectMultiple v-model="modelValue.filter.category" />
       <el-date-picker
         v-model="modelValue.filter.timeRange" type="daterange" unlink-panels range-separator="到"
         start-placeholder="最早" end-placeholder="最晚" :shortcuts="timePresets" @change="updateValue"
@@ -20,6 +21,7 @@
     </div>
     <template #fallback>
       <div class="space-y-2">
+        <select-placeholder />
         <select-placeholder />
         <select-placeholder />
       </div>
@@ -66,6 +68,7 @@ export interface TSearchOption {
     onlyCanDownload: boolean;
     onlyFeatured: boolean;
     timeRange: string;
+    category: number[];
   };
   isAsc: -1 | 1;
   searchSelectValue: string[];

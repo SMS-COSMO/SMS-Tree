@@ -18,6 +18,9 @@
       <el-form-item prop="abstract" label="摘要">
         <el-input v-model="form.abstract" :autosize="{ minRows: 4, maxRows: 8 }" type="textarea" />
       </el-form-item>
+      <el-form-item prop="category" label="分类">
+        <CategorySelect v-model="form.category" />
+      </el-form-item>
       <el-form-item prop="keywords" label="关键词">
         <keywordEditor v-model="form.keywords" />
       </el-form-item>
@@ -58,8 +61,9 @@ useHeadSafe({
 const formRef = ref<FormInstance>();
 const form = reactive<TPaperCreateSafeForm>({
   title: '',
-  keywords: [],
   abstract: '',
+  category: -1,
+  keywords: [],
   canDownload: false,
   paperFile: [],
   attachments: [],
@@ -74,8 +78,9 @@ const rules = reactive<FormRules<TPaperCreateSafeForm>>({
     { required: true, message: '摘要不能为空', trigger: 'blur' },
     { min: 1, max: 1000, message: '摘要不应超过1000个字', trigger: 'blur' },
   ],
-  canDownload: [{ required: true }],
+  category: [{ required: true, message: '请选择分类', trigger: 'blur' }],
   keywords: [{ required: true, message: '关键词不能为空', trigger: 'blur' }],
+  canDownload: [{ required: true }],
   paperFile: [{ required: true, message: '请上传论文文件' }],
 });
 
@@ -86,7 +91,7 @@ async function create(submittedForm: FormInstance | undefined) {
     return;
 
   await submittedForm.validate(async (valid) => {
-    if (valid) {
+    if (valid && form.category >= 0) {
       try {
         buttonLoading.value = true;
         const paperId = await $api.paper.createSafe.mutate(form);

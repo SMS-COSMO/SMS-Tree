@@ -100,6 +100,7 @@ const searchOptions = reactive<TSearchOption>({
     onlyCanDownload: false,
     onlyFeatured: false,
     timeRange: '',
+    category: [],
   },
   isAsc: 1,
   searchSelectValue: ['title', 'keywords'],
@@ -133,6 +134,8 @@ const { processedListData } = await useSearch<TPaperListSafeItem>(
       && (o.createdAt.getTime() < Date.parse(searchOptions.filter.timeRange[0])
       || o.createdAt.getTime() > Date.parse(searchOptions.filter.timeRange[1]))
     )
+      return false;
+    if (searchOptions.filter.category.length && !searchOptions.filter.category.includes(o.category))
       return false;
     return true;
   },

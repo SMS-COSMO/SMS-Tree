@@ -12,19 +12,15 @@
         </el-tag>
         {{ info?.title }}
       </h1>
-      <el-space :size="20" class="mb-2 lg:mb-0">
-        <!-- bug: Element only supports number in statistic -->
-        <el-statistic v-if="info?.score" :value="info?.score">
-          <template #title>
-            分数
-          </template>
-        </el-statistic>
-        <el-divider v-if="info?.score" direction="vertical" class="h-10!" />
-        <el-statistic :value="info?.downloadCount">
-          <template #title>
-            下载次数
-          </template>
-        </el-statistic>
+      <el-space :size="10" class="mb-2 lg:mb-0">
+        <el-tag v-if="info?.score" size="large" :type="useScoreColor(info.score)" disable-transitions class="font-bold">
+          <el-icon><ElIconHistogram /></el-icon>
+          分数：{{ info.score }}
+        </el-tag>
+        <el-tag v-if="info?.canDownload" type="info" size="large" disable-transitions class="font-bold">
+          <el-icon><ElIconDownload /></el-icon>
+          下载次数：{{ info?.downloadCount ?? 0 }}
+        </el-tag>
       </el-space>
     </div>
 
@@ -40,15 +36,24 @@
               <GroupMembers :authors="info?.authors" :leader="info?.leader" type="link" class="inline" />
             </el-descriptions-item>
             <el-descriptions-item label="发布时间">
-              {{ info?.createdAt.toLocaleDateString('zh-CN') }}
+              <client-only>
+                {{ info?.createdAt.toLocaleDateString('zh-CN') }}
+              </client-only>
+            </el-descriptions-item>
+            <el-descriptions-item label="分类">
+              <el-tag effect="plain" type="warning">
+                {{ getCategoryName(info?.category) }}
+              </el-tag>
             </el-descriptions-item>
             <el-descriptions-item v-if="info?.keywords.length" label="关键词">
-              <el-tag
-                v-for="(keyword, index) in info?.keywords" :key="index" class="m-0.75 cursor-pointer" type="info"
-                effect="plain" @click="searchTag(keyword)"
-              >
-                {{ keyword }}
-              </el-tag>
+              <span class="space-x-1">
+                <el-tag
+                  v-for="(keyword, index) in info?.keywords" :key="index" class="my-1 cursor-pointer" type="info"
+                  effect="plain" @click="searchTag(keyword)"
+                >
+                  {{ keyword }}
+                </el-tag>
+              </span>
             </el-descriptions-item>
           </el-descriptions>
           <Attachment :can-download="info?.canDownload" :paper-id="info?.id" :attachments="attachments" />
@@ -81,6 +86,8 @@
 </template>
 
 <script setup lang="ts">
+import { getCategoryName } from '~/constants/paper';
+
 useHeadSafe({
   title: '论文信息',
 });

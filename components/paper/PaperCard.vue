@@ -16,7 +16,10 @@
         </el-icon>
         可下载
       </el-tag>
-      <el-tag v-if="paper?.score" :type="scoreColor(paper.score)" disable-transitions>
+      <el-tag type="warning" disable-transitions>
+        {{ getCategoryName(paper?.category) }}
+      </el-tag>
+      <el-tag v-if="paper?.score" :type="useScoreColor(paper.score)" disable-transitions>
         <el-icon><ElIconHistogram /></el-icon>
         分数：{{ paper.score }}
       </el-tag>
@@ -44,6 +47,7 @@
 </template>
 
 <script setup lang="ts">
+import { getCategoryName } from '~/constants/paper';
 import type { TRawPaper } from '~/server/db/db';
 import type { TPaperListSafeItem } from '~/types/index';
 
@@ -57,13 +61,4 @@ withDefaults(defineProps<{
   lineClamp: 3,
   showAuthors: true,
 });
-
-function scoreColor(score: 'A' | 'B' | 'C' | 'D' | null) {
-  if (score === 'A')
-    return 'success';
-  else if (score === 'B')
-    return 'warning';
-  else
-    return 'danger';
-}
 </script>

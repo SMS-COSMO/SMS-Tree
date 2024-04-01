@@ -11,6 +11,7 @@ export const paperRouter = router({
         .string()
         .min(1, { message: '请输入论文标题' })
         .max(256, { message: '论文标题长度不应超过 256' }),
+      category: z.number().int(),
       keywords: z
         .array(z.string().max(8, { message: '关键词最长为8个字符' }))
         .max(8, { message: '最多8个关键词' }),
@@ -33,6 +34,7 @@ export const paperRouter = router({
         .string()
         .min(1, { message: '请输入论文标题' })
         .max(256, { message: '论文标题长度不应超过 256' }),
+      category: z.number().int(),
       keywords: z
         .array(z.string().max(8, { message: '关键词最长为8个字符' }))
         .max(8, { message: '最多8个关键词' }),

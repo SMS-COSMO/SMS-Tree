@@ -111,6 +111,7 @@ await Promise.all(
     return ctl.pc.create({
       abstract: nanoid(100),
       title: `Paper ${i}`,
+      category: Math.round(Math.random() * 100),
       keywords: [...Array(5)].map(_ => nanoid(5)),
       canDownload: Math.random() < 0.5,
       isFeatured: Math.random() < 0.3,

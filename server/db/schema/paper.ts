@@ -5,6 +5,7 @@ import { groups } from './group';
 export const papers = sqliteTable('papers', {
   id: text('id', { mode: 'text' }).primaryKey().$defaultFn(() => makeId(12)),
   title: text('title', { mode: 'text' }).notNull(),
+  category: integer('category').notNull().default(0),
   keywords: text('keywords', { mode: 'json' }).notNull().$type<string[]>(),
   abstract: text('abstract', { mode: 'text' }).notNull(),
   groupId: text('group_id', { mode: 'text' }).notNull().references(() => groups.id),
