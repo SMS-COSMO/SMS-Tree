@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import type { TNewAttachment, TRawUser } from '../../db/db';
 import { db } from '../../db/db';
@@ -101,9 +101,7 @@ export class AttachmentController {
     }
 
     try {
-      await Promise.all(
-        ids.map(id => db.update(attachments).set(target).where(eq(attachments.id, id))),
-      );
+      await db.update(attachments).set(target).where(inArray(attachments.id, ids));
     } catch (err) {
       throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '无法更新附件' });
     }
