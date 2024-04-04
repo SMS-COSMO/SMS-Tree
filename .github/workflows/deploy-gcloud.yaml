@@ -17,6 +17,11 @@ jobs:
         with:
           submodules: 'true'
 
+      - run: |-
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.GCLOUD_SSH_KEY }}" | base64 -d > ~/.ssh/gce
+          echo "${{ secrets.GCLOUD_SSH_KEY_PUB }}" | base64 -d > ~/.ssh/gce.pub
+      
       - id: Auth
         uses: 'google-github-actions/auth@v2'
         with:
@@ -40,7 +45,5 @@ jobs:
 
       - name: Upload & Deploy
         run: |-
-          echo "${{ secrets.GCLOUD_SSH_KEY }}" | base64 -d > ~/.ssh/gce
-          echo "${{ secrets.GCLOUD_SSH_KEY_PUB }}" | base64 -d > ~/.ssh/gce.pub
           gcloud compute scp ./output.tar.gz dev_asyncfox@gcloud01:/home/dev_asyncfox/cosmo/ --zone=asia-east2-c --ssh-key-file=~/.ssh/gce
           gcloud compute ssh dev_asyncfox@gcloud01 --ssh-key-file=~/.ssh/gce  --zone=asia-east2-c  --command 'cd /home/dev_asyncfox/cosmo && export PATH="/home/dev_asyncfox/.local/bin:/home/dev_asyncfox/.volta/bin:/home/dev_asyncfox/.bun/bin:/home/dev_asyncfox/.local/share/pnpm:$PATH" && pm2 delete sms-tree &&rm -rf sms-tree && mkdir sms-tree && tar -xzf output.tar.gz -C sms-tree && pm2 start ecosystem.config.js --env prod'
