@@ -31,7 +31,7 @@ jobs:
           run_install: true
 
       - name: Build
-        run: pnpm build
+        run: NITRO_PRESET=bun pnpm build
 
       - name: Compress output
         run: tar -czf output.tar.gz .output
