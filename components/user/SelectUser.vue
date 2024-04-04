@@ -1,33 +1,26 @@
 <template>
   <client-only>
-    <el-select
+    <el-select-v2
       v-model="selected"
-      placeholder="请选择"
-      clearable collapse-tags :multiple="multiple"
-      :max-collapse-tags="4"
-      class="lg:w-100"
+      :options="options"
+      :multiple="multiple"
+      collapse-tags
+      :max-collapse-tags="3"
+      collapse-tags-tooltip
+      clearable
+      filterable
+      placeholder="请选择（输入可搜索）"
       @change="emit('update:modelValue', selected)"
     >
-      <template #header>
-        <el-input v-model="searchContent" :placeholder="`搜索${roleName[role]}`" />
-      </template>
-      <el-option
-        v-for="item in processedListData"
-        :key="item.id"
-        :label="item.username"
-        :value="item.id"
-      >
-        <span>{{ item.username }}</span>
-        <span
-          style="color: var(--el-text-color-secondary)"
-          class="float-right pr-1 text-[11px]"
-        >
-          {{ item.id }}
+      <template #default="{ item }">
+        <span>
+          {{ item.label }}
         </span>
-      </el-option>
-    </el-select>
+        <span class="float-right pr-1 text-[11px] color-gray">{{ item.value }}</span>
+      </template>
+    </el-select-v2>
     <template #fallback>
-      <SelectPlaceholder width="400" />
+      <SelectPlaceholder />
     </template>
   </client-only>
 </template>
@@ -44,13 +37,13 @@ const props = withDefaults(defineProps<{
   role: 'student',
 });
 const emit = defineEmits(['update:modelValue']);
-const roleName = {
-  student: '学生',
-  teacher: '老师',
-  admin: '管理员',
-};
+
+const { $api } = useNuxtApp();
 
 const selected = ref(props.modelValue);
-const searchContent = ref('');
-const { processedListData } = await useUserSearch(searchContent, props.role);
+const options = (await useTrpcAsyncData(() => $api.user.list.query({ role: props.role })))
+  ?.map(x => ({
+    value: x.id,
+    label: x.username,
+  })) ?? [];
 </script>

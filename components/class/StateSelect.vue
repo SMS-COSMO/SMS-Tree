@@ -4,7 +4,7 @@
       v-model="model"
       placeholder="Select"
       size="large"
-      class="lg:w-60"
+      class="lg:w-60!"
     >
       <el-option
         v-for="item in stateTable"
