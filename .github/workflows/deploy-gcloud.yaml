@@ -38,9 +38,21 @@ jobs:
       - name: Compress output
         run: tar -czf output.tar.gz .output
 
-      - name: Upload & Deploy
+      - name: Upload
         run: |-
-          echo "${{ secrets.GCLOUD_SSH_KEY }}" | base64 -d > ./ssh-key
-          echo "${{ secrets.GCLOUD_SSH_KEY_PUBLIC }}" | base64 -d > ./ssh-key.pub
-          gcloud compute scp ./output.tar.gz dev_asyncfox@gcloud01:/home/dev_asyncfox/cosmo/ --zone=asia-east2-c --ssh-key-file=ssh-key
-          gcloud compute ssh dev_asyncfox@gcloud01 --ssh-key-file=ssh-key   --zone=asia-east2-c  --command 'cd /home/dev_asyncfox/cosmo && export PATH="/home/dev_asyncfox/.local/bin:/home/dev_asyncfox/.volta/bin:/home/dev_asyncfox/.bun/bin:/home/dev_asyncfox/.local/share/pnpm:$PATH" && pm2 delete sms-tree &&rm -rf sms-tree && mkdir sms-tree && tar -xzf output.tar.gz -C sms-tree && pm2 start ecosystem.config.js --env prod'
+          gcloud compute scp ./output.tar.gz dev_asyncfox@gcloud01:/home/dev_asyncfox/cosmo/ --zone=asia-east2-c
+
+
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.GCLOUD_HOST }}
+          username: ${{ secrets.GCLOUD_USERNAME }}
+          key: ${{ secrets.GCLOUD_SSH_KEY }}
+          script: |-
+            cd /home/dev_asyncfox/cosmo 
+            pm2 delete sms-tree 
+            rm -rf sms-tree 
+            mkdir sms-tree 
+            tar -xzf output.tar.gz -C sms-tree 
+            pm2 start ecosystem.config.js --env prod
