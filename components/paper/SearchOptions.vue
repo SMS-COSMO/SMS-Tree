@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-2">
+  <div class="space-y-1.5">
     <el-checkbox v-model="modelValue.filter.onlyCanDownload" label="仅查看可下载" border @change="updateValue" />
     <el-checkbox v-model="modelValue.filter.onlyFeatured" label="仅查看优秀作业" border @change="updateValue" />
     <el-checkbox v-model="modelValue.showAbstract" label="显示摘要" border @change="updateValue" />
@@ -42,16 +42,14 @@
       下载
     </el-radio-button>
   </el-radio-group>
-  <div class="mb-2 flex items-center text-sm">
-    <el-radio-group v-model="modelValue.isAsc" class="ml-4">
-      <el-radio :value="1" size="large">
-        顺序
-      </el-radio>
-      <el-radio :value="-1" size="large">
-        逆序
-      </el-radio>
-    </el-radio-group>
-  </div>
+  <el-radio-group v-model="modelValue.isAsc" class="ml-4">
+    <el-radio :value="1" size="large">
+      顺序
+    </el-radio>
+    <el-radio :value="-1" size="large">
+      逆序
+    </el-radio>
+  </el-radio-group>
 </template>
 
 <script setup lang="ts">

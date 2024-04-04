@@ -3,7 +3,7 @@
     <template #template>
       <el-skeleton-item
         variant="rect"
-        class="`rounded h-[45px]!"
+        class="`rounded h-[40px]!"
         :style="`max-width: ${width === '' ? '100%' : `${width}px`}`"
       />
     </template>

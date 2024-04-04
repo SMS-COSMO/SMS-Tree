@@ -9,7 +9,7 @@
     </el-col>
     <el-col v-on-click-outside="closeSearchOptions" :span="device.isMobileOrTablet ? 24 : 18">
       <el-input
-        v-model="searchContent" placeholder="搜索论文" clearable class="mb-2.5" :suffix-icon="device.isMobileOrTablet ? ElIconSearch : ''"
+        v-model="searchContent" placeholder="搜索论文" clearable class="list-search mb-2.5" :suffix-icon="device.isMobileOrTablet ? ElIconSearch : ''"
         @change="$router.replace({ query: { search: searchContent } });"
       >
         <template #prepend>
@@ -156,6 +156,10 @@ function load() {
 </script>
 
 <style scoped>
+.list-search {
+  height: 45px !important;
+}
+
 .infinite-list::-webkit-scrollbar {
   display: none;
 }

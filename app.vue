@@ -10,6 +10,7 @@
 <script setup lang="ts">
 import '~/styles/index.css';
 import '~/styles/element-override.css';
+import '~/styles/element-theme.css';
 
 // @ts-expect-error import element-plus locale
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs';
