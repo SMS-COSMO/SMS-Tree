@@ -69,7 +69,9 @@ export class GroupController {
     if (!['teacher', 'admin'].includes(user.role) && !(await this.hasUser(user.id, groupId)))
       throw TRPCForbidden;
 
-    await useTry(() => db.update(groups).set({ projectName: newProjectName }));
+    await useTry(
+      () => db.update(groups).set({ projectName: newProjectName }).where(eq(groups.id, groupId)),
+    );
     return '修改成功';
   }
 
