@@ -39,4 +39,4 @@ jobs:
       - name: Upload & Deploy
         run: |-
           gcloud compute scp ./output.tar.gz dev_asyncfox@gcloud01:/home/dev_asyncfox/cosmo/ --zone=asia-east2-c
-          gcloud compute ssh dev_asyncfox@gcloud01 --zone=asia-east2-c  -- 'cd /home/dev_asyncfox/cosmo && pm2 delete sms-tree &&rm -rf sms-tree && mkdir sms-tree && tar -xzf output.tar.gz -C sms-tree && pm2 start ecosystem.config.js --env prod'
+          gcloud compute ssh dev_asyncfox@gcloud01 --zone=asia-east2-c  --command 'cd /home/dev_asyncfox/cosmo && export PATH="/home/dev_asyncfox/.local/bin:/home/dev_asyncfox/.volta/bin:/home/dev_asyncfox/.bun/bin:/home/dev_asyncfox/.local/share/pnpm:$PATH" && pm2 delete sms-tree &&rm -rf sms-tree && mkdir sms-tree && tar -xzf output.tar.gz -C sms-tree && pm2 start ecosystem.config.js --env prod'
