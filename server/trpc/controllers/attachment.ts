@@ -1,4 +1,4 @@
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray, isNull, lte } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import type { TNewAttachment, TRawUser } from '../../db/db';
 import { db } from '../../db/db';
@@ -166,5 +166,38 @@ export class AttachmentController {
     if (!url)
       throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '无法获取文件URL' });
     return url;
+  }
+
+  /**
+   * Cleans up attachments that are pending(i.e. not attached to a paper or report).
+   *
+   * If `pendingTimeout` is less than or equal to 0, all pending attachments will be deleted.
+   *
+   * @param pendingTimeout - The timeout in milliseconds to consider an attachment as pending. Defaults to 24 hours.
+   */
+  async cleanPendingAttachments(pendingTimeout: number = 24 * 60 * 60 * 1000) {
+    let attachmentsDeleted;
+    if (pendingTimeout <= 0) {
+      attachmentsDeleted = await db
+        .delete(attachments)
+        .where(and(isNull(attachments.paperId), isNull(attachments.reportId)))
+        .returning();
+    } else {
+      attachmentsDeleted = await db.delete(attachments).where(
+        and(
+          isNull(attachments.paperId),
+          isNull(attachments.reportId),
+          lte(attachments.createdAt, new Date(Date.now() - pendingTimeout)),
+        ),
+      ).returning();
+    }
+
+    if (!attachmentsDeleted.length)
+      return false;
+
+    for (const attachment of attachmentsDeleted)
+      await ctl.s3.deleteFile(attachment.S3FileId);
+
+    return attachmentsDeleted;
   }
 }

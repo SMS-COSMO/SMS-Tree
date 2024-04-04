@@ -123,4 +123,16 @@ export class S3Controller {
       return false;
     }
   }
+
+  async deleteFile(key: string) {
+    try {
+      await this.s3.deleteObject({
+        Bucket: env.BUCKET_NAME,
+        Key: key,
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  }
 }
