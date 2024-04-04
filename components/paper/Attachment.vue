@@ -16,10 +16,9 @@
           <template #title>
             <div class="space-x-2">
               <el-button
-                tag="a"
-                :href="attachment.S3FileId"
-                target="_blank"
-                :icon="ElIconDownload" size="small" text bg circle
+                :icon="ElIconDownload"
+                size="small" text bg circle
+                @click="downloadFile(attachment.id)"
               />
               <el-tag v-if="attachment.category === 'paperDocument'" type="success">
                 <el-icon><ElIconStar /></el-icon>
@@ -62,4 +61,9 @@ watch(showDialog, async () => {
     useErrorHandler(err);
   }
 });
+
+async function downloadFile(id: string) {
+  const url = await useTrpcAsyncData<string>(() => $api.attachment.fileUrl.query(id));
+  navigateTo(url, { external: true });
+}
 </script>
