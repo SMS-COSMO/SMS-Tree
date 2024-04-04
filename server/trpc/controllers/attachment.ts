@@ -181,7 +181,7 @@ export class AttachmentController {
       attachmentsDeleted = await db
         .delete(attachments)
         .where(and(isNull(attachments.paperId), isNull(attachments.reportId)))
-        .returning();
+        .returning({ S3FileId: attachments.S3FileId });
     } else {
       attachmentsDeleted = await db.delete(attachments).where(
         and(
@@ -189,7 +189,7 @@ export class AttachmentController {
           isNull(attachments.reportId),
           lte(attachments.createdAt, new Date(Date.now() - pendingTimeout)),
         ),
-      ).returning();
+      ).returning({ S3FileId: attachments.S3FileId });
     }
 
     if (!attachmentsDeleted.length)

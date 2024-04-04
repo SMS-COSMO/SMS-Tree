@@ -99,18 +99,22 @@ export class PaperController {
     if (!rawPaper.isPublic && !isOwned)
       requireTeacherOrThrow(user);
 
-    const attachmentList = (isOwned || isAdmin)
-      ? await useTry(() => db
-        .select().from(attachments)
-        .where(eq(attachments.paperId, id)))
-      : await useTry(() => db // Students only access paperDocuments
-        .select().from(attachments)
-        .where(
-          and(
-            eq(attachments.category, 'paperDocument'),
-            eq(attachments.paperId, id),
-          ),
-        ));
+    const attachmentList
+      = await useTry(
+        (isOwned || isAdmin)
+          ? () => db
+              .select().from(attachments)
+              .where(eq(attachments.paperId, id))
+          : () => db // Students only access paperDocuments
+              .select().from(attachments)
+              .where(
+                and(
+                  eq(attachments.category, 'paperDocument'),
+                  eq(attachments.paperId, id),
+                ),
+              ),
+        { code: 'INTERNAL_SERVER_ERROR', message: '附件获取失败' },
+      );
 
     const res = attachmentList.map(
       x => attachmentSerializer(x, rawPaper.canDownload || isAdmin || isOwned),

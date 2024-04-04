@@ -10,11 +10,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxtjs/device',
     '@nuxt/test-utils/module',
-    'nuxt-cron',
   ],
-  cron: {
-    timeZone: 'Asia/Shanghai',
-  },
   components: [
     {
       path: '~/components',

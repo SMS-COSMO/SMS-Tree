@@ -21,7 +21,6 @@ const envSchema = z.object({
   S3_SECRET_ACCESS_KEY: z.string(),
   BUCKET_NAME: z.string(),
   SERVER_URL: z.string(),
-  CRON_SCHEDULE: z.string(),
 });
 
 const envParse = envSchema.safeParse(process.env);

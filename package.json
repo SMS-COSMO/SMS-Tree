@@ -64,7 +64,6 @@
     "eslint": "^8.57.0",
     "happy-dom": "^13.10.1",
     "nuxt": "^3.11.1",
-    "nuxt-cron": "^1.5.0",
     "pinia": "^2.1.7",
     "playwright-core": "^1.42.1",
     "trpc-panel": "^1.3.4",

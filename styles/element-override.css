@@ -313,14 +313,6 @@
   max-width: 100%;
 }
 
-.el-picker__popper {
-  border-radius: 10px !important;
-}
-
-.el-date-range-picker {
-  border-radius: 10px !important;
-}
-
 .el-picker-panel__sidebar {
   border-top-left-radius: 10px !important;
   border-bottom-left-radius: 10px !important;
