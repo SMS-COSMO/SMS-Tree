@@ -12,6 +12,7 @@
 }
 
 .el-tag--primary,
-.el-check-tag--primary {
+.el-check-tag--primary,
+.el-button {
   --el-color-primary: #409EFF;
 }

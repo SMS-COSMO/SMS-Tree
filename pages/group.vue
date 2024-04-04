@@ -22,7 +22,7 @@
         </el-card>
         <JoinGroup v-else-if="classInfo?.state === 'selectGroup'" />
         <template v-else>
-          <GroupInfo :info="groupInfo" />
+          <GroupInfo v-if="groupInfo" :info="groupInfo" />
           <template v-if="classInfo?.state === 'submitPaper' && groupInfo?.papers !== undefined">
             <SubmitPaper v-if="!groupInfo?.papers.length" />
             <el-card v-else>
@@ -106,7 +106,11 @@ const [classInfo, userInfo] = await useTrpcAsyncData(() => Promise.all([
 
 const { data: groupInfo, suspense: groupInfoSuspense } = useQuery({
   queryKey: ['groupInfo'],
-  queryFn: () => useTrpcAsyncData(() => $api.group.content.query({ id: userStore.groupIds[0] })),
+  queryFn: () => {
+    if (userStore.groupIds[0])
+      return useTrpcAsyncData(() => $api.group.content.query({ id: userStore.groupIds[0] }));
+    return null;
+  },
 });
 await groupInfoSuspense();
 

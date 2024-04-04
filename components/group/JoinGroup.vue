@@ -13,9 +13,9 @@
       <el-table-column prop="members" label="已有组员" min-width="400">
         <template #default="{ row }">
           <span v-if="!row.members.length">还没有组员~</span>
-          <span v-else class="space-x-2">
+          <span v-else>
             <template v-for="member in row.members" :key="member.id">
-              <el-tag class="font-bold" disable-transitions size="large">{{ member.username }}</el-tag>
+              <el-tag class="m-1 font-bold" disable-transitions size="large">{{ member.username }}</el-tag>
             </template>
           </span>
         </template>
