@@ -24,12 +24,14 @@ jobs:
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v2'
 
-      - uses: oven-sh/setup-bun@v1
-      - run: bun install
-
+      - uses: pnpm/action-setup@v2
+        name: Install dependencies
+        with:
+          version: 8
+          run_install: true
 
       - name: Build
-        run: NITRO_PRESET=bun bun run build
+        run: pnpm build
 
       - name: Compress output
         run: tar -czf output.tar.gz .output
