@@ -1,0 +1,42 @@
+name: Deploy to Google Cloud
+
+on: [workflow_dispatch, push]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - id: Auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: '${{ secrets.WIF_PROVIDER }}'
+          service_account: '${{ secrets.SA_EMAIL }}'
+  
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: true
+
+      - name: Build
+        run: pnpm build
+
+      - name: Compress output
+        run: tar -czf output.tar.gz .output
+
+      - name: Upload & Deploy
+        run: |-
+          gcloud compute scp ./output.tar.gz dev_asyncfox@gcloud01:/home/dev_asyncfox/cosmo/
+          gcloud compute ssh dev_asyncfox@gcloud01 -- 'cd /home/dev_asyncfox/cosmo && pm2 delete sms-tree &&rm -rf sms-tree && mkdir sms-tree && tar -xzf output.tar.gz -C sms-tree && pm2 start ecosystem.config.js --env prod'
