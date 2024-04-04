@@ -109,7 +109,6 @@ const { data: groupInfo, suspense: groupInfoSuspense } = useQuery({
   queryFn: () => {
     if (userStore.groupIds[0])
       return useTrpcAsyncData(() => $api.group.content.query({ id: userStore.groupIds[0] }));
-    return null;
   },
 });
 await groupInfoSuspense();

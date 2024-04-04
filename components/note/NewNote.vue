@@ -1,5 +1,5 @@
 <template>
-  <el-card class="mb-2 cursor-pointer lg:mb-2.5 hover:border-color-[#D4D7DE]! hover:bg-hover-bg!" @click="dialogVisible = true">
+  <el-card class="cursor-pointer hover:border-color-[#D4D7DE]! hover:bg-hover-bg!" @click="dialogVisible = true">
     <el-icon size="16px">
       <ElIconPlus />
     </el-icon>
