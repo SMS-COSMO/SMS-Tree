@@ -26,7 +26,7 @@ export function useUserSearch(searchContent: Ref<string>, role: 'student' | 'tea
 
   return useSearch<TUserListItem>(
     searchContent,
-    templateSearchOption(['id', 'username', 'projectName', 'className']),
+    templateSearchOption(['schoolID', 'username', 'projectName', 'className']),
     () => $api.user.list.query({ role }),
   );
 }

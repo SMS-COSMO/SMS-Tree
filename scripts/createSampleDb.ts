@@ -10,38 +10,41 @@ import { users } from '~/server/db/schema/user';
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
-const ans = await rl.question(`Make changes to ${env.DATABASE_CONNECTION_TYPE} - ${env.DATABASE_URL}? [y/n]\n`);
+const ans = await rl.question(`Make changes to ${env.DATABASE_CONNECTION_TYPE} - ${env.DATABASE_URL}? [Y/n]\n`);
 if (ans === 'n' || ans === 'N')
   process.exit(0);
 
-const defaultPwd = await rl.question('? Default password: ');
+const pwd = await rl.question('? Password(default: 12345678): ') || '12345678';
 await ctl.uc.register({
-  id: 'admin',
+  schoolID: 'admin',
   username: 'admin',
-  password: defaultPwd,
+  password: pwd,
   role: 'admin',
 });
-const admin = await db.select().from(users).where(eq(users.id, 'admin')).get();
+
+const admin = await db.select().from(users).where(eq(users.schoolID, 'admin')).get();
 if (!admin)
   process.exit(0);
 
-const studentCount = Number(await rl.question('? Number of students to create: '));
-const classCount = Number(await rl.question('? Number of classes to create: '));
+const studentCountInput = Number(await rl.question('? Number of students to create(default 100): '));
+const studentCount = studentCountInput <= 0 ? 100 : studentCountInput;
+const classCountInput = Number(await rl.question('? Number of classes to create(default 5): '));
+const classCount = classCountInput <= 0 ? 5 : classCountInput;
 
 await Promise.all(
   [...Array(studentCount)].map((_, i) => {
     return ctl.uc.register({
-      id: `StudentID${i}`,
+      schoolID: `StudentSchoolID${i}`,
       username: `StudentName${i}`,
-      password: defaultPwd,
+      password: pwd,
       role: 'student',
     });
   }).concat(
     [...Array(classCount)].map((_, i) => {
       return ctl.uc.register({
-        id: `TeacherID${i}`,
+        schoolID: `TeacherSchoolID${i}`,
         username: `TeacherName${i}`,
-        password: defaultPwd,
+        password: pwd,
         role: 'teacher',
       });
     }),
@@ -74,7 +77,8 @@ await Promise.all(
 
 const classList = await ctl.cc.getList();
 
-const groupCount = Number(await rl.question('? Number of groups (per class) to create: '));
+const groupCountInput = Number(await rl.question('? Number of groups (per class) to create(default 5): '));
+const groupCount = groupCountInput <= 0 ? 5 : groupCountInput;
 await Promise.all(
   [...Array(classCount)].map((_, i) => {
     const c = classList[i];
@@ -105,7 +109,8 @@ function getScore() {
   return possible[Math.round((Math.random() * 100)) % 4];
 }
 
-const paperCount = Number(await rl.question('? Number of papers to create: '));
+const paperCountInput = Number(await rl.question('? Number of papers to create(default 20): '));
+const paperCount = paperCountInput <= 0 ? 20 : paperCountInput;
 await Promise.all(
   [...Array(paperCount)].map((_, i) => {
     return ctl.pc.create({

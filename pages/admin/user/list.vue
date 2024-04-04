@@ -38,13 +38,13 @@ async function deleteUser(id: string) {
 
 const columns: Column<any>[] = [
   {
-    key: 'id',
-    dataKey: 'id',
-    width: 120,
+    key: 'schoolID',
+    dataKey: 'schoolID',
+    width: 150,
     title: '学号',
-    cellRenderer: ({ cellData: id }) => (
-      <span class="cursor-pointer" onClick={() => navigateTo(`/admin/user/${id}`)}>
-        {id}
+    cellRenderer: ({ cellData: schoolID, rowIndex }) => (
+      <span class="cursor-pointer" onClick={() => navigateTo(`/admin/user/${processedListData.value[rowIndex].id}`)}>
+        {schoolID}
       </span>
     ),
   },

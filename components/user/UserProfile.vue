@@ -22,19 +22,6 @@
             {{ info?.username }}
           </span>
         </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label>
-            <div class="text-[16px]!">
-              <el-icon>
-                <ElIconUser />
-              </el-icon>
-              学号
-            </div>
-          </template>
-          <span class="text-[16px]!">
-            {{ info?.id }}
-          </span>
-        </el-descriptions-item>
         <el-descriptions-item v-if="info?.role === 'student'">
           <template #label>
             <div class="text-[16px]!">
@@ -101,7 +88,7 @@ const roleName = {
 };
 
 const { info, papers } = await useTrpcAsyncData(async () => {
-  const info = await $api.user.profile.query({ id: props.userId });
+  const info = await $api.user.profileSafe.query({ id: props.userId });
   let papers: (TPaperListSafeItem | undefined)[] = [];
   for (const group of (info?.groupIds ?? []))
     papers = papers.concat((await $api.group.content.query({ id: group })).papers);

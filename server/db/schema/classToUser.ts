@@ -7,5 +7,5 @@ export const classesToUsers = sqliteTable('classes_to_users', {
   userId: text('user_id', { mode: 'text' }).notNull().references(() => users.id),
   type: text('type', { enum: ['teacher', 'student'] }).notNull().default('student'),
 }, t => ({
-  pk: primaryKey(t.classId, t.userId),
+  pk: primaryKey({ columns: [t.classId, t.userId] }),
 }));

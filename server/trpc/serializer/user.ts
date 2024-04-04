@@ -1,6 +1,7 @@
 import type { TRawUser } from '../../db/db';
 
 export type TUser = ReturnType<typeof userSerializer>;
+export type TUserSafe = ReturnType<typeof userSerializerSafe>;
 
 export function userSerializer(
   basicUser: TRawUser,
@@ -17,4 +18,9 @@ export function userSerializer(
     projectName,
     className,
   };
+}
+
+export function userSerializerSafe(user: TUser) {
+  const { schoolID: _, ...safeUser } = user;
+  return safeUser;
 }
