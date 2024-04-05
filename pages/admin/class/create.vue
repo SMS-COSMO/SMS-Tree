@@ -19,7 +19,7 @@
         <SelectUser v-model="form.students" />
       </el-form-item>
       <el-form-item prop="index" label="教师">
-        <SelectUser v-model="form.teacher" role="teacher" :multiple="false" />
+        <SelectUser v-model="form.teacherId" role="teacher" :multiple="false" />
       </el-form-item>
       <el-form-item>
         <el-button color="#146E3C" :loading="buttonLoading" @click="create">
@@ -44,7 +44,7 @@ const form = reactive<TClassCreate>({
   enterYear: (new Date()).getFullYear(),
   state: 'initialized',
   students: [],
-  teacher: '',
+  teacherId: '',
 });
 
 const buttonLoading = ref(false);

@@ -4,19 +4,20 @@
       v-model="selected"
       :options="options"
       :multiple="multiple"
-      collapse-tags
       :max-collapse-tags="3"
-      collapse-tags-tooltip
+      :props="selectProps"
       clearable
+      collapse-tags
+      collapse-tags-tooltip
       filterable
       placeholder="请选择（输入可搜索）"
       @change="emit('update:modelValue', selected)"
     >
       <template #default="{ item }">
         <span>
-          {{ item.label }}
+          {{ item.username }}
         </span>
-        <span class="float-right pr-1 text-[11px] color-gray">{{ item.value }}</span>
+        <span class="float-right pr-1 text-[11px] color-gray">{{ item.schoolId }}</span>
       </template>
     </el-select-v2>
     <template #fallback>
@@ -41,9 +42,10 @@ const emit = defineEmits(['update:modelValue']);
 const { $api } = useNuxtApp();
 
 const selected = ref(props.modelValue);
-const options = (await useTrpcAsyncData(() => $api.user.list.query({ role: props.role })))
-  ?.map(x => ({
-    value: x.id,
-    label: x.username,
-  })) ?? [];
+const selectProps = {
+  label: 'username',
+  value: 'id',
+};
+
+const options = (await useTrpcAsyncData(() => $api.user.list.query({ role: props.role }))) ?? [];
 </script>
