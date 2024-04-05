@@ -1,22 +1,28 @@
 <template>
   <el-card class="mb-5 w-full">
     <el-input v-model="searchContent" placeholder="搜索学生" />
-    <div class="h-[calc(100vh-190px)]">
-      <el-auto-resizer>
-        <template #default="{ height, width }">
-          <el-table-v2
-            :columns="columns"
-            :data="processedListData"
-            :width="width"
-            :height="height"
-          />
-        </template>
-      </el-auto-resizer>
-    </div>
+    <client-only>
+      <div class="h-[calc(100vh-190px)]">
+        <el-auto-resizer>
+          <template #default="{ height, width }">
+            <el-table-v2
+              :columns="columns"
+              :data="processedListData"
+              :width="width"
+              :height="height"
+            />
+          </template>
+        </el-auto-resizer>
+      </div>
+    </client-only>
   </el-card>
 </template>
 
 <script setup lang="tsx">
+import {
+  ElButton,
+  ElPopconfirm,
+} from 'element-plus';
 import { type Column, TableV2FixedDir } from 'element-plus';
 
 const { $api } = useNuxtApp();
@@ -85,11 +91,11 @@ const columns: Column<any>[] = [
     align: 'right',
     title: '操作',
     cellRenderer: ({ cellData: id }) => (
-      <span>
-        <el-button size="small" onClick={() => navigateTo(`/admin/user/${id}`)}>
+      <>
+        <ElButton size="small" onClick={() => navigateTo(`/admin/user/${id}`)}>
           修改
-        </el-button>
-        <el-popconfirm
+        </ElButton>
+        <ElPopconfirm
           title="确定要删除此用户吗？"
           confirm-button-text="是"
           cancel-button-text="否"
@@ -99,13 +105,13 @@ const columns: Column<any>[] = [
         >
           {{
             reference: () => (
-              <el-button size="small" type="danger">
+              <ElButton size="small" type="danger">
                 删除
-              </el-button>
+              </ElButton>
             ),
           }}
-        </el-popconfirm>
-      </span>
+        </ElPopconfirm>
+      </>
     ),
   },
 ];
