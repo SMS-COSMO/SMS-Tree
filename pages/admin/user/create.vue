@@ -11,9 +11,9 @@
           <el-icon :size="15">
             <ElIconUser />
           </el-icon>
-          学号 / 用户名
+          学工号
         </div>
-        <el-input v-model="form.id" />
+        <el-input v-model="form.schoolId" />
       </el-form-item>
       <el-form-item prop="username">
         <div>
@@ -75,14 +75,14 @@ const device = useDevice();
 
 const formRef = ref<FormInstance>();
 const form = reactive<TUserRegister>({
-  id: '',
+  schoolId: '',
   username: '',
   password: '',
   role: 'student',
 });
 
 const rules = reactive<FormRules<TUserRegister>>({
-  id: [
+  schoolId: [
     { required: true, message: '学号 / 用户名不能为空', trigger: 'blur' },
     { min: 4, max: 24, message: '学号 / 用户名长度应在 4~24 之间', trigger: 'blur' },
   ],

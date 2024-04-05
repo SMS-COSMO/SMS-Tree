@@ -22,6 +22,19 @@
             {{ info?.username }}
           </span>
         </el-descriptions-item>
+        <el-descriptions-item v-if="type === 'admin' && info?.schoolId">
+          <template #label>
+            <div class="text-[16px]!">
+              <el-icon>
+                <ElIconUser />
+              </el-icon>
+              学工号
+            </div>
+          </template>
+          <span class="text-[16px]!">
+            {{ info?.schoolId }}
+          </span>
+        </el-descriptions-item>
         <el-descriptions-item v-if="info?.role === 'student'">
           <template #label>
             <div class="text-[16px]!">
@@ -71,10 +84,11 @@
 </template>
 
 <script lang="ts" setup>
-import type { TPaperListSafeItem } from '~/types';
+import type { TPaperContent, TUserProfile } from '~/types';
 
 const props = defineProps<{
   userId: string;
+  type: 'normal' | 'admin';
 }>();
 
 const { $api } = useNuxtApp();
@@ -88,8 +102,12 @@ const roleName = {
 };
 
 const { info, papers } = await useTrpcAsyncData(async () => {
-  const info = await $api.user.profileSafe.query({ id: props.userId });
-  let papers: (TPaperListSafeItem | undefined)[] = [];
+  const info = props.type === 'admin'
+    ? await $api.user.profile.query({ id: props.userId })
+    : await $api.user.profileSafe.query({ id: props.userId })
+     as TUserProfile;
+
+  let papers: (TPaperContent | undefined)[] = [];
   for (const group of (info?.groupIds ?? []))
     papers = papers.concat((await $api.group.content.query({ id: group })).papers);
 

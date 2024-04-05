@@ -12,7 +12,7 @@
       <ModifyPassword :user-id="id" />
     </el-tab-pane>
     <el-tab-pane name="info" label="用户信息">
-      <UserProfile :user-id="id" />
+      <UserProfile :user-id="id" type="admin" />
     </el-tab-pane>
   </el-tabs>
 </template>
