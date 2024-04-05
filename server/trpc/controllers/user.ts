@@ -29,21 +29,18 @@ export class UserController {
     return result.user;
   }
 
-  async register(newUser: TNewUser & { groupIds?: string[] }) {
-    const { schoolId, username, password, role, groupIds } = newUser;
+  async register(newUser: TNewUser & { groupId?: string; classId?: string }) {
+    const { schoolId, username, password, role, groupId, classId } = newUser;
     const hash = await bcrypt.hash(password, 8);
     const user = { schoolId, username, password: hash, role };
     try {
       // TODO: use transaction
       const insertedId = (await db.insert(users).values(user).returning({ id: users.id }).get()).id;
-      if (groupIds?.length) {
-        await db.insert(usersToGroups).values(
-          groupIds.map(item => ({
-            userId: insertedId,
-            groupId: item,
-          })),
-        );
-      }
+      if (groupId)
+        await db.insert(usersToGroups).values({ userId: insertedId, groupId });
+      if (classId)
+        await db.insert(classesToStudents).values({ userId: insertedId, classId });
+
       return '注册成功';
     } catch (err) {
       if (err instanceof LibsqlError && err.code === 'SQLITE_CONSTRAINT_PRIMARYKEY')

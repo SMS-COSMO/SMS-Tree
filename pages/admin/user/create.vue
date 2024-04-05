@@ -3,45 +3,22 @@
     <el-form
       ref="formRef"
       :label-position="device.isMobileOrTablet ? 'top' : 'right'"
-      class="mx-auto max-w-[500px] py-5"
+      class="mx-auto max-w-[700px] py-5"
       :model="form" :rules="rules"
+      label-width="100px"
     >
-      <el-form-item prop="id">
-        <div class="icon-label">
-          <el-icon :size="15">
-            <ElIconUser />
-          </el-icon>
-          学工号
-        </div>
+      <el-form-item prop="schoolId" label="学工号">
         <el-input v-model="form.schoolId" />
       </el-form-item>
-      <el-form-item prop="username">
-        <div>
-          <el-icon :size="15">
-            <ElIconUser />
-          </el-icon>
-          姓名
-        </div>
+      <el-form-item prop="username" label="姓名">
         <el-input v-model="form.username" />
       </el-form-item>
-      <el-form-item prop="password">
-        <div>
-          <el-icon :size="15">
-            <ElIconKey />
-          </el-icon>
-          密码
-        </div>
+      <el-form-item prop="password" label="密码">
         <el-input v-model="form.password" type="password" />
       </el-form-item>
-      <el-form-item>
-        <div>
-          <el-icon :size="15">
-            <ElIconOperation />
-          </el-icon>
-          用户权限
-        </div>
+      <el-form-item prop="role" label="用户权限">
         <client-only>
-          <el-select v-model="form.role" placeholder="请选择" class="w-full">
+          <el-select v-model="form.role" placeholder="请选择">
             <el-option label="教师" value="teacher" />
             <el-option label="学生" value="student" />
             <el-option label="管理员" value="admin" />
@@ -50,6 +27,12 @@
             <SelectPlaceholder />
           </template>
         </client-only>
+      </el-form-item>
+      <el-form-item prop="classId" label="班级">
+        <SelectClass v-model="form.classId" />
+      </el-form-item>
+      <el-form-item prop="groupId" label="小组">
+        <SelectGroup v-model="form.groupId" />
       </el-form-item>
       <el-form-item>
         <el-button color="#146E3C" :loading="isPending" @click="register(formRef)">
@@ -79,6 +62,8 @@ const form = reactive<TUserRegister>({
   username: '',
   password: '',
   role: 'student',
+  classId: '',
+  groupId: '',
 });
 
 const rules = reactive<FormRules<TUserRegister>>({
@@ -95,6 +80,7 @@ const rules = reactive<FormRules<TUserRegister>>({
     { min: 8, message: '密码至少 8 位' },
     { pattern: passwordRegex, message: '密码必须包含大小写字母、数字与特殊符号' },
   ],
+  role: [{ required: true }],
 });
 
 const { mutate: registerMutation, isPending } = useMutation({

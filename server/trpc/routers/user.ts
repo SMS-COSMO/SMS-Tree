@@ -14,7 +14,8 @@ export const userRouter = router({
       role: roleEnumZod,
       username: z.string().min(2, { message: '用户名长度应至少为2' }).max(15, { message: '用户名超出长度范围' }),
       password: newPasswordZod,
-      groupIds: z.array(z.string()).optional(),
+      groupId: z.string().optional(),
+      classId: z.string().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.userController.register(input);
