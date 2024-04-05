@@ -21,6 +21,6 @@ export function userSerializer(
 }
 
 export function userSerializerSafe(user: TUser) {
-  const { schoolID: _, ...safeUser } = user;
+  const { schoolId: _, ...safeUser } = user;
   return safeUser;
 }

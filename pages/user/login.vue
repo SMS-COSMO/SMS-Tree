@@ -16,7 +16,7 @@
             </el-icon>
             学工号
           </div>
-          <el-input v-model="form.schoolID" />
+          <el-input v-model="form.schoolId" />
         </el-form-item>
         <el-form-item>
           <div>
@@ -27,7 +27,7 @@
           </div>
           <el-input
             v-model="form.password" type="password" show-password
-            @keyup.enter="form.schoolID && form.password ? login() : () => { }"
+            @keyup.enter="form.schoolId && form.password ? login() : () => { }"
           />
         </el-form-item>
         <el-form-item class="m-0">
@@ -53,7 +53,7 @@ const userStore = useUserStore();
 const device = useDevice();
 
 const form = reactive({
-  schoolID: '',
+  schoolId: '',
   password: '',
 });
 

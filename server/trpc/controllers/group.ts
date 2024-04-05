@@ -223,8 +223,8 @@ export class GroupController {
    *
    * If you want to set the leader without checking the user's role, use `_setLeader` instead.
    *
-   * @param userId The user ID.
-   * @param groupId The group ID.
+   * @param userId The user Id.
+   * @param groupId The group Id.
    * @param user The user performing the action.
    */
   async setLeader(userId: string, groupId: string, user: TRawUser) {
@@ -248,7 +248,7 @@ export class GroupController {
    *
    * If you want to remove the leader without checking the user's role, use `_removeLeader` instead.
    *
-   * @param groupId - The ID of the group.
+   * @param groupId - The Id of the group.
    * @param user - The user performing the action.
    */
   async removeLeader(groupId: string, user: TRawUser) {
@@ -268,8 +268,8 @@ export class GroupController {
 
   /**
    * Removes the leader from a group if the leader leaves.
-   * @param {string} userId - The ID of the user who left the group.
-   * @param {string} groupId - The ID of the group.
+   * @param {string} userId - The Id of the user who left the group.
+   * @param {string} groupId - The Id of the group.
    */
   private async _removeIfLeaderLeaves(userId: string, groupId: string) {
     try {

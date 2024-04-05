@@ -20,10 +20,10 @@
     </div>
     <h3>学生列表</h3>
     <el-table :default-sort="{ prop: 'projectName', order: 'descending' }" :data="studentProfileList">
-      <el-table-column :width="200" label="学号" prop="schoolID">
+      <el-table-column :width="200" label="学号" prop="schoolId">
         <template #default="scope">
           <span class="cursor-pointer" @click="navigateTo(`/admin/user/${scope.row.id}`)">
-            {{ scope.row.schoolID }}
+            {{ scope.row.schoolId }}
           </span>
         </template>
       </el-table-column>

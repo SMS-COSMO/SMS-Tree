@@ -10,7 +10,7 @@ export const userRouter = router({
   register: protectedProcedure
     .use(requireRoles(['teacher', 'admin']))
     .input(z.object({
-      schoolID: z.string().min(4, { message: '学工号长度应至少为4' }).max(24, { message: '学工号超出长度范围' }),
+      schoolId: z.string().min(4, { message: '学工号长度应至少为4' }).max(24, { message: '学工号超出长度范围' }),
       role: roleEnumZod,
       username: z.string().min(2, { message: '用户名长度应至少为2' }).max(15, { message: '用户名超出长度范围' }),
       password: newPasswordZod,
@@ -38,9 +38,9 @@ export const userRouter = router({
     }),
 
   login: publicProcedure
-    .input(z.object({ schoolID: z.string(), password: z.string().min(1) }))
+    .input(z.object({ schoolId: z.string(), password: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.userController.login(input.schoolID, input.password);
+      return await ctx.userController.login(input.schoolId, input.password);
     }),
 
   tokenValidity: protectedProcedure
@@ -55,7 +55,7 @@ export const userRouter = router({
   bulkRegister: protectedProcedure
     .use(requireRoles(['teacher', 'admin']))
     .input(z.object({
-      users: z.object({ schoolID: z.string().min(1).max(24), username: z.string().min(1) }).array().nonempty(),
+      users: z.object({ schoolId: z.string().min(1).max(24), username: z.string().min(1) }).array().nonempty(),
       randomPassword: z.boolean().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
@@ -64,7 +64,7 @@ export const userRouter = router({
 
   modify: protectedProcedure
     .input(z.object({
-      id: z.string().min(4, { message: '用户ID长度应至少为4' }).max(24, { message: '用户ID超出长度范围' }),
+      id: z.string().min(4, { message: '用户Id长度应至少为4' }).max(24, { message: '用户Id超出长度范围' }),
       username: z.string().min(2, { message: '用户名长度应至少为2' }).max(15, { message: '用户名超出长度范围' }),
       role: roleEnumZod,
     }))

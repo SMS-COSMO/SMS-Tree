@@ -8,7 +8,7 @@ import { db } from '../../db/db';
 import { refreshTokens, users } from '../../db/schema/user';
 import { userSerializer, userSerializerSafe } from '../serializer/user';
 import { usersToGroups } from '../../db/schema/userToGroup';
-import { classesToUsers } from '../../db/schema/classToUser';
+import { classesToStudents } from '../../db/schema/classToUser';
 import { ctl } from '../context';
 import { Auth } from '../utils/auth';
 import { TRPCForbidden, makeId, useTry } from '../../trpc/utils/shared';
@@ -30,9 +30,9 @@ export class UserController {
   }
 
   async register(newUser: TNewUser & { groupIds?: string[] }) {
-    const { schoolID, username, password, role, groupIds } = newUser;
+    const { schoolId, username, password, role, groupIds } = newUser;
     const hash = await bcrypt.hash(password, 8);
-    const user = { schoolID, username, password: hash, role };
+    const user = { schoolId, username, password: hash, role };
     try {
       // TODO: use transaction
       const insertedId = (await db.insert(users).values(user).returning({ id: users.id }).get()).id;
@@ -53,19 +53,19 @@ export class UserController {
     }
   }
 
-  async bulkRegister(inputUsers: { schoolID: string; username: string }[], randomPassword?: boolean) {
-    if ((new Set(inputUsers.map(user => user.schoolID))).size !== inputUsers.length)
+  async bulkRegister(inputUsers: { schoolId: string; username: string }[], randomPassword?: boolean) {
+    if ((new Set(inputUsers.map(user => user.schoolId))).size !== inputUsers.length)
       throw new TRPCError({ code: 'BAD_REQUEST', message: '学工号出现重复' });
 
     for (const user of inputUsers) {
-      if ((await useTry(() => db.select().from(users).where(eq(users.schoolID, user.schoolID)))).length > 0)
+      if ((await useTry(() => db.select().from(users).where(eq(users.schoolId, user.schoolId)))).length > 0)
         throw new TRPCError({ code: 'BAD_REQUEST', message: '学工号出现重复' });
     }
 
-    const newUsers = await Promise.all(inputUsers.map(async ({ schoolID, username }) => {
-      const password = randomPassword ? await bcrypt.hash(makeId(12), 8) : await bcrypt.hash(schoolID, 8);
+    const newUsers = await Promise.all(inputUsers.map(async ({ schoolId, username }) => {
+      const password = randomPassword ? await bcrypt.hash(makeId(12), 8) : await bcrypt.hash(schoolId, 8);
       return {
-        schoolID,
+        schoolId,
         role: 'student',
         password,
         username,
@@ -95,8 +95,8 @@ export class UserController {
     return '修改成功';
   }
 
-  async login(schoolID: string, password: string) {
-    const user = await useTry(async () => db.select().from(users).where(eq(users.schoolID, schoolID)).get());
+  async login(schoolId: string, password: string) {
+    const user = await useTry(async () => db.select().from(users).where(eq(users.schoolId, schoolId)).get());
     if (!(user && (await bcrypt.compare(password, user.password))))
       throw new TRPCError({ code: 'UNAUTHORIZED', message: '用户名或密码错误' });
 
@@ -134,7 +134,7 @@ export class UserController {
     ).map(item => item.groupId);
 
     const classIds = (
-      await useTry(() => db.select({ classId: classesToUsers.classId }).from(classesToUsers).where(eq(classesToUsers.userId, basicUser.id)))
+      await useTry(() => db.select({ classId: classesToStudents.classId }).from(classesToStudents).where(eq(classesToStudents.userId, basicUser.id)))
     ).map(item => item.classId);
 
     let projectName, className;
@@ -178,7 +178,7 @@ export class UserController {
     try {
       await Promise.all([
         db.delete(usersToGroups).where(eq(usersToGroups.userId, id)),
-        db.delete(classesToUsers).where(eq(classesToUsers.userId, id)),
+        db.delete(classesToStudents).where(eq(classesToStudents.userId, id)),
       ]);
       await db.delete(users).where(eq(users.id, id));
       return '删除成功';

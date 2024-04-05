@@ -115,8 +115,8 @@ export class AttachmentController {
   }
 
   /**
-   * Retrieves the file URL for a given attachment ID without performing permission checks.
-   * @param id - The ID of the attachment.
+   * Retrieves the file URL for a given attachment Id without performing permission checks.
+   * @param id - The Id of the attachment.
    * @returns A promise that resolves to a Result object containing the file URL if successful, or a Result object with an error message if unsuccessful.
    */
   async getFileUrlUncheckedPerm(id: string) {
@@ -135,12 +135,12 @@ export class AttachmentController {
   }
 
   /**
-   * Retrieves the file URL for a given attachment ID.
+   * Retrieves the file URL for a given attachment Id.
    *
    * Will check if the paper is downloadable before returning the URL.
    * If you want to bypass this check, use `getFileUrlUncheckedPerm` instead.
    *
-   * @param id - The ID of the attachment.
+   * @param id - The Id of the attachment.
    * @returns A Promise that resolves to a Result object containing the file URL if successful, or an error Result object if unsuccessful.
    */
   async getFileUrl(id: string, user: TRawUser) {

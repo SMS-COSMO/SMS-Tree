@@ -16,13 +16,13 @@ if (ans === 'n' || ans === 'N')
 
 const pwd = await rl.question('? Password(default: 12345678): ') || '12345678';
 await ctl.uc.register({
-  schoolID: 'admin',
+  schoolId: 'admin',
   username: 'admin',
   password: pwd,
   role: 'admin',
 });
 
-const admin = await db.select().from(users).where(eq(users.schoolID, 'admin')).get();
+const admin = await db.select().from(users).where(eq(users.schoolId, 'admin')).get();
 if (!admin)
   process.exit(0);
 
@@ -34,7 +34,7 @@ const classCount = classCountInput <= 0 ? 5 : classCountInput;
 await Promise.all(
   [...Array(studentCount)].map((_, i) => {
     return ctl.uc.register({
-      schoolID: `StudentSchoolID${i}`,
+      schoolId: `StudentSchoolId${i}`,
       username: `StudentName${i}`,
       password: pwd,
       role: 'student',
@@ -42,7 +42,7 @@ await Promise.all(
   }).concat(
     [...Array(classCount)].map((_, i) => {
       return ctl.uc.register({
-        schoolID: `TeacherSchoolID${i}`,
+        schoolId: `TeacherSchoolId${i}`,
         username: `TeacherName${i}`,
         password: pwd,
         role: 'teacher',

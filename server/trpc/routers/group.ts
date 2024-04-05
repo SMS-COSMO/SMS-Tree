@@ -5,17 +5,17 @@ export const groupRouter = router({
   create: protectedProcedure
     .input(z.object({
       leader: z.string()
-        .max(24, { message: '组长ID超出长度范围' })
+        .max(24, { message: '组长Id超出长度范围' })
         .optional(),
       members: z
         .array(z
           .string()
-          .min(4, { message: '用户ID长度应至少为4' })
-          .max(24, { message: '用户ID超出长度范围' }),
+          .min(4, { message: '用户Id长度应至少为4' })
+          .max(24, { message: '用户Id超出长度范围' }),
         )
         .max(64, '组员最多64人')
         .optional(),
-      classId: z.string().min(1, '班级ID不存在'),
+      classId: z.string().min(1, '班级Id不存在'),
       projectName: z.string().max(50, '课题名称最长为50').optional(),
       papers: z
         .array(z.string())
@@ -41,9 +41,9 @@ export const groupRouter = router({
 
   modify: protectedProcedure
     .input(z.object({
-      groupId: z.string().min(1, '不可以传入空ID'),
-      newMembers: z.array(z.string().min(1, '不可以传入空ID')).nonempty('不可以传入空ID列表'),
-      newLeader: z.string().min(1, '不可以传入空ID'),
+      groupId: z.string().min(1, '不可以传入空Id'),
+      newMembers: z.array(z.string().min(1, '不可以传入空Id')).nonempty('不可以传入空Id列表'),
+      newLeader: z.string().min(1, '不可以传入空Id'),
     }))
     .mutation(async ({ ctx, input }) => {
       return (await ctx.groupController.modifyMembers(
@@ -55,7 +55,7 @@ export const groupRouter = router({
 
   modifyProjectName: protectedProcedure
     .input(z.object({
-      groupId: z.string().min(1, '不可以传入空ID'),
+      groupId: z.string().min(1, '不可以传入空Id'),
       newProjectName: z.string().max(50, '课题名称最长为50'),
     }))
     .mutation(async ({ ctx, input }) => {

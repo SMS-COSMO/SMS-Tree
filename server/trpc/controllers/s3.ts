@@ -58,7 +58,7 @@ export class S3Controller {
    * Retrieves pre-signed URLs for uploading file parts in a multipart upload.
    * @param key - The key of the object in the S3 bucket.
    * @param filePartTotal - The total number of file parts to upload.
-   * @returns An object containing the upload ID and an array of pre-signed URLs for each file part.
+   * @returns An object containing the upload Id and an array of pre-signed URLs for each file part.
    * @throws An error if creating the upload task fails.
    */
   async getMultipartUploadPresignedUrl(key: string, filePartTotal: number) {
@@ -102,9 +102,9 @@ export class S3Controller {
   /**
    * ## **INTERNAL USE ONLY**
    *
-   * Completes a multipart upload by providing the key, upload ID, and parts.
+   * Completes a multipart upload by providing the key, upload Id, and parts.
    * @param key - The key of the object in the S3 bucket.
-   * @param uploadId - The ID of the multipart upload.
+   * @param uploadId - The Id of the multipart upload.
    * @param parts - An array of parts containing the ETag and part number.
    * @returns A Promise that resolves to the response data from S3.
    */

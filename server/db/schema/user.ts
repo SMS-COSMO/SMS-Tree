@@ -3,7 +3,7 @@ import { makeId } from '../../trpc/utils/shared';
 
 export const users = sqliteTable('users', {
   id: text('id', { mode: 'text' }).$defaultFn(() => makeId(12)).primaryKey(),
-  schoolID: text('school_id', { mode: 'text' }).notNull().unique(),
+  schoolId: text('school_id', { mode: 'text' }).notNull().unique(),
   username: text('username', { mode: 'text' }).notNull(),
   password: text('password', { mode: 'text' }).notNull(),
   role: text('role', { enum: ['admin', 'student', 'teacher'] }).notNull().default('student'),
