@@ -1,7 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import type { TRPC_ERROR_CODE_KEY } from '@trpc/server/rpc';
 import { customAlphabet } from 'nanoid';
-import type { TRawUser } from '~/server/db/db';
 
 export function requireEqualOrThrow(
   a: any,
