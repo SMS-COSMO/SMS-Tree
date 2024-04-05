@@ -6,7 +6,7 @@ import { papers } from '../../db/schema/paper';
 import { paperSerializer } from '../serializer/paper';
 import { attachmentSerializer } from '../serializer/attachment';
 import { ctl } from '../context';
-import { requireTeacherOrThrow, useTry } from '../utils/shared';
+import { TRPCForbidden, requireTeacherOrThrow, useTry } from '../utils/shared';
 import { attachments } from '~/server/db/schema/attachment';
 import { usersToGroups } from '~/server/db/schema/userToGroup';
 
@@ -61,10 +61,9 @@ export class PaperController {
       throw new TRPCError({ code: 'NOT_FOUND', message: '论文不存在' });
 
     const members = await ctl.gc.getMembers(info.groupId);
-    if (!info?.isPublic) {
-      const isOwned = await ctl.gc.hasUser(user.id, info.groupId, members);
-      if (!isOwned)
-        requireTeacherOrThrow(user);
+    if (!['admin', 'teacher'].includes(user.role) && !info?.isPublic) {
+      if (!await ctl.gc.hasUser(user.id, info.groupId, members))
+        throw TRPCForbidden;
     }
 
     return paperSerializer(info, members?.members, members?.leader);
