@@ -8,6 +8,7 @@ import { classSerializer } from '../serializer/class';
 import { ctl } from '../context';
 import { useTry } from '../utils/shared';
 import type { TClassState } from '~/types';
+import { PClassContent, PGetStudents } from '~/server/db/statements';
 
 export class ClassController {
   async create(newClass: {
@@ -18,7 +19,6 @@ export class ClassController {
     teacherId: string;
   }) {
     // TODO: use transactions
-
     const insertedId = await useTry(
       async () => (await db.insert(classes).values(newClass).returning({ id: classes.id }).get()).id,
     );
@@ -61,19 +61,13 @@ export class ClassController {
     return `${yearString[year]}（${classInfo.index}）`;
   }
 
-  PGetStudents = db
-    .select({ userId: classesToStudents.userId })
-    .from(classesToStudents)
-    .where(eq(classesToStudents.classId, sql.placeholder('id')))
-    .prepare();
-
   private async getFullClass(basicClass: TRawClass | undefined) {
     if (!basicClass)
       throw new TRPCError({ code: 'NOT_FOUND', message: '班级不存在' });
 
     const students = await useTry(
       async () => (
-        await this.PGetStudents.all({ id: basicClass.id })
+        await PGetStudents.all({ id: basicClass.id })
       ).map(item => item.userId),
       { code: 'INTERNAL_SERVER_ERROR', message: '无法获取学生' },
     );
@@ -92,13 +86,12 @@ export class ClassController {
     return '修改成功';
   }
 
-  PClassContent = db.select().from(classes).where(eq(classes.id, sql.placeholder('id'))).prepare();
   async getContent(id: string) {
-    return await useTry(() => this.PClassContent.get({ id }));
+    return await useTry(() => PClassContent.get({ id }));
   }
 
   async getFullContent(id: string) {
-    const basicClass = await useTry(() => this.PClassContent.get({ id }));
+    const basicClass = await useTry(() => PClassContent.get({ id }));
     return await this.getFullClass(basicClass);
   }
 

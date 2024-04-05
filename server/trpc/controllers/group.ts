@@ -13,6 +13,7 @@ import { papers } from '~/server/db/schema/paper';
 import { users } from '~/server/db/schema/user';
 import { notes } from '~/server/db/schema/note';
 import { reports } from '~/server/db/schema/report';
+import { PLeader, PMemberUsername, PRawMembers } from '~/server/db/statements';
 
 export class GroupController {
   async create(newGroup: TNewGroup & { members?: string[] }) {
@@ -75,23 +76,19 @@ export class GroupController {
     return '修改成功';
   }
 
-  PLeader = db.select({ leader: groups.leader }).from(groups).where(eq(groups.id, sql.placeholder('groupId'))).prepare();
-  PRawMembers = db.select({ userId: usersToGroups.userId }).from(usersToGroups).where(eq(usersToGroups.groupId, sql.placeholder('id'))).prepare();
-  PMemberUsername = db.select({ id: users.id, username: users.username }).from(users).where(eq(users.id, sql.placeholder('id'))).prepare();
-
   async getMembers(id: string, leaderId?: string | null) {
-    leaderId ??= await useTry(async () => (await this.PLeader.get({ groupId: id }))?.leader);
-    const rawMembers = await useTry(() => this.PRawMembers.all({ id }));
+    leaderId ??= await useTry(async () => (await PLeader.get({ groupId: id }))?.leader);
+    const rawMembers = await useTry(() => PRawMembers.all({ id }));
     const members = await Promise.all(
       rawMembers.map(
         async item => await useTry(
-          () => this.PMemberUsername.get({ id: item.userId }),
+          () => PMemberUsername.get({ id: item.userId }),
         ),
       ),
     );
     const leader = await useTry(
       async () => leaderId
-        ? await this.PMemberUsername.get({ id: leaderId })
+        ? await PMemberUsername.get({ id: leaderId })
         : undefined,
     );
     return { members, leader };
@@ -254,7 +251,7 @@ export class GroupController {
       requireEqualOrThrow(
         user.id,
         await useTry(
-          async () => (await this.PLeader.get({ groupId }))?.leader,
+          async () => (await PLeader.get({ groupId }))?.leader,
         ),
         { message: '只能将自己移出组长', code: 'FORBIDDEN' },
       );
@@ -271,7 +268,7 @@ export class GroupController {
    */
   private async _removeIfLeaderLeaves(userId: string, groupId: string) {
     try {
-      const group = await this.PLeader.get({ groupId });
+      const group = await PLeader.get({ groupId });
       if (group?.leader === userId)
         await this._removeLeader(groupId);
     } catch (err) {
