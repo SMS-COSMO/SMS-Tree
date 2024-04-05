@@ -1,9 +1,9 @@
-import { and, eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import type { TRawClass } from '../../db/db';
 import { db } from '../../db/db';
 import { classes } from '../../db/schema/class';
-import { classesToUsers } from '../../db/schema/classToUser';
+import { classesToStudents } from '../../db/schema/classToStudents';
 import { classSerializer } from '../serializer/class';
 import { ctl } from '../context';
 import { useTry } from '../utils/shared';
@@ -15,38 +15,32 @@ export class ClassController {
     enterYear: number;
     state: TClassState;
     students: string[];
-    teacher: string;
+    teacherId: string;
   }) {
+    // TODO: use transactions
+
     const insertedId = await useTry(
       async () => (await db.insert(classes).values(newClass).returning({ id: classes.id }).get()).id,
     );
 
-    try {
-      await db.insert(classesToUsers).values(
+    await useTry(
+      async () => db.insert(classesToStudents).values(
         newClass.students.map(
           item => ({
             classId: insertedId,
             userId: item,
           }),
         ),
-      );
-      await db
-        .insert(classesToUsers)
-        .values({
-          classId: insertedId,
-          userId: newClass.teacher,
-          type: 'teacher',
-        });
-    } catch (err) {
-      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '无法将用户加入班级' });
-    }
+      ),
+      { code: 'INTERNAL_SERVER_ERROR', message: '无法将用户加入班级' },
+    );
 
     return '创建成功';
   }
 
   async remove(id: string) {
     try {
-      await db.delete(classesToUsers).where(eq(classesToUsers.classId, id));
+      await db.delete(classesToStudents).where(eq(classesToStudents.classId, id));
       await db.delete(classes).where(eq(classes.id, id));
     } catch (err) {
       throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '删除失败' });
@@ -74,31 +68,15 @@ export class ClassController {
     const students = await useTry(
       async () => (
         await db
-          .select({ userId: classesToUsers.userId })
-          .from(classesToUsers)
-          .where(
-            and(
-              eq(classesToUsers.classId, basicClass.id),
-              eq(classesToUsers.type, 'student'),
-            ),
-          )
+          .select({ userId: classesToStudents.userId })
+          .from(classesToStudents)
+          .where(eq(classesToStudents.classId, basicClass.id))
       ).map(item => item.userId),
       { code: 'INTERNAL_SERVER_ERROR', message: '无法获取学生' },
     );
 
     const teacher = await useTry(
-      async () => (
-        await db
-          .select({ userId: classesToUsers.userId })
-          .from(classesToUsers)
-          .where(
-            and(
-              eq(classesToUsers.classId, basicClass.id),
-              eq(classesToUsers.type, 'teacher'),
-            ),
-          )
-          .get()
-      )?.userId,
+      async () => ctl.uc.getProfile(basicClass.teacherId),
       { code: 'INTERNAL_SERVER_ERROR', message: '无法获取教师' },
     );
 

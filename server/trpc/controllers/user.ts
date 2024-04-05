@@ -8,7 +8,7 @@ import { db } from '../../db/db';
 import { refreshTokens, users } from '../../db/schema/user';
 import { userSerializer, userSerializerSafe } from '../serializer/user';
 import { usersToGroups } from '../../db/schema/userToGroup';
-import { classesToStudents } from '../../db/schema/classToUser';
+import { classesToStudents } from '../../db/schema/classToStudents';
 import { ctl } from '../context';
 import { Auth } from '../utils/auth';
 import { TRPCForbidden, makeId, useTry } from '../../trpc/utils/shared';

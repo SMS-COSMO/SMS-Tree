@@ -12,7 +12,7 @@
     "lint:fix": "eslint . --fix",
     "auth:genKey": "tsx ./scripts/createKeyPairs.ts",
     "db:createAdmin": "tsx ./scripts/createDefaultUser.ts",
-    "db:createSampleDB": "tsx ./scripts/createSampleDb.ts",
+    "db:createSampleDB": "tsx ./scripts/createSampleDB.ts",
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push:sqlite",
     "test": "cp test.sqlite testRuntime.sqlite || copy test.sqlite testRuntime.sqlite && vitest",

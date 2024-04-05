@@ -70,7 +70,7 @@ await Promise.all(
       index: Math.round(Math.random() * 100) % 30,
       state: 'initialized',
       students: sepStudentList[i].map(u => u.id),
-      teacher: teacherList[i].id,
+      teacherId: teacherList[i].id,
     });
   }),
 );
