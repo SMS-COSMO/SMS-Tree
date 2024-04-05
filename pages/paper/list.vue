@@ -81,14 +81,13 @@ useHeadSafe({
   title: '论文列表',
 });
 
-const { $api } = useNuxtApp();
 const route = useRoute();
 const device = useDevice();
 
 const count = ref(10);
 
 const searchInput = ref(route.query.search?.toString() ?? '');
-const searchContent = refDebounced(searchInput, 300);
+const searchContent = refDebounced(searchInput, 200);
 const showSearchOptions = ref(false);
 function closeSearchOptions() {
   showSearchOptions.value = false;
@@ -125,10 +124,11 @@ watch(searchContent, () => {
     searchOptions.sortOption = 'time';
 });
 
+const paperStore = usePaperList();
 const { processedListData } = await useSearch<TPaperListSafeItem>(
   searchContent,
   fuseOptions,
-  $api.paper.listSafe.query,
+  paperStore.getList,
   e => e.item,
   (o: TPaperListSafeItem) => {
     if (searchOptions.filter.onlyCanDownload && !o.canDownload)
@@ -158,7 +158,7 @@ const { processedListData } = await useSearch<TPaperListSafeItem>(
 );
 
 function load() {
-  count.value += Math.min(5, processedListData.value.length - count.value);
+  count.value += Math.min(15, processedListData.value.length - count.value);
 }
 </script>
 
