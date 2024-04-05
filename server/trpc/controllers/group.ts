@@ -1,4 +1,4 @@
-import { and, eq, inArray, sql } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import { LibsqlError } from '@libsql/client';
 import { TRPCError } from '@trpc/server';
 import type { TNewGroup, TRawGroup, TRawUser } from '../../db/db';
@@ -10,7 +10,6 @@ import { TRPCForbidden, requireEqualOrThrow, useTry } from '../utils/shared';
 import { ctl } from '../context';
 import type { TMinimalUser } from '../serializer/paper';
 import { papers } from '~/server/db/schema/paper';
-import { users } from '~/server/db/schema/user';
 import { notes } from '~/server/db/schema/note';
 import { reports } from '~/server/db/schema/report';
 import { PLeader, PMemberUsername, PRawMembers } from '~/server/db/statements';

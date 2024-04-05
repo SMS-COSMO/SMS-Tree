@@ -1,6 +1,6 @@
 import { LibsqlError } from '@libsql/client';
 import bcrypt from 'bcrypt';
-import { and, eq, sql } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import type { CreateExpressContextOptions } from '@trpc/server/adapters/express';
 import { TRPCError } from '@trpc/server';
 import type { TNewUser, TRawUser } from '../../db/db';
