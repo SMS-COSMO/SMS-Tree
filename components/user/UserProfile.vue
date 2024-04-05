@@ -104,8 +104,7 @@ const roleName = {
 const { info, papers } = await useTrpcAsyncData(async () => {
   const info = props.type === 'admin'
     ? await $api.user.profile.query({ id: props.userId })
-    : await $api.user.profileSafe.query({ id: props.userId })
-     as TUserProfile;
+    : await $api.user.profileSafe.query({ id: props.userId }) as TUserProfile;
 
   let papers: (TPaperContent | undefined)[] = [];
   for (const group of (info?.groupIds ?? []))
