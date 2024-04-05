@@ -3,7 +3,7 @@ import { TRPCError } from '@trpc/server';
 import { db } from '../../db/db';
 import type { TNewReport, TRawReport, TRawUser } from '../../db/db';
 import { ctl } from '../context';
-import { TRPCForbidden, requireTeacherOrThrow, useTry } from '../utils/shared';
+import { TRPCForbidden, useTry } from '../utils/shared';
 import { attachmentSerializer } from '../serializer/attachment';
 import { usersToGroups } from '~/server/db/schema/userToGroup';
 import { reports } from '~/server/db/schema/report';
@@ -53,10 +53,11 @@ export class ReportController {
     if (!info)
       throw new TRPCError({ code: 'NOT_FOUND', message: '报告不存在' });
 
-    const members = await ctl.gc.getMembers(info.groupId);
-    const isOwned = await ctl.gc.hasUser(user.id, info.groupId, members);
-    if (!isOwned)
-      requireTeacherOrThrow(user);
+    if (!['admin', 'teacher'].includes(user.role)) {
+      const members = await ctl.gc.getMembers(info.groupId);
+      if (!await ctl.gc.hasUser(user.id, info.groupId, members))
+        throw TRPCForbidden;
+    }
 
     return info;
   }

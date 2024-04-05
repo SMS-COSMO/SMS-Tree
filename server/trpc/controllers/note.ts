@@ -3,7 +3,7 @@ import { TRPCError } from '@trpc/server';
 import { db } from '../../db/db';
 import type { TNewNote, TRawNote, TRawUser } from '../../db/db';
 import { ctl } from '../context';
-import { TRPCForbidden, requireTeacherOrThrow, useTry } from '../utils/shared';
+import { TRPCForbidden, useTry } from '../utils/shared';
 import { noteSerializer } from '../serializer/note';
 import { notes } from '~/server/db/schema/note';
 
@@ -74,9 +74,10 @@ export class NoteController {
       throw new TRPCError({ code: 'NOT_FOUND', message: '活动记录不存在' });
 
     const members = await ctl.gc.getMembers(info.groupId);
-    const isOwned = await ctl.gc.hasUser(user.id, info.groupId, members);
-    if (!isOwned)
-      requireTeacherOrThrow(user);
+    if (!['admin', 'teacher'].includes(user.role)) {
+      if (!await ctl.gc.hasUser(user.id, info.groupId, members))
+        throw TRPCForbidden;
+    }
 
     return noteSerializer(info, members?.members, members?.leader);
   }

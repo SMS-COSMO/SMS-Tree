@@ -6,7 +6,7 @@ import { papers } from '../../db/schema/paper';
 import { paperSerializer } from '../serializer/paper';
 import { attachmentSerializer } from '../serializer/attachment';
 import { ctl } from '../context';
-import { TRPCForbidden, requireTeacherOrThrow, useTry } from '../utils/shared';
+import { TRPCForbidden, useTry } from '../utils/shared';
 import { attachments } from '~/server/db/schema/attachment';
 import { usersToGroups } from '~/server/db/schema/userToGroup';
 
@@ -109,8 +109,8 @@ export class PaperController {
 
     const isOwned = await ctl.gc.hasUser(user.id, rawPaper.groupId);
     const isAdmin = ['teacher', 'admin'].includes(user.role);
-    if (!rawPaper.isPublic && !isOwned)
-      requireTeacherOrThrow(user);
+    if (!isAdmin && !rawPaper.isPublic && !isOwned)
+      throw TRPCForbidden;
 
     const attachmentList
       = await useTry(

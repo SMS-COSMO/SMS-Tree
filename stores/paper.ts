@@ -1,33 +1,41 @@
 import { defineStore } from 'pinia';
 import type { TPaperListSafe } from '~/types';
 
-export const usePaperList = defineStore('paper_list', {
-  state: () => ({
-    list: [] as TPaperListSafe,
-    lastUpdate: 0,
-  }),
+export const usePaperList = defineStore('paper_list', () => {
+  const list = ref<TPaperListSafe>([]);
+  const lastUpdate = ref(0);
 
-  actions: {
-    async getList() {
-      const { $api } = useNuxtApp();
-      const now = (new Date()).getTime();
-      if (
-        ['admin', 'teacher'].includes(useUserStore().role)
-        || !this.list.length
-        || now - this.lastUpdate > 10 * 60 * 1000 // 10min
-      ) {
-        this.list = await $api.paper.listSafe.query();
-        this.lastUpdate = now;
-      }
+  const getList = async () => {
+    const { $api } = useNuxtApp();
+    const now = Date.now();
+    if (
+      ['admin', 'teacher'].includes(useUserStore().role)
+      || !list.value.length
+      || now - lastUpdate.value > 10 * 60 * 1000 // 10min
+    ) {
+      list.value = await $api.paper.listSafe.query();
+      lastUpdate.value = now;
+    }
 
-      const res = this.list.map((x) => {
-        if (typeof x.createdAt === 'string')
-          x.createdAt = new Date(x.createdAt);
-        return x;
-      });
-      return res;
-    },
-  },
+    return list.value.map((x) => {
+      if (typeof x.createdAt === 'string')
+        x.createdAt = new Date(x.createdAt);
+      return x;
+    });
+  };
+
+  const clear = () => {
+    list.value = [];
+    lastUpdate.value = 0;
+  };
+
+  return {
+    list,
+    lastUpdate,
+    getList,
+    clear,
+  };
+}, {
   persist: {
     storage: persistedState.localStorage,
   },

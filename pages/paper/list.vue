@@ -80,6 +80,7 @@ import type { TSearchOption } from '~/types';
 useHeadSafe({
   title: '论文列表',
 });
+const { $api } = useNuxtApp();
 
 const route = useRoute();
 const device = useDevice();
@@ -160,6 +161,8 @@ const { processedListData } = await useSearch<TPaperListSafeItem>(
 function load() {
   count.value += Math.min(15, processedListData.value.length - count.value);
 }
+
+await useTrpcAsyncData($api.user.tokenValidity.query);
 </script>
 
 <style scoped>

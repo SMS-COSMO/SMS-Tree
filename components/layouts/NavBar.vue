@@ -91,6 +91,7 @@
 import { useUserStore } from '~/stores/user';
 
 const userStore = useUserStore();
+const paperList = usePaperList();
 const route = useRoute();
 const device = useDevice();
 
@@ -104,6 +105,7 @@ onMounted(() => {
 
 function logout() {
   userStore.logout();
+  paperList.clear();
   navigateTo('/');
   ElMessage({ message: '登出成功！', type: 'success', showClose: true });
 }

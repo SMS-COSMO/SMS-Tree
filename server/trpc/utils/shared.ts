@@ -16,11 +16,6 @@ export function requireEqualOrThrow(
     throw new TRPCError(opts ?? { code: 'FORBIDDEN' });
 }
 
-export function requireTeacherOrThrow(user: TRawUser) {
-  if (!['admin', 'teacher'].includes(user.role))
-    throw new TRPCError({ code: 'FORBIDDEN', message: '超出权限范围' });
-}
-
 export const TRPCForbidden = new TRPCError({ code: 'FORBIDDEN', message: '超出权限范围' });
 export async function useTry<T>(
   handler: () => Promise<T>,
