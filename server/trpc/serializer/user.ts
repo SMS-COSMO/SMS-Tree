@@ -6,7 +6,7 @@ export type TUserSafe = ReturnType<typeof userSerializerSafe>;
 export function userSerializer(
   basicUser: TRawUser,
   groupIds: string[],
-  classIds: string[],
+  classId: string | undefined,
   projectName?: string | null,
   className?: string,
 ) {
@@ -14,7 +14,7 @@ export function userSerializer(
   return {
     ...noPasswordBasicUser,
     groupIds,
-    classIds,
+    classId,
     projectName,
     className,
   };

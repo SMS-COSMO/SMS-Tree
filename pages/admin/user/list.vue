@@ -65,7 +65,7 @@ const columns: Column<any>[] = [
     width: 120,
     title: '班级',
     cellRenderer: ({ cellData: className, rowIndex }) => (
-      <span class="cursor-pointer" onClick={() => navigateTo(`/admin/class/${processedListData.value[rowIndex].classIds[0]}`)}>
+      <span class="cursor-pointer" onClick={() => navigateTo(`/admin/class/${processedListData.value[rowIndex].classId}`)}>
         {className}
       </span>
     ),

@@ -13,6 +13,7 @@ import { ctl } from '../context';
 import { Auth } from '../utils/auth';
 import { TRPCForbidden, makeId, useTry } from '../../trpc/utils/shared';
 import type { TRole } from '~/types';
+import { classes } from '~/server/db/schema/class';
 
 export class UserController {
   private auth: Auth;
@@ -130,21 +131,32 @@ export class UserController {
       await useTry(() => db.select({ groupId: usersToGroups.groupId }).from(usersToGroups).where(eq(usersToGroups.userId, basicUser.id)))
     ).map(item => item.groupId);
 
-    const classIds = (
-      await useTry(() => db.select({ classId: classesToStudents.classId }).from(classesToStudents).where(eq(classesToStudents.userId, basicUser.id)))
-    ).map(item => item.classId);
+    const classId = (await useTry(
+      () => db
+        .select({ classId: classesToStudents.classId })
+        .from(classesToStudents)
+        .where(eq(classesToStudents.userId, basicUser.id))
+        .get(),
+    ))?.classId;
 
     let projectName, className;
     if (basicUser.role === 'student') {
-      if (classIds.length)
-        className = await ctl.cc.getString(classIds[0]);
+      if (classId)
+        className = await ctl.cc.getString(classId);
       projectName = await ctl.gc.projectName(groupIds);
     }
-    return userSerializer(basicUser, groupIds, classIds, projectName, className);
+    return userSerializer(basicUser, groupIds, classId, projectName, className);
   }
 
-  async modify(id: string, username: string, role: TRole) {
-    await useTry(() => db.update(users).set({ username, role }).where(eq(users.id, id)));
+  async getTeacherClasses(id: string) {
+    const res = (await useTry(
+      () => db.select({ id: classes.id }).from(classes).where(eq(classes.teacherId, id)).all(),
+    )).map(x => x.id);
+    return res;
+  }
+
+  async modify(id: string, newUser: Partial<Omit<TRawUser, 'password' | 'createdAt'>>) {
+    await useTry(() => db.update(users).set(newUser).where(eq(users.id, id)));
     return '修改成功';
   }
 

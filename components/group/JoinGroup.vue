@@ -69,7 +69,7 @@ const userStore = useUserStore();
 const queryClient = useQueryClient();
 const { data: availableGroups, suspense: availableGroupsSuspense } = useQuery({
   queryKey: ['availableGroups'],
-  queryFn: () => useTrpcAsyncData(() => $api.group.list.query({ classId: userStore.classIds[0] })),
+  queryFn: () => useTrpcAsyncData(() => $api.group.list.query({ classId: userStore.classId })),
 });
 await availableGroupsSuspense();
 

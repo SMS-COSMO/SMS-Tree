@@ -8,7 +8,7 @@ export const useUserStore = defineStore('user', () => {
   const userId = ref('');
   const username = ref('');
   const role = ref<TRole>('student');
-  const classIds = ref<string[]>([]);
+  const classId = ref<string>('');
   const groupIds = ref<string[]>([]);
   const isDefaultPassword = ref(true);
 
@@ -21,7 +21,7 @@ export const useUserStore = defineStore('user', () => {
     userId.value = data.id;
     username.value = data.username;
     role.value = data.role;
-    classIds.value = data.classIds;
+    classId.value = data.classId ?? '';
     groupIds.value = data.groupIds;
   };
 
@@ -35,7 +35,7 @@ export const useUserStore = defineStore('user', () => {
     username.value = '';
 
     role.value = 'student';
-    classIds.value = [];
+    classId.value = '';
     groupIds.value = [];
   };
 
@@ -54,7 +54,7 @@ export const useUserStore = defineStore('user', () => {
     userId,
     username,
     role,
-    classIds,
+    classId,
     groupIds,
     isDefaultPassword,
     login,

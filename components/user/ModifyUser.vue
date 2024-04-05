@@ -3,25 +3,17 @@
     <el-form
       ref="formRef"
       :label-position="device.isMobileOrTablet ? 'top' : 'right'"
-      class="mx-auto max-w-[500px]"
+      class="mx-auto max-w-[700px]"
       :model="form" :rules="rules"
+      label-width="100px"
     >
-      <el-form-item prop="username">
-        <div>
-          <el-icon :size="15">
-            <ElIconUser />
-          </el-icon>
-          姓名
-        </div>
+      <el-form-item prop="username" label="姓名">
         <el-input v-model="form.username" />
       </el-form-item>
-      <el-form-item>
-        <div>
-          <el-icon :size="15">
-            <ElIconOperation />
-          </el-icon>
-          用户权限
-        </div>
+      <el-form-item prop="schoolId" label="学工号">
+        <el-input v-model="form.schoolId" />
+      </el-form-item>
+      <el-form-item prop="role" label="用户权限">
         <client-only>
           <el-select v-model="form.role" placeholder="请选择" class="w-full">
             <el-option label="教师" value="teacher" />
@@ -62,12 +54,13 @@ const formRef = ref<FormInstance>();
 const userInfo = await useTrpcAsyncData(() => $api.user.profile.query({ id: props.userId }));
 const form = reactive({
   username: userInfo?.username ?? '',
+  schoolId: userInfo?.schoolId ?? '',
   role: userInfo?.role ?? 'student',
+  classId: userInfo?.classId ?? '',
 });
 
 const rules = reactive<FormRules<TUserRegister>> ({
   username: [
-    { required: true, message: '姓名不能为空', trigger: 'blur' },
     { min: 2, max: 15, message: '姓名长度应在 2~15 之间', trigger: 'blur' },
   ],
 });

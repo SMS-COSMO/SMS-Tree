@@ -100,7 +100,7 @@ const step = [
 ];
 
 const [classInfo, userInfo] = await useTrpcAsyncData(() => Promise.all([
-  $api.class.content.query({ id: userStore.classIds[0] }),
+  $api.class.content.query({ id: userStore.classId }),
   $api.user.profileSafe.query({ id: userStore.userId }),
 ])) ?? [];
 

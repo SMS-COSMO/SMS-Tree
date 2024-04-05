@@ -4,15 +4,17 @@ import { passwordRegex } from '~/constants/user';
 
 const roleEnumZod = z.enum(['student', 'teacher', 'admin'], { errorMap: () => ({ message: '提交了不存在的用户身份' }) });
 const userIdZod = z.string().min(1, { message: '用户不存在' });
+const schoolIdZod = z.string().min(4, { message: '学工号长度应至少为4' }).max(24, { message: '学工号超出长度范围' });
+const usernameZod = z.string().min(2, { message: '用户名长度应至少为2' }).max(15, { message: '用户名超出长度范围' });
 const newPasswordZod = z.string().min(8, { message: '用户密码长度应至少为8' }).regex(passwordRegex, '密码必须包含大小写字母、数字与特殊符号');
 
 export const userRouter = router({
   register: protectedProcedure
     .use(requireRoles(['teacher', 'admin']))
     .input(z.object({
-      schoolId: z.string().min(4, { message: '学工号长度应至少为4' }).max(24, { message: '学工号超出长度范围' }),
+      schoolId: schoolIdZod,
       role: roleEnumZod,
-      username: z.string().min(2, { message: '用户名长度应至少为2' }).max(15, { message: '用户名超出长度范围' }),
+      username: usernameZod,
       password: newPasswordZod,
       groupId: z.string().optional(),
       classId: z.string().optional(),
@@ -65,17 +67,25 @@ export const userRouter = router({
 
   modify: protectedProcedure
     .input(z.object({
-      id: z.string().min(4, { message: '用户Id长度应至少为4' }).max(24, { message: '用户Id超出长度范围' }),
-      username: z.string().min(2, { message: '用户名长度应至少为2' }).max(15, { message: '用户名超出长度范围' }),
+      id: userIdZod,
+      schoolId: schoolIdZod,
+      username: usernameZod,
       role: roleEnumZod,
     }))
     .use(requireRoles(['teacher', 'admin']))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.userController.modify(input.id, input.username, input.role);
+      const { id, ...newUser } = input;
+      return await ctx.userController.modify(id, newUser);
+    }),
+
+  getTeacherClasses: protectedProcedure
+    .use(requireRoles(['teacher', 'admin']))
+    .input(userIdZod)
+    .query(async ({ ctx, input }) => {
+      return await ctx.userController.getTeacherClasses(input);
     }),
 
   profile: protectedProcedure
-    .use(requireRoles(['teacher', 'admin']))
     .input(z.object({ id: userIdZod }))
     .query(async ({ ctx, input }) => {
       return await ctx.userController.getProfile(input.id);

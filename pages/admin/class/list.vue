@@ -48,14 +48,14 @@ useHeadSafe({
 
 const showAll = ref(false);
 const searchContent = ref('');
+const teacherClasses = await useTrpcAsyncData(() => $api.user.getTeacherClasses.query(useUserStore().userId));
 const { processedListData } = await useSearch<TClassListItem>(
   searchContent,
   templateSearchOption(['className', 'teacher']),
   $api.class.list.query,
   e => e.item,
   (e) => {
-    const userStore = useUserStore();
-    return showAll.value || userStore.classIds.includes(e.id);
+    return showAll.value || (teacherClasses ?? []).includes(e.id);
   },
 );
 
