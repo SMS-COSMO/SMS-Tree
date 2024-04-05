@@ -126,13 +126,13 @@ async function create(submittedForm: FormInstance | undefined) {
           ids: form.paperFile.concat(form.attachments),
           paperId,
         });
-        ElMessage({ message: '创建成功', type: 'success', showClose: true });
+        useElMessage({ message: '创建成功', type: 'success' });
       } catch (err) {
         useErrorHandler(err);
       }
       buttonLoading.value = false;
     } else {
-      ElMessage({ message: '表单内有错误，请修改后再提交', type: 'error', showClose: true });
+      useElMessage({ message: '表单内有错误，请修改后再提交', type: 'error' });
     }
   });
 }

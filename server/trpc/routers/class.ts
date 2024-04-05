@@ -18,7 +18,7 @@ export const classRouter = router({
       enterYear: z.number().int().min(2000, '请输入正确的入学年份').max(9999, '请输入正确的入学年份'),
       state: stateZod,
       students: z.array(z.string().min(1, '学生不存在')),
-      teacher: z.string().min(1, '老师不存在'),
+      teacherId: z.string().min(1, '老师不存在'),
     }))
     .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {

@@ -355,3 +355,8 @@
 .el-cascader-node__label {
   margin-right: 10px;
 }
+
+/* Badge */
+.el-badge__content {
+  border: none !important;
+}

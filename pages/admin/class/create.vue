@@ -52,7 +52,7 @@ async function create() {
   buttonLoading.value = true;
   try {
     const msg = await $api.class.create.mutate({ ...form });
-    ElMessage({ message: msg, type: 'success', showClose: true });
+    useElMessage({ message: msg, type: 'success' });
   } catch (err) {
     useErrorHandler(err);
   }

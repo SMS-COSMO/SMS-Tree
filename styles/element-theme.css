@@ -5,10 +5,17 @@
   --el-checkbox-height: 35px;
   --el-popper-border-radius: 10px;
   --el-popover-border-radius: 10px;
+
 }
 
 .el-card {
   --el-card-padding: 18px !important;
+}
+
+.el-badge {
+  --el-badge-padding: 10px !important;
+  --el-badge-size: 22px !important;
+  --el-badge-font-size: 13px !important;
 }
 
 .el-tag--primary,

@@ -121,7 +121,7 @@ const { mutate: removeNote, isPending } = useMutation({
   mutationFn: $api.note.remove.mutate,
   onSuccess: (message) => {
     queryClient.invalidateQueries({ queryKey: ['groupInfo'] });
-    ElMessage({ message, type: 'success', showClose: true });
+    useElMessage({ message, type: 'success' });
   },
   onError: err => useErrorHandler(err),
 });

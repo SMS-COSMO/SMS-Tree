@@ -62,7 +62,7 @@ const { mutate: loginMutation, isPending } = useMutation({
   onSuccess: (res) => {
     userStore.login(res);
     useRouter().back();
-    ElMessage({
+    useElMessage({
       message: '登录成功',
       type: 'success',
       showClose: true,

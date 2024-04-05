@@ -66,7 +66,7 @@ watch(newState, () => modifyState({ id: props.data.id, newState: newState.value 
 const { mutate: createEmptyGroups } = useMutation({
   mutationFn: $api.class.initGroups.mutate,
   onSuccess: () => {
-    ElMessage({ type: 'success', message: '创建成功', showClose: true });
+    useElMessage({ type: 'success', message: '创建成功' });
   },
   onError: err => useErrorHandler(err),
 });

@@ -101,7 +101,7 @@ const { mutate: submitNote, isPending: isSubmitPending } = useMutation({
   mutationFn: $api.note.createSafe.mutate,
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['groupInfo'] });
-    ElMessage({ message: '创建成功', type: 'success', showClose: true });
+    useElMessage({ message: '创建成功', type: 'success' });
   },
   onError: err => useErrorHandler(err),
 });
@@ -110,7 +110,7 @@ const { mutate: modifyNote, isPending: isModifyPending } = useMutation({
   mutationFn: $api.note.modifySafe.mutate,
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['groupInfo'] });
-    ElMessage({ message: '修改成功', type: 'success', showClose: true });
+    useElMessage({ message: '修改成功', type: 'success' });
   },
   onError: err => useErrorHandler(err),
 });
@@ -132,7 +132,7 @@ async function submit(submittedForm: FormInstance | undefined) {
         submitNote(form.value);
       else if (props.oldNote?.id)
         modifyNote({ id: props.oldNote.id, ...form.value });
-    } else { ElMessage({ message: '表单内有错误，请修改后再提交', type: 'error', showClose: true }); }
+    } else { useElMessage({ message: '表单内有错误，请修改后再提交', type: 'error' }); }
   });
 }
 </script>

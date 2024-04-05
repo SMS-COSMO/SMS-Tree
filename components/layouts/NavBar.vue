@@ -107,6 +107,6 @@ function logout() {
   userStore.logout();
   paperList.clear();
   navigateTo('/');
-  ElMessage({ message: '登出成功！', type: 'success', showClose: true });
+  useElMessage({ message: '登出成功！', type: 'success' });
 }
 </script>

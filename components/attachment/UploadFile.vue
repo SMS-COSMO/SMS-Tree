@@ -52,7 +52,7 @@ function getFile(rawFile: UploadRawFile): UploadFile | undefined {
 function removeFileFromList(f: UploadFile | undefined, message: string) {
   if (f)
     fileList.value.splice(fileList.value.indexOf(f), 1);
-  ElMessage({ message, type: 'error', showClose: true });
+  useElMessage({ message, type: 'error' });
 }
 
 async function handleUpload(option: UploadRequestOptions) {
@@ -108,6 +108,6 @@ function handleRemove(uploadFile: UploadFile) {
 };
 
 function handleExceed() {
-  ElMessage({ message: '超出文件数量限制', type: 'error', showClose: true });
+  useElMessage({ message: '超出文件数量限制', type: 'error' });
 }
 </script>
