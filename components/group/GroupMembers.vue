@@ -23,7 +23,7 @@ import type { TMinimalUser } from '~/server/trpc/serializer/paper';
 import type { TUser } from '~/server/trpc/serializer/user';
 
 withDefaults(defineProps<{
-  authors?: TMinimalUser[] | TUser[];
+  authors?: (TMinimalUser | undefined)[] | TUser[] | { username?: string; id?: string }[];
   leader?: TMinimalUser | TUser;
   type?: 'text' | 'link';
   showLeader?: boolean;

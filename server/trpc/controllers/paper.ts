@@ -61,9 +61,11 @@ export class PaperController {
       throw new TRPCError({ code: 'NOT_FOUND', message: '论文不存在' });
 
     const members = await ctl.gc.getMembers(info.groupId);
-    const isOwned = await ctl.gc.hasUser(user.id, info.groupId, members);
-    if (!info?.isPublic && !isOwned)
-      requireTeacherOrThrow(user);
+    if (!info?.isPublic) {
+      const isOwned = await ctl.gc.hasUser(user.id, info.groupId, members);
+      if (!isOwned)
+        requireTeacherOrThrow(user);
+    }
 
     return paperSerializer(info, members?.members, members?.leader);
   }
@@ -72,7 +74,19 @@ export class PaperController {
     const res = await Promise.all(
       (await useTry(() => db.select().from(papers).where(eq(papers.isPublic, true)).all()))
         .map(async (paper) => {
-          return await this.getContent(paper.id, user, paper);
+          const {
+            abstract: _abstract,
+            comment: _comment,
+            groupId: _groupId,
+            isPublic: _isPublic,
+            leader: _leader,
+            authors,
+            ...info
+          } = await this.getContent(paper.id, user, paper);
+          return {
+            authors: authors?.map(x => ({ username: x?.username })),
+            ...info,
+          };
         }),
     );
     return res;

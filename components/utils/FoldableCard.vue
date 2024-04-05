@@ -16,9 +16,11 @@
         </el-icon>
       </el-button>
     </div>
-    <div v-if="showContent" class="mt-3.5">
-      <slot />
-    </div>
+    <el-collapse-transition>
+      <div v-if="showContent" class="mt-3.5">
+        <slot />
+      </div>
+    </el-collapse-transition>
   </el-card>
   <el-card v-else>
     <template #header>

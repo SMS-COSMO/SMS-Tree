@@ -1,16 +1,14 @@
 <template>
   <el-row :gutter="20">
     <el-col v-if="!device.isMobileOrTablet" :span="device.isMobileOrTablet ? 24 : 6">
-      <el-card>
-        <div class="relative z-10">
-          <SearchOptions v-model="searchOptions" />
-        </div>
+      <el-card class="relative z-10">
+        <SearchOptions v-model="searchOptions" />
       </el-card>
     </el-col>
     <el-col v-on-click-outside="closeSearchOptions" :span="device.isMobileOrTablet ? 24 : 18">
       <el-input
-        v-model="searchContent" placeholder="搜索论文" clearable class="list-search mb-2.5" :suffix-icon="device.isMobileOrTablet ? ElIconSearch : ''"
-        @change="$router.replace({ query: { search: searchContent } });"
+        v-model="searchInput" placeholder="搜索论文" clearable class="list-search mb-2.5" :suffix-icon="device.isMobileOrTablet ? ElIconSearch : ''"
+        @change="$router.replace({ query: { search: searchInput } });"
       >
         <template #prepend>
           <el-icon v-if="!device.isMobileOrTablet">
@@ -44,7 +42,7 @@
                   <el-row :gutter="20">
                     <el-col :span="6" />
                     <el-col :span="device.isMobileOrTablet ? 24 : 18">
-                      <PaperCard :paper="paper" :show-abstract="searchOptions.showAbstract" />
+                      <PaperCard :paper="paper" />
                     </el-col>
                   </el-row>
                 </div>
@@ -77,7 +75,7 @@
 <script setup lang="ts">
 import { vOnClickOutside } from '@vueuse/components';
 import type { TPaperListSafeItem } from '~/types/index';
-import type { TSearchOption } from '~/components/paper/SearchOptions.vue';
+import type { TSearchOption } from '~/types';
 
 useHeadSafe({
   title: '论文列表',
@@ -89,7 +87,8 @@ const device = useDevice();
 
 const count = ref(10);
 
-const searchContent = ref(route.query.search?.toString() ?? '');
+const searchInput = ref(route.query.search?.toString() ?? '');
+const searchContent = refDebounced(searchInput, 300);
 const showSearchOptions = ref(false);
 function closeSearchOptions() {
   showSearchOptions.value = false;
@@ -104,8 +103,7 @@ const searchOptions = reactive<TSearchOption>({
   },
   isAsc: 1,
   searchSelectValue: ['title', 'keywords'],
-  showAbstract: false,
-  sortOption: 'time',
+  sortOption: searchContent.value.length ? 'default' : 'time',
 });
 
 const fuseOptions = computed(() => {
@@ -118,6 +116,13 @@ const fuseOptions = computed(() => {
     },
     matchAllWhenSearchEmpty: true,
   };
+});
+
+watch(searchContent, () => {
+  if (searchContent.value.length)
+    searchOptions.sortOption = 'default';
+  else
+    searchOptions.sortOption = 'time';
 });
 
 const { processedListData } = await useSearch<TPaperListSafeItem>(
@@ -140,6 +145,8 @@ const { processedListData } = await useSearch<TPaperListSafeItem>(
     return true;
   },
   (a: TPaperListSafeItem, b: TPaperListSafeItem) => {
+    if (searchOptions.sortOption === 'default')
+      return 0;
     if (searchOptions.sortOption === 'score')
       return ((a.score?.charCodeAt(0) ?? 68) - (b.score?.charCodeAt(0) ?? 68)) * searchOptions.isAsc; // Greater
     if (searchOptions.sortOption === 'time')

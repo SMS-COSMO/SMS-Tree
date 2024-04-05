@@ -2,7 +2,6 @@
   <div class="space-y-1.5">
     <el-checkbox v-model="modelValue.filter.onlyCanDownload" label="仅查看可下载" border @change="updateValue" />
     <el-checkbox v-model="modelValue.filter.onlyFeatured" label="仅查看优秀作业" border @change="updateValue" />
-    <el-checkbox v-model="modelValue.showAbstract" label="显示摘要" border @change="updateValue" />
   </div>
 
   <el-divider content-position="left">
@@ -28,51 +27,43 @@
     </template>
   </client-only>
 
-  <el-divider content-position="left">
-    排序
-  </el-divider>
-  <el-radio-group v-model="modelValue.sortOption" :size="device.isMobileOrTablet ? 'large' : ''">
-    <el-radio-button value="time">
-      时间
-    </el-radio-button>
-    <el-radio-button value="score">
-      分数
-    </el-radio-button>
-    <el-radio-button value="downloadCount">
-      下载
-    </el-radio-button>
-  </el-radio-group>
-  <el-radio-group v-model="modelValue.isAsc" class="ml-4">
-    <el-radio :value="1" size="large">
-      顺序
-    </el-radio>
-    <el-radio :value="-1" size="large">
-      逆序
-    </el-radio>
-  </el-radio-group>
+  <el-collapse-transition name="el-fade-in">
+    <div v-if="modelValue.sortOption !== 'default'">
+      <el-divider content-position="left">
+        排序
+      </el-divider>
+      <el-radio-group v-model="modelValue.sortOption">
+        <el-radio-button value="time">
+          时间
+        </el-radio-button>
+        <el-radio-button value="score">
+          分数
+        </el-radio-button>
+        <el-radio-button value="downloadCount">
+          下载
+        </el-radio-button>
+      </el-radio-group>
+      <br>
+      <el-radio-group v-model="modelValue.isAsc" class="ml-4">
+        <el-radio :value="1" size="large">
+          顺序
+        </el-radio>
+        <el-radio :value="-1" size="large">
+          逆序
+        </el-radio>
+      </el-radio-group>
+    </div>
+  </el-collapse-transition>
 </template>
 
 <script setup lang="ts">
+import type { TSearchOption } from '~/types';
+
 const props = defineProps<{
   modelValue: TSearchOption;
 }>();
 
 const emit = defineEmits(['update:modelValue']);
-
-const device = useDevice();
-
-export interface TSearchOption {
-  filter: {
-    onlyCanDownload: boolean;
-    onlyFeatured: boolean;
-    timeRange: string;
-    category: number[];
-  };
-  isAsc: -1 | 1;
-  searchSelectValue: string[];
-  showAbstract: false;
-  sortOption: 'time' | 'score' | 'downloadCount';
-}
 
 const modelValue = ref(props.modelValue);
 

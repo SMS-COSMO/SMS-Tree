@@ -26,7 +26,6 @@ export type TClassCreate = RouterInput['class']['create'];
 export type TAttachmentList = RouterOutput['paper']['attachments'];
 export type TAttachmentListItem = RouterOutput['paper']['attachments'][0];
 export type TAttachmentCreate = RouterInput['attachment']['create'];
-export type TAttachmentModify = RouterInput['attachment']['modify'];
 export type TAttachmentContent = TAttachmentListItem;
 export type TAttachmentCategory = 'paperDocument' | 'paperAttachment' | 'reportDocument' | 'reportPresentation';
 
@@ -46,3 +45,15 @@ export type TGroupList = RouterOutput['group']['list'];
 
 export type TNoteInfo = RouterOutput['note']['info'];
 export type TNoteCreateSafe = RouterInput['note']['createSafe'];
+
+export interface TSearchOption {
+  filter: {
+    onlyCanDownload: boolean;
+    onlyFeatured: boolean;
+    timeRange: string;
+    category: number[];
+  };
+  isAsc: -1 | 1;
+  searchSelectValue: string[];
+  sortOption: 'time' | 'score' | 'downloadCount' | 'default';
+}

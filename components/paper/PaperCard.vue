@@ -1,5 +1,6 @@
 <template>
   <el-card
+    v-once
     class="mb-2 cursor-pointer lg:mb-2.5 hover:border-color-[#D4D7DE]! hover:bg-hover-bg!"
     @click="navigateTo(`/paper/${paper.id}`)"
   >
@@ -38,7 +39,7 @@
         <GroupMembers :authors="paper.authors" type="text" :show-leader="false" />
       </el-text>
     </el-row>
-    <el-row v-if="showAbstract" class="mt-2.5">
+    <el-row v-if="showAbstract && 'abstract' in paper" class="mt-2.5">
       <el-text size="small" :line-clamp="lineClamp" type="info" class="break-normal">
         {{ paper?.abstract }}
       </el-text>
