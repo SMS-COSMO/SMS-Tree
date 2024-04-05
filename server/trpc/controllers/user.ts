@@ -1,6 +1,6 @@
 import { LibsqlError } from '@libsql/client';
 import bcrypt from 'bcrypt';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import type { CreateExpressContextOptions } from '@trpc/server/adapters/express';
 import { TRPCError } from '@trpc/server';
 import type { TNewUser, TRawUser } from '../../db/db';
@@ -12,7 +12,6 @@ import { classesToStudents } from '../../db/schema/classToStudents';
 import { ctl } from '../context';
 import { Auth } from '../utils/auth';
 import { TRPCForbidden, makeId, useTry } from '../../trpc/utils/shared';
-import type { TRole } from '~/types';
 import { classes } from '~/server/db/schema/class';
 
 export class UserController {
@@ -126,17 +125,17 @@ export class UserController {
     return userSerializerSafe(await this.getFullUser(basicUser));
   }
 
+  PGroupIds = db.select({ groupId: usersToGroups.groupId }).from(usersToGroups).where(eq(usersToGroups.userId, sql.placeholder('id'))).prepare();
+  PClassId = db.select({ classId: classesToStudents.classId }).from(classesToStudents).where(eq(classesToStudents.userId, sql.placeholder('id'))).prepare();
   async getFullUser(basicUser: TRawUser) {
     const groupIds = (
-      await useTry(() => db.select({ groupId: usersToGroups.groupId }).from(usersToGroups).where(eq(usersToGroups.userId, basicUser.id)))
+      await useTry(
+        () => this.PGroupIds.all({ id: basicUser.id }),
+      )
     ).map(item => item.groupId);
 
     const classId = (await useTry(
-      () => db
-        .select({ classId: classesToStudents.classId })
-        .from(classesToStudents)
-        .where(eq(classesToStudents.userId, basicUser.id))
-        .get(),
+      () => this.PClassId.get({ id: basicUser.id }),
     ))?.classId;
 
     let projectName, className;
@@ -160,15 +159,16 @@ export class UserController {
     return '修改成功';
   }
 
+  PGetBasicUser = db.select().from(users).where(eq(users.id, sql.placeholder('id'))).prepare();
   async getProfile(id: string) {
-    const basicUser = await useTry(() => db.select().from(users).where(eq(users.id, id)).get());
+    const basicUser = await useTry(() => this.PGetBasicUser.get({ id }));
     if (!basicUser)
       throw new TRPCError({ code: 'NOT_FOUND', message: '用户不存在' });
     return await this.getFullUser(basicUser);
   }
 
   async getProfileSafe(id: string) {
-    const basicUser = await useTry(() => db.select().from(users).where(eq(users.id, id)).get());
+    const basicUser = await useTry(() => this.PGetBasicUser.get({ id }));
     if (!basicUser)
       throw new TRPCError({ code: 'NOT_FOUND', message: '用户不存在' });
     return await this.getFullUserSafe(basicUser);

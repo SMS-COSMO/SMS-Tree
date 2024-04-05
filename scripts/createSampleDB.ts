@@ -7,6 +7,7 @@ import { ctl } from '~/server/trpc/context';
 import { env } from '~/server/env';
 import { db } from '~/server/db/db';
 import { users } from '~/server/db/schema/user';
+import type { TScore } from '~/types';
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
@@ -105,7 +106,7 @@ await Promise.all(
 const groupList = await ctl.gc.getList(admin);
 
 function getScore() {
-  const possible: ('A' | 'B' | 'C' | 'D')[] = ['A', 'B', 'C', 'D'];
+  const possible: TScore[] = ['A', 'B', 'C', 'D'];
   return possible[Math.round((Math.random() * 100)) % 4];
 }
 

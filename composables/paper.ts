@@ -1,4 +1,6 @@
-export function useScoreColor(score: 'A' | 'B' | 'C' | 'D' | null) {
+import type { TScore } from '~/types';
+
+export function useScoreColor(score: TScore) {
   if (score === 'A')
     return 'success';
   else if (score === 'B')

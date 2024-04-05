@@ -1,4 +1,4 @@
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, eq, inArray, sql } from 'drizzle-orm';
 import { LibsqlError } from '@libsql/client';
 import { TRPCError } from '@trpc/server';
 import type { TNewGroup, TRawGroup, TRawUser } from '../../db/db';
@@ -75,25 +75,23 @@ export class GroupController {
     return '修改成功';
   }
 
-  async getMembers(id: string, leaderId?: string | null) {
-    leaderId ??= await useTry(
-      async () => (await db.select({ l: groups.leader }).from(groups).where(eq(groups.id, id)).get())?.l,
-    );
+  PLeader = db.select({ leader: groups.leader }).from(groups).where(eq(groups.id, sql.placeholder('groupId'))).prepare();
+  PRawMembers = db.select({ userId: usersToGroups.userId }).from(usersToGroups).where(eq(usersToGroups.groupId, sql.placeholder('id'))).prepare();
+  PMemberUsername = db.select({ id: users.id, username: users.username }).from(users).where(eq(users.id, sql.placeholder('id'))).prepare();
 
-    const rawMembers = await useTry(
-      () => db.select({ userId: usersToGroups.userId }).from(usersToGroups).where(eq(usersToGroups.groupId, id)).all(),
-    );
+  async getMembers(id: string, leaderId?: string | null) {
+    leaderId ??= await useTry(async () => (await this.PLeader.get({ groupId: id }))?.leader);
+    const rawMembers = await useTry(() => this.PRawMembers.all({ id }));
     const members = await Promise.all(
       rawMembers.map(
         async item => await useTry(
-          () => db.select({ id: users.id, username: users.username }).from(users).where(eq(users.id, item.userId)).get(),
+          () => this.PMemberUsername.get({ id: item.userId }),
         ),
       ),
     );
-
     const leader = await useTry(
       async () => leaderId
-        ? await db.select({ id: users.id, username: users.username }).from(users).where(eq(users.id, leaderId)).get()
+        ? await this.PMemberUsername.get({ id: leaderId })
         : undefined,
     );
     return { members, leader };
@@ -256,7 +254,7 @@ export class GroupController {
       requireEqualOrThrow(
         user.id,
         await useTry(
-          async () => (await db.select({ leader: groups.leader }).from(groups).where(eq(groups.id, groupId)).get())?.leader,
+          async () => (await this.PLeader.get({ groupId }))?.leader,
         ),
         { message: '只能将自己移出组长', code: 'FORBIDDEN' },
       );
@@ -273,7 +271,7 @@ export class GroupController {
    */
   private async _removeIfLeaderLeaves(userId: string, groupId: string) {
     try {
-      const group = (await db.select({ leader: groups.leader }).from(groups).where(eq(groups.id, groupId)).get());
+      const group = await this.PLeader.get({ groupId });
       if (group?.leader === userId)
         await this._removeLeader(groupId);
     } catch (err) {

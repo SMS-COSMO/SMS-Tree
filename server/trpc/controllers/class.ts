@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import type { TRawClass } from '../../db/db';
 import { db } from '../../db/db';
@@ -61,16 +61,19 @@ export class ClassController {
     return `${yearString[year]}（${classInfo.index}）`;
   }
 
+  PGetStudents = db
+    .select({ userId: classesToStudents.userId })
+    .from(classesToStudents)
+    .where(eq(classesToStudents.classId, sql.placeholder('id')))
+    .prepare();
+
   private async getFullClass(basicClass: TRawClass | undefined) {
     if (!basicClass)
       throw new TRPCError({ code: 'NOT_FOUND', message: '班级不存在' });
 
     const students = await useTry(
       async () => (
-        await db
-          .select({ userId: classesToStudents.userId })
-          .from(classesToStudents)
-          .where(eq(classesToStudents.classId, basicClass.id))
+        await this.PGetStudents.all({ id: basicClass.id })
       ).map(item => item.userId),
       { code: 'INTERNAL_SERVER_ERROR', message: '无法获取学生' },
     );
@@ -89,15 +92,14 @@ export class ClassController {
     return '修改成功';
   }
 
+  PClassContent = db.select().from(classes).where(eq(classes.id, sql.placeholder('id'))).prepare();
   async getContent(id: string) {
-    const res = await useTry(() => db.select().from(classes).where(eq(classes.id, id)).get());
-    return res;
+    return await useTry(() => this.PClassContent.get({ id }));
   }
 
   async getFullContent(id: string) {
-    const basicClass = await useTry(() => db.select().from(classes).where(eq(classes.id, id)).get());
-    const res = await this.getFullClass(basicClass);
-    return res;
+    const basicClass = await useTry(() => this.PClassContent.get({ id }));
+    return await this.getFullClass(basicClass);
   }
 
   async getList() {

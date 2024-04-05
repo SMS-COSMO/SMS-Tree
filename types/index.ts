@@ -57,3 +57,5 @@ export interface TSearchOption {
   searchSelectValue: string[];
   sortOption: 'time' | 'score' | 'downloadCount' | 'default';
 }
+
+export type TScore = 'A' | 'B' | 'C' | 'D' | null | undefined;
