@@ -10,7 +10,7 @@
       <el-step :icon="ElIconDataBoard" title="开题报告" />
       <el-step :icon="ElIconDataLine" title="结题报告" />
       <el-step :icon="ElIconUpload" title="提交论文" />
-      <el-step v-if="showArchived" :icon="ElIconBox" title="已归档" />
+      <el-step v-if="showArchived" :icon="ElIconBox" title="归档" />
     </el-steps>
     <template #fallback>
       <el-skeleton :rows="1" animated />

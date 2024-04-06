@@ -71,7 +71,7 @@
             活动记录
           </div>
         </template>
-        <div class="grid grid-cols-2 gap-2">
+        <div :class="(info?.notes?.length ?? 0) > 1 ? 'grid grid-cols-2 gap-2' : ''">
           <template v-for="note in info?.notes" :key="note.id">
             <NoteCard :note="note" />
           </template>
@@ -86,7 +86,7 @@
             报告
           </div>
         </template>
-        <div :class="info?.reports?.length ?? 0 > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
+        <div :class="(info?.reports?.length ?? 0) > 1 ? 'grid grid-cols-2 gap-2' : ''">
           <template v-for="report in info?.reports" :key="report.id">
             <ReportCard :report="report" />
           </template>

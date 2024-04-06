@@ -1,12 +1,10 @@
 <template>
   <el-card class="mb-2 cursor-pointer lg:mb-2.5 hover:border-color-[#D4D7DE]! hover:bg-hover-bg!" @click="dialogVisible = true">
-    <el-row class="gap-[6px]">
-      <el-tag type="info" disable-transitions>
-        {{ report.createdAt.toLocaleDateString('zh-CN') }}
-      </el-tag>
-    </el-row>
+    <el-tag type="info" disable-transitions>
+      {{ report.createdAt.toLocaleDateString('zh-CN') }}
+    </el-tag>
     <div class="mt-1">
-      <el-text class="break-normal font-bold text-xl!">
+      <el-text class="break-normal font-bold text-lg!">
         {{ report.category === 'thesisProposal' ? '开题报告' : '结题报告' }}
       </el-text>
     </div>

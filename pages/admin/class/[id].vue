@@ -2,7 +2,7 @@
   <div class="mb-5 w-full space-y-4">
     <template v-if="classData">
       <el-row :gutter="16">
-        <el-col :span="8">
+        <el-col :span="device.isMobileOrTablet ? 24 : 8">
           <el-card>
             <template #header>
               <el-icon><ElIconOfficeBuilding /></el-icon>
@@ -56,8 +56,8 @@
             </el-descriptions>
           </el-card>
         </el-col>
-        <el-col :span="16">
-          <el-card class="h-full">
+        <el-col :span="device.isMobileOrTablet ? 24 : 16">
+          <el-card class="mt-2 h-full lg:mt-0">
             <template #header>
               班级状态
             </template>
@@ -96,7 +96,7 @@
       </el-collapse-transition>
     </template>
     <template v-if="groupList">
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid gap-2 lg:grid-cols-2 lg:gap-4">
         <template v-for="(group, index) in groupList" :key="group.id">
           <TeacherGroupInfo :info="group" :index="index + 1" />
         </template>
@@ -111,6 +111,7 @@ import { stateTable } from '~/constants/class';
 import type { TClassState } from '~/types';
 
 const { $api } = useNuxtApp();
+const device = useDevice();
 useHeadSafe({
   title: '班级信息',
 });
