@@ -1,5 +1,5 @@
 import process from 'node:process';
-import type * as trpcExpress from '@trpc/server/adapters/express';
+import type { H3Event } from 'h3';
 import type { inferAsyncReturnType } from '@trpc/server';
 import { type TRawUser, db } from '../db/db';
 import { UserController } from './controllers/user';
@@ -82,9 +82,9 @@ export const ctl = {
  * process every request that goes through your tRPC endpoint
  * @link https://trpc.io/docs/context
  */
-export async function createContext(opts: trpcExpress.CreateExpressContextOptions) {
-  const { req } = opts;
-  const user = await userController.getUserFromHeader(req);
+export async function createContext(event: H3Event) {
+  const header = getRequestHeader(event, 'Authorization');
+  const user = await userController.getUserFromHeader(header);
   return createInnerContext({ user });
 }
 

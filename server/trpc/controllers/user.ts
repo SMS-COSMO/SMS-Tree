@@ -1,7 +1,6 @@
 import { LibsqlError } from '@libsql/client';
 import bcrypt from 'bcrypt';
 import { and, eq } from 'drizzle-orm';
-import type { CreateExpressContextOptions } from '@trpc/server/adapters/express';
 import { TRPCError } from '@trpc/server';
 import type { TNewUser, TRawUser } from '../../db/db';
 import { db } from '../../db/db';
@@ -21,10 +20,10 @@ export class UserController {
     this.auth = new Auth();
   }
 
-  async getUserFromHeader(req: CreateExpressContextOptions['req']) {
-    if (!req.headers.authorization)
+  async getUserFromHeader(authorization: string | undefined) {
+    if (!authorization)
       return undefined;
-    const result = await this.auth.getUserFromToken(req.headers.authorization);
+    const result = await this.auth.getUserFromToken(authorization);
     if (result.err)
       return undefined;
     return result.user;
