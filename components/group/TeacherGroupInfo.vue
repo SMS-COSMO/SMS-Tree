@@ -112,7 +112,7 @@
 </template>
 
 <script setup lang="ts">
-import { InfiniteQueryObserver, useMutation, useQueryClient } from '@tanstack/vue-query';
+import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import type { TGroupContent } from '~/types';
 
 const props = defineProps<{
