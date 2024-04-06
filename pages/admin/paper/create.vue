@@ -1,5 +1,5 @@
 <template>
-  <el-card class="mb-5 w-full">
+  <el-card class="mb-5">
     <el-form
       ref="formRef"
       :label-position="device.isMobileOrTablet ? 'top' : 'right'"

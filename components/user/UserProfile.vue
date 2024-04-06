@@ -76,6 +76,14 @@
       </template>
     </div>
   </FoldableCard>
+
+  <el-button
+    v-if="device.isMobileOrTablet && useUserStore().userId === info?.id"
+    class="mt-4 w-full"
+    @click="useLogout"
+  >
+    退出登陆
+  </el-button>
 </template>
 
 <script lang="ts" setup>

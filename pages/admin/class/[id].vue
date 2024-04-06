@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-5 w-full space-y-4">
+  <div class="mb-5 space-y-4">
     <template v-if="classData">
       <el-row :gutter="16">
         <el-col :span="device.isMobileOrTablet ? 24 : 8">
@@ -57,7 +57,7 @@
           </el-card>
         </el-col>
         <el-col :span="device.isMobileOrTablet ? 24 : 16">
-          <el-card class="mt-2 h-full lg:mt-0">
+          <el-card class="mt-2 h-full md:mt-0">
             <template #header>
               班级状态
             </template>

@@ -11,7 +11,9 @@
       </el-popover>
     </client-only>
     <AdminNavBar v-else />
-    <slot />
+    <div :class="`${device.isMobileOrTablet ? 'mb-16' : ''} w-full`">
+      <slot />
+    </div>
   </div>
 </template>
 

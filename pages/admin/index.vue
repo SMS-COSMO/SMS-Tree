@@ -1,5 +1,5 @@
 <template>
-  <el-card class="mb-5 w-full">
+  <el-card class="mb-5">
     home
   </el-card>
 </template>

@@ -2,7 +2,7 @@
   <el-tabs
     v-model="selectedTab"
     tab-position="top"
-    class="w-full lg:px-2"
+    class="lg:px-2"
     @tab-change="$router.replace({ query: { action: selectedTab } })"
   >
     <el-tab-pane name="modify" label="修改用户信息">

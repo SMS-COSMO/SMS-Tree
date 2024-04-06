@@ -1,6 +1,7 @@
 <template>
   <div class="nav top-0 bg-primary-0">
     <el-menu
+      v-if="!device.isMobileOrTablet"
       :class="`${isAdmin ? '' : 'max-w-[1300px]'} mx-auto! border-none! pr-3`"
       :ellipsis="false" mode="horizontal"
       background-color="#146E3C" text-color="#FFFFFF" active-text-color="#FFFFFF"
@@ -37,7 +38,7 @@
         <el-menu-item :index="`/user/${userStore.userId}`">
           主页
         </el-menu-item>
-        <el-menu-item @click="logout">
+        <el-menu-item @click="useLogout">
           登出
         </el-menu-item>
       </el-sub-menu>
@@ -49,7 +50,7 @@
 
   <!-- Mobile Bottom Nav Bar -->
   <div v-if="device.isMobileOrTablet" class="nav bottom-0 border-t-1 border-t-border-light border-t-solid bg-white">
-    <el-row :gutter="5" class="px-2">
+    <el-row class="px-2">
       <MobileNavButton label="首页" href="/">
         <template #icon>
           <ElIconHouse />
@@ -61,7 +62,7 @@
         </template>
       </MobileNavButton>
       <MobileNavButton
-        v-if="userStore.role === 'student'"
+        v-if="userStore.loggedIn && userStore.role === 'student'"
         label="我的小组"
         href="/group"
       >
@@ -70,11 +71,30 @@
         </template>
       </MobileNavButton>
       <MobileNavButton
-        v-if="userStore.role === 'admin' || userStore.role === 'teacher'" label="管理"
+        v-if="userStore.role === 'admin' || userStore.role === 'teacher'"
+        label="管理"
         href="/admin"
       >
         <template #icon>
           <ElIconEditPen />
+        </template>
+      </MobileNavButton>
+      <MobileNavButton
+        v-if="userStore.loggedIn"
+        :href="`/user/${userStore.userId}`"
+        label="我的"
+      >
+        <template #icon>
+          <ElIconUser />
+        </template>
+      </MobileNavButton>
+      <MobileNavButton
+        v-if="!userStore.loggedIn"
+        href="/user/login"
+        label="登录"
+      >
+        <template #icon>
+          <ElIconUser />
         </template>
       </MobileNavButton>
     </el-row>
@@ -93,10 +113,4 @@ watch(() => route.matched[0].path, (value) => {
   isAdmin.value = value === '/admin';
 });
 isAdmin.value = route.matched[0].path === '/admin';
-
-function logout() {
-  userStore.logout();
-  navigateTo('/');
-  useElMessage({ message: '登出成功！', type: 'success' });
-}
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="flex-grow" @click="navigateTo(href)">
     <div
-      class="m-2 h-10 p-1.5 text-center leading-[0.95] rounded"
+      class="mx-1 my-2 h-10 p-1.5 text-center leading-[0.95] rounded"
       :class="isHighlight ? 'transition-all bg-hover-bg' : ''"
     >
       <el-icon :size="18" color="#606266">

@@ -1,5 +1,5 @@
 <template>
-  <el-card class="mb-5 w-full">
+  <el-card class="mb-5">
     <el-input v-model="searchContent" placeholder="搜索学生" />
     <div class="h-[calc(100vh-190px)]">
       <el-auto-resizer>
@@ -34,7 +34,8 @@ const { listData, processedListData } = await useUserSearch(searchContent, 'stud
 async function deleteUser(id: string) {
   try {
     await $api.user.remove.mutate({ id });
-    listData.value.splice(listData.value.findIndex(e => e.id === id), 1);
+    if (listData.value)
+      listData.value.splice(listData.value.findIndex(e => e.id === id), 1);
   } catch (err) {
     useErrorHandler(err);
   }
