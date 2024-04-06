@@ -98,7 +98,14 @@ export class ClassController {
   async getList() {
     const res = await Promise.all(
       (await db.select().from(classes)).map(
-        async basicClass => await this.getFullClass(basicClass),
+        async (basicClass) => {
+          const className = await this.getString('', basicClass);
+          const teacher = await useTry(
+            async () => ctl.uc.getProfile(basicClass.teacherId),
+            { code: 'INTERNAL_SERVER_ERROR', message: '无法获取教师' },
+          );
+          return { ...basicClass, className, teacher: { username: teacher.username } };
+        },
       ),
     );
 
