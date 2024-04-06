@@ -40,9 +40,7 @@
               <GroupMembers :authors="info?.authors" :leader="info?.leader" type="link" class="inline" />
             </el-descriptions-item>
             <el-descriptions-item label="发布时间">
-              <client-only>
-                {{ info?.createdAt.toLocaleDateString('zh-CN') }}
-              </client-only>
+              {{ info?.createdAt.toLocaleDateString('zh-CN') }}
             </el-descriptions-item>
             <el-descriptions-item label="分类">
               <el-tag effect="plain" type="warning">

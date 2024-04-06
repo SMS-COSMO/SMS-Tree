@@ -27,7 +27,7 @@
     </template>
   </client-only>
 
-  <el-collapse-transition name="el-fade-in">
+  <el-collapse-transition>
     <div v-if="modelValue.sortOption !== 'default'">
       <el-divider content-position="left">
         排序

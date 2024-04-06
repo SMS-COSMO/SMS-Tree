@@ -154,11 +154,6 @@
 }
 
 /* Button */
-.el-button {
-  border-width: 2px !important;
-  border-radius: 10px !important;
-}
-
 .el-button:not(.el-button--small) {
   height: 40px !important;
   padding: 8px 20px !important;

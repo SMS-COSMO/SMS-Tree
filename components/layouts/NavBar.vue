@@ -16,38 +16,34 @@
         <el-menu-item index="/paper/list">
           论文列表
         </el-menu-item>
-        <client-only>
-          <el-menu-item
-            v-if="userStore.loggedIn && userStore.role === 'student'"
-            index="/group"
-          >
-            我的小组
-          </el-menu-item>
-          <el-menu-item
-            v-if="userStore.role === 'admin' || userStore.role === 'teacher'"
-            index="/admin"
-          >
-            管理
-          </el-menu-item>
-        </client-only>
+        <el-menu-item
+          v-if="userStore.loggedIn && userStore.role === 'student'"
+          index="/group"
+        >
+          我的小组
+        </el-menu-item>
+        <el-menu-item
+          v-if="userStore.role === 'admin' || userStore.role === 'teacher'"
+          index="/admin"
+        >
+          管理
+        </el-menu-item>
       </template>
       <div class="flex-grow" />
-      <client-only>
-        <el-sub-menu v-if="userStore.loggedIn" index="4">
-          <template #title>
-            {{ userStore.username }}
-          </template>
-          <el-menu-item :index="`/user/${userStore.userId}`">
-            主页
-          </el-menu-item>
-          <el-menu-item @click="logout">
-            登出
-          </el-menu-item>
-        </el-sub-menu>
-        <el-menu-item v-else index="/user/login">
-          登录
+      <el-sub-menu v-if="userStore.loggedIn" index="4">
+        <template #title>
+          {{ userStore.username }}
+        </template>
+        <el-menu-item :index="`/user/${userStore.userId}`">
+          主页
         </el-menu-item>
-      </client-only>
+        <el-menu-item @click="logout">
+          登出
+        </el-menu-item>
+      </el-sub-menu>
+      <el-menu-item v-else index="/user/login">
+        登录
+      </el-menu-item>
     </el-menu>
   </div>
 
@@ -64,25 +60,23 @@
           <ElIconTickets />
         </template>
       </MobileNavButton>
-      <client-only>
-        <MobileNavButton
-          v-if="userStore.role === 'student'"
-          label="我的小组"
-          href="/group"
-        >
-          <template #icon>
-            <ElIconReading />
-          </template>
-        </MobileNavButton>
-        <MobileNavButton
-          v-if="userStore.role === 'admin' || userStore.role === 'teacher'" label="管理"
-          href="/admin"
-        >
-          <template #icon>
-            <ElIconEditPen />
-          </template>
-        </MobileNavButton>
-      </client-only>
+      <MobileNavButton
+        v-if="userStore.role === 'student'"
+        label="我的小组"
+        href="/group"
+      >
+        <template #icon>
+          <ElIconReading />
+        </template>
+      </MobileNavButton>
+      <MobileNavButton
+        v-if="userStore.role === 'admin' || userStore.role === 'teacher'" label="管理"
+        href="/admin"
+      >
+        <template #icon>
+          <ElIconEditPen />
+        </template>
+      </MobileNavButton>
     </el-row>
   </div>
 </template>

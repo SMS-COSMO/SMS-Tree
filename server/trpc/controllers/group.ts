@@ -99,7 +99,6 @@ export class GroupController {
       throw new TRPCError({ code: 'NOT_FOUND', message: '小组不存在' });
 
     const { members, leader } = await this.getMembers(info.id, info.leader);
-    const isOwned = await this.hasUser(user.id, id, { members, leader });
 
     let papersWithInfo, reportsWithInfo;
     if (getDetail) {
@@ -118,7 +117,7 @@ export class GroupController {
     }
 
     let rawNotes;
-    if (isOwned)
+    if (['admin', 'teacher'].includes(user.role) || await this.hasUser(user.id, id, { members, leader }))
       rawNotes = await useTry(() => db.select().from(notes).where(eq(notes.groupId, id)));
 
     return groupSerializer(info, members, leader, papersWithInfo, rawNotes, reportsWithInfo);
@@ -159,7 +158,7 @@ export class GroupController {
       : await useTry(() => db.select().from(groups).all());
 
     const res = await Promise.all(
-      groupList.map(async info => await this.getContent(info.id, user, false, info)),
+      groupList.map(async info => await this.getContent(info.id, user, true, info)),
     );
 
     return res;

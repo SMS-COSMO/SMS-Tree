@@ -4,68 +4,63 @@
       <el-icon><ElIconSetUp /></el-icon>
       用户信息
     </template>
-    <client-only>
-      <el-descriptions
-        :column="device.isMobileOrTablet ? 2 : 4"
-        size="large" class="mb-[-16px]"
-      >
-        <el-descriptions-item>
-          <template #label>
-            <div class="text-[16px]!">
-              <el-icon>
-                <ElIconUser />
-              </el-icon>
-              姓名
-            </div>
-          </template>
-          <span class="text-[16px]!">
-            {{ info?.username }}
-          </span>
-        </el-descriptions-item>
-        <el-descriptions-item v-if="type === 'admin' && info?.schoolId">
-          <template #label>
-            <div class="text-[16px]!">
-              <el-icon>
-                <ElIconUser />
-              </el-icon>
-              学工号
-            </div>
-          </template>
-          <span class="text-[16px]!">
-            {{ info?.schoolId }}
-          </span>
-        </el-descriptions-item>
-        <el-descriptions-item v-if="info?.role === 'student'">
-          <template #label>
-            <div class="text-[16px]!">
-              <el-icon>
-                <ElIconLocation />
-              </el-icon>
-              班级
-            </div>
-          </template>
-          <span class="text-[16px]!">
-            {{ info?.className }}
-          </span>
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label>
-            <div class="text-[16px]!">
-              <el-icon>
-                <ElIconTickets />
-              </el-icon>
-              账号权限
-            </div>
-          </template>
-          <el-tag>
-            {{ roleName[info?.role ?? 'student'] }}
-          </el-tag>
-        </el-descriptions-item>
-      </el-descriptions>
-      <template #fallback>
-        <el-skeleton :rows="1" animated />
-      </template>
-    </client-only>
+    <el-descriptions
+      :column="device.isMobileOrTablet ? 2 : 4"
+      size="large" class="mb-[-16px]"
+    >
+      <el-descriptions-item>
+        <template #label>
+          <div class="text-[16px]!">
+            <el-icon>
+              <ElIconUser />
+            </el-icon>
+            姓名
+          </div>
+        </template>
+        <span class="text-[16px]!">
+          {{ info?.username }}
+        </span>
+      </el-descriptions-item>
+      <el-descriptions-item v-if="type === 'admin' && info?.schoolId">
+        <template #label>
+          <div class="text-[16px]!">
+            <el-icon>
+              <ElIconUser />
+            </el-icon>
+            学工号
+          </div>
+        </template>
+        <span class="text-[16px]!">
+          {{ info?.schoolId }}
+        </span>
+      </el-descriptions-item>
+      <el-descriptions-item v-if="info?.role === 'student'">
+        <template #label>
+          <div class="text-[16px]!">
+            <el-icon>
+              <ElIconLocation />
+            </el-icon>
+            班级
+          </div>
+        </template>
+        <span class="text-[16px]!">
+          {{ info?.className }}
+        </span>
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>
+          <div class="text-[16px]!">
+            <el-icon>
+              <ElIconTickets />
+            </el-icon>
+            账号权限
+          </div>
+        </template>
+        <el-tag>
+          {{ roleName[info?.role ?? 'student'] }}
+        </el-tag>
+      </el-descriptions-item>
+    </el-descriptions>
   </el-card>
   <FoldableCard class="mt-5">
     <template #header>
