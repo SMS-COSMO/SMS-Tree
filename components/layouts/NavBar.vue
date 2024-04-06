@@ -18,7 +18,7 @@
         </el-menu-item>
         <client-only>
           <el-menu-item
-            v-if="userStore.role === 'student'"
+            v-if="userStore.loggedIn && userStore.role === 'student'"
             index="/group"
           >
             我的小组
