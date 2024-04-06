@@ -1,3 +1,4 @@
+import { type QueryKey, useQuery } from '@tanstack/vue-query';
 import type { UseFuseOptions } from '@vueuse/integrations/useFuse';
 import { useFuse } from '@vueuse/integrations/useFuse';
 import type { TUserListItem } from '~/types/index';
@@ -6,12 +7,18 @@ export async function useSearch<T>(
   searchContent: Ref<string>,
   fuseOptions: MaybeRefOrGetter<UseFuseOptions<T>>,
   getList: () => Promise<T[]>,
+  queryKey: QueryKey,
   map: (e: any) => T = (e: any) => e.item,
   filter?: (e: T) => boolean,
   sort?: ((a: T, b: T) => number),
 ) {
-  const listData = ref(await useTrpcAsyncData(getList) ?? []);
-  const fuse = useFuse(searchContent, listData, fuseOptions);
+  const { data: listData, suspense } = useQuery({
+    queryKey,
+    queryFn: getList,
+  });
+  await suspense();
+
+  const fuse = useFuse(searchContent, ref(listData.value ?? []), fuseOptions);
   const processedListData = computed<T[]>(
     () => fuse.results.value
       .map(map)
@@ -28,6 +35,7 @@ export function useUserSearch(searchContent: Ref<string>, role: 'student' | 'tea
     searchContent,
     templateSearchOption(['schoolId', 'username', 'projectName', 'className']),
     () => $api.user.list.query({ role }),
+    ['userSearch', { role }],
   );
 }
 

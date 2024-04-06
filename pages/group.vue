@@ -72,7 +72,7 @@ const [classInfo, userInfo] = await useTrpcAsyncData(() => Promise.all([
 ])) ?? [];
 
 const { data: groupInfo, suspense: groupInfoSuspense } = useQuery({
-  queryKey: ['groupInfo'],
+  queryKey: ['groupInfo', { id: userStore.groupIds[0] }],
   queryFn: () => {
     if (userStore.groupIds[0])
       return $api.group.content.query({ id: userStore.groupIds[0] });

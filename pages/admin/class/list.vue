@@ -32,6 +32,7 @@
 </template>
 
 <script setup lang="ts">
+import { useQuery } from '@tanstack/vue-query';
 import { stateTable } from '~/constants/class';
 import type { TClassListItem } from '~/types';
 
@@ -42,14 +43,21 @@ useHeadSafe({
 
 const showAll = ref(false);
 const searchContent = ref('');
-const teacherClasses = await useTrpcAsyncData(() => $api.user.getTeacherClasses.query(useUserStore().userId));
+
+const userStore = useUserStore();
+const { data: teacherClasses } = useQuery({
+  queryKey: ['teacherClasses', { id: userStore.userId }],
+  queryFn: () => $api.user.getTeacherClasses.query(userStore.userId),
+});
+
 const { processedListData } = await useSearch<TClassListItem>(
   searchContent,
   templateSearchOption(['className', 'teacher']),
   $api.class.list.query,
+  ['classSearch'],
   e => e.item,
   (e) => {
-    return showAll.value || (teacherClasses ?? []).includes(e.id);
+    return showAll.value || (teacherClasses.value ?? []).includes(e.id);
   },
 );
 

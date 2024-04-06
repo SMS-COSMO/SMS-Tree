@@ -117,7 +117,7 @@ useHeadSafe({
 const queryClient = useQueryClient();
 
 const { data: classData, suspense: classInfoSuspense } = useQuery({
-  queryKey: ['classInfo'],
+  queryKey: ['classInfo', { id: useRoute().params.id.toString() }],
   queryFn: () => {
     return useTrpcAsyncData(
       () => $api.class.fullContent.query({ id: useRoute().params.id.toString() }),
@@ -127,7 +127,7 @@ const { data: classData, suspense: classInfoSuspense } = useQuery({
 await classInfoSuspense();
 
 const { data: groupList, suspense: groupListSuspense } = useQuery({
-  queryKey: ['groupList'],
+  queryKey: ['groupList', { id: useRoute().params.id.toString() }],
   queryFn: () => {
     return useTrpcAsyncData(
       () => $api.group.list.query({ classId: useRoute().params.id.toString() }),

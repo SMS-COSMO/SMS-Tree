@@ -85,7 +85,6 @@
 import { useUserStore } from '~/stores/user';
 
 const userStore = useUserStore();
-const paperList = usePaperList();
 const route = useRoute();
 const device = useDevice();
 
@@ -97,7 +96,6 @@ isAdmin.value = route.matched[0].path === '/admin';
 
 function logout() {
   userStore.logout();
-  paperList.clear();
   navigateTo('/');
   useElMessage({ message: '登出成功！', type: 'success' });
 }
