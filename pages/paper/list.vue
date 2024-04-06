@@ -152,8 +152,6 @@ const { processedListData } = await useSearch<TPaperListSafeItem>(
 function load() {
   count.value += Math.min(15, processedListData.value.length - count.value);
 }
-
-await useTrpcAsyncData($api.user.tokenValidity.query);
 </script>
 
 <style scoped>
