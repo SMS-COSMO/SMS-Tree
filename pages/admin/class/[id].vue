@@ -64,7 +64,7 @@
             <div class="space-y-4">
               <StateStep :class-info="classData" direction="horizontal" show-archived />
               <div class="flex flex-row gap-2">
-                <el-button-group class="">
+                <el-button-group class="mx-auto">
                   <el-button :disabled="classData.state === step[0]" @click="modifyState(-1)">
                     <el-icon><ElIconBack /></el-icon>
                     上一状态
@@ -74,22 +74,26 @@
                     <el-icon><ElIconRight /></el-icon>
                   </el-button>
                 </el-button-group>
-                <template v-if="classData.state === 'initialized'">
-                  <el-input-number v-model="newGroupCount" :min="1" step-strictly :step="1" :max="15" class="ml-2" />
-                  <el-button
-                    @click="createEmptyGroups({
-                      id: classData.id,
-                      amount: newGroupCount,
-                    })"
-                  >
-                    创建空白小组
-                  </el-button>
-                </template>
               </div>
             </div>
           </el-card>
         </el-col>
       </el-row>
+      <el-collapse-transition>
+        <template v-if="classData.state === 'initialized'">
+          <div class="flex flex-row gap-2">
+            <el-input-number v-model="newGroupCount" :min="1" step-strictly :step="1" :max="15" />
+            <el-button
+              @click="createEmptyGroups({
+                id: classData.id,
+                amount: newGroupCount,
+              })"
+            >
+              创建空白小组
+            </el-button>
+          </div>
+        </template>
+      </el-collapse-transition>
     </template>
     <template v-if="groupList">
       <div class="grid grid-cols-2 gap-4">

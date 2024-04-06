@@ -93,9 +93,7 @@ const isAdmin = ref(false);
 watch(() => route.matched[0].path, (value) => {
   isAdmin.value = value === '/admin';
 });
-onMounted(() => {
-  isAdmin.value = route.matched[0].path === '/admin';
-});
+isAdmin.value = route.matched[0].path === '/admin';
 
 function logout() {
   userStore.logout();

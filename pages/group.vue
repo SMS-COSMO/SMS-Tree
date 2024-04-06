@@ -75,7 +75,7 @@ const { data: groupInfo, suspense: groupInfoSuspense } = useQuery({
   queryKey: ['groupInfo'],
   queryFn: () => {
     if (userStore.groupIds[0])
-      return $api.group.content.query({ id: userStore.groupIds[0] })
+      return $api.group.content.query({ id: userStore.groupIds[0] });
   },
 });
 await groupInfoSuspense();

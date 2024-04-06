@@ -5,6 +5,20 @@
         小组 {{ index }}
       </el-tag>
       {{ info?.projectName ?? '暂无课题名' }}
+      <el-popconfirm
+        v-if="info"
+        title="确定要删除小组吗"
+        width="200"
+        confirm-button-type="danger"
+        hide-icon
+        @confirm="removeGroup({ id: info?.id })"
+      >
+        <template #reference>
+          <el-link :icon="ElIconDelete" type="danger" class="float-right">
+            删除
+          </el-link>
+        </template>
+      </el-popconfirm>
     </template>
     <el-descriptions
       :column="1"
@@ -98,6 +112,7 @@
 </template>
 
 <script setup lang="ts">
+import { InfiniteQueryObserver, useMutation, useQueryClient } from '@tanstack/vue-query';
 import type { TGroupContent } from '~/types';
 
 const props = defineProps<{
@@ -105,7 +120,18 @@ const props = defineProps<{
   index: number;
 }>();
 
+const { $api } = useNuxtApp();
+const queryClient = useQueryClient();
+
 const newProjectName = ref();
+
+const { mutate: removeGroup } = useMutation({
+  mutationFn: $api.group.remove.mutate,
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['groupList'] });
+  },
+  onError: err => useErrorHandler(err),
+});
 
 onMounted(() => {
   newProjectName.value = props.info?.projectName;
