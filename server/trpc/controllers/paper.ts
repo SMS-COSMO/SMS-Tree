@@ -1,9 +1,9 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import { db } from '../../db/db';
 import type { TNewPaper, TRawPaper, TRawUser } from '../../db/db';
 import { papers } from '../../db/schema/paper';
-import { paperSerializer } from '../serializer/paper';
+import { paperListItemSerializer, paperSerializer } from '../serializer/paper';
 import { attachmentSerializer } from '../serializer/attachment';
 import { ctl } from '../context';
 import { TRPCForbidden, useTry } from '../utils/shared';
@@ -72,22 +72,42 @@ export class PaperController {
   async getListSafe(user: TRawUser) {
     const res = await Promise.all(
       (await useTry(() => db.select().from(papers).where(eq(papers.isPublic, true)).all()))
-        .map(async (paper) => {
-          const {
-            abstract: _abstract,
-            comment: _comment,
-            groupId: _groupId,
-            isPublic: _isPublic,
-            leader: _leader,
-            authors,
-            ...info
-          } = await this.getContent(paper.id, user, paper);
-          return {
-            authors: authors?.map(x => ({ username: x?.username })),
-            ...info,
-          };
-        }),
+        .map(async paper => paperListItemSerializer(await this.getContent(paper.id, user, paper))),
     );
+    return res;
+  }
+
+  async getScoringList(user: TRawUser) {
+    const classes = user.role === 'admin'
+      ? (await ctl.cc.getList()).map(x => x.id)
+      : await ctl.uc.getTeacherClasses(user.id);
+    const managedGroups = (
+      await Promise.all(
+        classes.map(
+          async c => (await ctl.gc.getList(user, c)).map(x => x.id),
+        ),
+      )
+    ).flat();
+
+    if (!managedGroups.length)
+      throw new TRPCError({ code: 'NOT_FOUND', message: '教师无小组' });
+
+    const res = await Promise.all(
+      (
+        await useTry(
+          () => db
+            .select()
+            .from(papers)
+            .where(
+              and(
+                eq(papers.isPublic, false),
+                inArray(papers.groupId, managedGroups),
+              ),
+            ).all(),
+        )
+      ).map(async paper => paperListItemSerializer(await this.getContent(paper.id, user, paper))),
+    );
+
     return res;
   }
 

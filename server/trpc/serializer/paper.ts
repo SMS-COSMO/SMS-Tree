@@ -13,3 +13,19 @@ export function paperSerializer(content: TRawPaper, authors?: TMinimalUser[], le
     leader,
   };
 }
+
+export function paperListItemSerializer(fullInfo: TPaper) {
+  const {
+    abstract: _abstract,
+    comment: _comment,
+    groupId: _groupId,
+    isPublic: _isPublic,
+    leader: _leader,
+    authors,
+    ...info
+  } = fullInfo;
+  return {
+    authors: authors?.map(x => ({ username: x?.username })),
+    ...info,
+  };
+}

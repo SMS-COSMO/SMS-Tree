@@ -2,20 +2,18 @@
   <el-row :gutter="16">
     <el-col :span="6">
       <el-card class="flow h-content">
-        <template #header>
-          :Filters Here:
-        </template>
-        <el-scrollbar>
-          <template v-for="item in list" :key="item">
+        <el-scrollbar v-if="scoringQueue?.length">
+          <template v-for="item in scoringQueue" :key="item">
             <TeacherPaperCard :paper="item" @selected="id => selected = id" />
           </template>
         </el-scrollbar>
+        <el-empty v-else description="暂无论文" />
       </el-card>
     </el-col>
     <el-col :span="18">
       <el-card class="h-content">
-        <el-scrollbar>
-          <transition name="content" mode="out-in">
+        <el-scrollbar v-if="selected">
+          <transition name="content" mode="out-in" class="overflow-x-hidden!">
             <TeacherPaperContent :id="selected" :key="selected" />
           </transition>
         </el-scrollbar>
@@ -25,22 +23,27 @@
 </template>
 
 <script setup lang="ts">
+import { useQuery } from '@tanstack/vue-query';
+
 const { $api } = useNuxtApp();
 
-// This is placeholder, TODO: select none scored papers
-const list = await $api.paper.listSafe.query();
-// ----
+const { data: scoringQueue, suspense } = useQuery({
+  queryKey: ['scoringQueue'],
+  queryFn: () => $api.paper.scoringList.query(),
+  refetchInterval: 60 * 1000, // 1min
+});
+await suspense();
 
-const selected = ref(list[0].id);
+const selected = ref(scoringQueue.value?.at(0)?.id);
 </script>
 
 <style>
 .flow>.el-card__body {
-  box-sizing: border-box;
   padding: 15px;
 }
 
 .h-content>.el-card__body {
+  box-sizing: border-box;
   height: 100%;
 }
 

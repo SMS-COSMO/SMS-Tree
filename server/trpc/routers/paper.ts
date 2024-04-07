@@ -63,6 +63,12 @@ export const paperRouter = router({
       return await ctx.paperController.getListSafe(ctx.user);
     }),
 
+  scoringList: protectedProcedure
+    .use(requireRoles(['admin', 'teacher']))
+    .query(async ({ ctx }) => {
+      return await ctx.paperController.getScoringList(ctx.user);
+    }),
+
   attachments: protectedProcedure
     .input(z.object({ id: paperIdZod }))
     .query(async ({ ctx, input }) => {

@@ -1,45 +1,26 @@
 <template>
-  <div class="mb-22 lg:mb-8 space-y-3 lg:space-y-4">
-    <div class="lg:flex">
-      <h1 class="w-full text-2xl lg:pr-[2em] lg:text-4xl">
-        {{ info?.title }}
-      </h1>
-      <el-space :size="10" class="mb-2 lg:mb-0">
-        <el-tag v-if="info?.isFeatured" type="success" size="large">
-          <el-text style="color: var(--el-color-success);">
-            <el-icon>
-              <ElIconStar />
-            </el-icon>
-            优秀作业
-          </el-text>
-        </el-tag>
-        <el-tag v-if="info?.score" size="large" :type="useScoreColor(info.score)" disable-transitions>
-          <el-text :style="`color: var(--el-color-${useScoreColor(info.score)});`">
-            <el-icon><ElIconHistogram /></el-icon>
-            分数：{{ info.score }}
-          </el-text>
-        </el-tag>
-        <el-tag v-if="info?.canDownload" type="info" size="large" disable-transitions>
-          <el-text style="color: var(--el-color-info);">
-            <el-icon><ElIconDownload /></el-icon>
-            下载次数：{{ info?.downloadCount ?? 0 }}
-          </el-text>
-        </el-tag>
-      </el-space>
-    </div>
+  <div class="space-y-3 lg:space-y-4">
+    <h1 class="w-full text-2xl lg:pr-[2em] lg:text-4xl">
+      {{ info?.title }}
+    </h1>
 
     <el-row :gutter="20">
-      <el-col :span="device.isMobileOrTablet ? 24 : 6">
+      <el-col :span="7">
         <FoldableCard :can-fold="device.isMobileOrTablet" class="box-border h-full">
           <template #header>
             <el-icon><ElIconInfoFilled /></el-icon>
             论文信息
           </template>
           <el-descriptions :column="1">
+            <el-descriptions-item label="班级">
+              <el-link :href="`/admin/class/${classInfo?.id}`">
+                {{ classInfo?.className }}
+              </el-link>
+            </el-descriptions-item>
             <el-descriptions-item v-if="info?.authors" label="作者">
               <GroupMembers :authors="info?.authors" :leader="info?.leader" type="link" class="inline" />
             </el-descriptions-item>
-            <el-descriptions-item label="发布时间">
+            <el-descriptions-item label="提交时间">
               {{ info?.createdAt.toLocaleDateString('zh-CN') }}
             </el-descriptions-item>
             <el-descriptions-item label="分类">
@@ -58,10 +39,9 @@
               </span>
             </el-descriptions-item>
           </el-descriptions>
-          <Attachment :can-download="info?.canDownload" :paper-id="info?.id" :attachments="attachments" />
         </FoldableCard>
       </el-col>
-      <el-col :span="device.isMobileOrTablet ? 24 : 18" class="mt-3 lg:mt-0">
+      <el-col :span="17" class="mt-3 lg:mt-0">
         <FoldableCard :can-fold="device.isMobileOrTablet" class="box-border h-full">
           <template #header>
             <el-icon><ElIconList /></el-icon>
@@ -77,13 +57,6 @@
     <template v-if="attachments?.length && (attachments?.findIndex(e => e.S3FileId) !== -1)">
       <Preview :attachment="attachments?.filter(a => a.category === 'paperDocument')[0]" full-height />
     </template>
-
-    <el-card v-if="info?.comment">
-      <template #header>
-        教师评语
-      </template>
-      {{ info?.comment }}
-    </el-card>
   </div>
 </template>
 
@@ -102,6 +75,10 @@ const [info, attachments] = await useTrpcAsyncData(() => Promise.all([
   $api.paper.info.query({ id: props.id }),
   $api.paper.attachments.query({ id: props.id }),
 ])) ?? [];
+
+// TODO perf: don't use groupInfo and classInfo which gets members multiple times
+const groupInfo = await useTrpcAsyncData(() => $api.group.content.query({ id: info?.groupId ?? '' }));
+const classInfo = await useTrpcAsyncData(() => $api.class.fullContent.query({ id: groupInfo?.classId ?? '' }));
 
 function searchTag(keyword: string) {
   navigateTo({
