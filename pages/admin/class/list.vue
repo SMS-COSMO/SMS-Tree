@@ -7,6 +7,7 @@
       v-model="searchContent"
       placeholder="搜索班级"
       class="h-[35px]!"
+      :prefix-icon="ElIconSearch"
     />
 
     <el-table

@@ -1,6 +1,10 @@
 <template>
   <el-card class="mb-5">
-    <el-input v-model="searchContent" placeholder="搜索学生" />
+    <el-input
+      v-model="searchContent"
+      placeholder="搜索学生"
+      :prefix-icon="ElIconSearch"
+    />
     <div class="h-[calc(100vh-190px)]">
       <el-auto-resizer>
         <template #default="{ height, width }">
