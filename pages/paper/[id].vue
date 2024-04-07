@@ -88,6 +88,7 @@
 </template>
 
 <script setup lang="ts">
+import { useQuery } from '@tanstack/vue-query';
 import { getCategoryName } from '~/constants/paper';
 
 useHeadSafe({
@@ -100,10 +101,16 @@ const route = useRoute();
 const id = route.params.id.toString();
 const device = useDevice();
 
-const [info, attachments] = await useTrpcAsyncData(() => Promise.all([
-  $api.paper.info.query({ id }),
-  $api.paper.attachments.query({ id }),
-])) ?? [];
+const { data: info, suspense: infoSuspense } = useQuery({
+  queryKey: ['paperInfo', { id }],
+  queryFn: () => $api.paper.info.query({ id }),
+});
+const { data: attachments, suspense: attachmentsSuspense } = useQuery({
+  queryKey: ['attachments', { paperId: id }],
+  queryFn: () => $api.paper.attachments.query({ id }),
+});
+await infoSuspense();
+await attachmentsSuspense();
 
 function searchTag(keyword: string) {
   navigateTo({

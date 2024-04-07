@@ -1,14 +1,14 @@
 <template>
   <div v-if="props.attachment">
     <iframe
-      v-if="docxFileTypes.includes(props.attachment.fileType)"
-      :src="`https://view.officeapps.live.com/op/embed.aspx?src=${fileUrl}`" frameborder="0"
-      :class="`w-full ${fullHeight ? 'h-[calc(100vh-200px)]' : 'h-125'}`"
+      v-if="pdfFileTypes.includes(props.attachment.fileType)"
+      :src="`/pdfjs-dist/web/viewer.html?file=${fileUrl}`" frameborder="0"
+      :class="`w-full ${fullHeight ? 'h-[calc(100vh-150px)]' : 'h-125'} border-normal rounded box-border`"
     />
     <iframe
-      v-else-if="pdfFileTypes.includes(props.attachment.fileType)"
-      :src="`/pdfjs-dist/web/viewer.html?file=${fileUrl}`" frameborder="0"
-      :class="`w-full ${fullHeight ? 'h-[calc(100vh-200px)]' : 'h-125'} border-normal rounded box-border`"
+      v-else-if="docxFileTypes.includes(props.attachment.fileType)"
+      :src="`https://view.officeapps.live.com/op/embed.aspx?src=${fileUrl}`" frameborder="0"
+      :class="`w-full ${fullHeight ? 'h-[calc(100vh-150px)]' : 'h-125'}`"
     />
     <el-image
       v-else-if="/^image*/.test(props.attachment.fileType)"
@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { useTrpcAsyncData } from '../../composables/trpcAsyncData';
+import { useQuery } from '@tanstack/vue-query';
 import type { TAttachmentContent } from '~/types';
 
 const props = withDefaults(defineProps<{
@@ -42,7 +42,11 @@ const props = withDefaults(defineProps<{
 
 const { $api } = useNuxtApp();
 
-const fileUrl = props.attachment ? await (useTrpcAsyncData<string>(() => $api.attachment.fileUrl.query(props.attachment!.id))) : undefined;
+const { data: fileUrl, suspense } = useQuery({
+  queryKey: ['fileUrl', { id: props.attachment?.S3FileId }],
+  queryFn: () => $api.attachment.fileUrl.query(props.attachment!.id),
+});
+await suspense();
 
 const docxFileTypes = [
   'application/msword',
