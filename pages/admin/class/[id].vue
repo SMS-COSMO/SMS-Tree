@@ -5,14 +5,14 @@
         <el-col :span="device.isMobileOrTablet ? 24 : 8">
           <el-card>
             <template #header>
-              <el-icon><ElIconOfficeBuilding /></el-icon>
+              <el-icon class="i-tabler:school" />
               {{ classData.className }}
             </template>
             <el-descriptions size="large" :column="2">
               <el-descriptions-item>
                 <template #label>
                   <div class="text-[16px]!">
-                    <el-icon><ElIconClock /></el-icon>
+                    <el-icon class="i-tabler:clock-share" />
                     入学年份
                   </div>
                 </template>
@@ -23,7 +23,7 @@
               <el-descriptions-item>
                 <template #label>
                   <div class="text-[16px]!">
-                    <el-icon><ElIconUser /></el-icon>
+                    <el-icon class="i-tabler:user" />
                     教师
                   </div>
                 </template>
@@ -34,7 +34,7 @@
               <el-descriptions-item>
                 <template #label>
                   <div class="text-[16px]!">
-                    <el-icon><ElIconOperation /></el-icon>
+                    <el-icon class="i-tabler:adjustments-horizontal" />
                     状态
                   </div>
                 </template>
@@ -45,7 +45,7 @@
               <el-descriptions-item>
                 <template #label>
                   <div class="text-[16px]!">
-                    <el-icon><ElIconUser /></el-icon>
+                    <el-icon class="i-tabler:users" />
                     人数
                   </div>
                 </template>
@@ -59,6 +59,7 @@
         <el-col :span="device.isMobileOrTablet ? 24 : 16">
           <el-card class="mt-2 h-full md:mt-0">
             <template #header>
+              <el-icon class="i-tabler:timeline-event" />
               班级状态
             </template>
             <div class="space-y-4">
@@ -66,12 +67,12 @@
               <div class="flex flex-row gap-2">
                 <el-button-group class="mx-auto">
                   <el-button :disabled="classData.state === step[0]" @click="modifyState(-1)">
-                    <el-icon><ElIconBack /></el-icon>
+                    <el-icon class="i-tabler:arrow-left" />
                     上一状态
                   </el-button>
                   <el-button :disabled="classData.state === step[step.length - 1]" @click="modifyState(1)">
                     下一状态
-                    <el-icon><ElIconRight /></el-icon>
+                    <el-icon class="i-tabler:arrow-right" />
                   </el-button>
                 </el-button-group>
               </div>

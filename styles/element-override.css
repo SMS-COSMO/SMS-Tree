@@ -241,6 +241,10 @@
   border-color: #2a9458 !important;
 }
 
+.el-step__icon-inner {
+  display: inline-flex !important;
+}
+
 /* Tabs */
 .el-tabs--left .el-tabs__item.is-left {
   height: 50px !important;
@@ -354,4 +358,11 @@
 /* Badge */
 .el-badge__content {
   border: none !important;
+}
+
+/* Icon */
+.el-icon {
+  height: 1.2em !important;
+  width: 1.2em !important;
+  margin-bottom: -2.6px !important;
 }

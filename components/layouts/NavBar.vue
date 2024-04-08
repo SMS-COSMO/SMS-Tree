@@ -53,12 +53,12 @@
     <el-row class="px-2">
       <MobileNavButton label="首页" href="/">
         <template #icon>
-          <ElIconHouse />
+          <div class="i-tabler:home" />
         </template>
       </MobileNavButton>
       <MobileNavButton label="论文列表" href="/paper/list">
         <template #icon>
-          <ElIconTickets />
+          <div class="i-tabler:list-details" />
         </template>
       </MobileNavButton>
       <MobileNavButton
@@ -67,7 +67,7 @@
         href="/group"
       >
         <template #icon>
-          <ElIconReading />
+          <div class="i-tabler:book" />
         </template>
       </MobileNavButton>
       <MobileNavButton
@@ -76,7 +76,7 @@
         href="/admin"
       >
         <template #icon>
-          <ElIconEditPen />
+          <div class="i-tabler:pencil" />
         </template>
       </MobileNavButton>
       <MobileNavButton
@@ -85,7 +85,7 @@
         label="我的"
       >
         <template #icon>
-          <ElIconUser />
+          <div class="i-tabler:user" />
         </template>
       </MobileNavButton>
       <MobileNavButton
@@ -94,7 +94,7 @@
         label="登录"
       >
         <template #icon>
-          <ElIconUser />
+          <div class="i-tabler:login" />
         </template>
       </MobileNavButton>
     </el-row>

@@ -4,7 +4,7 @@
       class="mx-1 my-2 h-10 p-1.5 text-center leading-[0.95] rounded"
       :class="isHighlight ? 'transition-all bg-hover-bg' : ''"
     >
-      <el-icon :size="18" color="#606266">
+      <el-icon :size="16" color="#606266">
         <slot name="icon" />
       </el-icon>
       <br>

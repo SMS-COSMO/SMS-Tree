@@ -14,15 +14,15 @@
       <el-col :span="device.isMobileOrTablet ? 24 : 7">
         <el-card>
           <template #header>
-            <el-icon><ElIconZoomIn /></el-icon>
+            <el-icon class="i-tabler:search" />
             快速搜索
           </template>
           <el-row :gutter="10">
-            <el-col :span="18">
+            <el-col :span="19">
               <el-input v-model="quickSearchContent" clearable placeholder="输入搜索内容" @keyup.enter="quickSearch" />
             </el-col>
-            <el-col :span="6">
-              <el-button class="w-full" color="#146E3C" plain :icon="ElIconSearch" @click="quickSearch" />
+            <el-col :span="5">
+              <el-button class="w-full" color="#146E3C" plain icon="i-tabler:search" @click="quickSearch" />
             </el-col>
           </el-row>
         </el-card>
@@ -30,7 +30,7 @@
       <el-col :span="device.isMobileOrTablet ? 24 : 17" class="mt-3 lg:mt-0">
         <el-card>
           <template #header>
-            <el-icon><ElIconDataAnalysis /></el-icon>
+            <el-icon class="i-tabler:presentation" />
             作业进度
           </template>
         </el-card>

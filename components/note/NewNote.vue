@@ -1,8 +1,6 @@
 <template>
   <el-card class="cursor-pointer hover:border-color-[#D4D7DE]! hover:bg-hover-bg!" @click="dialogVisible = true">
-    <el-icon size="16px">
-      <ElIconPlus />
-    </el-icon>
+    <el-icon class="i-tabler:plus" />
     <span class="text-[16px]">
       创建新的活动记录
     </span>

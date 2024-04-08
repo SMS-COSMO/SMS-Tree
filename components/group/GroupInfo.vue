@@ -1,6 +1,7 @@
 <template>
   <el-card>
     <template #header>
+      <el-icon class="i-tabler:info-circle" />
       小组信息
     </template>
     <el-descriptions
@@ -10,9 +11,7 @@
       <el-descriptions-item>
         <template #label>
           <div class="text-[16px]!">
-            <el-icon>
-              <ElIconUser />
-            </el-icon>
+            <el-icon class="i-tabler:user" />
             组长
           </div>
         </template>
@@ -25,9 +24,7 @@
       <el-descriptions-item>
         <template #label>
           <div class="text-[16px]!">
-            <el-icon>
-              <ElIconUser />
-            </el-icon>
+            <el-icon class="i-tabler:users" />
             小组成员
           </div>
         </template>
@@ -43,9 +40,7 @@
       <el-descriptions-item>
         <template #label>
           <div class="text-[15px]!">
-            <el-icon>
-              <ElIconNotebook />
-            </el-icon>
+            <el-icon class="i-tabler:notebook" />
             课题名
             <el-popover
               v-if="info"
@@ -55,16 +50,14 @@
               trigger="click"
             >
               <template #reference>
-                <el-link :icon="ElIconEdit" class="ml-2 text-[16px]!">
+                <el-link icon="i-tabler:edit" class="ml-2 text-[16px]!">
                   修改
                 </el-link>
               </template>
               <el-input v-model="newProjectName" @blur="edit = false">
                 <template #append>
-                  <el-button :loading="isPending" @click="modifyProjectName({ groupId: info.id, newProjectName })">
-                    <el-icon>
-                      <ElIconCheck />
-                    </el-icon>
+                  <el-button :loading="isPending" @click="modifyProjectName({ groupId: info!.id, newProjectName })">
+                    <el-icon class="i-tabler:check" />
                   </el-button>
                 </template>
               </el-input>
@@ -78,9 +71,7 @@
       <el-descriptions-item>
         <template #label>
           <div class="mb-[-12px] text-[16px]!">
-            <el-icon>
-              <ElIconEditPen />
-            </el-icon>
+            <el-icon class="i-tabler:clipboard" />
             活动记录
           </div>
         </template>
@@ -92,9 +83,7 @@
       <el-descriptions-item v-if="info?.reports?.length">
         <template #label>
           <div class="mb-[-12px] text-[16px]!">
-            <el-icon>
-              <ElIconDataBoard />
-            </el-icon>
+            <el-icon class="i-tabler:presentation" />
             报告
           </div>
         </template>
@@ -107,9 +96,7 @@
       <el-descriptions-item v-if="info?.papers?.length">
         <template #label>
           <div class="mb-[-12px] text-[16px]!">
-            <el-icon>
-              <ElIconDocument />
-            </el-icon>
+            <el-icon class="i-tabler:file-text" />
             论文
           </div>
         </template>

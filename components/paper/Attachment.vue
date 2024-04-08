@@ -16,12 +16,12 @@
           <template #title>
             <div class="space-x-2">
               <el-button
-                :icon="ElIconDownload"
+                icon="i-tabler:download"
                 size="small" text bg circle
                 @click="downloadFile(attachment.id)"
               />
               <el-tag v-if="attachment.category === 'paperDocument'" type="success">
-                <el-icon><ElIconStar /></el-icon>
+                <el-icon class="i-tabler:star" />
               </el-tag>
               <span class="text-[15px]">
                 {{ attachment.name }}

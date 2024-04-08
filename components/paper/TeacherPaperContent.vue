@@ -27,7 +27,7 @@
         >
           <template #reference>
             <el-badge is-dot :hidden="!form.comment">
-              <el-button :icon="ElIconPlus" size="small">
+              <el-button icon="i-tabler-plus" size="small">
                 评语
               </el-button>
             </el-badge>
@@ -41,7 +41,7 @@
         <el-tooltip content="完成批改" placement="top" :show-after="800">
           <el-button
             :loading="isPending"
-            icon="i-tabler-check" size="small"
+            icon="i-tabler:check" size="small"
             class="ml-0!"
             @click="scoreMutation({ paperId: id, newPaper: form })"
           />
@@ -57,7 +57,7 @@
       <el-col :span="7">
         <el-card class="box-border h-full">
           <template #header>
-            <el-icon><ElIconInfoFilled /></el-icon>
+            <el-icon class="i-tabler:info-circle" />
             论文信息
           </template>
           <el-descriptions :column="1">
@@ -93,6 +93,7 @@
       <el-col :span="17" class="mt-3 lg:mt-0">
         <el-card class="box-border h-full">
           <template #header>
+            <el-icon class="i-tabler:align-box-left-top" />
             摘要
           </template>
           <div class="text-justify text-[15px] leading-normal lg:text-base">

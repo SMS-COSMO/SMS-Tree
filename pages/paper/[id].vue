@@ -7,21 +7,19 @@
       <el-space :size="10" class="mb-2 lg:mb-0">
         <el-tag v-if="info?.isFeatured" type="success" size="large">
           <el-text style="color: var(--el-color-success);">
-            <el-icon>
-              <ElIconStar />
-            </el-icon>
+            <el-icon class="i-tabler:star" />
             优秀作业
           </el-text>
         </el-tag>
         <el-tag v-if="info?.score" size="large" :type="useScoreColor(info.score)" disable-transitions>
+          <el-icon class="i-tabler:chart-bar" />
           <el-text :style="`color: var(--el-color-${useScoreColor(info.score)});`">
-            <el-icon><ElIconHistogram /></el-icon>
             分数：{{ info.score }}
           </el-text>
         </el-tag>
         <el-tag v-if="info?.canDownload" type="info" size="large" disable-transitions>
+          <el-icon class="i-tabler:download" />
           <el-text style="color: var(--el-color-info);">
-            <el-icon><ElIconDownload /></el-icon>
             下载次数：{{ info?.downloadCount ?? 0 }}
           </el-text>
         </el-tag>
@@ -32,7 +30,7 @@
       <el-col :span="device.isMobileOrTablet ? 24 : 6">
         <FoldableCard :can-fold="device.isMobileOrTablet" class="box-border h-full">
           <template #header>
-            <el-icon><ElIconInfoFilled /></el-icon>
+            <el-icon class="i-tabler:info-circle" />
             论文信息
           </template>
           <el-descriptions :column="1">
@@ -64,7 +62,7 @@
       <el-col :span="device.isMobileOrTablet ? 24 : 18" class="mt-3 lg:mt-0">
         <FoldableCard :can-fold="device.isMobileOrTablet" class="box-border h-full">
           <template #header>
-            <el-icon><ElIconList /></el-icon>
+            <el-icon class="i-tabler:align-box-left-top" />
             摘要
           </template>
           <div class="text-justify text-[15px] leading-normal lg:text-base">

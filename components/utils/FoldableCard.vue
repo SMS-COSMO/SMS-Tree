@@ -6,14 +6,12 @@
       </div>
       <div class="flex-grow" />
       <el-button
-        class="h-8! w-7!"
+        class="my-[-5px] w-7!"
         text bg size="small"
         @click="showContent = !showContent"
       >
-        <el-icon color="#909399">
-          <ElIconArrowUpBold v-if="showContent" />
-          <ElIconArrowDownBold v-else />
-        </el-icon>
+        <el-icon v-if="showContent" class="i-tabler:chevron-up" />
+        <el-icon v-else class="i-tabler:chevron-down" />
       </el-button>
     </div>
     <el-collapse-transition>

@@ -6,22 +6,18 @@
   >
     <el-row class="gap-[6px]">
       <el-tag v-if="paper?.isFeatured" type="success" disable-transitions>
-        <el-icon>
-          <ElIconStar />
-        </el-icon>
+        <el-icon class="i-tabler:star" />
         优秀作业
       </el-tag>
       <el-tag v-if="paper?.canDownload" disable-transitions>
-        <el-icon>
-          <ElIconDownload />
-        </el-icon>
+        <el-icon class="i-tabler:download" />
         可下载
       </el-tag>
       <el-tag type="warning" disable-transitions>
         {{ getCategoryName(paper?.category) }}
       </el-tag>
       <el-tag v-if="paper?.score" :type="useScoreColor(paper.score)" disable-transitions>
-        <el-icon><ElIconHistogram /></el-icon>
+        <el-icon class="i-tabler:chart-bar" />
         分数：{{ paper.score }}
       </el-tag>
       <el-tag type="info" disable-transitions>

@@ -7,18 +7,14 @@
     </el-col>
     <el-col v-on-click-outside="closeSearchOptions" :span="device.isMobileOrTablet ? 24 : 18">
       <el-input
-        v-model="searchInput" placeholder="搜索论文" clearable class="list-search mb-2.5" :suffix-icon="device.isMobileOrTablet ? ElIconSearch : ''"
+        v-model="searchInput" placeholder="搜索论文" clearable class="list-search mb-2.5" :suffix-icon="device.isMobileOrTablet ? 'i-tabler:search' : ''"
         @change="$router.replace({ query: { search: searchInput } });"
       >
         <template #prepend>
-          <el-icon v-if="!device.isMobileOrTablet">
-            <ElIconSearch />
-          </el-icon>
+          <el-icon v-if="!device.isMobileOrTablet" class="i-tabler:search" />
           <el-button v-else @click="showSearchOptions = !showSearchOptions">
-            <el-icon color="#909399">
-              <ElIconArrowDownBold v-if="!showSearchOptions" />
-              <ElIconArrowUpBold v-else />
-            </el-icon>
+            <el-icon v-if="!showSearchOptions" class="i-tabler:chevron-down" />
+            <el-icon v-else class="i-tabler:chevron-up" />
           </el-button>
         </template>
       </el-input>

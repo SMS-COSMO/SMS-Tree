@@ -11,10 +11,10 @@
         width="200"
         confirm-button-type="danger"
         hide-icon
-        @confirm="removeGroup({ id: info?.id })"
+        @confirm="removeGroup({ id: info!.id })"
       >
         <template #reference>
-          <el-link :icon="ElIconDelete" type="danger" class="float-right">
+          <el-link icon="i-tabler:trash" type="danger" class="float-right">
             删除
           </el-link>
         </template>
@@ -27,9 +27,7 @@
       <el-descriptions-item>
         <template #label>
           <div class="text-[16px]!">
-            <el-icon>
-              <ElIconUser />
-            </el-icon>
+            <el-icon class="i-tabler:user" />
             组长
           </div>
         </template>
@@ -42,9 +40,7 @@
       <el-descriptions-item>
         <template #label>
           <div class="mb-[-12px] text-[16px]!">
-            <el-icon>
-              <ElIconUser />
-            </el-icon>
+            <el-icon class="i-tabler:users" />
             小组成员
           </div>
         </template>
@@ -65,9 +61,7 @@
       <el-descriptions-item v-if="info?.notes?.length">
         <template #label>
           <div class="mb-[-12px] text-[16px]!">
-            <el-icon>
-              <ElIconEditPen />
-            </el-icon>
+            <el-icon class="i-tabler:clipboard" />
             活动记录
           </div>
         </template>
@@ -80,9 +74,7 @@
       <el-descriptions-item v-if="info?.reports?.length">
         <template #label>
           <div class="mb-[-12px] text-[16px]!">
-            <el-icon>
-              <ElIconDataBoard />
-            </el-icon>
+            <el-icon class="i-tabler:presentation" />
             报告
           </div>
         </template>
@@ -95,9 +87,7 @@
       <el-descriptions-item v-if="info?.papers?.length">
         <template #label>
           <div class="mb-[-12px] text-[16px]!">
-            <el-icon>
-              <ElIconDocument />
-            </el-icon>
+            <el-icon class="i-tabler:file-text" />
             论文
           </div>
         </template>

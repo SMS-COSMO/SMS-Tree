@@ -3,7 +3,7 @@
     <client-only v-if="device.isMobileOrTablet">
       <el-popover :width="0" trigger="click">
         <template #reference>
-          <el-button :icon="ElIconExpand" type="info" plain class="w-20">
+          <el-button icon="i-tabler:list" type="info" plain class="w-20">
             菜单
           </el-button>
         </template>

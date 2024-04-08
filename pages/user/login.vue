@@ -11,18 +11,14 @@
       <el-form :label-position="device.isMobileOrTablet ? 'top' : 'right'">
         <el-form-item>
           <div>
-            <el-icon :size="15">
-              <ElIconUser />
-            </el-icon>
+            <el-icon class="i-tabler:user" />
             学工号
           </div>
           <el-input v-model="form.schoolId" />
         </el-form-item>
         <el-form-item>
           <div>
-            <el-icon :size="15">
-              <ElIconKey />
-            </el-icon>
+            <el-icon class="i-tabler:lock" />
             密码
           </div>
           <el-input
@@ -65,7 +61,6 @@ const { mutate: loginMutation, isPending } = useMutation({
     useElMessage({
       message: '登录成功',
       type: 'success',
-      showClose: true,
     });
   },
   onError: err => useErrorHandler(err),

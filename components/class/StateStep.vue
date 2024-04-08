@@ -5,12 +5,12 @@
       finish-status="wait"
       :direction="direction"
     >
-      <el-step :icon="ElIconClock" title="等待分组" />
-      <el-step :icon="ElIconUser" title="选择小组" />
-      <el-step :icon="ElIconDataBoard" title="开题报告" />
-      <el-step :icon="ElIconDataLine" title="结题报告" />
-      <el-step :icon="ElIconUpload" title="提交论文" />
-      <el-step v-if="showArchived" :icon="ElIconBox" title="归档" />
+      <el-step icon="i-tabler-clock" title="等待分组" />
+      <el-step icon="i-tabler:users" title="选择小组" />
+      <el-step icon="i-tabler:presentation" title="开题报告" />
+      <el-step icon="i-tabler:presentation-analytics" title="结题报告" />
+      <el-step icon="i-tabler:file-upload" title="提交论文" />
+      <el-step v-if="showArchived" icon="i-tabler:archive" title="归档" />
     </el-steps>
     <template #fallback>
       <el-skeleton :rows="1" animated />

@@ -9,27 +9,21 @@
     >
       <el-form-item prop="oldPassword">
         <div>
-          <el-icon :size="15">
-            <ElIconKey />
-          </el-icon>
+          <el-icon class="i-tabler:lock" />
           原密码
         </div>
         <el-input v-model="form.oldPassword" type="password" show-password />
       </el-form-item>
       <el-form-item prop="newPassword">
         <div>
-          <el-icon :size="15">
-            <ElIconKey />
-          </el-icon>
+          <el-icon class="i-tabler:lock-plus" />
           新密码
         </div>
         <el-input v-model="form.newPassword" type="password" show-password />
       </el-form-item>
       <el-form-item prop="repeatPassword">
         <div>
-          <el-icon :size="15">
-            <ElIconKey />
-          </el-icon>
+          <el-icon class="i-tabler:lock-check" />
           确认新密码
         </div>
         <el-input

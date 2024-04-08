@@ -3,7 +3,7 @@
     <el-input
       v-model="searchContent"
       placeholder="搜索学生"
-      :prefix-icon="ElIconSearch"
+      prefix-icon="i-tabler:search"
     />
     <div class="h-[calc(100vh-190px)]">
       <el-auto-resizer>

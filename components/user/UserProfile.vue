@@ -1,7 +1,7 @@
 <template>
   <el-card>
     <template #header>
-      <el-icon><ElIconSetUp /></el-icon>
+      <el-icon class="i-tabler:user-circle" />
       用户信息
     </template>
     <el-descriptions
@@ -11,9 +11,7 @@
       <el-descriptions-item>
         <template #label>
           <div class="text-[16px]!">
-            <el-icon>
-              <ElIconUser />
-            </el-icon>
+            <el-icon class="i-tabler:user" />
             姓名
           </div>
         </template>
@@ -24,9 +22,7 @@
       <el-descriptions-item v-if="type === 'admin' && info?.schoolId">
         <template #label>
           <div class="text-[16px]!">
-            <el-icon>
-              <ElIconUser />
-            </el-icon>
+            <el-icon class="i-tabler:number" />
             学工号
           </div>
         </template>
@@ -37,9 +33,7 @@
       <el-descriptions-item v-if="info?.role === 'student'">
         <template #label>
           <div class="text-[16px]!">
-            <el-icon>
-              <ElIconLocation />
-            </el-icon>
+            <el-icon class="i-tabler:school" />
             班级
           </div>
         </template>
@@ -50,9 +44,7 @@
       <el-descriptions-item>
         <template #label>
           <div class="text-[16px]!">
-            <el-icon>
-              <ElIconTickets />
-            </el-icon>
+            <el-icon class="i-tabler:shield-lock" />
             账号权限
           </div>
         </template>
@@ -64,7 +56,7 @@
   </el-card>
   <FoldableCard class="mt-5">
     <template #header>
-      <el-icon><ElIconDocumentCopy /></el-icon>
+      <el-icon class="i-tabler:files" />
       参与的论文
     </template>
     <div v-if="!papers?.length">
