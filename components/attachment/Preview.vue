@@ -3,12 +3,12 @@
     <iframe
       v-if="pdfFileTypes.includes(props.attachment.fileType)"
       :src="`/pdfjs-dist/web/viewer.html?file=${fileUrl}`" frameborder="0"
-      :class="`w-full ${fullHeight ? 'h-[calc(100vh-150px)]' : 'h-125'} border-normal rounded box-border`"
+      :class="`w-full ${fullHeight ? 'h-[calc(100vh-200px)]' : 'h-125'} border-normal rounded box-border`"
     />
     <iframe
       v-else-if="docxFileTypes.includes(props.attachment.fileType)"
       :src="`https://view.officeapps.live.com/op/embed.aspx?src=${fileUrl}`" frameborder="0"
-      :class="`w-full ${fullHeight ? 'h-[calc(100vh-150px)]' : 'h-125'}`"
+      :class="`w-full ${fullHeight ? 'h-[calc(100vh-200px)]' : 'h-125'}`"
     />
     <el-image
       v-else-if="/^image*/.test(props.attachment.fileType)"

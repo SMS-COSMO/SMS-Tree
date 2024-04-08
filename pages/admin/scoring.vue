@@ -4,7 +4,7 @@
       <el-card class="flow h-content">
         <el-scrollbar v-if="scoringQueue?.length">
           <template v-for="item in scoringQueue" :key="item">
-            <TeacherPaperCard :paper="item" @selected="id => selected = id" />
+            <TeacherPaperCard :paper="item" :current-selected="selected" @selected="id => selected = id" />
           </template>
         </el-scrollbar>
         <el-empty v-else description="暂无论文" />
@@ -14,7 +14,10 @@
       <el-card class="h-content">
         <el-scrollbar v-if="selected">
           <transition name="content" mode="out-in" class="overflow-x-hidden!">
-            <TeacherPaperContent :id="selected" :key="selected" />
+            <TeacherPaperContent
+              :id="selected"
+              :key="selected"
+            />
           </transition>
         </el-scrollbar>
       </el-card>
@@ -34,7 +37,14 @@ const { data: scoringQueue, suspense } = useQuery({
 });
 await suspense();
 
-const selected = ref(scoringQueue.value?.at(0)?.id);
+const selectedIndex = ref(0);
+const selected = computed({
+  get: () => scoringQueue.value?.at(selectedIndex.value)?.id,
+  set: (v) => {
+    if (scoringQueue.value)
+      selectedIndex.value = scoringQueue.value.findIndex(x => x.id === v);
+  },
+});
 </script>
 
 <style>

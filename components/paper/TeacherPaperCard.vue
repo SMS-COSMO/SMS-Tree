@@ -1,7 +1,6 @@
 <template>
   <el-card
-    v-once
-    class="mb-2 cursor-pointer hover:border-color-[#D4D7DE]! hover:bg-hover-bg!"
+    :class="`mb-2 cursor-pointer hover:border-color-[#D4D7DE]! hover:bg-hover-bg! ${currentSelected === paper.id ? 'bg-hover-bg!' : ''}`"
     @click="$emit('selected', paper.id)"
   >
     <el-row class="gap-[6px]">
@@ -33,6 +32,7 @@ withDefaults(defineProps<{
   showAbstract?: boolean;
   lineClamp?: number;
   showAuthors?: boolean;
+  currentSelected?: string;
 }>(), {
   showAbstract: false,
   lineClamp: 3,

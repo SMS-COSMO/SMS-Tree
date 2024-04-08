@@ -1,6 +1,55 @@
 <template>
   <div class="space-y-3 lg:space-y-4">
-    <h1 class="w-full text-2xl lg:pr-[2em] lg:text-4xl">
+    <el-card class="floating absolute right-0 top-0 z-10">
+      <div class="flex flex-row gap-2">
+        <el-tooltip content="是否选为优秀作业" placement="top" :show-after="800">
+          <el-switch
+            v-model="form.isFeatured" active-text="优秀" inactive-text="普通" inline-prompt
+            size="large"
+            class="h-[34px]!"
+            style="--el-switch-on-color: #146E3C; --el-switch-off-color: #db3131;"
+          />
+        </el-tooltip>
+        <el-tooltip content="等级" placement="top" :show-after="800">
+          <el-radio-group v-model="form.score">
+            <el-radio-button label="A" value="A" />
+            <el-radio-button label="B" value="B" />
+            <el-radio-button label="C" value="C" />
+            <el-radio-button label="D" value="D" />
+          </el-radio-group>
+        </el-tooltip>
+        <el-popover
+          title="添加评语（可留空）"
+          :width="400"
+          trigger="click"
+          :hide-after="0"
+          placement="bottom-start"
+        >
+          <template #reference>
+            <el-badge is-dot :hidden="form.comment === ''">
+              <el-button :icon="ElIconPlus" size="small">
+                评语
+              </el-button>
+            </el-badge>
+          </template>
+          <el-input
+            v-model="form.comment"
+            :autosize="{ minRows: 3, maxRows: 10 }"
+            type="textarea"
+          />
+        </el-popover>
+        <el-tooltip content="完成批改" placement="top" :show-after="800">
+          <el-button
+            :loading="isPending"
+            :icon="ElIconCheck" size="small"
+            class="ml-0!"
+            @click="scoreMutation({ paperId: id, newPaper: form })"
+          />
+        </el-tooltip>
+      </div>
+    </el-card>
+
+    <h1 class="max-w-[calc(100%-450px)] min-h-15 w-full pr-[2em] text-3xl">
       {{ info?.title }}
     </h1>
 
@@ -61,6 +110,7 @@
 </template>
 
 <script setup lang="ts">
+import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import { getCategoryName } from '~/constants/paper';
 
 const props = defineProps<{
@@ -68,7 +118,6 @@ const props = defineProps<{
 }>();
 
 const { $api } = useNuxtApp();
-
 const device = useDevice();
 
 const [info, attachments] = await useTrpcAsyncData(() => Promise.all([
@@ -88,4 +137,25 @@ function searchTag(keyword: string) {
     },
   });
 }
+
+const form = reactive({
+  comment: undefined,
+  score: undefined,
+  isFeatured: false,
+});
+
+const queryClient = useQueryClient();
+const { mutate: scoreMutation, isPending } = useMutation({
+  mutationFn: $api.paper.score.mutate,
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['scoringQueue'] });
+  },
+  onError: err => useErrorHandler(err),
+});
 </script>
+
+<style scoped>
+.floating {
+  box-shadow: var(--el-box-shadow-light) !important;
+}
+</style>

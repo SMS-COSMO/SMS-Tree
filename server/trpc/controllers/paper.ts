@@ -9,6 +9,7 @@ import { ctl } from '../context';
 import { TRPCForbidden, useTry } from '../utils/shared';
 import { attachments } from '~/server/db/schema/attachment';
 import { usersToGroups } from '~/server/db/schema/userToGroup';
+import type { TScore } from '~/types';
 
 export class PaperController {
   async create(newPaper: TNewPaper) {
@@ -180,18 +181,15 @@ export class PaperController {
     return '修改成功';
   }
 
-  async setComment(id: string, comment: string) {
-    await useTry(() => db.update(papers).set({ comment }).where(eq(papers.id, id)));
-    return '保存评语成功';
-  }
-
-  async setCanDownload(id: string, canDownload: boolean) {
-    await useTry(() => db.update(papers).set({ canDownload }).where(eq(papers.id, id)));
-    return '修改成功';
-  }
-
-  async setIsFeatured(id: string, isFeatured: boolean) {
-    await useTry(() => db.update(papers).set({ isFeatured }).where(eq(papers.id, id)));
-    return '修改成功';
+  async score(
+    id: string,
+    newPaper: {
+      isFeatured?: boolean;
+      score?: TScore;
+      comment?: string;
+    },
+  ) {
+    await useTry(() => db.update(papers).set({ ...newPaper, isPublic: true }).where(eq(papers.id, id)));
+    return '批改成功';
   }
 }

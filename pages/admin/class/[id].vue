@@ -85,7 +85,7 @@
             <el-input-number v-model="newGroupCount" :min="1" step-strictly :step="1" :max="15" />
             <el-button
               @click="createEmptyGroups({
-                id: classData.id,
+                id: classData!.id,
                 amount: newGroupCount,
               })"
             >
