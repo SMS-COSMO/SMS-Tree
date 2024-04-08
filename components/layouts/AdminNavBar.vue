@@ -1,6 +1,6 @@
 <template>
   <el-menu
-    class="h-full w-[250px] select-none rounded border-normal"
+    class="h-full w-[220px] select-none rounded border-normal"
     background-color="#f3f5f7"
     active-text-color="#4d4d4d"
     :router="true"

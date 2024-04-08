@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-3 lg:space-y-4">
     <el-card class="floating absolute right-0 top-0 z-10">
-      <div class="flex flex-row gap-2">
+      <div class="m-[-5px] flex flex-row gap-2">
         <el-tooltip content="是否选为优秀作业" placement="top" :show-after="800">
           <el-switch
             v-model="form.isFeatured" active-text="优秀" inactive-text="普通" inline-prompt
@@ -26,7 +26,7 @@
           placement="bottom-start"
         >
           <template #reference>
-            <el-badge is-dot :hidden="form.comment === ''">
+            <el-badge is-dot :hidden="!form.comment">
               <el-button :icon="ElIconPlus" size="small">
                 评语
               </el-button>
@@ -55,7 +55,7 @@
 
     <el-row :gutter="20">
       <el-col :span="7">
-        <FoldableCard :can-fold="device.isMobileOrTablet" class="box-border h-full">
+        <el-card class="box-border h-full">
           <template #header>
             <el-icon><ElIconInfoFilled /></el-icon>
             论文信息
@@ -88,18 +88,17 @@
               </span>
             </el-descriptions-item>
           </el-descriptions>
-        </FoldableCard>
+        </el-card>
       </el-col>
       <el-col :span="17" class="mt-3 lg:mt-0">
-        <FoldableCard :can-fold="device.isMobileOrTablet" class="box-border h-full">
+        <el-card class="box-border h-full">
           <template #header>
-            <el-icon><ElIconList /></el-icon>
             摘要
           </template>
           <div class="text-justify text-[15px] leading-normal lg:text-base">
             {{ info?.abstract }}
           </div>
-        </FoldableCard>
+        </el-card>
       </el-col>
     </el-row>
 
@@ -118,7 +117,6 @@ const props = defineProps<{
 }>();
 
 const { $api } = useNuxtApp();
-const device = useDevice();
 
 const [info, attachments] = await useTrpcAsyncData(() => Promise.all([
   $api.paper.info.query({ id: props.id }),

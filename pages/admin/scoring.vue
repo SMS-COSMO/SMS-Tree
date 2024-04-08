@@ -33,7 +33,7 @@ const { $api } = useNuxtApp();
 const { data: scoringQueue, suspense } = useQuery({
   queryKey: ['scoringQueue'],
   queryFn: () => $api.paper.scoringList.query(),
-  refetchInterval: 60 * 1000, // 1min
+  refetchInterval: 10 * 60 * 1000, // 10min
 });
 await suspense();
 
