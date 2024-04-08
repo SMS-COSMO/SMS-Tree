@@ -41,7 +41,7 @@
         <el-tooltip content="完成批改" placement="top" :show-after="800">
           <el-button
             :loading="isPending"
-            :icon="ElIconCheck" size="small"
+            icon="i-tabler-check" size="small"
             class="ml-0!"
             @click="scoreMutation({ paperId: id, newPaper: form })"
           />

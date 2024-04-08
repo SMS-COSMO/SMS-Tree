@@ -46,6 +46,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "^2.12.1",
     "@element-plus/nuxt": "^1.0.8",
+    "@iconify-json/tabler": "^1.1.109",
     "@nuxt/devtools": "latest",
     "@nuxt/test-utils": "^3.12.0",
     "@nuxtjs/device": "^3.1.1",
@@ -54,6 +55,7 @@
     "@types/bcrypt": "^5.0.2",
     "@unocss/eslint-plugin": "^0.58.9",
     "@unocss/nuxt": "^0.58.9",
+    "@unocss/preset-icons": "^0.59.0",
     "@vitest/coverage-v8": "^1.4.0",
     "@vitest/ui": "^1.4.0",
     "@vue/test-utils": "^2.4.5",

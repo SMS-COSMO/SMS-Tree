@@ -60,4 +60,18 @@ export default defineConfig({
       },
     ],
   ],
+  variants: [
+    {
+      match: (s) => {
+        if (s.startsWith('i-')) {
+          return {
+            matcher: s,
+            selector: (s) => {
+              return s.startsWith('.') ? `${s.slice(1)},${s}` : s;
+            },
+          };
+        }
+      },
+    },
+  ],
 });
