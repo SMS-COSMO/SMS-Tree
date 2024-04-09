@@ -1,0 +1,20 @@
+name: Type Check
+
+on: [workflow_dispatch, push]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v1
+
+      - name: Install dependencies
+        working-directory: .
+        run: bun i install
+
+      - name: Run typecheck
+        run: bun nuxi typecheck

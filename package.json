@@ -69,9 +69,11 @@
     "pinia": "^2.1.7",
     "playwright-core": "^1.42.1",
     "trpc-panel": "^1.3.4",
+    "typescript": "^5.4.4",
     "unocss": "^0.58.9",
     "vitest": "^1.4.0",
     "vue": "^3.4.21",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "vue-tsc": "^1"
   }
 }
