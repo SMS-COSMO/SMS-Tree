@@ -3,7 +3,7 @@ name: Type Check
 on: [workflow_dispatch, push]
 
 jobs:
-  lint:
+  typecheck:
     runs-on: ubuntu-latest
 
     steps:

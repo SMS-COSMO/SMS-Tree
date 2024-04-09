@@ -1,4 +1,4 @@
-import { expect, it, vi } from 'vitest';
+import { it, vi } from 'vitest';
 import { db } from '../mockDb';
 import * as exports from '../../../server/db/db';
 
