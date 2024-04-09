@@ -78,10 +78,13 @@ export class PaperController {
     return res;
   }
 
-  async getScoringList(user: TRawUser) {
-    const classes = user.role === 'admin'
-      ? (await ctl.cc.getList()).map(x => x.id)
-      : await ctl.uc.getTeacherClasses(user.id);
+  async getScoringList(user: TRawUser, classId?: string) {
+    const classes = (
+      user.role === 'admin'
+        ? (await ctl.cc.getList()).map(x => x.id)
+        : await ctl.uc.getTeacherClasses(user.id)
+    ).filter(x => classId ? x === classId : true);
+
     const managedGroups = (
       await Promise.all(
         classes.map(

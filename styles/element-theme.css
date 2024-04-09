@@ -1,11 +1,10 @@
 :root {
-  --el-color-primary: #217e4b;
-  --el-border-radius-base: 8px;
-  --el-border-width: 2px;
-  --el-checkbox-height: 35px;
-  --el-popper-border-radius: 10px;
-  --el-popover-border-radius: 10px;
-
+  --el-color-primary: #217e4b !important;
+  --el-border-radius-base: 8px !important;
+  --el-border-width: 2px !important;
+  --el-checkbox-height: 35px !important;
+  --el-popper-border-radius: 10px !important;
+  --el-popover-border-radius: 10px !important;
 }
 
 .el-card {
@@ -21,5 +20,5 @@
 .el-tag--primary,
 .el-check-tag--primary,
 .el-button {
-  --el-color-primary: #409EFF;
+  --el-color-primary: #409EFF !important;
 }

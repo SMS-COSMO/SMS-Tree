@@ -2,7 +2,16 @@
   <el-row :gutter="16">
     <el-col :span="6">
       <el-card class="flow h-content">
+        <div class="floating absolute z-10 w-40 rounded">
+          <el-select-v2
+            v-model="filterClass"
+            :options="classFilterOptions"
+            placeholder="筛选班级"
+            @change="queryClient.invalidateQueries({ queryKey: ['scoringQueue'] });"
+          />
+        </div>
         <el-scrollbar v-if="scoringQueue?.length">
+          <div class="h-12" />
           <template v-for="item in scoringQueue" :key="item">
             <TeacherPaperCard :paper="item" :current-selected="selected" @selected="id => selected = id" />
           </template>
@@ -26,16 +35,35 @@
 </template>
 
 <script setup lang="ts">
-import { useQuery } from '@tanstack/vue-query';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 
 const { $api } = useNuxtApp();
 
+const queryClient = useQueryClient();
+
+const filterClass = ref<string | undefined>();
 const { data: scoringQueue, suspense } = useQuery({
   queryKey: ['scoringQueue'],
-  queryFn: () => $api.paper.scoringList.query(),
+  queryFn: () => $api.paper.scoringList.query(filterClass.value),
   refetchInterval: 10 * 60 * 1000, // 10min
 });
 await suspense();
+
+const userStore = useUserStore();
+const { data: teacherClasses, suspense: teacherClassesSuspense } = useQuery({
+  queryKey: ['classList', { teacherId: userStore.userId }],
+  queryFn: () => $api.class.list.query(userStore.userId),
+});
+await teacherClassesSuspense();
+const classFilterOptions = computed(() => {
+  const initial: ({ label: string; value: string | undefined })[] = [{ label: '全部', value: undefined }];
+  return initial.concat(
+    teacherClasses.value?.map(x => ({
+      label: x.className,
+      value: x.id,
+    })) ?? [],
+  );
+});
 
 const selectedIndex = ref(0);
 const selected = computed({
@@ -65,5 +93,11 @@ const selected = computed({
 .content-enter-from,
 .content-leave-to {
   opacity: 0;
+}
+</style>
+
+<style scoped>
+.floating {
+  box-shadow: var(--el-box-shadow-light) !important;
 }
 </style>

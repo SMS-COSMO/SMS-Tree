@@ -95,9 +95,12 @@ export class ClassController {
     return await this.getFullClass(basicClass);
   }
 
-  async getList() {
+  async getList(teacherId?: string) {
     const res = await Promise.all(
-      (await db.select().from(classes)).map(
+      (teacherId
+        ? await db.select().from(classes).where(eq(classes.teacherId, teacherId))
+        : await db.select().from(classes)
+      ).map(
         async (basicClass) => {
           const className = await this.getString('', basicClass);
           const teacher = await useTry(

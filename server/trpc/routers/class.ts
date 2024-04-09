@@ -46,9 +46,10 @@ export const classRouter = router({
     }),
 
   list: protectedProcedure
+    .input(z.string().optional())
     .use(requireRoles(['admin', 'teacher']))
-    .query(async ({ ctx }) => {
-      return await ctx.classController.getList();
+    .query(async ({ ctx, input }) => {
+      return await ctx.classController.getList(input);
     }),
 
   remove: protectedProcedure

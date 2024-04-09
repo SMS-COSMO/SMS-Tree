@@ -7,7 +7,7 @@
             v-model="form.isFeatured" active-text="优秀" inactive-text="普通" inline-prompt
             size="large"
             class="h-[34px]!"
-            style="--el-switch-on-color: #146E3C; --el-switch-off-color: #db3131;"
+            style="--el-switch-on-color: #146E3C; --el-switch-off-color: #409EFF;"
           />
         </el-tooltip>
         <el-tooltip content="等级" placement="top" :show-after="800">
