@@ -117,8 +117,12 @@ export class ClassController {
 
   async initGroups(id: string, amount: number) {
     try {
+      const classFromDb = await db.select({ enterYear: classes.enterYear }).from(classes).where(eq(classes.id, id)).get();
+      if (!classFromDb || !classFromDb.enterYear)
+        // todo: refactor
+        throw new Error('msg');
       await Promise.all(
-        [...Array(amount)].map(() => ctl.gc.create({ classId: id })),
+        [...Array(amount)].map(() => ctl.gc.create({ classId: id, enterYear: classFromDb.enterYear })),
       );
       return '创建成功';
     } catch (err) {

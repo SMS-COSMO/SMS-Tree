@@ -22,6 +22,7 @@ export const groupRouter = router({
         .max(8, '小组最多8篇论文')
         .optional(),
       archived: z.boolean().optional(),
+      enterYear: z.number(),
     }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.groupController.create(input);
