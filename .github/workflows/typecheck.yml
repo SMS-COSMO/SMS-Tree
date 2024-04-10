@@ -17,4 +17,4 @@ jobs:
         run: bun i install
 
       - name: Run typecheck
-        run: bun nuxi typecheck
+        run: bun nuxt typecheck

@@ -79,30 +79,28 @@ await Promise.all(
 const classList = await ctl.cc.getList();
 
 const groupCountInput = Number(await rl.question('? Number of groups (per class) to create(default 5): '));
+
 const groupCount = groupCountInput <= 0 ? 5 : groupCountInput;
-await Promise.all(
-  [...Array(classCount)].map((_, i) => {
-    const c = classList[i];
-    const classGroupCount = Math.round(c.students.length / groupCount);
-    const shuffled = splitToNChunks(
-      (c.students
-        .map(value => ({ value, sort: Math.random() }))
-        .sort((a, b) => a.sort - b.sort)
-        .map(({ value }) => value)), classGroupCount);
+for (const i in classList) {
+  const c = await ctl.cc.getFullContent(classList[i].id);
+  const classGroupCount = Math.round(c.students.length / groupCount);
+  const shuffled = splitToNChunks(
+    (c.students
+      .map(value => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value)), classGroupCount);
 
-    return Promise.all(
-      [...Array(classGroupCount)].map((_, j) => {
-        return ctl.gc.create({
-          classId: c.id,
-          members: shuffled[j],
-          leader: shuffled[j][0],
-          projectName: `project ${i}${j}`,
-        });
-      }),
-    );
-  }),
-);
-
+  await Promise.all(
+    [...Array(classGroupCount)].map((_, j) => {
+      return ctl.gc.create({
+        classId: c.id,
+        members: shuffled[j],
+        leader: shuffled[j][0],
+        projectName: `project ${i}${j}`,
+      });
+    }),
+  );
+}
 const groupList = await ctl.gc.getList(admin);
 
 function getScore() {
