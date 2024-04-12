@@ -1,6 +1,6 @@
 import * as readline from 'node:readline/promises';
 import process from 'node:process';
-import { nanoid, random } from 'nanoid';
+import { nanoid } from 'nanoid';
 
 import { eq } from 'drizzle-orm';
 import { ctl } from '~/server/trpc/context';
