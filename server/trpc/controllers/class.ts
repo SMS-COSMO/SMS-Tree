@@ -55,10 +55,9 @@ export class ClassController {
       return '未知';
 
     const now = new Date();
-    const yearString = ['新高一', '高一', '高二', '高三', '毕业'];
     const year = now.getFullYear() - classInfo.enterYear + (now.getMonth() > 8 ? 1 : 0);
 
-    return `${yearString[year]}（${classInfo.index}）`;
+    return `${year < 4 ? ['新高一', '高一', '高二', '高三'][year] : `${classInfo.enterYear}届`}（${classInfo.index}）`;
   }
 
   private async getFullClass(basicClass: TRawClass | undefined) {
@@ -118,9 +117,9 @@ export class ClassController {
   async initGroups(id: string, amount: number) {
     try {
       const classFromDb = await db.select({ enterYear: classes.enterYear }).from(classes).where(eq(classes.id, id)).get();
-      if (!classFromDb || !classFromDb.enterYear)
-        // todo: refactor
-        throw new Error('msg');
+      if (!classFromDb)
+        throw new TRPCError({ code: 'NOT_FOUND', message: '班级不存在' });
+
       await Promise.all(
         [...Array(amount)].map(() => ctl.gc.create({ classId: id, enterYear: classFromDb.enterYear })),
       );

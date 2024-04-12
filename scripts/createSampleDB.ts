@@ -1,6 +1,6 @@
 import * as readline from 'node:readline/promises';
 import process from 'node:process';
-import { nanoid } from 'nanoid';
+import { nanoid, random } from 'nanoid';
 
 import { eq } from 'drizzle-orm';
 import { ctl } from '~/server/trpc/context';
@@ -67,7 +67,7 @@ const sepStudentList = splitToNChunks(studentList, classCount);
 await Promise.all(
   [...Array(classCount)].map((_, i) => {
     return ctl.cc.create({
-      enterYear: 2022,
+      enterYear: (new Date()).getFullYear() - (Math.round(Math.random() * 10) % 5),
       index: Math.round(Math.random() * 100) % 30,
       state: 'initialized',
       students: sepStudentList[i].map(u => u.id),
@@ -93,6 +93,7 @@ for (const i in classList) {
   await Promise.all(
     [...Array(classGroupCount)].map((_, j) => {
       return ctl.gc.create({
+        enterYear: c.enterYear,
         classId: c.id,
         members: shuffled[j],
         leader: shuffled[j][0],
