@@ -51,7 +51,7 @@ const { $api } = useNuxtApp();
 const device = useDevice();
 
 const formRef = ref<FormInstance>();
-const userInfo = await useTrpcAsyncData(() => $api.user.profile.query({ id: props.userId }));
+const userInfo = await $api.user.profile.query({ id: props.userId });
 const form = reactive({
   username: userInfo?.username ?? '',
   schoolId: userInfo?.schoolId ?? '',

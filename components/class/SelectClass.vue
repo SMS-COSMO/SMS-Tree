@@ -34,5 +34,5 @@ const selectProps = {
   value: 'id',
 };
 
-const options = (await useTrpcAsyncData(() => $api.class.list.query())) ?? [];
+const options = await $api.class.list.query() ?? [];
 </script>

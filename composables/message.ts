@@ -7,6 +7,6 @@ export function useElMessage(
   ElMessage({
     ...opt,
     showClose: true,
-    grouping: true,
+    // grouping: true,
   });
 }

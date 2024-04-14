@@ -66,10 +66,10 @@ const { $api } = useNuxtApp();
 const userStore = useUserStore();
 const device = useDevice();
 
-const [classInfo, userInfo] = await useTrpcAsyncData(() => Promise.all([
+const [classInfo, userInfo] = await Promise.all([
   $api.class.content.query({ id: userStore.classId }),
   $api.user.profileSafe.query({ id: userStore.userId }),
-])) ?? [];
+]) ?? [];
 
 const { data: groupInfo, suspense: groupInfoSuspense } = useQuery({
   queryKey: ['groupInfo', { id: userStore.groupIds[0] }],

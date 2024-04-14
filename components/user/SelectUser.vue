@@ -47,5 +47,5 @@ const selectProps = {
   value: 'id',
 };
 
-const options = (await useTrpcAsyncData(() => $api.user.list.query({ role: props.role }))) ?? [];
+const options = await $api.user.list.query({ role: props.role }) ?? [];
 </script>
