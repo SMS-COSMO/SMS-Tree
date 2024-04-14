@@ -120,13 +120,21 @@ const queryClient = useQueryClient();
 
 const { data: classData, suspense: classInfoSuspense } = useQuery({
   queryKey: ['classInfo', { id: useRoute().params.id.toString() }],
-  queryFn: () => $api.class.fullContent.query({ id: useRoute().params.id.toString() }),
+  queryFn: () => {
+    return useTrpcAsyncData(
+      () => $api.class.fullContent.query({ id: useRoute().params.id.toString() }),
+    );
+  },
 });
 await classInfoSuspense();
 
 const { data: groupList, suspense: groupListSuspense } = useQuery({
   queryKey: ['groupList', { id: useRoute().params.id.toString() }],
-  queryFn: () => $api.group.list.query({ classId: useRoute().params.id.toString() }),
+  queryFn: () => {
+    return useTrpcAsyncData(
+      () => $api.group.list.query({ classId: useRoute().params.id.toString() }),
+    );
+  },
 });
 await groupListSuspense();
 

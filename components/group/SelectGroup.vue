@@ -43,12 +43,12 @@ watch(cascaderValue, (v) => {
     groupId.value = v[v?.length - 1];
 });
 
-const classList = await $api.class.list.query();
+const classList = await useTrpcAsyncData(() => $api.class.list.query());
 const groupList = ref<TGroupList>([]);
 
 const options: CascaderOption[] = await Promise.all(
   classList?.map(async (v) => {
-    const groups = await $api.group.list.query({ classId: v.id }) ?? [];
+    const groups = await useTrpcAsyncData(() => $api.group.list.query({ classId: v.id })) ?? [];
     groupList.value = groupList.value.concat(groups);
     return {
       value: v.id,

@@ -119,14 +119,14 @@ const props = defineProps<{
 
 const { $api } = useNuxtApp();
 
-const [info, attachments] = await Promise.all([
+const [info, attachments] = await useTrpcAsyncData(() => Promise.all([
   $api.paper.info.query({ id: props.id }),
   $api.paper.attachments.query({ id: props.id }),
-]) ?? [];
+])) ?? [];
 
 // TODO perf: don't use groupInfo and classInfo which gets members multiple times
-const groupInfo = await $api.group.content.query({ id: info?.groupId ?? '' });
-const classInfo = await $api.class.fullContent.query({ id: groupInfo?.classId ?? '' });
+const groupInfo = await useTrpcAsyncData(() => $api.group.content.query({ id: info?.groupId ?? '' }));
+const classInfo = await useTrpcAsyncData(() => $api.class.fullContent.query({ id: groupInfo?.classId ?? '' }));
 
 function searchTag(keyword: string) {
   navigateTo({

@@ -52,7 +52,7 @@ import type { TRawReport } from '~/server/db/db';
 const props = defineProps<{ report: TRawReport }>();
 const { $api } = useNuxtApp();
 
-const attachments = await $api.report.attachments.query({ id: props.report.id });
+const attachments = await useTrpcAsyncData(() => $api.report.attachments.query({ id: props.report.id }));
 
 const dialogVisible = ref(false);
 const modifyDialogVisible = ref(false);

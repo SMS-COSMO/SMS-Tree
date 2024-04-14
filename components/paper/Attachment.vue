@@ -63,7 +63,7 @@ watch(showDialog, async () => {
 });
 
 async function downloadFile(id: string) {
-  const url = await $api.attachment.fileUrl.query(id);
+  const url = await useTrpcAsyncData<string>(() => $api.attachment.fileUrl.query(id));
   navigateTo(url, { external: true });
 }
 </script>

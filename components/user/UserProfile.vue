@@ -96,7 +96,7 @@ const roleName = {
   admin: '管理员',
 };
 
-const { info, papers } = await (async () => {
+const { info, papers } = await useTrpcAsyncData(async () => {
   const info = props.type === 'admin'
     ? await $api.user.profile.query({ id: props.userId })
     : await $api.user.profileSafe.query({ id: props.userId }) as TUserProfile;
@@ -106,5 +106,5 @@ const { info, papers } = await (async () => {
     papers = papers.concat((await $api.group.content.query({ id: group })).papers);
 
   return { info, papers };
-})() ?? { info: undefined, papers: undefined };
+}) ?? { info: undefined, papers: undefined };
 </script>
