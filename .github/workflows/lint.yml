@@ -10,11 +10,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v1
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
 
       - name: Install dependencies
         working-directory: .
-        run: bun install
+        run: pnpm i
 
       - name: Run Lint
         run: bun lint --no-fix
