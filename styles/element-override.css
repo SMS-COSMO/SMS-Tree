@@ -39,6 +39,10 @@
   padding-right: 10px;
 }
 
+.el-popper.is-light .el-popper__arrow:before {
+  border: 2px solid var(--el-border-color) !important;
+}
+
 /* Input */
 .el-input {
   height: 40px !important;
