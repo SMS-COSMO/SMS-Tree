@@ -14,7 +14,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: .
-        run: bun i install
+        run: bun install
 
       - name: Run typecheck
         run: bun nuxt typecheck
