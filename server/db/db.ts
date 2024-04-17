@@ -9,6 +9,16 @@ import type { attachments } from './schema/attachment';
 import type { notes } from './schema/note';
 import type { reports } from './schema/report';
 
+import * as userSchema from './schema/user';
+import * as paperSchema from './schema/paper';
+import * as groupSchema from './schema/group';
+import * as classSchema from './schema/class';
+import * as attachmentSchema from './schema/attachment';
+import * as noteSchema from './schema/note';
+import * as reportSchema from './schema/report';
+import * as userToGroupSchema from './schema/userToGroup';
+import * as classToStudentsSchema from './schema/classToStudents';
+
 const options = (() => {
   switch (env.DATABASE_CONNECTION_TYPE) {
     case 'local': return { url: env.DATABASE_URL };
@@ -17,7 +27,19 @@ const options = (() => {
 })();
 
 const client = createClient(options);
-export const db = drizzle(client);
+export const db = drizzle(client, {
+  schema: {
+    ...userSchema,
+    ...paperSchema,
+    ...groupSchema,
+    ...classSchema,
+    ...attachmentSchema,
+    ...noteSchema,
+    ...reportSchema,
+    ...userToGroupSchema,
+    ...classToStudentsSchema,
+  },
+});
 
 export type TRawUser = typeof users.$inferSelect;
 export type TNewUser = typeof users.$inferInsert;

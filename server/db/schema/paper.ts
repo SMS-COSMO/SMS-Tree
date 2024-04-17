@@ -1,4 +1,5 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { relations } from 'drizzle-orm';
 import { makeId } from '../../trpc/utils/shared';
 import { groups } from './group';
 
@@ -17,3 +18,10 @@ export const papers = sqliteTable('papers', {
   comment: text('comment', { mode: 'text' }),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });
+
+export const papersRelations = relations(papers, ({ one }) => ({
+  group: one(groups, {
+    fields: [papers.groupId],
+    references: [groups.id],
+  }),
+}));

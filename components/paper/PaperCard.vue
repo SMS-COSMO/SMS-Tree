@@ -49,7 +49,7 @@ import type { TRawPaper } from '~/server/db/db';
 import type { TPaperListSafeItem } from '~/types/index';
 
 withDefaults(defineProps<{
-  paper: TPaperListSafeItem | TRawPaper;
+  paper: Partial<TPaperListSafeItem | TRawPaper>;
   showAbstract?: boolean;
   lineClamp?: number;
   showAuthors?: boolean;

@@ -1,17 +1,13 @@
 import { and, eq, inArray } from 'drizzle-orm';
 import { LibsqlError } from '@libsql/client';
 import { TRPCError } from '@trpc/server';
-import type { TNewGroup, TRawGroup, TRawUser } from '../../db/db';
+import type { TNewGroup, TRawUser } from '../../db/db';
 import { db } from '../../db/db';
 import { groups } from '../../db/schema/group';
-import { groupSerializer } from '../serializer/group';
 import { usersToGroups } from '../../db/schema/userToGroup';
 import { TRPCForbidden, requireEqualOrThrow, useTry } from '../utils/shared';
 import { ctl } from '../context';
 import type { TMinimalUser } from '../serializer/paper';
-import { papers } from '~/server/db/schema/paper';
-import { notes } from '~/server/db/schema/note';
-import { reports } from '~/server/db/schema/report';
 import { PLeader, PMemberUsername, PRawMembers } from '~/server/db/statements';
 
 export class GroupController {
@@ -93,34 +89,53 @@ export class GroupController {
     return { members, leader };
   }
 
-  async getContent(id: string, user: TRawUser, getDetail: boolean, info?: TRawGroup) {
-    info ??= await useTry(() => db.select().from(groups).where(eq(groups.id, id)).get());
-    if (!info)
+  async getContent(id: string, user: TRawUser, getDetail: boolean) {
+    const res = await db.query.groups.findFirst({
+      with: {
+        notes: true,
+        reports: true,
+        papers: {
+          columns: {
+            id: true,
+            canDownload: true,
+            category: true,
+            createdAt: true,
+            downloadCount: true,
+            isFeatured: true,
+            score: true,
+            title: true,
+          },
+        },
+        usersToGroups: {
+          columns: {},
+          with: {
+            user: {
+              columns: {
+                id: true,
+                username: true,
+              },
+            },
+          },
+        },
+      },
+      where: eq(groups.id, id),
+    });
+    if (!res)
       throw new TRPCError({ code: 'NOT_FOUND', message: '小组不存在' });
 
-    const { members, leader } = await this.getMembers(info.id, info.leader);
-
-    let papersWithInfo, reportsWithInfo;
-    if (getDetail) {
-      const rawPapers = await useTry(() => db.select().from(papers).where(eq(papers.groupId, id)));
-      papersWithInfo = await Promise.all(
-        rawPapers.map(
-          async item => await ctl.pc.getContent(item.id, user, item),
-        ),
-      );
-      const rawReports = await useTry(() => db.select().from(reports).where(eq(reports.groupId, id)));
-      reportsWithInfo = await Promise.all(
-        rawReports.map(
-          async item => await ctl.rc.getContent(item.id, user, item),
-        ),
-      );
+    if (!getDetail || (!['admin', 'teacher'].includes(user.role) && !res?.usersToGroups.find(x => x.user.id === user.id))) {
+      res.notes = [];
+      res.papers = [];
+      res.reports = [];
     }
 
-    let rawNotes;
-    if (['admin', 'teacher'].includes(user.role) || await this.hasUser(user.id, id, { members, leader }))
-      rawNotes = await useTry(() => db.select().from(notes).where(eq(notes.groupId, id)));
-
-    return groupSerializer(info, members, leader, papersWithInfo, rawNotes, reportsWithInfo);
+    const { usersToGroups, leader: _, ...info } = res;
+    const members = usersToGroups.map(u => ({ id: u.user.id, username: u.user.username }));
+    return {
+      members,
+      leader: members.find(x => x.id === res.leader),
+      ...info,
+    };
   }
 
   async projectName(groupIds: string[]) {
@@ -158,7 +173,7 @@ export class GroupController {
       : await useTry(() => db.select().from(groups).all());
 
     const res = await Promise.all(
-      groupList.map(async info => await this.getContent(info.id, user, true, info)),
+      groupList.map(async info => await this.getContent(info.id, user, true)),
     );
 
     return res;

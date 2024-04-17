@@ -79,7 +79,8 @@
 </template>
 
 <script lang="ts" setup>
-import type { TPaperContent, TUserProfile } from '~/types';
+import type { TRawPaper } from '~/server/db/db';
+import type { TUserProfile } from '~/types';
 
 const props = defineProps<{
   userId: string;
@@ -101,7 +102,7 @@ const { info, papers } = await useTrpcAsyncData(async () => {
     ? await $api.user.profile.query({ id: props.userId })
     : await $api.user.profileSafe.query({ id: props.userId }) as TUserProfile;
 
-  let papers: (TPaperContent | undefined)[] = [];
+  let papers: (Partial<TRawPaper> | undefined)[] = [];
   for (const group of (info?.groupIds ?? []))
     papers = papers.concat((await $api.group.content.query({ id: group })).papers);
 

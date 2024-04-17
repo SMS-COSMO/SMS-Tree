@@ -1,9 +1,8 @@
 import { and, eq, inArray } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import { db } from '../../db/db';
-import type { TNewPaper, TRawPaper, TRawUser } from '../../db/db';
+import type { TNewPaper, TRawUser } from '../../db/db';
 import { papers } from '../../db/schema/paper';
-import { paperListItemSerializer, paperSerializer } from '../serializer/paper';
 import { attachmentSerializer } from '../serializer/attachment';
 import { ctl } from '../context';
 import { TRPCForbidden, useTry } from '../utils/shared';
@@ -56,28 +55,88 @@ export class PaperController {
     return info;
   }
 
-  async getContent(id: string, user: TRawUser, info?: TRawPaper) {
-    info ??= await useTry(() => db.select().from(papers).where(eq(papers.id, id)).get());
-    if (!info)
+  async getContent(id: string, user: TRawUser) {
+    const res = await useTry(
+      () => db.query.papers.findFirst({
+        where: eq(papers.id, id),
+        with: {
+          group: {
+            columns: { leader: true },
+            with: {
+              usersToGroups: {
+                columns: {},
+                with: {
+                  user: {
+                    columns: {
+                      id: true,
+                      username: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      }),
+    );
+    if (!res)
       throw new TRPCError({ code: 'NOT_FOUND', message: '论文不存在' });
 
-    const members = await ctl.gc.getMembers(info.groupId);
-    if (!['admin', 'teacher'].includes(user.role) && !info?.isPublic) {
-      if (!await ctl.gc.hasUser(user.id, info.groupId, members))
+    const authors = res.group.usersToGroups.map(u => ({ id: u.user.id, username: u.user.username }));
+    if (!['admin', 'teacher'].includes(user.role) && !res?.isPublic) {
+      if (!authors.some(x => x.id === user.id))
         throw TRPCForbidden;
     }
 
-    return paperSerializer(info, members?.members, members?.leader);
+    const { group, ...info } = res;
+    return {
+      authors,
+      ...info,
+      leader: authors.find(x => x.id === group.leader),
+    };
   }
 
   async getListSafe(user: TRawUser) {
-    const res = await Promise.all(
-      (await useTry(() => db.select().from(papers).where(eq(papers.isPublic, true)).all()))
-        .map(async paper => paperListItemSerializer(await this.getContent(paper.id, user, paper))),
-    );
-    return res;
+    const res = await useTry(() => db.query.papers.findMany({
+      where: ['admin', 'teacher'].includes(user.role) ? undefined : eq(papers.isPublic, true),
+      columns: {
+        id: true,
+        canDownload: true,
+        category: true,
+        createdAt: true,
+        downloadCount: true,
+        isFeatured: true,
+        keywords: true,
+        score: true,
+        title: true,
+      },
+      with: {
+        group: {
+          columns: {},
+          with: {
+            usersToGroups: {
+              columns: {},
+              with: {
+                user: {
+                  columns: { username: true },
+                },
+              },
+            },
+          },
+        },
+      },
+    }));
+
+    return res.map((x) => {
+      const { group, ...info } = x;
+      return {
+        authors: group.usersToGroups.map(u => ({ username: u.user.username })),
+        ...info,
+      };
+    });
   }
 
+  // TODO: use query
   async getScoringList(user: TRawUser, classId?: string) {
     const classes = (
       user.role === 'admin'
@@ -96,42 +155,70 @@ export class PaperController {
     if (!managedGroups.length)
       throw new TRPCError({ code: 'NOT_FOUND', message: '教师无小组' });
 
-    const res = await Promise.all(
-      (
-        await useTry(
-          () => db
-            .select()
-            .from(papers)
-            .where(
-              and(
-                eq(papers.isPublic, false),
-                inArray(papers.groupId, managedGroups),
-              ),
-            ).all(),
-        )
-      ).map(async paper => paperListItemSerializer(await this.getContent(paper.id, user, paper))),
-    );
+    const res = await useTry(() => db.query.papers.findMany({
+      where: and(eq(papers.isPublic, false), inArray(papers.groupId, managedGroups)),
+      columns: {
+        id: true,
+        category: true,
+        createdAt: true,
+        title: true,
+      },
+      with: {
+        group: {
+          columns: {},
+          with: {
+            usersToGroups: {
+              columns: {},
+              with: {
+                user: {
+                  columns: { username: true },
+                },
+              },
+            },
+          },
+        },
+      },
+    }));
 
-    return res;
+    return res.map((x) => {
+      const { group, ...info } = x;
+      return {
+        authors: group.usersToGroups.map(u => ({ username: u.user.username })),
+        ...info,
+      };
+    });
   }
 
   async getAttachments(id: string, user: TRawUser) {
     const rawPaper = await useTry(
-      () => db
-        .select({
-          groupId: papers.groupId,
-          isPublic: papers.isPublic,
-          canDownload: papers.canDownload,
-        })
-        .from(papers)
-        .where(eq(papers.id, id))
-        .get(),
+      () => db.query.papers.findFirst({
+        where: eq(papers.id, id),
+        columns: {
+          isPublic: true,
+          canDownload: true,
+        },
+        with: {
+          group: {
+            columns: {},
+            with: {
+              usersToGroups: {
+                columns: {},
+                with: {
+                  user: {
+                    columns: { id: true },
+                  },
+                },
+              },
+            },
+          },
+        },
+      }),
       { code: 'INTERNAL_SERVER_ERROR', message: '附件获取失败' },
     );
     if (!rawPaper)
       throw new TRPCError({ code: 'NOT_FOUND', message: '论文不存在' });
 
-    const isOwned = await ctl.gc.hasUser(user.id, rawPaper.groupId);
+    const isOwned = rawPaper.group.usersToGroups.some(u => u.user.id === user.id);
     const isAdmin = ['teacher', 'admin'].includes(user.role);
     if (!isAdmin && !rawPaper.isPublic && !isOwned)
       throw TRPCForbidden;
@@ -140,16 +227,16 @@ export class PaperController {
       = await useTry(
         (isOwned || isAdmin)
           ? () => db
-              .select().from(attachments)
-              .where(eq(attachments.paperId, id))
+              .query.attachments.findMany({
+                where: eq(attachments.paperId, id),
+              })
           : () => db // Students only access paperDocuments
-              .select().from(attachments)
-              .where(
-                and(
+              .query.attachments.findMany({
+                where: and(
                   eq(attachments.category, 'paperDocument'),
                   eq(attachments.paperId, id),
                 ),
-              ),
+              }),
         { code: 'INTERNAL_SERVER_ERROR', message: '附件获取失败' },
       );
 
@@ -163,21 +250,35 @@ export class PaperController {
   // TODO: This seems unsafe
   async updateDownloadCount(id: string, user: TRawUser) {
     const rawPaper = await useTry(
-      () => db
-        .select({
-          groupId: papers.groupId,
-          downloadCount: papers.downloadCount,
-          canDownload: papers.canDownload,
-        })
-        .from(papers)
-        .where(eq(papers.id, id))
-        .get(),
+      () => db.query.papers.findFirst({
+        where: eq(papers.id, id),
+        columns: {
+          isPublic: true,
+          canDownload: true,
+          downloadCount: true,
+        },
+        with: {
+          group: {
+            columns: {},
+            with: {
+              usersToGroups: {
+                columns: {},
+                with: {
+                  user: {
+                    columns: { id: true },
+                  },
+                },
+              },
+            },
+          },
+        },
+      }),
       { code: 'INTERNAL_SERVER_ERROR', message: '附件获取失败' },
     );
     if (!rawPaper)
       throw new TRPCError({ code: 'NOT_FOUND', message: '论文不存在' });
 
-    const isOwned = await ctl.gc.hasUser(user.id, rawPaper.groupId);
+    const isOwned = rawPaper.group.usersToGroups.some(u => u.user.id === user.id);
     if (rawPaper.canDownload && !isOwned && !['teacher', 'admin'].includes(user.role))
       await useTry(() => db.update(papers).set({ downloadCount: rawPaper.downloadCount + 1 }).where(eq(papers.id, id)));
 
