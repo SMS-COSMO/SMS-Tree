@@ -47,16 +47,15 @@
 </template>
 
 <script setup lang="ts">
-import type { TRawReport } from '~/server/db/db';
+import type { RouterOutput } from '~/types';
 
-const props = defineProps<{ report: TRawReport }>();
-const { $api } = useNuxtApp();
-
-const attachments = await useTrpcAsyncData(() => $api.report.attachments.query({ id: props.report.id }));
+const props = defineProps<{
+  report: RouterOutput['group']['content']['reports'][0];
+}>();
 
 const dialogVisible = ref(false);
 const modifyDialogVisible = ref(false);
 
-const reportDocument = computed(() => attachments?.filter(a => a.category === 'reportDocument')[0]);
-const reportPresentation = computed(() => attachments?.filter(a => a.category === 'reportPresentation')[0]);
+const reportDocument = computed(() => props.report?.attachments?.filter(a => a.category === 'reportDocument')[0]);
+const reportPresentation = computed(() => props.report?.attachments?.filter(a => a.category === 'reportPresentation')[0]);
 </script>

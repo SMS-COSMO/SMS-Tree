@@ -93,7 +93,20 @@ export class GroupController {
     const res = await db.query.groups.findFirst({
       with: {
         notes: true,
-        reports: true,
+        reports: {
+          with: {
+            attachments: {
+              columns: {
+                category: true,
+                createdAt: true,
+                fileType: true,
+                id: true,
+                name: true,
+                S3FileId: true,
+              },
+            },
+          },
+        },
         papers: {
           columns: {
             id: true,

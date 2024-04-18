@@ -70,12 +70,6 @@ export const paperRouter = router({
       return await ctx.paperController.getScoringList(ctx.user, input);
     }),
 
-  attachments: protectedProcedure
-    .input(z.object({ id: paperIdZod }))
-    .query(async ({ ctx, input }) => {
-      return await ctx.paperController.getAttachments(input.id, ctx.user);
-    }),
-
   updateDownloadCount: protectedProcedure
     .input(z.object({ id: paperIdZod }))
     .mutation(async ({ ctx, input }) => {

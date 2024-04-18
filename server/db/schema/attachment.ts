@@ -1,4 +1,5 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { relations } from 'drizzle-orm';
 import { makeId } from '../../trpc/utils/shared';
 import { papers } from './paper';
 import { reports } from './report';
@@ -13,3 +14,14 @@ export const attachments = sqliteTable('attachments', {
   S3FileId: text('s3_file_id', { mode: 'text' }).notNull(),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });
+
+export const attachmentsRelations = relations(attachments, ({ one }) => ({
+  paper: one(papers, {
+    fields: [attachments.paperId],
+    references: [papers.id],
+  }),
+  report: one(reports, {
+    fields: [attachments.reportId],
+    references: [reports.id],
+  }),
+}));

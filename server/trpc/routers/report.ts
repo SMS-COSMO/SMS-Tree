@@ -24,21 +24,9 @@ export const reportRouter = router({
       return await ctx.reportController.createSafe(ctx.user, input.category);
     }),
 
-  info: protectedProcedure
-    .input(z.object({ id: reportIdZod }))
-    .query(async ({ ctx, input }) => {
-      return await ctx.reportController.getContent(input.id, ctx.user);
-    }),
-
   remove: protectedProcedure
     .input(z.object({ id: reportIdZod }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.reportController.remove(input.id, ctx.user);
-    }),
-
-  attachments: protectedProcedure
-    .input(z.object({ id: reportIdZod }))
-    .query(async ({ ctx, input }) => {
-      return await ctx.reportController.getAttachments(input.id, ctx.user);
     }),
 });

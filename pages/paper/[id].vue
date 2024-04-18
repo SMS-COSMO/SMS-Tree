@@ -56,7 +56,7 @@
               </span>
             </el-descriptions-item>
           </el-descriptions>
-          <Attachment :can-download="info?.canDownload" :paper-id="info?.id" :attachments="attachments" />
+          <Attachment :can-download="info?.canDownload" :paper-id="info?.id" :attachments="info?.attachments" />
         </FoldableCard>
       </el-col>
       <el-col :span="device.isMobileOrTablet ? 24 : 18" class="mt-3 lg:mt-0">
@@ -72,8 +72,8 @@
       </el-col>
     </el-row>
 
-    <template v-if="attachments?.length && (attachments?.findIndex(e => e.S3FileId) !== -1)">
-      <Preview :attachment="attachments?.filter(a => a.category === 'paperDocument')[0]" full-height />
+    <template v-if="info?.attachments?.length && (info?.attachments?.findIndex(e => e.S3FileId) !== -1)">
+      <Preview :attachment="info?.attachments?.filter(a => a.category === 'paperDocument')[0]" full-height />
     </template>
 
     <el-card v-if="info?.comment">
@@ -103,12 +103,7 @@ const { data: info, suspense: infoSuspense } = useQuery({
   queryKey: ['paperInfo', { id }],
   queryFn: () => $api.paper.info.query({ id }),
 });
-const { data: attachments, suspense: attachmentsSuspense } = useQuery({
-  queryKey: ['attachments', { paperId: id }],
-  queryFn: () => $api.paper.attachments.query({ id }),
-});
 await infoSuspense();
-await attachmentsSuspense();
 
 function searchTag(keyword: string) {
   navigateTo({

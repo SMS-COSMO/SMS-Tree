@@ -103,8 +103,8 @@
       </el-col>
     </el-row>
 
-    <template v-if="attachments?.length && (attachments?.findIndex(e => e.S3FileId) !== -1)">
-      <Preview :attachment="attachments?.filter(a => a.category === 'paperDocument')[0]" full-height />
+    <template v-if="info?.attachments?.length && (info?.attachments?.findIndex(e => e.S3FileId) !== -1)">
+      <Preview :attachment="info?.attachments?.filter(a => a.category === 'paperDocument')[0]" full-height />
     </template>
   </div>
 </template>
@@ -119,10 +119,7 @@ const props = defineProps<{
 
 const { $api } = useNuxtApp();
 
-const [info, attachments] = await useTrpcAsyncData(() => Promise.all([
-  $api.paper.info.query({ id: props.id }),
-  $api.paper.attachments.query({ id: props.id }),
-])) ?? [];
+const info = await useTrpcAsyncData(() => $api.paper.info.query({ id: props.id }));
 
 // TODO perf: don't use groupInfo and classInfo which gets members multiple times
 const groupInfo = await useTrpcAsyncData(() => $api.group.content.query({ id: info?.groupId ?? '' }));
