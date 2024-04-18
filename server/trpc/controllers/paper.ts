@@ -3,19 +3,15 @@ import { TRPCError } from '@trpc/server';
 import { db } from '../../db/db';
 import type { TNewPaper, TRawUser } from '../../db/db';
 import { papers } from '../../db/schema/paper';
-import { ctl } from '../context';
-import { TRPCForbidden, useTry } from '../utils/shared';
+import { TRPCForbidden } from '../utils/shared';
 import { usersToGroups } from '~/server/db/schema/userToGroup';
 import type { TScore } from '~/types';
+import { classes } from '~/server/db/schema/class';
+import { groups } from '~/server/db/schema/group';
 
 export class PaperController {
   async create(newPaper: TNewPaper) {
-    const insertedId = (
-      await useTry(
-        () => db.insert(papers).values(newPaper).returning({ id: papers.id }).get(),
-      )
-    ).id;
-    return insertedId;
+    return (await db.insert(papers).values(newPaper).returning({ id: papers.id }).get()).id;
   }
 
   async createSafe(
@@ -40,7 +36,7 @@ export class PaperController {
   }
 
   async remove(id: string) {
-    await useTry(() => db.delete(papers).where(eq(papers.id, id)));
+    await db.delete(papers).where(eq(papers.id, id));
     return '删除成功';
   }
 
@@ -143,25 +139,28 @@ export class PaperController {
 
   // TODO: use query
   async getScoringList(user: TRawUser, classId?: string) {
-    const classes = (
-      user.role === 'admin'
-        ? (await ctl.cc.getList()).map(x => x.id)
-        : await ctl.uc.getTeacherClasses(user.id)
-    ).filter(x => classId ? x === classId : true);
+    const managedClasses = (
+      await db.query.classes.findMany({
+        where: user.role === 'admin' ? undefined : eq(classes.teacherId, user.id),
+        columns: { id: true },
+      })
+    )
+      .map(x => x.id)
+      .filter(x => classId ? x === classId : true);
 
-    const managedGroups = (
-      await Promise.all(
-        classes.map(
-          async c => (await ctl.gc.getList(user, c)).map(x => x.id),
-        ),
-      )
-    ).flat();
+    const managedGroups = (await db.query.groups.findMany({
+      where: inArray(groups.classId, managedClasses),
+      columns: { id: true },
+    })).map(x => x.id);
 
     if (!managedGroups.length)
       throw new TRPCError({ code: 'NOT_FOUND', message: '教师无小组' });
 
     const res = await db.query.papers.findMany({
-      where: and(eq(papers.isPublic, false), inArray(papers.groupId, managedGroups)),
+      where: and(
+        eq(papers.isPublic, false),
+        inArray(papers.groupId, managedGroups),
+      ),
       columns: {
         id: true,
         category: true,
@@ -224,7 +223,7 @@ export class PaperController {
 
     const isOwned = rawPaper.group.usersToGroups.some(u => u.user.id === user.id);
     if (rawPaper.canDownload && !isOwned && !['teacher', 'admin'].includes(user.role))
-      await useTry(() => db.update(papers).set({ downloadCount: rawPaper.downloadCount + 1 }).where(eq(papers.id, id)));
+      await db.update(papers).set({ downloadCount: rawPaper.downloadCount + 1 }).where(eq(papers.id, id));
 
     return '修改成功';
   }
@@ -237,7 +236,7 @@ export class PaperController {
       comment?: string;
     },
   ) {
-    await useTry(() => db.update(papers).set({ ...newPaper, isPublic: true }).where(eq(papers.id, id)));
+    await db.update(papers).set({ ...newPaper, isPublic: true }).where(eq(papers.id, id));
     return '批改成功';
   }
 }
