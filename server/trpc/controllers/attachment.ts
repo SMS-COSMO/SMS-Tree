@@ -3,7 +3,7 @@ import { TRPCError } from '@trpc/server';
 import type { TNewAttachment, TRawUser } from '../../db/db';
 import { db } from '../../db/db';
 import { ctl } from '../context';
-import { TRPCForbidden, useTry } from '../utils/shared';
+import { TRPCForbidden } from '../utils/shared';
 import { attachments } from '~/server/db/schema/attachment';
 import { allowFileType } from '~/constants/attachment';
 import { papers } from '~/server/db/schema/paper';
@@ -13,7 +13,10 @@ import type { TAttachmentCategory } from '~/types';
 export class AttachmentController {
   async hasPerm(
     user: TRawUser,
-    id: { paperId?: string | undefined | null; reportId?: string | undefined | null },
+    id: {
+      paperId?: string | undefined | null;
+      reportId?: string | undefined | null;
+    },
     allowPublic: boolean = false,
   ) {
     // Teachers have all the perm
@@ -25,24 +28,55 @@ export class AttachmentController {
       return true;
 
     if (id.paperId) {
-      const paper = await db
-        .select({
-          groupId: papers.groupId,
-          canDownload: papers.canDownload,
-        })
-        .from(papers)
-        .where(eq(papers.id, id.paperId))
-        .get();
-      if (!paper?.groupId)
+      const paper = await db.query.papers.findFirst({
+        where: eq(papers.id, id.paperId),
+        columns: {
+          canDownload: true,
+        },
+        with: {
+          group: {
+            columns: {},
+            with: {
+              usersToGroups: {
+                columns: {},
+                with: {
+                  user: {
+                    columns: { id: true },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+      if (!paper)
         return false;
-      return (allowPublic && paper.canDownload) || await ctl.gc.hasUser(user.id, paper?.groupId);
+      return (allowPublic && paper.canDownload) || paper.group.usersToGroups.some(x => x.user.id === user.id);
     }
 
     if (id.reportId) {
-      const report = await db.select({ groupId: reports.groupId }).from(reports).where(eq(reports.id, id.reportId)).get();
-      if (!report?.groupId)
+      const report = await db.query.reports.findFirst({
+        where: eq(reports.id, id.reportId),
+        columns: {},
+        with: {
+          group: {
+            columns: {},
+            with: {
+              usersToGroups: {
+                columns: {},
+                with: {
+                  user: {
+                    columns: { id: true },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+      if (!report)
         return false;
-      return allowPublic || await ctl.gc.hasUser(user.id, report.groupId);
+      return allowPublic || report.group.usersToGroups.some(x => x.user.id === user.id);
     }
   };
 
@@ -53,9 +87,7 @@ export class AttachmentController {
     if (!await this.hasPerm(user, { paperId: newAttachment.paperId, reportId: newAttachment.reportId }))
       throw TRPCForbidden;
 
-    const id = await useTry(
-      async () => (await db.insert(attachments).values(newAttachment).returning({ id: attachments.id }).get()).id,
-    );
+    const id = (await db.insert(attachments).values(newAttachment).returning({ id: attachments.id }).get()).id;
     const url = await ctl.s3.getStandardUploadPresignedUrl(newAttachment.S3FileId);
     if (!url)
       throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '无法获取文件上传URL' });
@@ -68,24 +100,74 @@ export class AttachmentController {
     target: { paperId?: string; reportId?: string },
     replaceOption: { replace: boolean; category?: TAttachmentCategory },
   ) {
-    for (const id of ids) {
-      const info = await useTry(
-        () => db
-          .select({
-            paperId: attachments.paperId,
-            reportId: attachments.reportId,
-          })
-          .from(attachments)
-          .where(eq(attachments.id, id))
-          .get(),
-      );
-      if (!await this.hasPerm(user, { paperId: info?.paperId, reportId: info?.reportId }))
-        throw TRPCForbidden;
+    if (!['admin', 'teacher'].includes(user.role)) {
+      for (const id of ids) {
+        const info = await db.query.attachments.findFirst({
+          where: eq(attachments.id, id),
+          columns: {
+            paperId: true,
+            reportId: true,
+          },
+          with: {
+            paper: {
+              columns: {
+                canDownload: true,
+              },
+              with: {
+                group: {
+                  columns: {},
+                  with: {
+                    usersToGroups: {
+                      columns: {},
+                      with: {
+                        user: {
+                          columns: { id: true },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            report: {
+              columns: {},
+              with: {
+                group: {
+                  columns: {},
+                  with: {
+                    usersToGroups: {
+                      columns: {},
+                      with: {
+                        user: {
+                          columns: { id: true },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        });
+        if (!info)
+          throw new TRPCError({ code: 'NOT_FOUND', message: '附件不存在' });
+
+        if (info.paperId && info.paper) {
+          if (!info.paper.canDownload && !info.paper.group.usersToGroups.some(x => x.user.id === user.id))
+            throw TRPCForbidden;
+        } else if (info.reportId && info.report) {
+          if (!info.report.group.usersToGroups.some(x => x.user.id === user.id))
+            throw TRPCForbidden;
+        } else {
+          throw new TRPCError({ code: 'NOT_FOUND', message: '附件不存在' });
+        }
+      }
     }
 
     if (!(await this.hasPerm(user, target)))
       throw TRPCForbidden;
 
+    // TODO: use transactions
     if (replaceOption.replace) {
       if (replaceOption.category) {
         if (target.paperId)
@@ -99,19 +181,9 @@ export class AttachmentController {
           await db.delete(attachments).where(eq(attachments.reportId, target.reportId));
       }
     }
-
-    try {
-      await db.update(attachments).set(target).where(inArray(attachments.id, ids));
-    } catch (err) {
-      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '无法更新附件' });
-    }
+    await db.update(attachments).set(target).where(inArray(attachments.id, ids));
 
     return '修改成功';
-  }
-
-  async list() {
-    const l = await useTry(() => db.select().from(attachments).all());
-    return l;
   }
 
   /**
@@ -120,10 +192,10 @@ export class AttachmentController {
    * @returns A promise that resolves to a Result object containing the file URL if successful, or a Result object with an error message if unsuccessful.
    */
   async getFileUrlUncheckedPerm(id: string) {
-    const attachment = await useTry(
-      () => db.select({ S3FileId: attachments.S3FileId }).from(attachments).where(eq(attachments.id, id)).get(),
-      { code: 'INTERNAL_SERVER_ERROR', message: '无法获取附件' },
-    );
+    const attachment = await db.query.attachments.findFirst({
+      where: eq(attachments.id, id),
+      columns: { S3FileId: true },
+    });
     if (!attachment || !attachment.S3FileId)
       throw new TRPCError({ code: 'NOT_FOUND', message: '附件不存在' });
 
@@ -144,23 +216,68 @@ export class AttachmentController {
    * @returns A Promise that resolves to a Result object containing the file URL if successful, or an error Result object if unsuccessful.
    */
   async getFileUrl(id: string, user: TRawUser) {
-    const attachment = await useTry(
-      () => db
-        .select({
-          S3FileId: attachments.S3FileId,
-          paperId: attachments.paperId,
-          reportId: attachments.reportId,
-        })
-        .from(attachments)
-        .where(eq(attachments.id, id))
-        .get(),
-      { code: 'INTERNAL_SERVER_ERROR', message: '无法获取附件' },
-    );
-    if (!attachment || !attachment.S3FileId || (!attachment.paperId && !attachment.reportId))
+    const attachment = await db.query.attachments.findFirst({
+      where: eq(attachments.id, id),
+      columns: {
+        S3FileId: true,
+        paperId: true,
+        reportId: true,
+      },
+      with: {
+        paper: {
+          columns: {
+            canDownload: true,
+          },
+          with: {
+            group: {
+              columns: {},
+              with: {
+                usersToGroups: {
+                  columns: {},
+                  with: {
+                    user: {
+                      columns: { id: true },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        report: {
+          columns: {},
+          with: {
+            group: {
+              columns: {},
+              with: {
+                usersToGroups: {
+                  columns: {},
+                  with: {
+                    user: {
+                      columns: { id: true },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    if (!attachment)
       throw new TRPCError({ code: 'NOT_FOUND', message: '附件不存在' });
 
-    if (!await this.hasPerm(user, { paperId: attachment.paperId, reportId: attachment.reportId }, true))
-      throw new TRPCError({ code: 'FORBIDDEN', message: '无下载权限' });
+    if (!['admin', 'teacher'].includes(user.role)) {
+      if (attachment.paperId && attachment.paper) {
+        if (!attachment.paper.canDownload && !attachment.paper.group.usersToGroups.some(x => x.user.id === user.id))
+          throw new TRPCError({ code: 'FORBIDDEN', message: '无下载权限' });
+      } else if (attachment.reportId && attachment.report) {
+        if (!attachment.report.group.usersToGroups.some(x => x.user.id === user.id))
+          throw new TRPCError({ code: 'FORBIDDEN', message: '无下载权限' });
+      } else {
+        throw new TRPCError({ code: 'NOT_FOUND', message: '附件不存在' });
+      }
+    }
 
     const url = await ctl.s3.getFileUrl(attachment.S3FileId);
     if (!url)
@@ -183,13 +300,15 @@ export class AttachmentController {
         .where(and(isNull(attachments.paperId), isNull(attachments.reportId)))
         .returning({ S3FileId: attachments.S3FileId });
     } else {
-      attachmentsDeleted = await db.delete(attachments).where(
-        and(
-          isNull(attachments.paperId),
-          isNull(attachments.reportId),
-          lte(attachments.createdAt, new Date(Date.now() - pendingTimeout)),
-        ),
-      ).returning({ S3FileId: attachments.S3FileId });
+      attachmentsDeleted = await db
+        .delete(attachments)
+        .where(
+          and(
+            isNull(attachments.paperId),
+            isNull(attachments.reportId),
+            lte(attachments.createdAt, new Date(Date.now() - pendingTimeout)),
+          ),
+        ).returning({ S3FileId: attachments.S3FileId });
     }
 
     if (!attachmentsDeleted.length)

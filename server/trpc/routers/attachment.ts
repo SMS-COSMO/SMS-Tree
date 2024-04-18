@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { protectedProcedure, requireRoles, router } from '../trpc';
+import { protectedProcedure, router } from '../trpc';
 
 const categoryZod = z.enum(['paperDocument', 'paperAttachment', 'reportDocument', 'reportPresentation']);
 const attachmentIdZod = z.string().min(0, '附件不存在');
@@ -60,12 +60,6 @@ export const attachmentRouter = router({
         { reportId: input.reportId },
         { replace: true, category: input.category },
       );
-    }),
-
-  list: protectedProcedure
-    .use(requireRoles(['admin', 'teacher']))
-    .query(async ({ ctx }) => {
-      return await ctx.attachmentController.list();
     }),
 
   // TODO: this seems unsafe
