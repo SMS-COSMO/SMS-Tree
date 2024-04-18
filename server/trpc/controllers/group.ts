@@ -177,7 +177,7 @@ export class GroupController {
 
     if (classId) {
       const classInfo = await ctl.cc.getFullContent(classId);
-      if (!['teacher', 'admin'].includes(user.role) && !classInfo.students.includes(user.id))
+      if (!['teacher', 'admin'].includes(user.role) && !classInfo.students.some(x => x.id === user.id))
         throw TRPCForbidden;
     }
 

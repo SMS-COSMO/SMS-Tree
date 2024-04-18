@@ -13,7 +13,6 @@ export class ReportController {
       await db
         .insert(reports)
         .values(newReport)
-        .onConflictDoNothing()
         .returning({ id: reports.id })
         .get()
     ).id;

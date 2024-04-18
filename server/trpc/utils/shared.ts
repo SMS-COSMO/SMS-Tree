@@ -1,6 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import type { TRPC_ERROR_CODE_KEY } from '@trpc/server/rpc';
 import { customAlphabet } from 'nanoid';
+import type { TRawClass } from '~/server/db/db';
 
 export function requireEqualOrThrow(
   a: any,
@@ -33,3 +34,13 @@ export async function useTry<T>(
 }
 
 export const makeId = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 12);
+
+export function getClassName(classInfo: TRawClass | undefined) {
+  if (!classInfo)
+    return '未知';
+
+  const now = new Date();
+  const year = now.getFullYear() - classInfo.enterYear + (now.getMonth() > 8 ? 1 : 0);
+
+  return `${year < 4 ? ['新高一', '高一', '高二', '高三'][year] : `${classInfo.enterYear}届`}（${classInfo.index}）`;
+}

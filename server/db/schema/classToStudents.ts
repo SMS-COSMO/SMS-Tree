@@ -1,4 +1,5 @@
 import { primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { relations } from 'drizzle-orm';
 import { classes } from './class';
 import { users } from './user';
 
@@ -7,4 +8,15 @@ export const classesToStudents = sqliteTable('classes_to_students', {
   userId: text('user_id', { mode: 'text' }).notNull().references(() => users.id),
 }, t => ({
   pk: primaryKey({ columns: [t.classId, t.userId] }),
+}));
+
+export const classesToStudentsRelations = relations(classesToStudents, ({ one }) => ({
+  classes: one(classes, {
+    fields: [classesToStudents.classId],
+    references: [classes.id],
+  }),
+  users: one(users, {
+    fields: [classesToStudents.userId],
+    references: [users.id],
+  }),
 }));

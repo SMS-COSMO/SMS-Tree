@@ -103,8 +103,8 @@ const { info, papers } = await useTrpcAsyncData(async () => {
     : await $api.user.profileSafe.query({ id: props.userId }) as TUserProfile;
 
   let papers: (Partial<TRawPaper> | undefined)[] = [];
-  for (const group of (info?.groupIds ?? []))
-    papers = papers.concat((await $api.group.content.query({ id: group })).papers);
+  for (const group of (info?.groups ?? []))
+    papers = papers.concat(group.papers);
 
   return { info, papers };
 }) ?? { info: undefined, papers: undefined };

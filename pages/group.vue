@@ -82,6 +82,6 @@ await groupInfoSuspense();
 
 onMounted(() => {
   if (userInfo)
-    userStore.groupIds = userInfo.groupIds;
+    userStore.groupIds = userInfo.groups.map(x => x.id);
 });
 </script>

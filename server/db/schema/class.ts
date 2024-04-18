@@ -1,5 +1,8 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { relations } from 'drizzle-orm';
 import { makeId } from '../../trpc/utils/shared';
+import { classesToStudents } from './classToStudents';
+import { users } from './user';
 
 export const classes = sqliteTable('classes', {
   id: text('id', { mode: 'text' }).primaryKey().$defaultFn(() => makeId(12)),
@@ -15,3 +18,11 @@ export const classes = sqliteTable('classes', {
     'archived', // 归档
   ] }).notNull().default('initialized'),
 });
+
+export const classesRelations = relations(classes, ({ many, one }) => ({
+  classesToStudents: many(classesToStudents),
+  teacher: one(users, {
+    fields: [classes.teacherId],
+    references: [users.id],
+  }),
+}));

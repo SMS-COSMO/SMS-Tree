@@ -33,7 +33,6 @@ export class PaperController {
       await db
         .insert(papers)
         .values({ ...newPaper, groupId: group.groupId, isPublic: false })
-        .onConflictDoNothing()
         .returning({ id: papers.id })
         .get()
     ).id;

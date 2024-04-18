@@ -1,14 +1,11 @@
 import { eq } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
-import type { TRawClass } from '../../db/db';
 import { db } from '../../db/db';
 import { classes } from '../../db/schema/class';
 import { classesToStudents } from '../../db/schema/classToStudents';
-import { classSerializer } from '../serializer/class';
-import { ctl } from '../context';
-import { useTry } from '../utils/shared';
+import { getClassName } from '../utils/shared';
 import type { TClassState } from '~/types';
-import { PClassContent, PGetStudents } from '~/server/db/statements';
+import { groups } from '~/server/db/schema/group';
 
 export class ClassController {
   async create(newClass: {
@@ -19,20 +16,15 @@ export class ClassController {
     teacherId: string;
   }) {
     // TODO: use transactions
-    const insertedId = await useTry(
-      async () => (await db.insert(classes).values(newClass).returning({ id: classes.id }).get()).id,
-    );
+    const insertedId = (await db.insert(classes).values(newClass).returning({ id: classes.id }).get()).id;
 
-    await useTry(
-      async () => db.insert(classesToStudents).values(
-        newClass.students.map(
-          item => ({
-            classId: insertedId,
-            userId: item,
-          }),
-        ),
+    await db.insert(classesToStudents).values(
+      newClass.students.map(
+        item => ({
+          classId: insertedId,
+          userId: item,
+        }),
       ),
-      { code: 'INTERNAL_SERVER_ERROR', message: '无法将用户加入班级' },
     );
 
     return '创建成功';
@@ -49,79 +41,90 @@ export class ClassController {
     return '删除成功';
   }
 
-  async getString(id: string, classInfo?: TRawClass) {
-    classInfo ??= await this.getContent(id);
-    if (!classInfo)
-      return '未知';
-
-    const now = new Date();
-    const year = now.getFullYear() - classInfo.enterYear + (now.getMonth() > 8 ? 1 : 0);
-
-    return `${year < 4 ? ['新高一', '高一', '高二', '高三'][year] : `${classInfo.enterYear}届`}（${classInfo.index}）`;
-  }
-
-  private async getFullClass(basicClass: TRawClass | undefined) {
-    if (!basicClass)
-      throw new TRPCError({ code: 'NOT_FOUND', message: '班级不存在' });
-
-    const students = await useTry(
-      async () => (
-        await PGetStudents.all({ id: basicClass.id })
-      ).map(item => item.userId),
-      { code: 'INTERNAL_SERVER_ERROR', message: '无法获取学生' },
-    );
-
-    const teacher = await useTry(
-      async () => ctl.uc.getProfile(basicClass.teacherId),
-      { code: 'INTERNAL_SERVER_ERROR', message: '无法获取教师' },
-    );
-
-    const className = await this.getString('', basicClass);
-    return classSerializer(basicClass, students, teacher, className);
-  }
-
   async modifyState(id: string, newState: TClassState) {
-    await useTry(() => db.update(classes).set({ state: newState }).where(eq(classes.id, id)));
+    await db.update(classes).set({ state: newState }).where(eq(classes.id, id));
     return '修改成功';
   }
 
   async getContent(id: string) {
-    return await useTry(() => PClassContent.get({ id }));
+    return await db.query.classes.findFirst({
+      where: eq(classes.id, id),
+    });
   }
 
   async getFullContent(id: string) {
-    const basicClass = await useTry(() => PClassContent.get({ id }));
-    return await this.getFullClass(basicClass);
+    const res = await db.query.classes.findFirst({
+      where: eq(classes.id, id),
+      with: {
+        classesToStudents: {
+          columns: {},
+          with: {
+            users: {
+              columns: {
+                id: true,
+                schoolId: true,
+                username: true,
+              },
+            },
+          },
+        },
+        teacher: {
+          columns: {
+            id: true,
+            schoolId: true,
+            username: true,
+          },
+        },
+      },
+    });
+    if (!res)
+      throw new TRPCError({ code: 'NOT_FOUND', message: '班级不存在' });
+
+    const {
+      classesToStudents: _classesToStudents,
+      ...info
+    } = res;
+
+    return {
+      ...info,
+      students: res.classesToStudents.map(x => x.users),
+      className: getClassName(info),
+    };
   }
 
   async getList(teacherId?: string) {
-    const res = await Promise.all(
-      (teacherId
-        ? await db.select().from(classes).where(eq(classes.teacherId, teacherId))
-        : await db.select().from(classes)
-      ).map(
-        async (basicClass) => {
-          const className = await this.getString('', basicClass);
-          const teacher = await useTry(
-            async () => ctl.uc.getProfile(basicClass.teacherId),
-            { code: 'INTERNAL_SERVER_ERROR', message: '无法获取教师' },
-          );
-          return { ...basicClass, className, teacher: { username: teacher.username } };
+    const res = await db.query.classes.findMany({
+      where: teacherId ? eq(classes.teacherId, teacherId) : undefined,
+      with: {
+        teacher: {
+          columns: {
+            id: true,
+            schoolId: true,
+            username: true,
+          },
         },
-      ),
-    );
+      },
+    });
 
-    return res;
+    return res.map(x => ({
+      className: getClassName(x),
+      ...x,
+    }));
   }
 
   async initGroups(id: string, amount: number) {
     try {
-      const classFromDb = await db.select({ enterYear: classes.enterYear }).from(classes).where(eq(classes.id, id)).get();
+      const classFromDb = await db.query.classes.findFirst({
+        where: eq(classes.id, id),
+        columns: { enterYear: true },
+      });
       if (!classFromDb)
         throw new TRPCError({ code: 'NOT_FOUND', message: '班级不存在' });
 
       await Promise.all(
-        [...Array(amount)].map(() => ctl.gc.create({ classId: id, enterYear: classFromDb.enterYear })),
+        [...Array(amount)].map(
+          () => db.insert(groups).values({ classId: id, enterYear: classFromDb.enterYear }),
+        ),
       );
       return '创建成功';
     } catch (err) {

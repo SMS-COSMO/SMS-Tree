@@ -95,8 +95,8 @@ for (const i in classList) {
       return ctl.gc.create({
         enterYear: c.enterYear,
         classId: c.id,
-        members: shuffled[j],
-        leader: shuffled[j][0],
+        members: shuffled[j].map(x => x.id),
+        leader: shuffled[j][0].id,
         projectName: `project ${i}${j}`,
       });
     }),
