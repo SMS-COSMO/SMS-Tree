@@ -35,12 +35,6 @@ export const noteRouter = router({
       return await ctx.noteController.modifySafe(input, ctx.user);
     }),
 
-  info: protectedProcedure
-    .input(z.object({ id: noteIdZod }))
-    .query(async ({ ctx, input }) => {
-      return await ctx.noteController.getContent(input.id, ctx.user);
-    }),
-
   remove: protectedProcedure
     .input(z.object({ id: noteIdZod }))
     .mutation(async ({ ctx, input }) => {

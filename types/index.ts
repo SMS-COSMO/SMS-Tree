@@ -41,7 +41,6 @@ export type TClassState =
 export type TGroupContent = RouterOutput['group']['content'];
 export type TGroupList = RouterOutput['group']['list'];
 
-export type TNoteInfo = RouterOutput['note']['info'];
 export type TNoteCreateSafe = RouterInput['note']['createSafe'];
 
 export interface TSearchOption {
