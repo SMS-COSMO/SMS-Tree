@@ -33,10 +33,6 @@
 </template>
 
 <script setup lang="ts">
-import { useQuery } from '@tanstack/vue-query';
-import { stateTable } from '~/constants/class';
-import type { TClassListItem } from '~/types';
-
 const { $api } = useNuxtApp();
 useHeadSafe({
   title: '班级列表',
@@ -48,7 +44,7 @@ const searchContent = ref('');
 const userStore = useUserStore();
 const { data: teacherClasses, suspense } = useQuery({
   queryKey: ['teacherClasses', { id: userStore.userId }],
-  queryFn: () => $api.user.getTeacherClasses.query(userStore.userId),
+  queryFn: () => $api.user.teacherClasses.query(userStore.userId),
 });
 await suspense();
 

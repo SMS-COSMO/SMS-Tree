@@ -1,7 +1,6 @@
 import { type QueryKey, useQuery } from '@tanstack/vue-query';
 import type { UseFuseOptions } from '@vueuse/integrations/useFuse';
 import { useFuse } from '@vueuse/integrations/useFuse';
-import type { TUserListItem } from '~/types/index';
 
 export async function useSearch<T>(
   searchContent: Ref<string>,

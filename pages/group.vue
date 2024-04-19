@@ -56,8 +56,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useQuery } from '@tanstack/vue-query';
-
 useHeadSafe({
   title: '我的小组',
 });
@@ -67,7 +65,7 @@ const userStore = useUserStore();
 const device = useDevice();
 
 const [classInfo, userInfo] = await useTrpcAsyncData(() => Promise.all([
-  $api.class.content.query({ id: userStore.classId }),
+  $api.class.info.query({ id: userStore.classId }),
   $api.user.profileSafe.query({ id: userStore.userId }),
 ])) ?? [];
 
@@ -75,7 +73,7 @@ const { data: groupInfo, suspense: groupInfoSuspense } = useQuery({
   queryKey: ['groupInfo', { id: userStore.groupIds[0] }],
   queryFn: () => {
     if (userStore.groupIds[0])
-      return $api.group.content.query({ id: userStore.groupIds[0] });
+      return $api.group.info.query({ id: userStore.groupIds[0] });
   },
 });
 await groupInfoSuspense();

@@ -19,11 +19,9 @@
 </template>
 
 <script setup lang="ts">
-import type { TClassContent } from '~/types';
-
 withDefaults(defineProps<{
   direction: 'vertical' | 'horizontal';
-  classInfo: TClassContent;
+  classInfo: TClass;
   showArchived?: boolean;
 }>(), {
   showArchived: false,

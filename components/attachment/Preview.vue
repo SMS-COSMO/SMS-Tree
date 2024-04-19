@@ -30,11 +30,8 @@
 </template>
 
 <script setup lang="ts">
-import { useQuery } from '@tanstack/vue-query';
-import type { TAttachmentContent } from '~/types';
-
 const props = withDefaults(defineProps<{
-  attachment?: TAttachmentContent;
+  attachment?: TAttachment;
   fullHeight?: boolean;
 }>(), {
   fullHeight: false,

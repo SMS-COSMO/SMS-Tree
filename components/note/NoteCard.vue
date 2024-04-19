@@ -104,10 +104,7 @@
 </template>
 
 <script setup lang="ts">
-import { useMutation, useQueryClient } from '@tanstack/vue-query';
-import type { TRawNote } from '~/server/db/db';
-
-defineProps<{ note: TRawNote }>();
+defineProps<{ note: TNote }>();
 const { $api } = useNuxtApp();
 const device = useDevice();
 

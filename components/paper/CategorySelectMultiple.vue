@@ -18,7 +18,6 @@
 <script setup lang="ts">
 import type { CascaderOption } from 'element-plus';
 import SelectPlaceholder from '../utils/SelectPlaceholder.vue';
-import { categoryCascader } from '~/constants/paper';
 
 withDefaults(defineProps<{
   withAll?: boolean;

@@ -1,6 +1,4 @@
-import type { TScore } from '~/types';
-
-export function useScoreColor(score: TScore) {
+export function useScoreColor(score: TPaperScore) {
   if (score === 'A')
     return 'success';
   else if (score === 'B')

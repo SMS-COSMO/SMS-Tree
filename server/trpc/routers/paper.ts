@@ -48,7 +48,7 @@ export const paperRouter = router({
   info: protectedProcedure
     .input(z.object({ id: paperIdZod }))
     .query(async ({ ctx, input }) => {
-      return await ctx.paperController.getContent(input.id, ctx.user);
+      return await ctx.paperController.info(input.id, ctx.user);
     }),
 
   remove: protectedProcedure
@@ -58,16 +58,16 @@ export const paperRouter = router({
       return await ctx.paperController.remove(input.id);
     }),
 
-  listSafe: protectedProcedure
+  list: protectedProcedure
     .query(async ({ ctx }) => {
-      return await ctx.paperController.getListSafe(ctx.user);
+      return await ctx.paperController.list(ctx.user);
     }),
 
   scoringList: protectedProcedure
     .input(z.string().optional())
     .use(requireRoles(['admin', 'teacher']))
     .query(async ({ ctx, input }) => {
-      return await ctx.paperController.getScoringList(ctx.user, input);
+      return await ctx.paperController.scoringList(ctx.user, input);
     }),
 
   updateDownloadCount: protectedProcedure

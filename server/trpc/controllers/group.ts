@@ -5,7 +5,7 @@ import type { TNewGroup, TRawUser } from '../../db/db';
 import { db } from '../../db/db';
 import { groups } from '../../db/schema/group';
 import { usersToGroups } from '../../db/schema/userToGroup';
-import { TRPCForbidden, requireEqualOrThrow } from '../utils/shared';
+import { TRPCForbidden } from '../utils/shared';
 import { classes } from '~/server/db/schema/class';
 
 export class GroupController {
@@ -56,7 +56,7 @@ export class GroupController {
     return '修改成功';
   }
 
-  async getContent(id: string, user: TRawUser, getDetail: boolean) {
+  async info(id: string, user: TRawUser, getDetail: boolean) {
     const res = await db.query.groups.findFirst({
       where: eq(groups.id, id),
       with: {
@@ -118,7 +118,7 @@ export class GroupController {
     };
   }
 
-  async getListFull(user: TRawUser, classId?: string) {
+  async listFull(user: TRawUser, classId?: string) {
     const res = await db.query.groups.findMany({
       where: classId ? eq(groups.classId, classId) : undefined,
       with: {
@@ -175,7 +175,7 @@ export class GroupController {
     });
   }
 
-  async getList(user: TRawUser, classId?: string) {
+  async list(user: TRawUser, classId?: string) {
     if (!['teacher', 'admin'].includes(user.role)) {
       // Only admins are allowed to leave classId empty
       if (!classId)
@@ -268,8 +268,10 @@ export class GroupController {
    * @param user The user performing the action.
    */
   async setLeader(userId: string, groupId: string, user: TRawUser) {
-    if (!['admin', 'teacher'].includes(user.role))
-      requireEqualOrThrow(userId, user.id, { message: '只能将自己设为组长', code: 'FORBIDDEN' });
+    if (!['admin', 'teacher'].includes(user.role)) {
+      if (userId !== user.id)
+        throw new TRPCError({ code: 'FORBIDDEN', message: '只能将自己设为组长' });
+    }
 
     await db.update(groups).set({ leader: userId }).where(eq(groups.id, groupId));
     return '修改成功';
@@ -293,14 +295,12 @@ export class GroupController {
    */
   async removeLeader(groupId: string, user: TRawUser) {
     if (!['admin', 'teacher'].includes(user.role)) {
-      requireEqualOrThrow(
-        user.id,
-        (await db.query.groups.findFirst({
-          where: eq(groups.id, groupId),
-          columns: { leader: true },
-        }))?.leader,
-        { message: '只能将自己移出组长', code: 'FORBIDDEN' },
-      );
+      const leaderId = (await db.query.groups.findFirst({
+        where: eq(groups.id, groupId),
+        columns: { leader: true },
+      }))?.leader;
+      if (user.id !== leaderId)
+        throw new TRPCError({ code: 'FORBIDDEN', message: '只能将自己移出组长' });
     }
 
     await db.update(groups).set({ leader: null }).where(eq(groups.id, groupId));

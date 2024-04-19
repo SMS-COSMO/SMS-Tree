@@ -102,11 +102,8 @@
 </template>
 
 <script setup lang="ts">
-import { useMutation, useQueryClient } from '@tanstack/vue-query';
-import type { TGroupContent } from '~/types';
-
 const props = defineProps<{
-  info?: TGroupContent;
+  info?: TGroup;
   index: number;
 }>();
 

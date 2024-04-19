@@ -146,7 +146,7 @@ export class UserController {
     return { accessToken: newAccessToken, refreshToken: newRefreshToken };
   }
 
-  async getTeacherClasses(id: string) {
+  async teacherClasses(id: string) {
     const res = await db.query.classes.findMany({
       where: eq(classes.teacherId, id),
       columns: { id: true },
@@ -159,7 +159,7 @@ export class UserController {
     return '修改成功';
   }
 
-  async getProfile(id: string, isSafe: boolean) {
+  async profile(id: string, isSafe: boolean) {
     const user = await db.query.users.findFirst({
       where: eq(users.id, id),
       with: {
@@ -213,7 +213,7 @@ export class UserController {
     };
   }
 
-  async getList(role: 'student' | 'teacher' | 'admin' | 'all') {
+  async list(role: 'student' | 'teacher' | 'admin' | 'all') {
     const res = await db.query.users.findMany({
       where: role === 'all' ? undefined : eq(users.role, role as 'student' | 'teacher' | 'admin'),
       with: {
@@ -256,7 +256,6 @@ export class UserController {
 
   async remove(id: string) {
     try {
-      // TODO: use transactions
       await db.delete(users).where(eq(users.id, id));
       return '删除成功';
     } catch (err) {

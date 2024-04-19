@@ -37,12 +37,10 @@
 </template>
 
 <script setup lang="ts">
-import type { TAttachmentContent } from '~/types';
-
 const props = defineProps<{
   paperId?: string;
   canDownload?: boolean;
-  attachments?: TAttachmentContent[];
+  attachments?: TAttachment[];
 }>();
 
 const { $api } = useNuxtApp();

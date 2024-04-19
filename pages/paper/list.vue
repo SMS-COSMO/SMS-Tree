@@ -61,8 +61,6 @@
 
 <script setup lang="ts">
 import { vOnClickOutside } from '@vueuse/components';
-import type { TPaperListSafeItem } from '~/types/index';
-import type { TSearchOption } from '~/types';
 
 useHeadSafe({
   title: '论文列表',
@@ -115,7 +113,7 @@ watch(searchContent, () => {
 const { processedListData } = await useSearch<TPaperListSafeItem>(
   searchContent,
   fuseOptions,
-  $api.paper.listSafe.query,
+  $api.paper.list.query,
   ['paperSearch'],
   e => e.item,
   (o: TPaperListSafeItem) => {

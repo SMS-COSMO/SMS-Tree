@@ -70,7 +70,6 @@
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus';
 import CategorySelect from '~/components/paper/CategorySelect.vue';
-import type { TPaperCreateForm } from '~/types/index';
 
 const { $api } = useNuxtApp();
 const device = useDevice();

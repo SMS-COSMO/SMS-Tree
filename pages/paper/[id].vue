@@ -86,9 +86,6 @@
 </template>
 
 <script setup lang="ts">
-import { useQuery } from '@tanstack/vue-query';
-import { getCategoryName } from '~/constants/paper';
-
 useHeadSafe({
   title: '论文信息',
 });

@@ -32,17 +32,17 @@ export const classRouter = router({
       return await ctx.classController.modifyState(input.id, input.newState);
     }),
 
-  content: protectedProcedure
+  info: protectedProcedure
     .input(z.object({ id: classIdZod }))
     .query(async ({ ctx, input }) => {
-      return await ctx.classController.getContent(input.id);
+      return await ctx.classController.info(input.id);
     }),
 
-  fullContent: protectedProcedure
+  fullInfo: protectedProcedure
     .input(z.object({ id: classIdZod }))
     .use(requireRoles(['admin', 'teacher']))
     .query(async ({ ctx, input }) => {
-      return await ctx.classController.getFullContent(input.id);
+      return await ctx.classController.fullInfo(input.id);
     }),
 
   list: protectedProcedure

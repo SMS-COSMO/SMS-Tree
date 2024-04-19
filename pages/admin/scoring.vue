@@ -35,8 +35,6 @@
 </template>
 
 <script setup lang="ts">
-import { useQuery, useQueryClient } from '@tanstack/vue-query';
-
 const { $api } = useNuxtApp();
 
 const queryClient = useQueryClient();

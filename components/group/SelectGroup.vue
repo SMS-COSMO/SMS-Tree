@@ -32,7 +32,6 @@
 
 <script setup lang="ts">
 import type { CascaderOption } from 'element-plus';
-import type { TGroupList } from '~/types';
 
 const { $api } = useNuxtApp();
 

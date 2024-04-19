@@ -61,8 +61,6 @@
 </template>
 
 <script setup lang="ts">
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
-
 const { $api } = useNuxtApp();
 const userStore = useUserStore();
 

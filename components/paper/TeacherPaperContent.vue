@@ -110,9 +110,6 @@
 </template>
 
 <script setup lang="ts">
-import { useMutation, useQueryClient } from '@tanstack/vue-query';
-import { getCategoryName } from '~/constants/paper';
-
 const props = defineProps<{
   id: string;
 }>();
@@ -122,8 +119,8 @@ const { $api } = useNuxtApp();
 const info = await useTrpcAsyncData(() => $api.paper.info.query({ id: props.id }));
 
 // TODO perf: don't use groupInfo and classInfo which gets members multiple times
-const groupInfo = await useTrpcAsyncData(() => $api.group.content.query({ id: info?.groupId ?? '' }));
-const classInfo = await useTrpcAsyncData(() => $api.class.fullContent.query({ id: groupInfo?.classId ?? '' }));
+const groupInfo = await useTrpcAsyncData(() => $api.group.info.query({ id: info?.groupId ?? '' }));
+const classInfo = await useTrpcAsyncData(() => $api.class.fullInfo.query({ id: groupInfo?.classId ?? '' }));
 
 function searchTag(keyword: string) {
   navigateTo({

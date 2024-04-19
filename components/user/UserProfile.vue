@@ -80,7 +80,6 @@
 
 <script lang="ts" setup>
 import type { TRawPaper } from '~/server/db/db';
-import type { TUserProfile } from '~/types';
 
 const props = defineProps<{
   userId: string;

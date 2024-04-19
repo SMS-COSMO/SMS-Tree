@@ -31,8 +31,6 @@
 </template>
 
 <script setup lang="ts">
-import type { TClassCreate } from '~/types';
-
 const { $api } = useNuxtApp();
 const device = useDevice();
 useHeadSafe({

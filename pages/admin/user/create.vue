@@ -44,10 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { useMutation } from '@tanstack/vue-query';
 import type { FormInstance, FormRules } from 'element-plus';
-import type { TUserRegister } from '~/types/index';
-import { passwordRegex } from '~/constants/user';
 
 useHeadSafe({
   title: '创建用户',

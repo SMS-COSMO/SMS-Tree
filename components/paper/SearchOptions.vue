@@ -57,8 +57,6 @@
 </template>
 
 <script setup lang="ts">
-import type { TSearchOption } from '~/types';
-
 const props = defineProps<{
   modelValue: TSearchOption;
 }>();

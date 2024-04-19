@@ -9,8 +9,6 @@
 </template>
 
 <script setup lang="ts">
-import type { TReportCategory } from '~/types';
-
 defineProps<{
   category: TReportCategory;
 }>();

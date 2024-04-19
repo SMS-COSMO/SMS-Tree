@@ -107,10 +107,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
-import { stateTable } from '~/constants/class';
-import type { TClassState } from '~/types';
-
 const { $api } = useNuxtApp();
 const device = useDevice();
 useHeadSafe({
@@ -120,7 +116,7 @@ const queryClient = useQueryClient();
 
 const { data: classData, suspense: classInfoSuspense } = useQuery({
   queryKey: ['classInfo', { id: useRoute().params.id.toString() }],
-  queryFn: () => $api.class.fullContent.query({ id: useRoute().params.id.toString() }),
+  queryFn: () => $api.class.fullInfo.query({ id: useRoute().params.id.toString() }),
 });
 await classInfoSuspense();
 

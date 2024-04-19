@@ -47,10 +47,8 @@
 </template>
 
 <script setup lang="ts">
-import type { RouterOutput } from '~/types';
-
 const props = defineProps<{
-  report: RouterOutput['group']['content']['reports'][0];
+  report: TReport;
 }>();
 
 const dialogVisible = ref(false);

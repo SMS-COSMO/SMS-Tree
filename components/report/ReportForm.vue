@@ -22,9 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { useQueryClient } from '@tanstack/vue-query';
 import type { FormInstance, FormRules } from 'element-plus';
-import type { TAttachmentCategory, TReportCategory } from '~/types';
 
 const props = defineProps<{
   type: 'create' | 'modify';

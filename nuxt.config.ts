@@ -17,6 +17,15 @@ export default defineNuxtConfig({
       pathPrefix: false,
     },
   ],
+  imports: {
+    dirs: ['types', 'constants'],
+    presets: [
+      {
+        from: '@tanstack/vue-query',
+        imports: ['useMutation', 'useQuery', 'useQueryClient'],
+      },
+    ],
+  },
   build: {
     transpile: ['trpc-nuxt'],
   },

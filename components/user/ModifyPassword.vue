@@ -41,9 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { useMutation } from '@tanstack/vue-query';
 import type { FormInstance, FormRules } from 'element-plus';
-import { passwordRegex } from '~/constants/user';
 import { useUserStore } from '~/stores/user';
 
 const props = defineProps<{

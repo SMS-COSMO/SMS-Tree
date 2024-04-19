@@ -37,7 +37,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useMutation } from '@tanstack/vue-query';
 import { useUserStore } from '~/stores/user';
 
 useHeadSafe({

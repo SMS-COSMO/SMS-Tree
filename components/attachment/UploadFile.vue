@@ -25,8 +25,6 @@
 import type { UploadFile, UploadFiles, UploadRawFile, UploadRequestOptions } from 'element-plus';
 import axios from 'axios';
 import { nanoid } from 'nanoid';
-import type { TAttachmentCategory } from '~/types';
-import { allowFileType } from '~/constants/attachment';
 
 const props = withDefaults(defineProps<{
   category: TAttachmentCategory;

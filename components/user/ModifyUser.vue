@@ -35,9 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { useMutation } from '@tanstack/vue-query';
 import type { FormInstance, FormRules } from 'element-plus';
-import type { TUserRegister } from '~/types/index';
 
 const props = defineProps<{
   userId: string;

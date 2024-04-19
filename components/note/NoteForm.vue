@@ -43,14 +43,11 @@
 </template>
 
 <script setup lang="ts">
-import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import type { FormInstance, FormRules } from 'element-plus';
-import type { TRawNote } from '~/server/db/db';
-import type { TNoteCreateSafe } from '~/types/index';
 
 const props = defineProps<{
   type: 'create' | 'modify';
-  oldNote?: TRawNote;
+  oldNote?: TNote;
 }>();
 
 const { $api } = useNuxtApp();

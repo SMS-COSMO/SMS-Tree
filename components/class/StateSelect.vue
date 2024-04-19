@@ -22,8 +22,5 @@
 </template>
 
 <script setup lang="ts">
-import { stateTable } from '~/constants/class';
-import type { TClassState } from '~/types';
-
 const model = defineModel<TClassState>({ required: true });
 </script>

@@ -5,9 +5,9 @@ import type { TNewPaper, TRawUser } from '../../db/db';
 import { papers } from '../../db/schema/paper';
 import { TRPCForbidden } from '../utils/shared';
 import { usersToGroups } from '~/server/db/schema/userToGroup';
-import type { TScore } from '~/types';
 import { classes } from '~/server/db/schema/class';
 import { groups } from '~/server/db/schema/group';
+import type { TPaperScore } from '~/types';
 
 export class PaperController {
   async create(newPaper: TNewPaper) {
@@ -40,7 +40,7 @@ export class PaperController {
     return '删除成功';
   }
 
-  async getContent(id: string, user: TRawUser) {
+  async info(id: string, user: TRawUser) {
     const rawPaper = await db.query.papers.findFirst({
       where: eq(papers.id, id),
       with: {
@@ -97,7 +97,7 @@ export class PaperController {
     };
   }
 
-  async getListSafe(user: TRawUser) {
+  async list(user: TRawUser) {
     const rawPaper = await db.query.papers.findMany({
       where: ['admin', 'teacher'].includes(user.role) ? undefined : eq(papers.isPublic, true),
       columns: {
@@ -138,7 +138,7 @@ export class PaperController {
   }
 
   // TODO: use query
-  async getScoringList(user: TRawUser, classId?: string) {
+  async scoringList(user: TRawUser, classId?: string) {
     const managedClasses = (
       await db.query.classes.findMany({
         where: user.role === 'admin' ? undefined : eq(classes.teacherId, user.id),
@@ -232,7 +232,7 @@ export class PaperController {
     id: string,
     newPaper: {
       isFeatured?: boolean;
-      score?: TScore;
+      score?: TPaperScore;
       comment?: string;
     },
   ) {

@@ -19,12 +19,11 @@
 </template>
 
 <script setup lang="ts">
-import type { TMinimalUser } from '~/server/trpc/serializer/paper';
-import type { TUser } from '~/server/trpc/serializer/user';
-
 withDefaults(defineProps<{
-  authors?: (TMinimalUser | undefined)[] | TUser[] | { username?: string; id?: string }[];
-  leader?: TMinimalUser | TUser;
+  authors?:
+    Partial<TMinimalUser | undefined>[]
+    | Partial<TUserProfile>[];
+  leader?: Partial<TMinimalUser | TUserProfile>;
   type?: 'text' | 'link';
   showLeader?: boolean;
 }>(), {

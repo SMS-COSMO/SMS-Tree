@@ -4,8 +4,8 @@ import { db } from '../../db/db';
 import { classes } from '../../db/schema/class';
 import { classesToStudents } from '../../db/schema/classToStudents';
 import { getClassName } from '../utils/shared';
-import type { TClassState } from '~/types';
 import { groups } from '~/server/db/schema/group';
+import type { TClassState } from '~/types';
 
 export class ClassController {
   async create(newClass: {
@@ -40,13 +40,13 @@ export class ClassController {
     return '修改成功';
   }
 
-  async getContent(id: string) {
+  async info(id: string) {
     return await db.query.classes.findFirst({
       where: eq(classes.id, id),
     });
   }
 
-  async getFullContent(id: string) {
+  async fullInfo(id: string) {
     const res = await db.query.classes.findFirst({
       where: eq(classes.id, id),
       with: {

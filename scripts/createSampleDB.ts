@@ -7,7 +7,6 @@ import { ctl } from '~/server/trpc/context';
 import { env } from '~/server/env';
 import { db } from '~/server/db/db';
 import { users } from '~/server/db/schema/user';
-import type { TScore } from '~/types';
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
@@ -60,8 +59,8 @@ function splitToNChunks<T>(array: T[], n: number) {
   return result;
 }
 
-const studentList = await ctl.uc.getList('student');
-const teacherList = await ctl.uc.getList('teacher');
+const studentList = await ctl.uc.list('student');
+const teacherList = await ctl.uc.list('teacher');
 const sepStudentList = splitToNChunks(studentList, classCount);
 
 await Promise.all(
@@ -76,17 +75,34 @@ await Promise.all(
   }),
 );
 
-const classList = await ctl.cc.getList();
+const classList = await db.query.classes.findMany({
+  columns: {
+    id: true,
+    enterYear: true,
+  },
+  with: {
+    classesToStudents: {
+      columns: {},
+      with: {
+        users: {
+          columns: {
+            id: true,
+          },
+        },
+      },
+    },
+  },
+});
 
 const groupCountInput = Number(await rl.question('? Number of groups (per class) to create(default 5): '));
 
 const groupCount = groupCountInput <= 0 ? 5 : groupCountInput;
 for (const i in classList) {
-  const c = await ctl.cc.getFullContent(classList[i].id);
-  const classGroupCount = Math.round(c.students.length / groupCount);
+  const c = classList[i];
+  const classGroupCount = Math.round(c.classesToStudents.length / groupCount);
   const shuffled = splitToNChunks(
-    (c.students
-      .map(value => ({ value, sort: Math.random() }))
+    (c.classesToStudents
+      .map(value => ({ value: value.users, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
       .map(({ value }) => value)), classGroupCount);
 
@@ -102,13 +118,13 @@ for (const i in classList) {
     }),
   );
 }
-const groupList = await ctl.gc.getListFull(admin);
 
 function getScore() {
-  const possible: TScore[] = ['A', 'B', 'C', 'D'];
+  const possible: TPaperScore[] = ['A', 'B', 'C', 'D'];
   return possible[Math.round((Math.random() * 100)) % 4];
 }
 
+const groupList = await ctl.gc.list(admin);
 const paperCountInput = Number(await rl.question('? Number of papers to create(default 20): '));
 const paperCount = paperCountInput <= 0 ? 20 : paperCountInput;
 await Promise.all(

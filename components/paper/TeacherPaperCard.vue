@@ -23,9 +23,6 @@
 </template>
 
 <script setup lang="ts">
-import { getCategoryName } from '~/constants/paper';
-import type { TPaperListSafeItem } from '~/types/index';
-
 withDefaults(defineProps<{
   paper: Partial<TPaperListSafeItem>;
   showAbstract?: boolean;

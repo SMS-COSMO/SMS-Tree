@@ -78,30 +78,30 @@ export const userRouter = router({
       return await ctx.userController.modify(id, newUser);
     }),
 
-  getTeacherClasses: protectedProcedure
+  teacherClasses: protectedProcedure
     .use(requireRoles(['teacher', 'admin']))
     .input(userIdZod)
     .query(async ({ ctx, input }) => {
-      return await ctx.userController.getTeacherClasses(input);
+      return await ctx.userController.teacherClasses(input);
     }),
 
   profile: protectedProcedure
     .use(requireRoles(['teacher', 'admin']))
     .input(z.object({ id: userIdZod }))
     .query(async ({ ctx, input }) => {
-      return await ctx.userController.getProfile(input.id, false);
+      return await ctx.userController.profile(input.id, false);
     }),
 
   profileSafe: protectedProcedure
     .input(z.object({ id: userIdZod }))
     .query(async ({ ctx, input }) => {
-      return await ctx.userController.getProfile(input.id, true);
+      return await ctx.userController.profile(input.id, true);
     }),
 
   list: protectedProcedure
     .input(z.object({ role: roleEnumZod.optional() }))
     .use(requireRoles(['teacher', 'admin']))
     .query(async ({ ctx, input }) => {
-      return await ctx.userController.getList(input.role ?? 'all');
+      return await ctx.userController.list(input.role ?? 'all');
     }),
 });
