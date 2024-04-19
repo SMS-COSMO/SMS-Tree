@@ -257,10 +257,6 @@ export class UserController {
   async remove(id: string) {
     try {
       // TODO: use transactions
-      await Promise.all([
-        db.delete(usersToGroups).where(eq(usersToGroups.userId, id)),
-        db.delete(classesToStudents).where(eq(classesToStudents.userId, id)),
-      ]);
       await db.delete(users).where(eq(users.id, id));
       return '删除成功';
     } catch (err) {

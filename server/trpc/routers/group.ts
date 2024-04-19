@@ -34,24 +34,17 @@ export const groupRouter = router({
       return await ctx.groupController.getContent(input.id, ctx.user, true);
     }),
 
+  listFull: protectedProcedure
+    .input(z.object({ classId: z.string().optional() }))
+    .use(requireRoles(['admin', 'teacher']))
+    .query(async ({ ctx, input }) => {
+      return await ctx.groupController.getListFull(ctx.user, input.classId);
+    }),
+
   list: protectedProcedure
     .input(z.object({ classId: z.string().optional() }))
     .query(async ({ ctx, input }) => {
       return await ctx.groupController.getList(ctx.user, input.classId);
-    }),
-
-  modify: protectedProcedure
-    .input(z.object({
-      groupId: z.string().min(1, '不可以传入空Id'),
-      newMembers: z.array(z.string().min(1, '不可以传入空Id')).nonempty('不可以传入空Id列表'),
-      newLeader: z.string().min(1, '不可以传入空Id'),
-    }))
-    .mutation(async ({ ctx, input }) => {
-      return (await ctx.groupController.modifyMembers(
-        input.groupId,
-        input.newMembers,
-        input.newLeader,
-      ));
     }),
 
   modifyProjectName: protectedProcedure

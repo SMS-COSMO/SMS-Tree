@@ -10,11 +10,11 @@ import { reports } from './report';
 
 export const groups = sqliteTable('groups', {
   id: text('id', { mode: 'text' }).primaryKey().$defaultFn(() => makeId(12)),
-  leader: text('leader', { mode: 'text' }).references(() => users.id),
+  leader: text('leader', { mode: 'text' }).references(() => users.id, { onDelete: 'set null', onUpdate: 'set null' }),
   enterYear: integer('enter_year', { mode: 'number' }).notNull(),
   archived: integer('archived', { mode: 'boolean' }).notNull().default(false),
   projectName: text('project_name', { mode: 'text' }),
-  classId: text('class_id', { mode: 'text' }).notNull().references(() => classes.id),
+  classId: text('class_id', { mode: 'text' }).references(() => classes.id, { onDelete: 'set null', onUpdate: 'set null' }),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });
 

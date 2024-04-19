@@ -2,7 +2,7 @@ import { and, eq } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import { db } from '../../db/db';
 import type { TNewNote, TRawNote, TRawUser } from '../../db/db';
-import { TRPCForbidden, useTry } from '../utils/shared';
+import { TRPCForbidden } from '../utils/shared';
 import { notes } from '~/server/db/schema/note';
 import { usersToGroups } from '~/server/db/schema/userToGroup';
 
@@ -82,7 +82,7 @@ export class NoteController {
         throw TRPCForbidden;
     }
 
-    await useTry(() => db.delete(notes).where(eq(notes.id, id)));
+    await db.delete(notes).where(eq(notes.id, id));
     return '删除成功';
   }
 }

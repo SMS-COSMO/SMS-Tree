@@ -10,7 +10,7 @@ export const papers = sqliteTable('papers', {
   category: integer('category').notNull().default(0),
   keywords: text('keywords', { mode: 'json' }).notNull().$type<string[]>(),
   abstract: text('abstract', { mode: 'text' }).notNull(),
-  groupId: text('group_id', { mode: 'text' }).notNull().references(() => groups.id),
+  groupId: text('group_id', { mode: 'text' }).references(() => groups.id, { onDelete: 'cascade', onUpdate: 'cascade' }).notNull(),
   isPublic: integer('is_public', { mode: 'boolean' }).notNull().default(false),
   score: text('score', { enum: ['A', 'B', 'C', 'D'] }),
   canDownload: integer('can_download', { mode: 'boolean' }).notNull().default(false),

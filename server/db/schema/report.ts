@@ -6,7 +6,7 @@ import { attachments } from './attachment';
 
 export const reports = sqliteTable('reports', {
   id: text('id', { mode: 'text' }).primaryKey().$defaultFn(() => makeId(12)),
-  groupId: text('group_id', { mode: 'text' }).notNull().references(() => groups.id),
+  groupId: text('group_id', { mode: 'text' }).notNull().references(() => groups.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
   category: text('category', { enum: ['thesisProposal', 'concludingReport'] }).notNull(),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });

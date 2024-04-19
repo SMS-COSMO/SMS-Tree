@@ -31,13 +31,7 @@ export class ClassController {
   }
 
   async remove(id: string) {
-    try {
-      await db.delete(classesToStudents).where(eq(classesToStudents.classId, id));
-      await db.delete(classes).where(eq(classes.id, id));
-    } catch (err) {
-      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '删除失败' });
-    }
-
+    await db.delete(classes).where(eq(classes.id, id));
     return '删除成功';
   }
 

@@ -5,7 +5,6 @@ import type { TNewReport, TRawUser } from '../../db/db';
 import { TRPCForbidden } from '../utils/shared';
 import { usersToGroups } from '~/server/db/schema/userToGroup';
 import { reports } from '~/server/db/schema/report';
-import { attachments } from '~/server/db/schema/attachment';
 
 export class ReportController {
   async create(newReport: TNewReport) {
@@ -51,7 +50,6 @@ export class ReportController {
         throw TRPCForbidden;
     }
 
-    await db.delete(attachments).where(eq(attachments.reportId, id));
     await db.delete(reports).where(eq(reports.id, id));
     return '删除成功';
   }

@@ -102,7 +102,7 @@ for (const i in classList) {
     }),
   );
 }
-const groupList = await ctl.gc.getList(admin);
+const groupList = await ctl.gc.getListFull(admin);
 
 function getScore() {
   const possible: TScore[] = ['A', 'B', 'C', 'D'];

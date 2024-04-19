@@ -125,8 +125,8 @@ const { data: classData, suspense: classInfoSuspense } = useQuery({
 await classInfoSuspense();
 
 const { data: groupList, suspense: groupListSuspense } = useQuery({
-  queryKey: ['groupList', { id: useRoute().params.id.toString() }],
-  queryFn: () => $api.group.list.query({ classId: useRoute().params.id.toString() }),
+  queryKey: ['groupListFull', { id: useRoute().params.id.toString() }],
+  queryFn: () => $api.group.listFull.query({ classId: useRoute().params.id.toString() }),
 });
 await groupListSuspense();
 

@@ -23,5 +23,5 @@ export const usersRelations = relations(users, ({ many }) => ({
 export const refreshTokens = sqliteTable('refresh_tokens', {
   id: text('id', { mode: 'text' }).primaryKey().$defaultFn(() => makeId(12)),
   token: text('token', { mode: 'text' }).notNull(),
-  owner: text('owner', { mode: 'text' }).references(() => users.id).notNull(),
+  owner: text('owner', { mode: 'text' }).references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }).notNull(),
 });
