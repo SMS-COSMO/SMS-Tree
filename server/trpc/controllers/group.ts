@@ -118,7 +118,7 @@ export class GroupController {
     };
   }
 
-  async listFull(user: TRawUser, classId?: string) {
+  async listFull(classId?: string) {
     const res = await db.query.groups.findMany({
       where: classId ? eq(groups.classId, classId) : undefined,
       with: {

@@ -3,6 +3,7 @@ import { relations } from 'drizzle-orm';
 import { makeId } from '../../trpc/utils/shared';
 import { classesToStudents } from './classToStudents';
 import { users } from './user';
+import { groups } from './group';
 
 export const classes = sqliteTable('classes', {
   id: text('id', { mode: 'text' }).primaryKey().$defaultFn(() => makeId(12)),
@@ -25,4 +26,5 @@ export const classesRelations = relations(classes, ({ many, one }) => ({
     fields: [classes.teacherId],
     references: [users.id],
   }),
+  groups: many(groups),
 }));

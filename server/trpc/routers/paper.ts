@@ -51,6 +51,13 @@ export const paperRouter = router({
       return await ctx.paperController.info(input.id, ctx.user);
     }),
 
+  infoWithClass: protectedProcedure
+    .input(z.object({ id: paperIdZod }))
+    .use(requireRoles(['admin', 'teacher']))
+    .query(async ({ ctx, input }) => {
+      return await ctx.paperController.infoWithClass(input.id);
+    }),
+
   remove: protectedProcedure
     .input(z.object({ id: paperIdZod }))
     .use(requireRoles(['admin', 'teacher']))

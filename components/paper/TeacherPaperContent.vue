@@ -62,8 +62,8 @@
           </template>
           <el-descriptions :column="1">
             <el-descriptions-item label="班级">
-              <el-link :href="`/admin/class/${classInfo?.id}`">
-                {{ classInfo?.className }}
+              <el-link :href="`/admin/class/${info?.class?.id}`">
+                {{ info?.class?.className }}
               </el-link>
             </el-descriptions-item>
             <el-descriptions-item v-if="info?.authors" label="作者">
@@ -116,11 +116,7 @@ const props = defineProps<{
 
 const { $api } = useNuxtApp();
 
-const info = await useTrpcAsyncData(() => $api.paper.info.query({ id: props.id }));
-
-// TODO perf: don't use groupInfo and classInfo which gets members multiple times
-const groupInfo = await useTrpcAsyncData(() => $api.group.info.query({ id: info?.groupId ?? '' }));
-const classInfo = await useTrpcAsyncData(() => $api.class.fullInfo.query({ id: groupInfo?.classId ?? '' }));
+const info = await useTrpcAsyncData(() => $api.paper.infoWithClass.query({ id: props.id }));
 
 function searchTag(keyword: string) {
   navigateTo({

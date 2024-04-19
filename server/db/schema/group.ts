@@ -18,9 +18,13 @@ export const groups = sqliteTable('groups', {
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });
 
-export const groupsRelations = relations(groups, ({ many }) => ({
+export const groupsRelations = relations(groups, ({ many, one }) => ({
   usersToGroups: many(usersToGroups),
   notes: many(notes),
   reports: many(reports),
   papers: many(papers),
+  class: one(classes, {
+    fields: [groups.classId],
+    references: [classes.id],
+  }),
 }));

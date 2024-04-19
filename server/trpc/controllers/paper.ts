@@ -3,7 +3,7 @@ import { TRPCError } from '@trpc/server';
 import { db } from '../../db/db';
 import type { TNewPaper, TRawUser } from '../../db/db';
 import { papers } from '../../db/schema/paper';
-import { TRPCForbidden } from '../utils/shared';
+import { TRPCForbidden, getClassName } from '../utils/shared';
 import { usersToGroups } from '~/server/db/schema/userToGroup';
 import { classes } from '~/server/db/schema/class';
 import { groups } from '~/server/db/schema/group';
@@ -94,6 +94,61 @@ export class PaperController {
       authors,
       ...info,
       leader: authors.find(x => x.id === group.leader),
+    };
+  }
+
+  async infoWithClass(id: string) {
+    const rawPaper = await db.query.papers.findFirst({
+      where: eq(papers.id, id),
+      with: {
+        group: {
+          columns: { leader: true },
+          with: {
+            usersToGroups: {
+              columns: {},
+              with: {
+                user: {
+                  columns: {
+                    id: true,
+                    username: true,
+                  },
+                },
+              },
+            },
+            class: {
+              columns: {
+                enterYear: true,
+                id: true,
+                index: true,
+              },
+            },
+          },
+        },
+        attachments: {
+          columns: {
+            category: true,
+            createdAt: true,
+            fileType: true,
+            id: true,
+            name: true,
+            S3FileId: true,
+          },
+        },
+      },
+    });
+    if (!rawPaper)
+      throw new TRPCError({ code: 'NOT_FOUND', message: '论文不存在' });
+
+    const authors = rawPaper.group.usersToGroups.map(u => ({ id: u.user.id, username: u.user.username }));
+    const { group, ...info } = rawPaper;
+    return {
+      authors,
+      ...info,
+      leader: authors.find(x => x.id === group.leader),
+      class: {
+        ...group.class,
+        className: getClassName(group.class),
+      },
     };
   }
 

@@ -46,7 +46,7 @@ export class ClassController {
     });
   }
 
-  async fullInfo(id: string) {
+  async infoFull(id: string) {
     const res = await db.query.classes.findFirst({
       where: eq(classes.id, id),
       with: {
@@ -69,6 +69,48 @@ export class ClassController {
             username: true,
           },
         },
+        groups: {
+          with: {
+            notes: true,
+            reports: {
+              with: {
+                attachments: {
+                  columns: {
+                    category: true,
+                    createdAt: true,
+                    fileType: true,
+                    id: true,
+                    name: true,
+                    S3FileId: true,
+                  },
+                },
+              },
+            },
+            papers: {
+              columns: {
+                id: true,
+                canDownload: true,
+                category: true,
+                createdAt: true,
+                downloadCount: true,
+                isFeatured: true,
+                score: true,
+                title: true,
+              },
+            },
+            usersToGroups: {
+              columns: {},
+              with: {
+                user: {
+                  columns: {
+                    id: true,
+                    username: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
     if (!res)
@@ -76,6 +118,7 @@ export class ClassController {
 
     const {
       classesToStudents: _classesToStudents,
+      groups,
       ...info
     } = res;
 
@@ -83,6 +126,15 @@ export class ClassController {
       ...info,
       students: res.classesToStudents.map(x => x.users),
       className: getClassName(info),
+      groups: groups.map((group) => {
+        const { usersToGroups, leader: _, ...info } = group;
+        const members = usersToGroups.map(u => u.user);
+        return {
+          members,
+          leader: members.find(x => x.id === group.leader),
+          ...info,
+        };
+      }),
     };
   }
 

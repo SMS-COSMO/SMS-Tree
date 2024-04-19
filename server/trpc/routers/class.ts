@@ -38,11 +38,11 @@ export const classRouter = router({
       return await ctx.classController.info(input.id);
     }),
 
-  fullInfo: protectedProcedure
+  infoFull: protectedProcedure
     .input(z.object({ id: classIdZod }))
     .use(requireRoles(['admin', 'teacher']))
     .query(async ({ ctx, input }) => {
-      return await ctx.classController.fullInfo(input.id);
+      return await ctx.classController.infoFull(input.id);
     }),
 
   list: protectedProcedure

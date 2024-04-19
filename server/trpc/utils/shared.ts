@@ -22,8 +22,8 @@ export async function useTry<T>(
 
 export const makeId = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 12);
 
-export function getClassName(classInfo: TRawClass | undefined) {
-  if (!classInfo)
+export function getClassName(classInfo: Partial<TRawClass> | undefined | null) {
+  if (!classInfo || !classInfo.enterYear || !classInfo.index)
     return '未知';
 
   const now = new Date();

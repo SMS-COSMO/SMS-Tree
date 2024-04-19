@@ -1,12 +1,12 @@
 <template>
   <div class="mb-5 space-y-4">
-    <template v-if="classData">
+    <template v-if="classInfo">
       <el-row :gutter="16">
         <el-col :span="device.isMobileOrTablet ? 24 : 8">
           <el-card>
             <template #header>
               <el-icon class="i-tabler:school" />
-              {{ classData.className }}
+              {{ classInfo.className }}
             </template>
             <el-descriptions size="large" :column="2">
               <el-descriptions-item>
@@ -17,7 +17,7 @@
                   </div>
                 </template>
                 <span class="text-[16px]!">
-                  {{ classData.enterYear }}
+                  {{ classInfo.enterYear }}
                 </span>
               </el-descriptions-item>
               <el-descriptions-item>
@@ -28,7 +28,7 @@
                   </div>
                 </template>
                 <span class="space-x-2 text-[16px]!">
-                  {{ classData.teacher?.username }}
+                  {{ classInfo.teacher?.username }}
                 </span>
               </el-descriptions-item>
               <el-descriptions-item>
@@ -39,7 +39,7 @@
                   </div>
                 </template>
                 <span class="space-x-2 text-[16px]!">
-                  <StateBadge size="large" :state="stateTable.find(x => x.value === classData?.state) ?? { label: '未知', type: 'info', value: '' }" />
+                  <StateBadge size="large" :state="stateTable.find(x => x.value === classInfo?.state) ?? { label: '未知', type: 'info', value: '' }" />
                 </span>
               </el-descriptions-item>
               <el-descriptions-item>
@@ -50,7 +50,7 @@
                   </div>
                 </template>
                 <span class="space-x-2 text-[16px]!">
-                  {{ classData.students.length }}
+                  {{ classInfo.students.length }}
                 </span>
               </el-descriptions-item>
             </el-descriptions>
@@ -63,14 +63,14 @@
               班级状态
             </template>
             <div class="space-y-4">
-              <StateStep :class-info="classData" direction="horizontal" show-archived />
+              <StateStep :class-info="classInfo" direction="horizontal" show-archived />
               <div class="flex flex-row gap-2">
                 <el-button-group class="mx-auto">
-                  <el-button :disabled="classData.state === step[0]" @click="modifyState(-1)">
+                  <el-button :disabled="classInfo.state === step[0]" @click="modifyState(-1)">
                     <el-icon class="i-tabler:arrow-left" />
                     上一状态
                   </el-button>
-                  <el-button :disabled="classData.state === step[step.length - 1]" @click="modifyState(1)">
+                  <el-button :disabled="classInfo.state === step[step.length - 1]" @click="modifyState(1)">
                     下一状态
                     <el-icon class="i-tabler:arrow-right" />
                   </el-button>
@@ -81,12 +81,12 @@
         </el-col>
       </el-row>
       <el-collapse-transition>
-        <template v-if="classData.state === 'initialized'">
+        <template v-if="classInfo.state === 'initialized'">
           <div class="flex flex-row gap-2">
             <el-input-number v-model="newGroupCount" :min="1" step-strictly :step="1" :max="15" />
             <el-button
               @click="createEmptyGroups({
-                id: classData!.id,
+                id: classInfo!.id,
                 amount: newGroupCount,
               })"
             >
@@ -96,9 +96,9 @@
         </template>
       </el-collapse-transition>
     </template>
-    <template v-if="groupList">
+    <template v-if="classInfo?.groups">
       <div class="grid gap-2 lg:grid-cols-2 lg:gap-4">
-        <template v-for="(group, index) in groupList" :key="group.id">
+        <template v-for="(group, index) in classInfo.groups" :key="group.id">
           <TeacherGroupInfo :info="group" :index="index + 1" />
         </template>
       </div>
@@ -114,17 +114,11 @@ useHeadSafe({
 });
 const queryClient = useQueryClient();
 
-const { data: classData, suspense: classInfoSuspense } = useQuery({
+const { data: classInfo, suspense: classInfoSuspense } = useQuery({
   queryKey: ['classInfo', { id: useRoute().params.id.toString() }],
-  queryFn: () => $api.class.fullInfo.query({ id: useRoute().params.id.toString() }),
+  queryFn: () => $api.class.infoFull.query({ id: useRoute().params.id.toString() }),
 });
 await classInfoSuspense();
-
-const { data: groupList, suspense: groupListSuspense } = useQuery({
-  queryKey: ['groupListFull', { id: useRoute().params.id.toString() }],
-  queryFn: () => $api.group.listFull.query({ classId: useRoute().params.id.toString() }),
-});
-await groupListSuspense();
 
 const step: TClassState[] = [
   'initialized', // 初始化
@@ -156,8 +150,8 @@ const { mutate: createEmptyGroups } = useMutation({
 });
 
 function modifyState(delta: number) {
-  if (!classData.value)
+  if (!classInfo.value)
     return;
-  modifyStateMutation({ id: classData.value.id, newState: step[step.indexOf(classData.value.state) + delta] });
+  modifyStateMutation({ id: classInfo.value.id, newState: step[step.indexOf(classInfo.value.state) + delta] });
 }
 </script>
