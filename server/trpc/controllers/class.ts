@@ -105,6 +105,7 @@ export class ClassController {
                   columns: {
                     id: true,
                     username: true,
+                    schoolId: true,
                   },
                 },
               },

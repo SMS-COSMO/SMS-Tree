@@ -8,7 +8,7 @@
   >
     <el-menu-item index="/admin/scoring">
       <el-icon class="i-tabler:pencil" />
-      批改
+      批改论文
     </el-menu-item>
     <el-menu-item index="/admin/class/list">
       <el-icon class="i-tabler:list" />
