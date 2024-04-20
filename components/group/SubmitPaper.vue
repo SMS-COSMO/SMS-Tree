@@ -29,7 +29,7 @@
           v-model="form.canDownload"
           size="large"
           active-text="是" inactive-text="否" inline-prompt
-          style="--el-switch-on-color: #146E3C; --el-switch-off-color: #db3131;"
+          style="--el-switch-on-color: #15803d; --el-switch-off-color: #db3131;"
         />
       </el-form-item>
       <el-form-item prop="paperFile" label="论文文件">
@@ -39,7 +39,7 @@
         <UploadFile v-model="form.attachments" multiple category="paperAttachment" />
       </el-form-item>
       <el-form-item>
-        <el-button color="#146E3C" :loading="buttonLoading" @click="create(formRef)">
+        <el-button color="#15803d" :loading="buttonLoading" @click="create(formRef)">
           提交
         </el-button>
       </el-form-item>

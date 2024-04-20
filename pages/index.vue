@@ -23,7 +23,7 @@
                 <el-input v-model="quickSearchContent" clearable placeholder="输入搜索内容" @keyup.enter="quickSearch" />
               </el-col>
               <el-col :span="5">
-                <el-button class="w-full" color="#146E3C" plain icon="i-tabler:search" @click="quickSearch" />
+                <el-button class="w-full" color="#15803d" plain icon="i-tabler:search" @click="quickSearch" />
               </el-col>
             </el-row>
           </el-card>

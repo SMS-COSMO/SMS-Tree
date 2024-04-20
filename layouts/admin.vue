@@ -11,8 +11,12 @@
       </el-popover>
     </client-only>
     <AdminNavBar v-else />
-    <div :class="`${device.isMobileOrTablet ? 'mb-16' : ''} w-full`">
-      <slot />
+    <div :class="`${device.isMobileOrTablet ? 'mb-16' : ''} w-full h-content`">
+      <el-scrollbar>
+        <div class="overflow-x-hidden">
+          <slot />
+        </div>
+      </el-scrollbar>
     </div>
   </div>
 </template>

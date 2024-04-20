@@ -35,7 +35,7 @@
         <SelectGroup v-model="form.groupId" />
       </el-form-item>
       <el-form-item>
-        <el-button color="#146E3C" :loading="isPending" @click="register(formRef)">
+        <el-button color="#15803d" :loading="isPending" @click="register(formRef)">
           创建
         </el-button>
       </el-form-item>

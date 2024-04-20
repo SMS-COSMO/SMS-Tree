@@ -27,7 +27,7 @@
           />
         </el-form-item>
         <el-form-item class="m-0">
-          <el-button class="ml-auto" color="#146E3C" :loading="isPending" @click="login">
+          <el-button class="ml-auto" color="#15803d" :loading="isPending" @click="login">
             登录
           </el-button>
         </el-form-item>

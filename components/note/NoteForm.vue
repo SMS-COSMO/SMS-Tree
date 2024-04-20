@@ -34,7 +34,7 @@
         <el-input v-model="form.reflections" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea" />
       </el-form-item>
       <el-form-item>
-        <el-button color="#146E3C" :loading="isSubmitPending || isModifyPending" @click="submit(formRef)">
+        <el-button color="#15803d" :loading="isSubmitPending || isModifyPending" @click="submit(formRef)">
           {{ type === 'create' ? '创建' : '修改' }}
         </el-button>
       </el-form-item>

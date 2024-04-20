@@ -14,7 +14,7 @@
       <UploadFile v-model="form.presentationFile" category="reportPresentation" />
     </el-form-item>
     <el-form-item>
-      <el-button color="#146E3C" :loading="buttonLoading" @click="create(formRef)">
+      <el-button color="#15803d" :loading="buttonLoading" @click="create(formRef)">
         提交
       </el-button>
     </el-form-item>

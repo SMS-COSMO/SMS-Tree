@@ -31,7 +31,7 @@
       </div>
       <Preview :attachment="reportPresentation" />
       <template #footer>
-        <el-button color="#146E3C" @click="modifyDialogVisible = true">
+        <el-button color="#15803d" @click="modifyDialogVisible = true">
           修改
         </el-button>
       </template>

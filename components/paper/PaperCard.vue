@@ -2,7 +2,7 @@
   <el-card
     v-once
     class="mb-2 cursor-pointer lg:mb-2.5 hover:border-color-[#D4D7DE]! hover:bg-hover-bg!"
-    @click="navigateTo(`/paper/${paper.id}`)"
+    @click="navigateTo(`${isAdmin ? '/admin' : ''}/paper/${paper.id}`)"
   >
     <el-row class="gap-[6px]">
       <el-tag v-if="paper?.isFeatured" type="success" disable-transitions>
@@ -49,9 +49,11 @@ withDefaults(defineProps<{
   showAbstract?: boolean;
   lineClamp?: number;
   showAuthors?: boolean;
+  isAdmin?: boolean;
 }>(), {
   showAbstract: false,
   lineClamp: 3,
   showAuthors: true,
+  isAdmin: false,
 });
 </script>

@@ -154,7 +154,7 @@
 }
 
 .el-select-dropdown__item.selected {
-  color: #146E3B !important;
+  color: #15803d !important;
 }
 
 /* Button */
@@ -209,11 +209,11 @@
 .el-pager>.number:not(.is-active):hover,
 .el-pager>.more:hover {
   font-weight: bold;
-  color: #146E3B !important;
+  color: #15803d !important;
 }
 
 .el-pager>.is-active {
-  background-color: #146E3B !important;
+  background-color: #15803d !important;
 }
 
 /* Upload */
@@ -227,7 +227,7 @@
 }
 
 .el-upload-dragger:hover {
-  border-color: #146E3B !important;
+  border-color: #15803d !important;
 }
 
 .el-upload__tip,
@@ -238,7 +238,7 @@
 /* Step */
 .el-step__title.is-finish,
 .el-step__head.is-finish {
-  color: #146E3B !important;
+  color: #15803d !important;
 }
 
 .el-step__line-inner {
@@ -265,11 +265,11 @@
 
 /* Link */
 .el-link--primary {
-  color: #146E3B !important;
+  color: #15803d !important;
 }
 
 .el-link--primary:hover::after {
-  border-color: #146E3B !important;
+  border-color: #15803d !important;
 }
 
 /* Dialog */
@@ -295,7 +295,7 @@
   height: 60px !important;
   border-radius: 10px !important;
   background-color: rgb(232, 241, 236) !important;
-  color: #146E3B !important;
+  color: #15803d !important;
 }
 
 /* Message */

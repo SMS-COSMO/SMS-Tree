@@ -21,6 +21,6 @@ useHeadSafe({
 });
 
 useSeoMeta({
-  themeColor: '#146E3B',
+  themeColor: '#15803d',
 });
 </script>

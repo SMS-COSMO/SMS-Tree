@@ -31,7 +31,7 @@ export const groupRouter = router({
   info: protectedProcedure
     .input(z.object({ id: z.string().min(1, '小组id不存在') }))
     .query(async ({ ctx, input }) => {
-      return await ctx.groupController.info(input.id, ctx.user, true);
+      return await ctx.groupController.info(input.id, ctx.user);
     }),
 
   listFull: protectedProcedure

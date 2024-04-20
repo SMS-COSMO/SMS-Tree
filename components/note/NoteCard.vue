@@ -81,7 +81,7 @@
         </el-descriptions-item>
       </el-descriptions>
       <template #footer>
-        <el-button color="#146E3C" @click="modifyDialogVisible = true">
+        <el-button color="#15803d" @click="modifyDialogVisible = true">
           修改
         </el-button>
         <el-popconfirm width="200" title="确定要删除吗" @confirm="removeNote({ id: note.id })">

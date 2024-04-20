@@ -13,10 +13,12 @@
         <el-scrollbar v-if="scoringQueue?.length">
           <div class="h-12" />
           <template v-for="item in scoringQueue" :key="item">
-            <TeacherPaperCard :paper="item" :current-selected="selected" @selected="id => selected = id" />
+            <TeacherPaperCard
+              :paper="item" :current-selected="selected" @selected="id => selected = id"
+            />
           </template>
         </el-scrollbar>
-        <el-empty v-else description="暂无论文" />
+        <el-empty v-else description="暂无论文" class="mt-10" />
       </el-card>
     </el-col>
     <el-col :span="18">
@@ -26,6 +28,7 @@
             <TeacherPaperContent
               :id="selected"
               :key="selected"
+              is-scoring
             />
           </transition>
         </el-scrollbar>
@@ -35,8 +38,10 @@
 </template>
 
 <script setup lang="ts">
+useHeadSafe({
+  title: '批改论文',
+});
 const { $api } = useNuxtApp();
-
 const queryClient = useQueryClient();
 
 const filterClass = ref<string | undefined>();

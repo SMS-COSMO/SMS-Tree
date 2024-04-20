@@ -1,7 +1,7 @@
 <template>
   <el-button
     v-if="canDownload || ['teacher', 'admin'].includes(userStore.role)"
-    color="#146E3C" class="mt-1 w-full" plain @click="showDialog = true;"
+    color="#15803d" class="mt-1 w-full" plain @click="showDialog = true;"
   >
     下载
   </el-button>

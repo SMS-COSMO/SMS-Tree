@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-5 space-y-4">
+  <div class="space-y-4">
     <template v-if="classInfo">
       <el-row :gutter="16">
         <el-col :span="device.isMobileOrTablet ? 24 : 8">
@@ -28,18 +28,9 @@
                   </div>
                 </template>
                 <span class="space-x-2 text-[16px]!">
-                  {{ classInfo.teacher?.username }}
-                </span>
-              </el-descriptions-item>
-              <el-descriptions-item>
-                <template #label>
-                  <div class="text-[16px]!">
-                    <el-icon class="i-tabler:adjustments-horizontal" />
-                    状态
-                  </div>
-                </template>
-                <span class="space-x-2 text-[16px]!">
-                  <StateBadge size="large" :state="stateTable.find(x => x.value === classInfo?.state) ?? { label: '未知', type: 'info', value: '' }" />
+                  <el-link :href="`/admin/user/${classInfo.teacher.id}`">
+                    {{ classInfo.teacher?.username }}
+                  </el-link>
                 </span>
               </el-descriptions-item>
               <el-descriptions-item>
@@ -52,6 +43,35 @@
                 <span class="space-x-2 text-[16px]!">
                   {{ classInfo.students.length }}
                 </span>
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>
+                  <div class="text-[16px]!">
+                    <el-icon class="i-tabler:clipboard-list" />
+                    名单
+                  </div>
+                </template>
+                <el-button size="small" class="mt-1" @click="userListDialog = true">
+                  点击查看
+                </el-button>
+                <client-only>
+                  <el-drawer
+                    v-model="userListDialog"
+                    title="学生名单"
+                  >
+                    <el-scrollbar height="60vh">
+                      <el-table
+                        :data="classInfo?.students"
+                        class="cursor-pointer"
+                        @row-click="row => navigateTo(`/admin/user/${row.id}`)"
+                      >
+                        <el-table-column type="index" width="50" />
+                        <el-table-column prop="username" label="姓名" />
+                        <el-table-column prop="schoolId" label="学号" />
+                      </el-table>
+                    </el-scrollbar>
+                  </el-drawer>
+                </client-only>
               </el-descriptions-item>
             </el-descriptions>
           </el-card>
@@ -112,13 +132,17 @@ const device = useDevice();
 useHeadSafe({
   title: '班级信息',
 });
-const queryClient = useQueryClient();
 
+const id = useRoute().params.id.toString();
+
+const queryClient = useQueryClient();
 const { data: classInfo, suspense: classInfoSuspense } = useQuery({
-  queryKey: ['classInfo', { id: useRoute().params.id.toString() }],
-  queryFn: () => $api.class.infoFull.query({ id: useRoute().params.id.toString() }),
+  queryKey: ['classInfo', { id }],
+  queryFn: () => $api.class.infoFull.query({ id }),
 });
 await classInfoSuspense();
+
+const userListDialog = ref(false);
 
 const step: TClassState[] = [
   'initialized', // 初始化

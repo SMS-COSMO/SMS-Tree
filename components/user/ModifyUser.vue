@@ -26,7 +26,7 @@
         </client-only>
       </el-form-item>
       <el-form-item>
-        <el-button color="#146E3C" :loading="isPending" @click="modify(formRef)">
+        <el-button color="#15803d" :loading="isPending" @click="modify(formRef)">
           修改
         </el-button>
       </el-form-item>
@@ -40,10 +40,6 @@ import type { FormInstance, FormRules } from 'element-plus';
 const props = defineProps<{
   userId: string;
 }>();
-
-useHeadSafe({
-  title: '创建用户',
-});
 
 const { $api } = useNuxtApp();
 const device = useDevice();

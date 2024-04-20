@@ -13,7 +13,7 @@
     />
     <el-tooltip v-else :visible="tooltipVisible" placement="top-start" content="最多添加 8 个关键词">
       <el-button
-        class="same-size mx-1" size="small" color="#146E3C" plain :disabled="modelValue.length >= 8"
+        class="same-size mx-1" size="small" color="#15803d" plain :disabled="modelValue.length >= 8"
         @click="showInput" @mouseenter="tooltipVisible = modelValue.length >= 8"
         @mouseleave="tooltipVisible = false"
       >

@@ -56,7 +56,7 @@ export class GroupController {
     return '修改成功';
   }
 
-  async info(id: string, user: TRawUser, getDetail: boolean) {
+  async info(id: string, user: TRawUser) {
     const res = await db.query.groups.findFirst({
       where: eq(groups.id, id),
       with: {
@@ -103,7 +103,7 @@ export class GroupController {
     if (!res)
       throw new TRPCError({ code: 'NOT_FOUND', message: '小组不存在' });
 
-    if (!getDetail || (!['admin', 'teacher'].includes(user.role) && !res.usersToGroups.some(x => x.user.id === user.id))) {
+    if (!['admin', 'teacher'].includes(user.role) && !res.usersToGroups.some(x => x.user.id === user.id)) {
       res.notes = [];
       res.papers = [];
       res.reports = [];

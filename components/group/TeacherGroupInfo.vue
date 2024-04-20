@@ -7,7 +7,7 @@
       {{ info?.projectName ?? '暂无课题名' }}
       <el-popconfirm
         v-if="info"
-        title="确定要删除小组吗"
+        title="确定要删除小组吗？"
         width="200"
         confirm-button-type="danger"
         hide-icon
@@ -44,13 +44,14 @@
             小组成员
           </div>
         </template>
-        <el-table :data="info?.members">
+        <el-table
+          :data="info?.members"
+          class="cursor-pointer"
+          @row-click="row => navigateTo(`/admin/user/${row.id}`)"
+        >
           <el-table-column prop="username" label="姓名">
             <template #default="scope">
-              <span
-                :class="`${info?.leader?.id === scope.row.id ? 'font-bold' : ''} cursor-pointer`"
-                @click="navigateTo(`/admin/user/${scope.row.id}`)"
-              >
+              <span :class="info?.leader?.id === scope.row.id ? 'font-bold' : ''">
                 {{ scope.row.username }}
               </span>
             </template>
@@ -93,7 +94,7 @@
         </template>
         <div :class="info?.papers?.length > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
           <template v-for="paper in info.papers" :key="paper.id">
-            <PaperCard :paper="paper" :show-authors="false" />
+            <PaperCard :paper="paper" :show-authors="false" is-admin />
           </template>
         </div>
       </el-descriptions-item>

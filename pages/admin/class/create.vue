@@ -1,5 +1,5 @@
 <template>
-  <el-card class="mb-5">
+  <el-card>
     <el-form
       class="mx-auto w-[700px] py-5"
       :label-position="device.isMobileOrTablet ? 'top' : 'right'"
@@ -22,7 +22,7 @@
         <SelectUser v-model="form.teacherId" role="teacher" :multiple="false" />
       </el-form-item>
       <el-form-item>
-        <el-button color="#146E3C" :loading="buttonLoading" @click="create">
+        <el-button color="#15803d" :loading="buttonLoading" @click="create">
           创建
         </el-button>
       </el-form-item>

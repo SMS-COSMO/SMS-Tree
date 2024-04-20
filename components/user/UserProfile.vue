@@ -38,7 +38,14 @@
           </div>
         </template>
         <span class="text-[16px]!">
-          {{ info?.className }}
+          <template v-if="type === 'admin'">
+            <el-link :href="`/admin/class/${info?.classId}`">
+              {{ info?.className }}
+            </el-link>
+          </template>
+          <template v-else>
+            {{ info?.className }}
+          </template>
         </span>
       </el-descriptions-item>
       <el-descriptions-item>
@@ -64,7 +71,7 @@
     </div>
     <div v-else :class="papers?.length > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
       <template v-for="paper in papers" :key="paper.id">
-        <PaperCard v-if="paper" :paper="paper" show-abstract />
+        <PaperCard v-if="paper" :paper="paper" show-abstract :is-admin="type === 'admin'" />
       </template>
     </div>
   </FoldableCard>

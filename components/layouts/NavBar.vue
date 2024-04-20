@@ -2,9 +2,9 @@
   <div class="nav top-0 bg-primary-0">
     <el-menu
       v-if="!device.isMobileOrTablet"
-      :class="`${isAdmin ? '' : 'max-w-[1300px]'} mx-auto! border-none! pr-3`"
+      :class="`${isAdmin ? '' : 'max-w-[1300px]'} mx-auto! border-none! pr-3 main-nav`"
       :ellipsis="false" mode="horizontal"
-      background-color="#146E3C" text-color="#FFFFFF" active-text-color="#FFFFFF"
+      background-color="#15803d" text-color="#FFFFFF" active-text-color="#FFFFFF"
       :router="true" :default-active="$route.path"
     >
       <el-menu-item disabled class="cursor-default! opacity-100!">

@@ -1,13 +1,13 @@
 <template>
   <div class="space-y-3 lg:space-y-4">
-    <el-card class="floating absolute right-0 top-0 z-10">
+    <el-card v-if="isScoring" class="floating absolute right-0 top-0 z-10">
       <div class="m-[-5px] flex flex-row gap-2">
         <el-tooltip content="是否选为优秀作业" placement="top" :show-after="800">
           <el-switch
             v-model="form.isFeatured" active-text="优秀" inactive-text="普通" inline-prompt
             size="large"
             class="h-[34px]!"
-            style="--el-switch-on-color: #146E3C; --el-switch-off-color: #409EFF;"
+            style="--el-switch-on-color: #15803d; --el-switch-off-color: #409EFF;"
           />
         </el-tooltip>
         <el-tooltip content="等级" placement="top" :show-after="800">
@@ -49,7 +49,7 @@
       </div>
     </el-card>
 
-    <h1 class="max-w-[calc(100%-450px)] min-h-15 w-full pr-[2em] text-3xl">
+    <h1 :class="`${isScoring ? 'max-w-[calc(100%-450px)]' : ''} min-h-15 pr-[2em] text-3xl`">
       {{ info?.title }}
     </h1>
 
@@ -112,6 +112,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   id: string;
+  isScoring: boolean;
 }>();
 
 const { $api } = useNuxtApp();

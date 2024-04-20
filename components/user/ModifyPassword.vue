@@ -32,7 +32,7 @@
         />
       </el-form-item>
       <el-form-item class="m-0">
-        <el-button color="#146E3C" :loading="isPending" @click="modify(formRef)">
+        <el-button color="#15803d" :loading="isPending" @click="modify(formRef)">
           修改
         </el-button>
       </el-form-item>
