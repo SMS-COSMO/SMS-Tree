@@ -166,7 +166,7 @@ const { mutate: createEmptyGroups } = useMutation({
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['classInfo'] });
     queryClient.invalidateQueries({ queryKey: ['groupList'] });
-    useElMessage({ type: 'success', message: '创建成功' });
+    useMessage({ type: 'success', message: '创建成功' });
   },
   onError: err => useErrorHandler(err),
 });

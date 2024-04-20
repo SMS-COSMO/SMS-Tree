@@ -48,7 +48,6 @@
     </el-menu>
   </div>
 
-  <!-- Mobile Bottom Nav Bar -->
   <div v-if="device.isMobileOrTablet" class="nav bottom-0 border-t-1 border-t-border-light border-t-solid bg-white">
     <el-row class="px-2">
       <MobileNavButton label="首页" href="/">

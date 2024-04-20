@@ -1,10 +1,10 @@
 <template>
   <div class="mb-22 lg:mb-8 space-y-3 lg:space-y-4">
     <div class="lg:flex">
-      <h1 class="w-full text-2xl lg:pr-[2em] lg:text-4xl">
+      <h1 v-if="!device.isMobileOrTablet" class="w-full text-3xl lg:pr-[2em] lg:text-4xl">
         {{ info?.title }}
       </h1>
-      <el-space :size="10" class="mb-2 lg:mb-0">
+      <el-space :size="10">
         <el-tag v-if="info?.isFeatured" type="success" size="large">
           <el-text style="color: var(--el-color-success);">
             <el-icon class="i-tabler:star" />
@@ -24,6 +24,9 @@
           </el-text>
         </el-tag>
       </el-space>
+      <h1 v-if="device.isMobileOrTablet" class="w-full text-3xl lg:pr-[2em] lg:text-4xl">
+        {{ info?.title }}
+      </h1>
     </div>
 
     <el-row :gutter="20">
