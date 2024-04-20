@@ -4,7 +4,7 @@ export function useMessage(
   opt: Partial<NotificationOptions>,
 ) {
   ElNotification({
-    offset: 60,
+    offset: useDevice().isMobileOrTablet ? 0 : 60,
     ...opt,
   });
 }
