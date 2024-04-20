@@ -7,6 +7,9 @@
       <el-tag type="warning" disable-transitions>
         {{ getCategoryName(paper?.category) }}
       </el-tag>
+      <el-tag type="primary" disable-transitions>
+        {{ paper.className }}
+      </el-tag>
       <el-tag type="info" disable-transitions>
         {{ paper?.createdAt?.toLocaleDateString('zh-CN') }}
       </el-tag>
@@ -24,7 +27,7 @@
 
 <script setup lang="ts">
 withDefaults(defineProps<{
-  paper: Partial<TPaperListSafeItem>;
+  paper: Partial<TPaperScoringItem>;
   showAbstract?: boolean;
   lineClamp?: number;
   showAuthors?: boolean;

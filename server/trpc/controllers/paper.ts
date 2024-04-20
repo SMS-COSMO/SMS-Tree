@@ -193,19 +193,23 @@ export class PaperController {
     });
   }
 
-  // TODO: use query
   async scoringList(user: TRawUser, classId?: string) {
-    const managedClasses = (
-      await db.query.classes.findMany({
-        where: user.role === 'admin' ? undefined : eq(classes.teacherId, user.id),
-        columns: { id: true },
-      })
-    )
-      .map(x => x.id)
-      .filter(x => classId ? x === classId : true);
+    const managedClasses = await db.query.classes.findMany({
+      where: user.role === 'admin' ? undefined : eq(classes.teacherId, user.id),
+      columns: {
+        id: true,
+        enterYear: true,
+        index: true,
+      },
+    });
 
     const managedGroups = (await db.query.groups.findMany({
-      where: inArray(groups.classId, managedClasses),
+      where: inArray(
+        groups.classId,
+        managedClasses
+          .map(x => x.id)
+          .filter(x => classId ? x === classId : true),
+      ),
       columns: { id: true },
     })).map(x => x.id);
 
@@ -235,18 +239,28 @@ export class PaperController {
                 },
               },
             },
+            class: {
+              columns: {
+                enterYear: true,
+                index: true,
+              },
+            },
           },
         },
       },
     });
 
-    return res.map((x) => {
-      const { group, ...info } = x;
-      return {
-        authors: group.usersToGroups.map(u => ({ username: u.user.username })),
-        ...info,
-      };
-    });
+    return {
+      managedClasses: managedClasses.map(x => ({ ...x, className: getClassName(x) })),
+      list: res.map((x) => {
+        const { group, ...info } = x;
+        return {
+          authors: group.usersToGroups.map(u => ({ username: u.user.username })),
+          className: getClassName(group.class),
+          ...info,
+        };
+      }),
+    };
   }
 
   // TODO: This seems unsafe

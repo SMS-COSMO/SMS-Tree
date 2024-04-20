@@ -19,6 +19,7 @@ export type TPaperCreateSafe = RouterInput['paper']['createSafe'];
 export type TPaperCreateForm = RouterInput['paper']['create'] & { paperFile: string[]; attachments: string[] };
 export type TPaperCreateSafeForm = RouterInput['paper']['createSafe'] & { paperFile: string[]; attachments: string[] };
 export type TPaperScore = 'A' | 'B' | 'C' | 'D' | null | undefined;
+export type TPaperScoringItem = RouterOutput['paper']['scoringList']['list'][0];
 
 export type TClass = RouterOutput['class']['info'];
 export type TClassList = RouterOutput['class']['list'];

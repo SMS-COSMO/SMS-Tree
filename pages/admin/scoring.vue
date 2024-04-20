@@ -10,9 +10,9 @@
             @change="queryClient.invalidateQueries({ queryKey: ['scoringQueue'] });"
           />
         </div>
-        <el-scrollbar v-if="scoringQueue?.length">
+        <el-scrollbar v-if="scoringQueue?.list?.length">
           <div class="h-12" />
-          <template v-for="item in scoringQueue" :key="item">
+          <template v-for="item in scoringQueue?.list" :key="item">
             <TeacherPaperCard
               :paper="item" :current-selected="selected" @selected="id => selected = id"
             />
@@ -52,16 +52,10 @@ const { data: scoringQueue, suspense } = useQuery({
 });
 await suspense();
 
-const userStore = useUserStore();
-const { data: teacherClasses, suspense: teacherClassesSuspense } = useQuery({
-  queryKey: ['classList', { teacherId: userStore.userId }],
-  queryFn: () => $api.class.list.query(userStore.userId),
-});
-await teacherClassesSuspense();
 const classFilterOptions = computed(() => {
   const initial: ({ label: string; value: string | undefined })[] = [{ label: '全部', value: undefined }];
   return initial.concat(
-    teacherClasses.value?.map(x => ({
+    scoringQueue.value?.managedClasses?.map(x => ({
       label: x.className,
       value: x.id,
     })) ?? [],
@@ -70,10 +64,10 @@ const classFilterOptions = computed(() => {
 
 const selectedIndex = ref(0);
 const selected = computed({
-  get: () => scoringQueue.value?.at(selectedIndex.value)?.id,
+  get: () => scoringQueue.value?.list?.at(selectedIndex.value)?.id,
   set: (v) => {
     if (scoringQueue.value)
-      selectedIndex.value = scoringQueue.value.findIndex(x => x.id === v);
+      selectedIndex.value = scoringQueue.value.list.findIndex(x => x.id === v);
   },
 });
 </script>
