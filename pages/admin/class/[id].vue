@@ -54,24 +54,22 @@
                 <el-button size="small" class="mt-1" @click="userListDialog = true">
                   点击查看
                 </el-button>
-                <client-only>
-                  <el-drawer
-                    v-model="userListDialog"
-                    title="学生名单"
-                  >
-                    <el-scrollbar height="60vh">
-                      <el-table
-                        :data="classInfo?.students"
-                        class="cursor-pointer"
-                        @row-click="row => navigateTo(`/admin/user/${row.id}`)"
-                      >
-                        <el-table-column type="index" width="50" />
-                        <el-table-column prop="username" label="姓名" />
-                        <el-table-column prop="schoolId" label="学号" />
-                      </el-table>
-                    </el-scrollbar>
-                  </el-drawer>
-                </client-only>
+                <el-drawer
+                  v-model="userListDialog"
+                  title="学生名单"
+                >
+                  <el-scrollbar>
+                    <el-table
+                      :data="classInfo?.students"
+                      class="cursor-pointer mt-0!"
+                      @row-click="row => navigateTo(`/admin/user/${row.id}`)"
+                    >
+                      <el-table-column type="index" width="50" />
+                      <el-table-column prop="username" label="姓名" />
+                      <el-table-column prop="schoolId" label="学号" />
+                    </el-table>
+                  </el-scrollbar>
+                </el-drawer>
               </el-descriptions-item>
             </el-descriptions>
           </el-card>
@@ -168,7 +166,7 @@ const { mutate: createEmptyGroups } = useMutation({
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['classInfo'] });
     queryClient.invalidateQueries({ queryKey: ['groupList'] });
-    useMessage({ type: 'success', message: '创建成功' });
+    useElMessage({ type: 'success', message: '创建成功' });
   },
   onError: err => useErrorHandler(err),
 });
