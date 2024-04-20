@@ -123,7 +123,7 @@ const { mutate: modifyProjectName, isPending } = useMutation({
   mutationFn: $api.group.modifyProjectName.mutate,
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['groupInfo'] });
-    useElMessage({ message: '修改成功', type: 'success' });
+    useMessage({ message: '修改成功', type: 'success' });
   },
   onError: err => useErrorHandler(err),
 });

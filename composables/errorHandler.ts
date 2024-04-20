@@ -9,13 +9,13 @@ export async function useErrorHandler(err: unknown): Promise<void> {
   if (useIsTRPCClientError(err)) {
     if (err.data?.zodError) {
       for (const issue of err.data.zodError)
-        useElMessage({ message: issue.message, type: 'error' });
+        useMessage({ message: issue.message, type: 'error' });
     } else {
-      useElMessage({ message: err.message, type: 'error' });
+      useMessage({ message: err.message, type: 'error' });
       if (err.message === '用户未登录')
         onNuxtReady(() => navigateTo('/user/login'));
     }
   } else {
-    useElMessage({ message: '未知错误', type: 'error' });
+    useMessage({ message: '未知错误', type: 'error' });
   }
 }

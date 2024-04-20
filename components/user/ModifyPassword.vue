@@ -84,7 +84,7 @@ const rules = reactive<FormRules<typeof form>>({
 const { mutate: changePassword, isPending } = useMutation({
   mutationFn: $api.user.modifyPassword.mutate,
   onSuccess: (message) => {
-    useElMessage({ message, type: 'success' });
+    useMessage({ message, type: 'success' });
     const userStore = useUserStore();
     userStore.passwordChange();
   },
@@ -97,7 +97,7 @@ async function modify(formEl: FormInstance | undefined) {
   await formEl.validate(async (valid) => {
     if (valid) {
       if (form.oldPassword === form.newPassword)
-        useElMessage({ message: '新密码不能与旧密码相同', type: 'error' });
+        useMessage({ message: '新密码不能与旧密码相同', type: 'error' });
 
       changePassword({
         id: props.userId,

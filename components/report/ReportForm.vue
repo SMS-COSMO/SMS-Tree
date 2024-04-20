@@ -64,7 +64,7 @@ async function create(submittedForm: FormInstance | undefined) {
           });
         } else {
           if (!props.reportId) {
-            useElMessage({ message: '找不到报告', type: 'error' });
+            useMessage({ message: '找不到报告', type: 'error' });
             return;
           }
 
@@ -76,7 +76,7 @@ async function create(submittedForm: FormInstance | undefined) {
           } else if (!form.documentFile.length && form.presentationFile.length) {
             modifyCategory = 'reportPresentation';
           } else {
-            useElMessage({ message: '请上传文件', type: 'error' });
+            useMessage({ message: '请上传文件', type: 'error' });
             return;
           }
 
@@ -88,13 +88,13 @@ async function create(submittedForm: FormInstance | undefined) {
         }
 
         queryClient.invalidateQueries({ queryKey: ['groupInfo'] });
-        useElMessage({ message: `${props.type === 'create' ? '创建' : '修改'}成功`, type: 'success' });
+        useMessage({ message: `${props.type === 'create' ? '创建' : '修改'}成功`, type: 'success' });
       } catch (err) {
         useErrorHandler(err);
       }
       buttonLoading.value = false;
     } else {
-      useElMessage({ message: '表单内有错误，请修改后再提交', type: 'error' });
+      useMessage({ message: '表单内有错误，请修改后再提交', type: 'error' });
     }
   });
 }

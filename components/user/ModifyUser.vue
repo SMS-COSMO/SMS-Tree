@@ -61,7 +61,7 @@ const rules = reactive<FormRules<TUserRegister>> ({
 
 const { mutate: modifyMutation, isPending } = useMutation({
   mutationFn: $api.user.modify.mutate,
-  onSuccess: message => useElMessage({ message, type: 'success' }),
+  onSuccess: message => useMessage({ message, type: 'success' }),
   onError: err => useErrorHandler(err),
 });
 
@@ -73,7 +73,7 @@ async function modify(submittedForm: FormInstance | undefined) {
     if (valid)
       modifyMutation({ id: props.userId, ...form });
     else
-      useElMessage({ message: '表单内有错误，请修改后再提交', type: 'error' });
+      useMessage({ message: '表单内有错误，请修改后再提交', type: 'error' });
   });
 }
 </script>

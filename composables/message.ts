@@ -1,12 +1,10 @@
-export function useElMessage(
-  opt: {
-    message: string;
-    type: 'success' | 'warning' | 'error' | 'info';
-  },
+import type { NotificationOptions } from 'element-plus';
+
+export function useMessage(
+  opt: Partial<NotificationOptions>,
 ) {
-  ElMessage({
+  ElNotification({
+    offset: 60,
     ...opt,
-    showClose: true,
-    grouping: true,
   });
 }
