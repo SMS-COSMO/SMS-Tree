@@ -5,6 +5,10 @@
     @click="navigateTo(`${isAdmin ? '/admin' : ''}/paper/${paper.id}`)"
   >
     <el-row class="gap-[6px]">
+      <el-tag v-if="paper?.isPublic !== undefined && !paper.isPublic" type="danger" disable-transitions>
+        <el-icon class="i-tabler:pencil" />
+        待批改
+      </el-tag>
       <el-tag v-if="paper?.isFeatured" type="success" disable-transitions>
         <el-icon class="i-tabler:star" />
         优秀作业

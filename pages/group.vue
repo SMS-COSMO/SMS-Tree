@@ -66,7 +66,7 @@ const device = useDevice();
 
 const [classInfo, userInfo] = await useTrpcAsyncData(() => Promise.all([
   $api.class.info.query({ id: userStore.classId }),
-  $api.user.profileSafe.query({ id: userStore.userId }),
+  $api.user.profile.query({ id: userStore.userId }),
 ])) ?? [];
 
 const { data: groupInfo, suspense: groupInfoSuspense } = useQuery({

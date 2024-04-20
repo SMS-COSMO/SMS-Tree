@@ -86,16 +86,9 @@ export const userRouter = router({
     }),
 
   profile: protectedProcedure
-    .use(requireRoles(['teacher', 'admin']))
     .input(z.object({ id: userIdZod }))
     .query(async ({ ctx, input }) => {
-      return await ctx.userController.profile(input.id, false);
-    }),
-
-  profileSafe: protectedProcedure
-    .input(z.object({ id: userIdZod }))
-    .query(async ({ ctx, input }) => {
-      return await ctx.userController.profile(input.id, true);
+      return await ctx.userController.profile(input.id, ctx.user);
     }),
 
   list: protectedProcedure

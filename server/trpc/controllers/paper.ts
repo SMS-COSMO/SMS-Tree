@@ -162,6 +162,7 @@ export class PaperController {
         createdAt: true,
         downloadCount: true,
         isFeatured: true,
+        isPublic: true,
         keywords: true,
         score: true,
         title: true,

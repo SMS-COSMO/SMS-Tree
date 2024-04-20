@@ -10,6 +10,7 @@ import { classesToStudents } from '../../db/schema/classToStudents';
 import { Auth } from '../utils/auth';
 import { TRPCForbidden, getClassName, makeId } from '../../trpc/utils/shared';
 import { classes } from '~/server/db/schema/class';
+import { papers } from '~/server/db/schema/paper';
 
 export class UserController {
   private auth: Auth;
@@ -159,8 +160,9 @@ export class UserController {
     return '修改成功';
   }
 
-  async profile(id: string, isSafe: boolean) {
-    const user = await db.query.users.findFirst({
+  async profile(id: string, user: TRawUser) {
+    const accessible = ['teacher', 'admin'].includes(user.role) || user.id === id;
+    const res = await db.query.users.findFirst({
       where: eq(users.id, id),
       with: {
         usersToGroups: {
@@ -170,6 +172,7 @@ export class UserController {
               columns: { id: true },
               with: {
                 papers: {
+                  where: accessible ? undefined : eq(papers.isPublic, true),
                   columns: {
                     id: true,
                     canDownload: true,
@@ -177,8 +180,10 @@ export class UserController {
                     createdAt: true,
                     downloadCount: true,
                     isFeatured: true,
+                    isPublic: true,
                     score: true,
                     title: true,
+                    abstract: true,
                   },
                 },
               },
@@ -193,7 +198,7 @@ export class UserController {
         },
       },
     });
-    if (!user)
+    if (!res)
       throw new TRPCError({ code: 'NOT_FOUND', message: '用户不存在' });
 
     const {
@@ -202,14 +207,14 @@ export class UserController {
       classesToStudents: _classesToStudents,
       schoolId,
       ...info
-    } = user;
+    } = res;
 
     return {
       ...info,
-      className: getClassName(user.classesToStudents[0]?.classes),
-      groups: user.usersToGroups.map(x => x.group),
-      classId: user.classesToStudents[0]?.classes.id ?? '',
-      schoolId: isSafe ? undefined : schoolId,
+      className: getClassName(res.classesToStudents[0]?.classes),
+      groups: res.usersToGroups.map(x => x.group),
+      classId: res.classesToStudents[0]?.classes.id ?? '',
+      schoolId: accessible ? schoolId : undefined,
     };
   }
 
