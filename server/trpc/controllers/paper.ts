@@ -204,11 +204,14 @@ export class PaperController {
     });
 
     const managedGroups = (await db.query.groups.findMany({
-      where: inArray(
-        groups.classId,
-        managedClasses
-          .map(x => x.id)
-          .filter(x => classId ? x === classId : true),
+      where: and(
+        inArray(
+          groups.classId,
+          managedClasses
+            .map(x => x.id)
+            .filter(x => classId ? x === classId : true),
+        ),
+        eq(groups.archived, false),
       ),
       columns: { id: true },
     })).map(x => x.id);

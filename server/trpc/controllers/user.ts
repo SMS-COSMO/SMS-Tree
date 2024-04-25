@@ -98,7 +98,10 @@ export class UserController {
           columns: {},
           with: {
             group: {
-              columns: { id: true },
+              columns: {
+                id: true,
+                archived: true,
+              },
             },
           },
         },
@@ -127,7 +130,7 @@ export class UserController {
 
     return {
       ...info,
-      groupIds: user.usersToGroups.map(x => x.group.id),
+      activeGroupIds: user.usersToGroups.filter(x => !x.group.archived).map(x => x.group.id),
       classId: user.classesToStudents[0]?.classes.id ?? '',
       accessToken,
       refreshToken,
@@ -169,7 +172,10 @@ export class UserController {
           columns: {},
           with: {
             group: {
-              columns: { id: true },
+              columns: {
+                id: true,
+                archived: true,
+              },
               with: {
                 papers: {
                   where: accessible ? undefined : eq(papers.isPublic, true),

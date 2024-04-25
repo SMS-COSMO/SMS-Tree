@@ -79,6 +79,19 @@
             <template #header>
               <el-icon class="i-tabler:timeline-event" />
               班级状态
+              <el-popconfirm
+                title="确定要删除班级吗？"
+                width="200"
+                confirm-button-type="danger"
+                hide-icon
+                @confirm="removeClass({ id })"
+              >
+                <template #reference>
+                  <el-link icon="i-tabler:trash" type="danger" class="float-right">
+                    删除班级
+                  </el-link>
+                </template>
+              </el-popconfirm>
             </template>
             <div class="space-y-4">
               <StateStep :class-info="classInfo" direction="horizontal" show-archived />
@@ -167,6 +180,14 @@ const { mutate: createEmptyGroups } = useMutation({
     queryClient.invalidateQueries({ queryKey: ['classInfo'] });
     queryClient.invalidateQueries({ queryKey: ['groupList'] });
     useMessage({ type: 'success', message: '创建成功' });
+  },
+  onError: err => useErrorHandler(err),
+});
+
+const { mutate: removeClass } = useMutation({
+  mutationFn: $api.class.remove.mutate,
+  onSuccess: () => {
+    navigateTo('/admin/class/list');
   },
   onError: err => useErrorHandler(err),
 });

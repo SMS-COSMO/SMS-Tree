@@ -8,7 +8,7 @@ export const useUserStore = defineStore('user', () => {
   const username = ref('');
   const role = ref<TUserRole>('student');
   const classId = ref<string>('');
-  const groupIds = ref<string[]>([]);
+  const activeGroupIds = ref<string[]>([]);
   const isDefaultPassword = ref(true);
 
   const login = (data: TUserLogin) => {
@@ -21,7 +21,7 @@ export const useUserStore = defineStore('user', () => {
     username.value = data.username;
     role.value = data.role;
     classId.value = data.classId ?? '';
-    groupIds.value = data.groupIds;
+    activeGroupIds.value = data.activeGroupIds;
   };
 
   const logout = () => {
@@ -35,7 +35,7 @@ export const useUserStore = defineStore('user', () => {
 
     role.value = 'student';
     classId.value = '';
-    groupIds.value = [];
+    activeGroupIds.value = [];
   };
 
   const passwordChange = () => {
@@ -43,7 +43,7 @@ export const useUserStore = defineStore('user', () => {
   };
 
   const setGroupId = (newId: string[]) => {
-    groupIds.value = newId;
+    activeGroupIds.value = newId;
   };
 
   return {
@@ -54,7 +54,7 @@ export const useUserStore = defineStore('user', () => {
     username,
     role,
     classId,
-    groupIds,
+    activeGroupIds,
     isDefaultPassword,
     login,
     logout,
@@ -64,6 +64,7 @@ export const useUserStore = defineStore('user', () => {
 }, {
   persist: {
     storage: persistedState.cookiesWithOptions({
+      // One month
       maxAge: 30 * 24 * 60 * 60,
     }),
   },

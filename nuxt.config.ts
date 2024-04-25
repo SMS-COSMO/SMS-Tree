@@ -22,7 +22,7 @@ export default defineNuxtConfig({
     presets: [
       {
         from: '@tanstack/vue-query',
-        imports: ['useMutation', 'useQuery', 'useQueryClient'],
+        imports: ['useMutation', 'useQuery', 'useQueryClient', 'skipToken'],
       },
     ],
   },

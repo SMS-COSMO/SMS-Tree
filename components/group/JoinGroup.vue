@@ -3,11 +3,13 @@
     <template #header>
       <span class="text-xl font-bold">请选择一个小组加入</span>
     </template>
-
     <el-table :data="availableGroups">
       <el-table-column prop="leader" label="组长" width="150">
         <template #default="{ row }">
-          {{ row.leader ? row.leader.username : '还没有组长' }}
+          <span v-if="!row.leader">还没有组员~</span>
+          <el-tag v-else class="m-1 font-bold" disable-transitions size="large" type="success">
+            {{ row.leader.username }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="members" label="已有组员" min-width="400">
@@ -23,13 +25,13 @@
       <el-table-column label="操作" width="300">
         <template #default="{ row }">
           <el-button
-            v-if="!userStore.groupIds.length"
+            v-if="!userStore.activeGroupIds.length"
             plain type="primary"
             @click="joinGroup({ groupId: row.id, userId: userStore.userId })"
           >
             加入
           </el-button>
-          <template v-else-if="userStore.groupIds.includes(row.id)">
+          <template v-else-if="userStore.activeGroupIds.includes(row.id)">
             <el-button type="danger" @click="leaveGroup({ userId: userStore.userId, groupId: row.id })">
               退出小组
             </el-button>
@@ -48,7 +50,7 @@
             v-else
             plain @click="changeGroup({
               userId: userStore.userId,
-              oldGroupId: userStore.groupIds[0],
+              oldGroupId: userStore.activeGroupIds[0],
               newGroupId: row.id,
             })"
           >

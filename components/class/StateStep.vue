@@ -9,11 +9,26 @@
       <el-step icon="i-tabler:users" title="选择小组" />
       <el-step icon="i-tabler:presentation" title="开题报告" />
       <el-step icon="i-tabler:presentation-analytics" title="结题报告" />
-      <el-step icon="i-tabler:file-upload" title="提交论文" />
+      <el-step icon="i-tabler:file-upload" title="提交论文" :class="showArchived ? '' : 'is-flex'" />
       <el-step v-if="showArchived" icon="i-tabler:archive" title="归档" />
     </el-steps>
     <template #fallback>
-      <el-skeleton :rows="1" animated />
+      <!-- hack basis value -->
+      <el-steps v-if="!showArchived" :direction="direction">
+        <el-step icon="i-tabler-clock" title="等待分组" class="basis-1/4" />
+        <el-step icon="i-tabler:users" title="选择小组" class="basis-1/4" />
+        <el-step icon="i-tabler:presentation" title="开题报告" class="basis-1/4" />
+        <el-step icon="i-tabler:presentation-analytics" title="结题报告" class="basis-1/4" />
+        <el-step icon="i-tabler:file-upload" title="提交论文" class="is-flex basis-1/4" />
+      </el-steps>
+      <el-steps v-else :direction="direction">
+        <el-step icon="i-tabler-clock" title="等待分组" class="basis-1/5" />
+        <el-step icon="i-tabler:users" title="选择小组" class="basis-1/5" />
+        <el-step icon="i-tabler:presentation" title="开题报告" class="basis-1/5" />
+        <el-step icon="i-tabler:presentation-analytics" title="结题报告" class="basis-1/5" />
+        <el-step icon="i-tabler:file-upload" title="提交论文" class="basis-1/5" />
+        <el-step v-if="showArchived" icon="i-tabler:archive" title="归档" class="is-flex basis-1/5" />
+      </el-steps>
     </template>
   </client-only>
 </template>
