@@ -13,10 +13,14 @@
         <el-option v-for="item in searchSelectOptions" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
       <CategorySelectMultiple v-model="modelValue.filter.category" />
-      <el-date-picker
-        v-model="modelValue.filter.timeRange" type="daterange" unlink-panels range-separator="到"
-        start-placeholder="最早" end-placeholder="最晚" :shortcuts="timePresets" @change="updateValue"
-      />
+      <div>
+        <el-checkbox v-model="modelValue.filter.restrictEnterYear" label="按届筛选" />
+      </div>
+      <el-collapse-transition>
+        <div v-show="modelValue.filter.restrictEnterYear">
+          <el-input-number v-model="modelValue.filter.enterYear" />
+        </div>
+      </el-collapse-transition>
     </div>
     <template #fallback>
       <div class="space-y-2">
@@ -60,43 +64,12 @@
 const props = defineProps<{
   modelValue: TSearchOption;
 }>();
-
 const emit = defineEmits(['update:modelValue']);
 
 const modelValue = ref(props.modelValue);
-
 function updateValue() {
   emit('update:modelValue', modelValue.value);
 }
-
-const timePresets = [
-  {
-    text: '这个月',
-    value: () => {
-      const end = new Date();
-      const start = new Date();
-      start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-      return [start, end];
-    },
-  },
-  {
-    text: '今年',
-    value: () => {
-      const end = new Date();
-      const start = new Date(new Date().getFullYear(), 0);
-      return [start, end];
-    },
-  },
-  {
-    text: '最近半年',
-    value: () => {
-      const end = new Date();
-      const start = new Date();
-      start.setMonth(start.getMonth() - 6);
-      return [start, end];
-    },
-  },
-];
 
 const searchSelectOptions = [
   {

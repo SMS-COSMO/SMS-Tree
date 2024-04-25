@@ -169,7 +169,7 @@ export class PaperController {
       },
       with: {
         group: {
-          columns: {},
+          columns: { enterYear: true },
           with: {
             usersToGroups: {
               columns: {},
@@ -188,6 +188,7 @@ export class PaperController {
       const { group, ...info } = x;
       return {
         authors: group.usersToGroups.map(u => ({ username: u.user.username })),
+        enterYear: group.enterYear,
         ...info,
       };
     });

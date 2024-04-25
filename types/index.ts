@@ -54,8 +54,9 @@ export interface TSearchOption {
   filter: {
     onlyCanDownload: boolean;
     onlyFeatured: boolean;
-    timeRange: string;
     category: number[];
+    enterYear: number;
+    restrictEnterYear: boolean;
   };
   isAsc: -1 | 1;
   searchSelectValue: string[];

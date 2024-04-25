@@ -12,7 +12,9 @@
     </el-result>
   </el-card>
   <template v-else>
-    <StateStep v-if="device.isMobileOrTablet" :class-info="classInfo" direction="horizontal" class="mb-2 text-sm!" />
+    <div v-if="device.isMobileOrTablet" class="mb-2 text-sm!">
+      <StateStep :class-info="classInfo" direction="horizontal" />
+    </div>
     <div class="box-border flex flex-row gap-8 px-0">
       <div class="mb-22 w-full lg:mb-5 space-y-4">
         <el-card v-if="classInfo?.state === 'initialized'">

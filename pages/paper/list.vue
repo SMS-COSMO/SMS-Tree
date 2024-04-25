@@ -83,8 +83,9 @@ const searchOptions = reactive<TSearchOption>({
   filter: {
     onlyCanDownload: false,
     onlyFeatured: false,
-    timeRange: '',
     category: [],
+    restrictEnterYear: false,
+    enterYear: new Date().getFullYear(),
   },
   isAsc: 1,
   searchSelectValue: ['title', 'keywords'],
@@ -121,10 +122,7 @@ const { processedListData } = await useSearch<TPaperListSafeItem>(
       return false;
     if (searchOptions.filter.onlyFeatured && !o.isFeatured)
       return false;
-    if (searchOptions.filter.timeRange
-      && (o.createdAt.getTime() < Date.parse(searchOptions.filter.timeRange[0])
-      || o.createdAt.getTime() > Date.parse(searchOptions.filter.timeRange[1]))
-    )
+    if (searchOptions.filter.restrictEnterYear && o.enterYear !== searchOptions.filter.enterYear)
       return false;
     if (searchOptions.filter.category.length && !searchOptions.filter.category.includes(o.category))
       return false;
