@@ -1,5 +1,4 @@
 import { and, eq } from 'drizzle-orm';
-import { LibsqlError } from '@libsql/client';
 import { TRPCError } from '@trpc/server';
 import type { TNewGroup, TRawUser } from '../../db/db';
 import { db } from '../../db/db';

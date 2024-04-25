@@ -7,7 +7,7 @@
       class="lg:w-60!"
     >
       <el-option
-        v-for="item in stateTable"
+        v-for="item in classStateTable"
         :key="item.value"
         :label="item.label"
         :value="item.value"

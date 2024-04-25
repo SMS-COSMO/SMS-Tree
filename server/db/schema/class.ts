@@ -16,8 +16,8 @@ export const classes = sqliteTable('classes', {
     'thesisProposal', // 开题报告
     'concludingReport', // 结题报告
     'submitPaper', // 提交论文
-    'archived', // 归档
   ] }).notNull().default('initialized'),
+  stateTimeTable: text('state_time_table', { mode: 'json' }).notNull().$type<number[]>(),
 });
 
 export const classesRelations = relations(classes, ({ many, one }) => ({

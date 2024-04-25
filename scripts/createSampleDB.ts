@@ -71,6 +71,7 @@ await Promise.all(
       state: 'initialized',
       students: sepStudentList[i].map(u => u.id),
       teacherId: teacherList[i].id,
+      stateTimeTable: [new Date(), new Date(), new Date(), new Date(), new Date()],
     });
   }),
 );

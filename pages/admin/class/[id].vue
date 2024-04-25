@@ -94,7 +94,7 @@
               </el-popconfirm>
             </template>
             <div class="space-y-4">
-              <StateStep :class-info="classInfo" direction="horizontal" show-archived />
+              <StateStep :class-info="classInfo" direction="horizontal" />
               <div class="flex flex-row gap-2">
                 <el-button-group class="mx-auto">
                   <el-button :disabled="classInfo.state === step[0]" @click="modifyState(-1)">
@@ -161,7 +161,6 @@ const step: TClassState[] = [
   'thesisProposal', // 开题报告
   'concludingReport', // 结题报告
   'submitPaper', // 提交论文
-  'archived', // 归档
 ];
 
 const { mutate: modifyStateMutation } = useMutation({

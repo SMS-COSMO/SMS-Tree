@@ -14,9 +14,19 @@ export class ClassController {
     state: TClassState;
     students: string[];
     teacherId: string;
+    stateTimeTable?: Date[];
   }) {
     // TODO: use transactions
-    const insertedId = (await db.insert(classes).values(newClass).returning({ id: classes.id }).get()).id;
+    const { stateTimeTable, ...rest } = newClass;
+    const insertedId = (await db
+      .insert(classes)
+      .values({
+        stateTimeTable: (stateTimeTable?.map(x => x.getTime()) ?? []),
+        ...rest,
+      })
+      .returning({ id: classes.id })
+      .get()
+    ).id;
 
     await db.insert(classesToStudents).values(
       newClass.students.map(

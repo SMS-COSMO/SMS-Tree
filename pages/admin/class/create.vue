@@ -1,7 +1,7 @@
 <template>
   <el-card>
     <el-form
-      class="mx-auto w-[700px] py-5"
+      class="mx-auto max-w-[1300px] py-5"
       :label-position="device.isMobileOrTablet ? 'top' : 'right'"
       :model="form"
       label-width="120px"
@@ -20,6 +20,9 @@
       </el-form-item>
       <el-form-item prop="index" label="教师">
         <SelectUser v-model="form.teacherId" role="teacher" :multiple="false" />
+      </el-form-item>
+      <el-form-item prop="stateTimeTable" label="时间表">
+        <StateStepMaker v-model="form.stateTimeTable" />
       </el-form-item>
       <el-form-item>
         <el-button color="#15803d" :loading="buttonLoading" @click="create">
@@ -43,6 +46,7 @@ const form = reactive<TClassCreate>({
   state: 'initialized',
   students: [],
   teacherId: '',
+  stateTimeTable: undefined,
 });
 
 const buttonLoading = ref(false);

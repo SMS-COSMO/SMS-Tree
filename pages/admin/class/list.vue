@@ -23,7 +23,7 @@
       <el-table-column :width="200" show-overflow-tooltip label="状态">
         <template #default="scope">
           <StateBadge
-            :state="stateTable.find(s => s.value === scope.row.state) ?? { label: '未知', type: 'info', value: '' }"
+            :state="classStateTable.find(s => s.value === scope.row.state) ?? { label: '未知', type: 'info', value: '' }"
             size="large"
           />
         </template>

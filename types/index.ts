@@ -30,8 +30,7 @@ export type TClassState =
   'selectGroup' |
   'thesisProposal' |
   'concludingReport' |
-  'submitPaper' |
-  'archived';
+  'submitPaper';
 
 export type TAttachment = RouterOutput['paper']['info']['attachments'][0];
 export type TAttachmentCreate = RouterInput['attachment']['create'];

@@ -8,7 +8,6 @@ const stateZod = z.enum([
   'thesisProposal', // 开题报告
   'concludingReport', // 结题报告
   'submitPaper', // 提交论文
-  'archived', // 归档
 ]);
 
 export const classRouter = router({
@@ -19,6 +18,7 @@ export const classRouter = router({
       state: stateZod,
       students: z.array(z.string().min(1, '学生不存在')),
       teacherId: z.string().min(1, '老师不存在'),
+      stateTimeTable: z.array(z.date()).max(5, '最多5个状态').optional(),
     }))
     .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
