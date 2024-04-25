@@ -27,7 +27,6 @@ export class GroupController {
   }
 
   async remove(id: string) {
-    // TODO: use transactions
     await db.delete(groups).where(eq(groups.id, id));
     return '删除成功';
   }
@@ -107,6 +106,8 @@ export class GroupController {
       res.notes = [];
       res.papers = [];
       res.reports = [];
+      res.projectName = '';
+      res.classId = '';
     }
 
     const { usersToGroups, leader: _, ...info } = res;
@@ -222,18 +223,17 @@ export class GroupController {
     });
   }
 
-  async joinGroup(userId: string, groupId: string) {
-    try {
-      await db.insert(usersToGroups).values({ userId, groupId });
-      return '加入成功';
-    } catch (err) {
-      if (err instanceof LibsqlError && err.code === 'SQLITE_CONSTRAINT_PRIMARYKEY')
-        throw new TRPCError({ code: 'BAD_REQUEST', message: '已加入，请勿重复加入' });
-      throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '无法加入小组' });
-    }
+  async joinGroup(userId: string, groupId: string, user: TRawUser) {
+    if (!['admin', 'teacher'].includes(user.role) && userId !== user.id)
+      throw TRPCForbidden;
+
+    await db.insert(usersToGroups).values({ userId, groupId });
+    return '加入成功';
   }
 
-  async leaveGroup(userId: string, groupId: string) {
+  async leaveGroup(userId: string, groupId: string, user: TRawUser) {
+    if (!['admin', 'teacher'].includes(user.role) && userId !== user.id)
+      throw TRPCForbidden;
     await db.delete(usersToGroups).where(
       and(
         eq(usersToGroups.userId, userId),
@@ -244,7 +244,9 @@ export class GroupController {
     return '退出成功';
   }
 
-  async changeGroup(userId: string, oldGroupId: string, newGroupId: string) {
+  async changeGroup(userId: string, oldGroupId: string, newGroupId: string, user: TRawUser) {
+    if (!['admin', 'teacher'].includes(user.role) && userId !== user.id)
+      throw TRPCForbidden;
     await db.update(usersToGroups).set({ groupId: newGroupId }).where(
       and(
         eq(usersToGroups.userId, userId),
@@ -274,11 +276,6 @@ export class GroupController {
     }
 
     await db.update(groups).set({ leader: userId }).where(eq(groups.id, groupId));
-    return '修改成功';
-  }
-
-  async _removeLeader(groupId: string) {
-    await db.update(groups).set({ leader: null }).where(eq(groups.id, groupId));
     return '修改成功';
   }
 

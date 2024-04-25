@@ -31,22 +31,22 @@ export class ReportController {
 
   async remove(id: string, user: TRawUser) {
     if (!['admin', 'teacher'].includes(user.role)) {
-      const group = await db.query.usersToGroups.findFirst({
-        where: eq(usersToGroups.userId, user.id),
+      const group = await db.query.reports.findFirst({
+        where: eq(reports.id, id),
         columns: {},
         with: {
           group: {
             columns: {},
             with: {
-              reports: {
-                columns: { id: true },
+              usersToGroups: {
+                columns: { userId: true },
               },
             },
           },
         },
       });
 
-      if (!group || !group.group.reports.some(x => x.id === id))
+      if (!group || !group.group.usersToGroups.some(x => x.userId === user.id))
         throw TRPCForbidden;
     }
 

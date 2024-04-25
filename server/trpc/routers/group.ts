@@ -24,6 +24,7 @@ export const groupRouter = router({
       archived: z.boolean().optional(),
       enterYear: z.number(),
     }))
+    .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
       return await ctx.groupController.create(input);
     }),
@@ -69,7 +70,7 @@ export const groupRouter = router({
       userId: z.string().min(1, '用户id不存在'),
     }))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.groupController.joinGroup(input.userId, input.groupId);
+      return await ctx.groupController.joinGroup(input.userId, input.groupId, ctx.user);
     }),
 
   leave: protectedProcedure
@@ -78,7 +79,7 @@ export const groupRouter = router({
       userId: z.string().min(1, '用户id不存在'),
     }))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.groupController.leaveGroup(input.userId, input.groupId);
+      return await ctx.groupController.leaveGroup(input.userId, input.groupId, ctx.user);
     }),
 
   change: protectedProcedure
@@ -88,7 +89,7 @@ export const groupRouter = router({
       newGroupId: z.string().min(1, '新小组id不存在'),
     }))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.groupController.changeGroup(input.userId, input.oldGroupId, input.newGroupId);
+      return await ctx.groupController.changeGroup(input.userId, input.oldGroupId, input.newGroupId, ctx.user);
     }),
 
   setLeader: protectedProcedure

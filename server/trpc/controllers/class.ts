@@ -31,6 +31,18 @@ export class ClassController {
   }
 
   async remove(id: string) {
+    const g = await db.query.classes.findFirst({
+      where: eq(classes.id, id),
+      columns: {},
+      with: {
+        groups: {
+          columns: { id: true },
+        },
+      },
+    });
+    await Promise.all(g?.groups.map(
+      x => db.update(groups).set({ archived: true }).where(eq(groups.id, x.id)),
+    ) ?? []);
     await db.delete(classes).where(eq(classes.id, id));
     return '删除成功';
   }
