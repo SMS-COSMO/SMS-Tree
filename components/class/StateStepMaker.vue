@@ -17,6 +17,8 @@
           <el-date-picker
             v-model="l[s]"
             type="date"
+            class="max-w-40!"
+            placeholder="选择日期"
             @change="emit('update:modelValue', l)"
           />
         </template>
@@ -27,5 +29,21 @@
 
 <script setup lang="ts">
 const emit = defineEmits(['update:modelValue']);
-const l = ref([...Array(5)].map(_ => undefined));
+const l = ref([...Array(5)].map((_, i) => i === 0 ? new Date() : undefined));
+
+const classStateIcons = [
+  'i-tabler-clock',
+  'i-tabler:users',
+  'i-tabler:presentation',
+  'i-tabler:presentation-analytics',
+  'i-tabler:file-upload',
+];
+
+const classStateNames = [
+  '班级创建',
+  '选择小组',
+  '开题报告',
+  '结题报告',
+  '提交论文',
+];
 </script>

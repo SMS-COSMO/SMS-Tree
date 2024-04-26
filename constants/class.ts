@@ -6,22 +6,6 @@ export const classStateTable = [
   { value: 'submitPaper', label: '提交论文', type: 'danger' },
 ];
 
-export const classStateNames = [
-  '等待分组',
-  '选择小组',
-  '开题报告',
-  '结题报告',
-  '提交论文',
-];
-
-export const classStateIcons = [
-  'i-tabler-clock',
-  'i-tabler:users',
-  'i-tabler:presentation',
-  'i-tabler:presentation-analytics',
-  'i-tabler:file-upload',
-];
-
 export const classStateSteps = [
   'initialized', // 初始化
   'selectGroup', // 选择小组

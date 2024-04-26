@@ -20,7 +20,6 @@
       </el-step>
     </el-steps>
     <template #fallback>
-      <!-- hack basis value -->
       <el-steps :direction="direction">
         <el-step
           v-for="s in [0, 1, 2, 3, 4]"
@@ -45,4 +44,20 @@ defineProps<{
   direction: 'vertical' | 'horizontal';
   classInfo: TClass;
 }>();
+
+const classStateIcons = [
+  'i-tabler-clock',
+  'i-tabler:users',
+  'i-tabler:presentation',
+  'i-tabler:presentation-analytics',
+  'i-tabler:file-upload',
+];
+
+const classStateNames = [
+  '等待分组',
+  '选择小组',
+  '开题报告',
+  '结题报告',
+  '提交论文',
+];
 </script>

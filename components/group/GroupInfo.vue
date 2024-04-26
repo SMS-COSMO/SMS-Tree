@@ -16,8 +16,8 @@
           </div>
         </template>
         <span class="text-[16px]!">
-          <el-link :href="`/user/${info?.leader?.id}`">
-            {{ info?.leader?.username }}
+          <el-link :href="`/user/${groupInfo?.leader?.id}`">
+            {{ groupInfo?.leader?.username }}
           </el-link>
         </span>
       </el-descriptions-item>
@@ -29,7 +29,7 @@
           </div>
         </template>
         <span class="space-x-2 text-[16px]!">
-          <GroupMembers :authors="info?.members" :leader="info?.leader" type="link" class="inline" />
+          <GroupMembers :authors="groupInfo?.members" :leader="groupInfo?.leader" type="link" class="inline" />
         </span>
       </el-descriptions-item>
     </el-descriptions>
@@ -43,7 +43,7 @@
             <el-icon class="i-tabler:notebook" />
             课题名
             <el-popover
-              v-if="info"
+              v-if="groupInfo"
               placement="bottom"
               title="修改课题名"
               :width="300"
@@ -56,7 +56,7 @@
               </template>
               <el-input v-model="newProjectName" @blur="edit = false">
                 <template #append>
-                  <el-button :loading="isPending" @click="modifyProjectName({ groupId: info!.id, newProjectName })">
+                  <el-button :loading="isPending" @click="modifyProjectName({ groupId: groupInfo!.id, newProjectName })">
                     <el-icon class="i-tabler:check" />
                   </el-button>
                 </template>
@@ -65,7 +65,7 @@
           </div>
         </template>
         <span class="text-[16px]!">
-          {{ info?.projectName ?? '待填写' }}
+          {{ groupInfo?.projectName ?? '待填写' }}
         </span>
       </el-descriptions-item>
       <el-descriptions-item>
@@ -75,43 +75,82 @@
             活动记录
           </div>
         </template>
-        <template v-for="note in info?.notes" :key="note.id">
+        <template v-for="note in groupInfo?.notes" :key="note.id">
           <NoteCard :note="note" />
         </template>
         <NewNote />
       </el-descriptions-item>
-      <el-descriptions-item v-if="info?.reports?.length">
+      <el-descriptions-item v-if="groupInfo?.reports?.length">
         <template #label>
           <div class="mb-[-12px] text-[16px]!">
             <el-icon class="i-tabler:presentation" />
             报告
           </div>
         </template>
-        <div :class="info?.reports?.length ?? 0 > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
-          <template v-for="report in info?.reports" :key="report.id">
+        <div :class="groupInfo?.reports?.length ?? 0 > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
+          <template v-for="report in groupInfo?.reports" :key="report.id">
             <ReportCard :report="report" />
           </template>
         </div>
       </el-descriptions-item>
-      <el-descriptions-item v-if="info?.papers?.length">
+      <el-descriptions-item v-if="groupInfo?.papers?.length">
         <template #label>
           <div class="mb-[-12px] text-[16px]!">
             <el-icon class="i-tabler:file-text" />
             论文
           </div>
         </template>
-        <div :class="info?.papers?.length > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
-          <template v-for="paper in info.papers" :key="paper.id">
+        <div :class="groupInfo?.papers?.length > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
+          <template v-for="paper in groupInfo.papers" :key="paper.id">
             <PaperCard :paper="paper" :show-authors="false" />
           </template>
         </div>
       </el-descriptions-item>
     </el-descriptions>
   </el-card>
+  <template v-if="classState === 'submitPaper' && groupInfo?.papers !== undefined">
+    <SubmitPaper v-if="!groupInfo?.papers.length" />
+    <el-card v-else>
+      <el-result
+        icon="success"
+        title="论文已提交"
+        sub-title="等待老师批改论文"
+      />
+    </el-card>
+  </template>
+  <template v-else-if="classState === 'thesisProposal'">
+    <SubmitReport
+      v-if="!groupInfo?.reports?.some(x => x.category === 'thesisProposal')"
+      category="thesisProposal"
+    />
+    <el-card v-else>
+      <el-result
+        icon="success"
+        title="开题报告已提交"
+        sub-title="等待老师反馈"
+      />
+    </el-card>
+  </template>
+  <template v-else-if="classState === 'concludingReport'">
+    <SubmitReport
+      v-if="!groupInfo?.reports?.some(x => x.category === 'concludingReport')"
+      category="concludingReport"
+    />
+    <el-card v-else>
+      <el-result
+        icon="success"
+        title="结题报告已提交"
+        sub-title="等待老师反馈"
+      />
+    </el-card>
+  </template>
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{ info?: TGroup }>();
+defineProps<{
+  classState: TClassState;
+}>();
+
 const { $api } = useNuxtApp();
 const device = useDevice();
 
@@ -128,7 +167,14 @@ const { mutate: modifyProjectName, isPending } = useMutation({
   onError: err => useErrorHandler(err),
 });
 
+const userStore = useUserStore();
+const { data: groupInfo, suspense: groupInfoSuspense } = useQuery({
+  queryKey: ['groupInfo', { id: userStore.activeGroupIds[0] }],
+  queryFn: () => $api.group.info.query({ id: userStore.activeGroupIds[0] }),
+});
+await groupInfoSuspense();
+
 onMounted(() => {
-  newProjectName.value = props.info?.projectName;
+  newProjectName.value = groupInfo.value?.projectName;
 });
 </script>
