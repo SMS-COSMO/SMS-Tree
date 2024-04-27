@@ -45,9 +45,7 @@
               上次活动跟进
             </div>
           </template>
-          <div class="whitespace-pre">
-            {{ note.followUp }}
-          </div>
+          <TiptapViewer :content="note.followUp" />
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -55,9 +53,7 @@
               新的讨论内容
             </div>
           </template>
-          <div class="whitespace-pre">
-            {{ note.newDiscussion }}
-          </div>
+          <TiptapViewer :content="note.newDiscussion" />
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -65,9 +61,7 @@
               活动笔记
             </div>
           </template>
-          <div class="whitespace-pre">
-            {{ note.content }}
-          </div>
+          <TiptapViewer :content="note.content" />
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -75,9 +69,7 @@
               下次活动计划
             </div>
           </template>
-          <div class="whitespace-pre">
-            {{ note.plans }}
-          </div>
+          <TiptapViewer :content="note.plans" />
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -85,9 +77,7 @@
               反思
             </div>
           </template>
-          <div class="whitespace-pre">
-            {{ note.reflections }}
-          </div>
+          <TiptapViewer :content="note.reflections" />
         </el-descriptions-item>
       </el-descriptions>
       <template #footer>

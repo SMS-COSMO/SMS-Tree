@@ -7,6 +7,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 import Underline from '@tiptap/extension-underline';
 import Subscript from '@tiptap/extension-subscript';
 import Superscript from '@tiptap/extension-superscript';
+import Highlight from '@tiptap/extension-highlight';
 import type { AnyExtension } from '@tiptap/vue-3';
 
 export const tipTapExtensions: AnyExtension[] = [
@@ -23,12 +24,10 @@ export const tipTapExtensions: AnyExtension[] = [
     linkOnPaste: true,
     autolink: true,
     openOnClick: true,
-    HTMLAttributes: {
-      class: 'text-blue-12',
-    },
   }),
   Placeholder,
   Underline,
   Subscript,
   Superscript,
+  Highlight,
 ];

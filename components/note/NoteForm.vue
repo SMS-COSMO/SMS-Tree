@@ -19,19 +19,19 @@
         />
       </el-form-item>
       <el-form-item prop="followUp" label="上次活动跟进">
-        <el-input v-model="form.followUp" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea" />
+        <TiptapEditor v-model="form.followUp" />
       </el-form-item>
       <el-form-item prop="newDiscussion" label="新的讨论内容">
-        <el-input v-model="form.newDiscussion" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea" />
+        <TiptapEditor v-model="form.newDiscussion" />
       </el-form-item>
       <el-form-item prop="content" label="活动笔记">
-        <el-input v-model="form.content" :autosize="{ minRows: 3, maxRows: 8 }" type="textarea" />
+        <TiptapEditor v-model="form.content" />
       </el-form-item>
       <el-form-item prop="plans" label="下次活动计划">
-        <el-input v-model="form.plans" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea" />
+        <TiptapEditor v-model="form.plans" />
       </el-form-item>
       <el-form-item prop="reflections" label="反思">
-        <el-input v-model="form.reflections" :autosize="{ minRows: 3, maxRows: 5 }" type="textarea" />
+        <TiptapEditor v-model="form.reflections" />
       </el-form-item>
       <el-form-item>
         <el-button color="#15803d" :loading="isSubmitPending || isModifyPending" @click="submit(formRef)">
@@ -53,7 +53,7 @@ const props = defineProps<{
 const { $api } = useNuxtApp();
 const device = useDevice();
 const formRef = ref<FormInstance>();
-const form = ref<TNoteCreateSafe>({
+const form = ref<TNoteCreateSafe>(props.oldNote ?? {
   title: '',
   content: '',
   followUp: '',
@@ -129,7 +129,9 @@ async function submit(submittedForm: FormInstance | undefined) {
         submitNote(form.value);
       else if (props.oldNote?.id)
         modifyNote({ id: props.oldNote.id, ...form.value });
-    } else { useMessage({ message: '表单内有错误，请修改后再提交', type: 'error' }); }
+    } else {
+      useMessage({ message: '表单内有错误，请修改后再提交', type: 'error' });
+    }
   });
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div v-html="html" />
+  <div class="tiptap" v-html="html" />
 </template>
 
 <script setup lang="ts">

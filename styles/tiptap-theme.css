@@ -1,0 +1,30 @@
+.tiptap h1,
+.tiptap h2,
+.tiptap h3 {
+  margin: 0.3em 0;
+}
+
+.tiptap p {
+  margin: 0;
+}
+
+.tiptap ol,
+.tiptap ul {
+  margin: 0;
+  padding-left: 1.5em;
+}
+
+.tiptap a {
+  color: #409EFF;
+}
+
+.tiptap mark {
+  background-color: #ffe066;
+  padding: 0.2em 0.3em;
+  border-radius: 0.3em;
+  box-decoration-break: clone;
+}
+
+.tiptap {
+  line-height: 32px;
+}

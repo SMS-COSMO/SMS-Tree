@@ -130,7 +130,9 @@
       <el-collapse-transition>
         <template v-if="classInfo.state === 'initialized'">
           <div class="flex flex-row gap-2">
-            <el-input-number v-model="newGroupCount" :min="1" step-strictly :step="1" :max="15" />
+            <div>
+              <el-input-number v-model="newGroupCount" :min="1" step-strictly :step="1" :max="15" />
+            </div>
             <el-button
               @click="createEmptyGroups({
                 id: classInfo!.id,
