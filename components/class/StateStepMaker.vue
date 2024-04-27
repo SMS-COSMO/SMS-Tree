@@ -19,6 +19,7 @@
             type="date"
             class="max-w-40!"
             placeholder="选择日期"
+            :clearable="false"
             @change="emit('update:modelValue', l)"
           />
         </template>
@@ -28,8 +29,11 @@
 </template>
 
 <script setup lang="ts">
+const props = defineProps<{
+  modelValue: Date[] | undefined;
+}>();
 const emit = defineEmits(['update:modelValue']);
-const l = ref([...Array(5)].map((_, i) => i === 0 ? new Date() : undefined));
+const l = ref(props.modelValue ?? ([...Array(5)].map((_, i) => i === 0 ? new Date() : undefined)));
 
 const classStateIcons = [
   'i-tabler-clock',

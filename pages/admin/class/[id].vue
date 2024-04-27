@@ -3,7 +3,7 @@
     <template v-if="classInfo">
       <el-row :gutter="16">
         <el-col :span="device.isMobileOrTablet ? 24 : 8">
-          <el-card>
+          <el-card class="h-full">
             <template #header>
               <el-icon class="i-tabler:school" />
               {{ classInfo.className }}
@@ -94,7 +94,8 @@
               </el-popconfirm>
             </template>
             <div class="space-y-4">
-              <StateStep :class-info="classInfo" direction="horizontal" />
+              <StateStep v-if="!editTimetable" :class-info="classInfo" direction="horizontal" />
+              <StateStepMaker v-else v-model="newStateTimetable" direction="horizontal" />
               <div class="flex flex-row gap-2">
                 <el-button-group class="mx-auto">
                   <el-button :disabled="classInfo.state === step[0]" @click="modifyState(-1)">
@@ -105,6 +106,17 @@
                     下一状态
                     <el-icon class="i-tabler:arrow-right" />
                   </el-button>
+                  <el-button v-if="!editTimetable" @click="editTimetable = true">
+                    修改时间表
+                  </el-button>
+                  <template v-else>
+                    <el-button icon="i-tabler:check" @click="modifyTimetable(); editTimetable = false">
+                      提交
+                    </el-button>
+                    <el-button icon="i-tabler:x" @click="revertTimetableChange(); editTimetable = false">
+                      取消
+                    </el-button>
+                  </template>
                 </el-button-group>
               </div>
             </div>
@@ -155,6 +167,9 @@ await classInfoSuspense();
 
 const userListDialog = ref(false);
 
+const editTimetable = ref(false);
+const newStateTimetable = ref(classInfo.value?.stateTimetable.map(x => new Date(x)));
+
 const step: TClassState[] = [
   'initialized', // 初始化
   'selectGroup', // 选择小组
@@ -163,13 +178,20 @@ const step: TClassState[] = [
   'submitPaper', // 提交论文
 ];
 
-const { mutate: modifyStateMutation } = useMutation({
-  mutationFn: $api.class.modifyState.mutate,
+function revertTimetableChange() {
+  newStateTimetable.value = classInfo.value?.stateTimetable.map(x => new Date(x));
+}
+
+const { mutate: modifyMutation } = useMutation({
+  mutationFn: $api.class.modify.mutate,
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['classInfo'] });
     queryClient.invalidateQueries({ queryKey: ['groupList'] });
   },
-  onError: err => useErrorHandler(err),
+  onError: (err) => {
+    revertTimetableChange();
+    useErrorHandler(err);
+  },
 });
 
 const newGroupCount = ref(8);
@@ -194,6 +216,11 @@ const { mutate: removeClass } = useMutation({
 function modifyState(delta: number) {
   if (!classInfo.value)
     return;
-  modifyStateMutation({ id: classInfo.value.id, newState: step[step.indexOf(classInfo.value.state) + delta] });
+  modifyMutation({ id: classInfo.value.id, state: step[step.indexOf(classInfo.value.state) + delta] });
+}
+function modifyTimetable() {
+  if (!classInfo.value)
+    return;
+  modifyMutation({ id: classInfo.value.id, stateTimetable: newStateTimetable.value });
 }
 </script>

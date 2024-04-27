@@ -14,14 +14,14 @@ export class ClassController {
     state: TClassState;
     students: string[];
     teacherId: string;
-    stateTimeTable?: Date[];
+    stateTimetable?: Date[];
   }) {
     // TODO: use transactions
-    const { stateTimeTable, ...rest } = newClass;
+    const { stateTimetable, ...rest } = newClass;
     const insertedId = (await db
       .insert(classes)
       .values({
-        stateTimeTable: (stateTimeTable?.map(x => x.getTime()) ?? []),
+        stateTimetable: (stateTimetable?.map(x => x.getTime()) ?? []),
         ...rest,
       })
       .returning({ id: classes.id })
@@ -57,8 +57,21 @@ export class ClassController {
     return '删除成功';
   }
 
-  async modifyState(id: string, newState: TClassState) {
-    await db.update(classes).set({ state: newState }).where(eq(classes.id, id));
+  async modify(id: string, newClass: Partial<{
+    index: number;
+    enterYear: number;
+    state: TClassState;
+    teacherId: string;
+    stateTimetable?: Date[];
+  }>) {
+    const { stateTimetable, ...rest } = newClass;
+    await db
+      .update(classes)
+      .set({
+        stateTimetable: stateTimetable ? (stateTimetable?.map(x => x.getTime()) ?? []) : undefined,
+        ...rest,
+      })
+      .where(eq(classes.id, id));
     return '修改成功';
   }
 

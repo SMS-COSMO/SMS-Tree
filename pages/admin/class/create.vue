@@ -21,8 +21,8 @@
       <el-form-item prop="index" label="教师">
         <SelectUser v-model="form.teacherId" role="teacher" :multiple="false" />
       </el-form-item>
-      <el-form-item prop="stateTimeTable" label="时间表">
-        <StateStepMaker v-model="form.stateTimeTable" />
+      <el-form-item prop="stateTimetable" label="时间表">
+        <StateStepMaker v-model="form.stateTimetable" />
       </el-form-item>
       <el-form-item>
         <el-button color="#15803d" :loading="buttonLoading" @click="create">
@@ -46,7 +46,7 @@ const form = reactive<TClassCreate>({
   state: 'initialized',
   students: [],
   teacherId: '',
-  stateTimeTable: undefined,
+  stateTimetable: undefined,
 });
 
 const buttonLoading = ref(false);

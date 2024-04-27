@@ -12,9 +12,9 @@
         :title="classStateNames[s]"
         :class="s === 4 ? 'is-flex' : ''"
       >
-        <template v-if="classInfo?.stateTimeTable[s]" #description>
+        <template v-if="classInfo?.stateTimetable[s]" #description>
           <span class="text-sm">
-            {{ new Date(classInfo.stateTimeTable[s]).toLocaleDateString('zh-CN') }}
+            {{ new Date(classInfo.stateTimetable[s]).toLocaleDateString('zh-CN') }}
           </span>
         </template>
       </el-step>
@@ -28,9 +28,9 @@
           :title="classStateNames[s]"
           :class="`${s === 4 ? 'is-flex' : ''} basis-1/4`"
         >
-          <template v-if="classInfo?.stateTimeTable[s]" #description>
+          <template v-if="classInfo?.stateTimetable[s]" #description>
             <span class="text-sm">
-              {{ new Date(classInfo.stateTimeTable[s]).toLocaleDateString('zh-CN') }}
+              {{ new Date(classInfo.stateTimetable[s]).toLocaleDateString('zh-CN') }}
             </span>
           </template>
         </el-step>

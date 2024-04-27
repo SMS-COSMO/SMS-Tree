@@ -10,26 +10,28 @@ const stateZod = z.enum([
   'submitPaper', // 提交论文
 ]);
 
+const createZod = z.object({
+  index: z.number().int().min(0, '班级号至少为0').max(100, '班级号最大为100'),
+  enterYear: z.number().int().min(2000, '请输入正确的入学年份').max(9999, '请输入正确的入学年份'),
+  state: stateZod,
+  teacherId: z.string().min(1, '老师不存在'),
+  stateTimetable: z.array(z.date()).max(5, '最多5个状态').optional(),
+});
+
 export const classRouter = router({
   create: protectedProcedure
-    .input(z.object({
-      index: z.number().int().min(0, '班级号至少为0').max(100, '班级号最大为100'),
-      enterYear: z.number().int().min(2000, '请输入正确的入学年份').max(9999, '请输入正确的入学年份'),
-      state: stateZod,
-      students: z.array(z.string().min(1, '学生不存在')),
-      teacherId: z.string().min(1, '老师不存在'),
-      stateTimeTable: z.array(z.date()).max(5, '最多5个状态').optional(),
-    }))
+    .input(createZod.extend({ students: z.array(z.string().min(1, '学生不存在')) }))
     .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
       return await ctx.classController.create(input);
     }),
 
-  modifyState: protectedProcedure
+  modify: protectedProcedure
     .use(requireRoles(['admin', 'teacher']))
-    .input(z.object({ id: classIdZod, newState: stateZod }))
+    .input(createZod.partial().extend({ id: classIdZod }))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.classController.modifyState(input.id, input.newState);
+      const { id, ...data } = input;
+      return await ctx.classController.modify(id, data);
     }),
 
   info: protectedProcedure
