@@ -6,10 +6,10 @@ import { users } from './user';
 import { groups } from './group';
 
 export const classes = sqliteTable('classes', {
-  id: text('id', { mode: 'text' }).primaryKey().$defaultFn(() => makeId(12)),
+  id: text('id').primaryKey().$defaultFn(() => makeId(12)),
   index: integer('index', { mode: 'number' }).notNull(),
   enterYear: integer('enter_year', { mode: 'number' }).notNull(),
-  teacherId: text('teacher_id', { mode: 'text' }).notNull(),
+  teacherId: text('teacher_id').notNull(),
   state: text('state', { enum: [
     'initialized', // 初始化
     'selectGroup', // 选择小组

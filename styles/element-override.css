@@ -168,6 +168,10 @@
   padding: 8px 20px !important;
 }
 
+.el-button-group>.el-button {
+  margin-left: -2px !important;
+}
+
 /* Card */
 .el-card {
   box-sizing: border-box !important;

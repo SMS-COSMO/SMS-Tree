@@ -158,8 +158,6 @@ export class AttachmentController {
         } else if (info.reportId && info.report) {
           if (!info.report.group.usersToGroups.some(x => x.user.id === user.id))
             throw TRPCForbidden;
-        } else {
-          throw new TRPCError({ code: 'NOT_FOUND', message: '附件不存在' });
         }
       }
     }

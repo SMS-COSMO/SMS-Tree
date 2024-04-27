@@ -4,8 +4,8 @@ import { classes } from './class';
 import { users } from './user';
 
 export const classesToStudents = sqliteTable('classes_to_students', {
-  classId: text('class_id', { mode: 'text' }).notNull().references(() => classes.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-  userId: text('user_id', { mode: 'text' }).notNull().references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+  classId: text('class_id').notNull().references(() => classes.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
 }, t => ({
   pk: primaryKey({ columns: [t.classId, t.userId] }),
 }));

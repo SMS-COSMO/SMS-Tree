@@ -5,9 +5,11 @@ import { groups } from './group';
 import { attachments } from './attachment';
 
 export const reports = sqliteTable('reports', {
-  id: text('id', { mode: 'text' }).primaryKey().$defaultFn(() => makeId(12)),
-  groupId: text('group_id', { mode: 'text' }).notNull().references(() => groups.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+  id: text('id').primaryKey().$defaultFn(() => makeId(12)),
+  groupId: text('group_id').notNull().references(() => groups.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
   category: text('category', { enum: ['thesisProposal', 'concludingReport'] }).notNull(),
+  read: integer('read', { mode: 'boolean' }).default(false).notNull(),
+  comment: text('comment'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });
 

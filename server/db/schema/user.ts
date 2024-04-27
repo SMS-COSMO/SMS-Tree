@@ -6,10 +6,10 @@ import { classesToStudents } from './classToStudents';
 import { classes } from './class';
 
 export const users = sqliteTable('users', {
-  id: text('id', { mode: 'text' }).$defaultFn(() => makeId(12)).primaryKey(),
-  schoolId: text('school_id', { mode: 'text' }).notNull().unique(),
-  username: text('username', { mode: 'text' }).notNull(),
-  password: text('password', { mode: 'text' }).notNull(),
+  id: text('id').$defaultFn(() => makeId(12)).primaryKey(),
+  schoolId: text('school_id').notNull().unique(),
+  username: text('username').notNull(),
+  password: text('password').notNull(),
   role: text('role', { enum: ['admin', 'student', 'teacher'] }).notNull().default('student'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });
@@ -21,7 +21,7 @@ export const usersRelations = relations(users, ({ many }) => ({
 }));
 
 export const refreshTokens = sqliteTable('refresh_tokens', {
-  id: text('id', { mode: 'text' }).primaryKey().$defaultFn(() => makeId(12)),
-  token: text('token', { mode: 'text' }).notNull(),
-  owner: text('owner', { mode: 'text' }).references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }).notNull(),
+  id: text('id').primaryKey().$defaultFn(() => makeId(12)),
+  token: text('token').notNull(),
+  owner: text('owner').references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }).notNull(),
 });

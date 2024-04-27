@@ -1,10 +1,12 @@
 <template>
   <el-card>
     <template #header>
-      <el-tag type="info" effect="plain" class="mr-1">
+      <el-tag type="info" effect="plain" class="mr-2 select-none">
         小组 {{ index }}
       </el-tag>
-      {{ info?.projectName ?? '暂无课题名' }}
+      <span class="font-bold">
+        {{ info?.projectName ?? '暂无课题名' }}
+      </span>
       <el-popconfirm
         v-if="info"
         title="确定要删除小组吗？"
@@ -81,7 +83,7 @@
         </template>
         <div :class="(info?.reports?.length ?? 0) > 1 ? 'grid grid-cols-2 gap-2' : ''">
           <template v-for="report in info?.reports" :key="report.id">
-            <ReportCard :report="report" />
+            <ReportCard :report="report" is-admin />
           </template>
         </div>
       </el-descriptions-item>

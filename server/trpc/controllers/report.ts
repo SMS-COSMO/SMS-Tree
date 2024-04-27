@@ -29,6 +29,11 @@ export class ReportController {
     return await this.create({ groupId: group.groupId, category });
   }
 
+  async modify(id: string, newReport: Partial<TNewReport>) {
+    await db.update(reports).set(newReport).where(eq(reports.id, id));
+    return '修改成功';
+  }
+
   async remove(id: string, user: TRawUser) {
     if (!['admin', 'teacher'].includes(user.role)) {
       const group = await db.query.reports.findFirst({

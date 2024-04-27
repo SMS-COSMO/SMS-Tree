@@ -24,6 +24,22 @@ export const reportRouter = router({
       return await ctx.reportController.createSafe(ctx.user, input.category);
     }),
 
+  modify: protectedProcedure
+    .input(
+      z.object({
+        category: z.enum(['thesisProposal', 'concludingReport']),
+        comment: z.string().nullable(),
+        read: z.boolean(),
+      })
+        .partial()
+        .extend({ id: z.string().min(1) }),
+    )
+    .use(requireRoles(['admin', 'teacher']))
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...data } = input;
+      return await ctx.reportController.modify(id, data);
+    }),
+
   remove: protectedProcedure
     .input(z.object({ id: reportIdZod }))
     .mutation(async ({ ctx, input }) => {

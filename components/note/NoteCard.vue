@@ -45,7 +45,9 @@
               上次活动跟进
             </div>
           </template>
-          {{ note.followUp }}
+          <div class="whitespace-pre">
+            {{ note.followUp }}
+          </div>
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -53,7 +55,9 @@
               新的讨论内容
             </div>
           </template>
-          {{ note.newDiscussion }}
+          <div class="whitespace-pre">
+            {{ note.newDiscussion }}
+          </div>
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -61,7 +65,9 @@
               活动笔记
             </div>
           </template>
-          {{ note.content }}
+          <div class="whitespace-pre">
+            {{ note.content }}
+          </div>
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -69,7 +75,9 @@
               下次活动计划
             </div>
           </template>
-          {{ note.plans }}
+          <div class="whitespace-pre">
+            {{ note.plans }}
+          </div>
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -77,7 +85,9 @@
               反思
             </div>
           </template>
-          {{ note.reflections }}
+          <div class="whitespace-pre">
+            {{ note.reflections }}
+          </div>
         </el-descriptions-item>
       </el-descriptions>
       <template #footer>

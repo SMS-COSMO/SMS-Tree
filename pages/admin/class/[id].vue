@@ -96,28 +96,32 @@
             <div class="space-y-4">
               <StateStep v-if="!editTimetable" :class-info="classInfo" direction="horizontal" />
               <StateStepMaker v-else v-model="newStateTimetable" direction="horizontal" />
-              <div class="flex flex-row gap-2">
-                <el-button-group class="mx-auto">
-                  <el-button :disabled="classInfo.state === step[0]" @click="modifyState(-1)">
-                    <el-icon class="i-tabler:arrow-left" />
-                    上一状态
-                  </el-button>
-                  <el-button :disabled="classInfo.state === step[step.length - 1]" @click="modifyState(1)">
-                    下一状态
-                    <el-icon class="i-tabler:arrow-right" />
-                  </el-button>
-                  <el-button v-if="!editTimetable" @click="editTimetable = true">
-                    修改时间表
-                  </el-button>
-                  <template v-else>
-                    <el-button icon="i-tabler:check" @click="modifyTimetable(); editTimetable = false">
-                      提交
+              <div class="flex">
+                <div class="mx-auto flex flex-row gap-3">
+                  <el-button-group>
+                    <el-button :disabled="classInfo.state === step[0]" @click="modifyState(-1)">
+                      <el-icon class="i-tabler:arrow-left" />
+                      上一状态
                     </el-button>
-                    <el-button icon="i-tabler:x" @click="revertTimetableChange(); editTimetable = false">
-                      取消
+                    <el-button :disabled="classInfo.state === step[step.length - 1]" @click="modifyState(1)">
+                      下一状态
+                      <el-icon class="i-tabler:arrow-right" />
                     </el-button>
-                  </template>
-                </el-button-group>
+                  </el-button-group>
+                  <el-button-group>
+                    <el-button v-if="!editTimetable" @click="editTimetable = true">
+                      修改时间表
+                    </el-button>
+                    <template v-else>
+                      <el-button icon="i-tabler:check" @click="modifyTimetable(); editTimetable = false">
+                        提交
+                      </el-button>
+                      <el-button icon="i-tabler:x" @click="revertTimetableChange(); editTimetable = false">
+                        取消
+                      </el-button>
+                    </template>
+                  </el-button-group>
+                </div>
               </div>
             </div>
           </el-card>
