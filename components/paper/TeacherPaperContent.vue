@@ -20,7 +20,7 @@
         </el-tooltip>
         <el-popover
           title="添加评语（可留空）"
-          :width="400"
+          :width="600"
           trigger="click"
           :hide-after="0"
           placement="bottom-start"
@@ -32,11 +32,7 @@
               </el-button>
             </el-badge>
           </template>
-          <el-input
-            v-model="form.comment"
-            :autosize="{ minRows: 3, maxRows: 10 }"
-            type="textarea"
-          />
+          <TiptapEditor v-model="form.comment" />
         </el-popover>
         <el-tooltip content="完成批改" placement="top" :show-after="800">
           <el-button

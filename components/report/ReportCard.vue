@@ -44,15 +44,9 @@
         <div class="mb-2 mt-4 text-lg font-bold">
           批注
         </div>
-        <el-input
-          v-if="!report.read"
-          v-model="comment"
-          type="textarea"
-          :autosize="{ minRows: 4, maxRows: 8 }"
-          placeholder="添加批注"
-        />
-        <el-card v-else class="whitespace-pre">
-          {{ report.comment }}
+        <TiptapEditor v-if="!report.read" v-model="comment" />
+        <el-card v-else>
+          <TiptapViewer :content="report.comment" />
         </el-card>
       </template>
       <template #footer>
@@ -88,13 +82,7 @@
       align-center
       width="700"
     >
-      <el-input
-        v-model="comment"
-        type="textarea"
-        :autosize="{ minRows: 5, maxRows: 10 }"
-        placeholder="添加批注"
-      />
-
+      <TiptapEditor v-model="comment" />
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="modifyCommentVisible = false">

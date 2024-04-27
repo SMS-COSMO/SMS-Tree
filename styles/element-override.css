@@ -378,3 +378,8 @@
   width: 1.2em !important;
   margin-bottom: -2.6px !important;
 }
+
+/* Tag */
+.el-check-tag {
+  transition: none !important;
+}

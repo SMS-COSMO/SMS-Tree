@@ -83,7 +83,7 @@
       <template #header>
         教师评语
       </template>
-      {{ info?.comment }}
+      <TiptapViewer :content="info?.comment" />
     </el-card>
   </div>
 </template>

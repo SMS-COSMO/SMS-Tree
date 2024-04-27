@@ -56,7 +56,7 @@
         <UploadFile v-model="form.attachments" multiple category="paperAttachment" />
       </el-form-item>
       <el-form-item label="评语">
-        <el-input v-model="form.comment" :autosize="{ minRows: 4, maxRows: 8 }" type="textarea" />
+        <TiptapEditor v-model="form.comment" />
       </el-form-item>
       <el-form-item>
         <el-button color="#15803d" :loading="buttonLoading" @click="create(formRef)">
