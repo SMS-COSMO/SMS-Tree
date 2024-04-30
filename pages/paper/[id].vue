@@ -68,7 +68,7 @@
             <el-icon class="i-tabler:align-box-left-top" />
             摘要
           </template>
-          <div class="text-justify text-[15px] leading-normal lg:text-base">
+          <div class="whitespace-break-spaces text-justify text-[15px] leading-normal lg:text-base">
             {{ info?.abstract }}
           </div>
         </FoldableCard>

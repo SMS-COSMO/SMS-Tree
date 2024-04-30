@@ -1,8 +1,8 @@
 import * as readline from 'node:readline/promises';
 import process from 'node:process';
-import { nanoid } from 'nanoid';
 
 import { eq } from 'drizzle-orm';
+import cnLorem from 'cn-lorem-ipsum';
 import { ctl } from '~/server/trpc/context';
 import { env } from '~/server/env';
 import { db } from '~/server/db/db';
@@ -35,7 +35,7 @@ await Promise.all(
   [...Array(studentCount)].map((_, i) => {
     return ctl.uc.register({
       schoolId: `StudentSchoolId${i}`,
-      username: `StudentName${i}`,
+      username: cnLorem.name(),
       password: pwd,
       role: 'student',
     });
@@ -43,7 +43,7 @@ await Promise.all(
     [...Array(classCount)].map((_, i) => {
       return ctl.uc.register({
         schoolId: `TeacherSchoolId${i}`,
-        username: `TeacherName${i}`,
+        username: `教师 ${cnLorem.name()}`,
         password: pwd,
         role: 'teacher',
       });
@@ -114,7 +114,7 @@ for (const i in classList) {
         classId: c.id,
         members: shuffled[j].map(x => x.id),
         leader: shuffled[j][0].id,
-        projectName: `project ${i}${j}`,
+        projectName: cnLorem.phrase({ min: 10, max: 20 }),
       });
     }),
   );
@@ -129,12 +129,12 @@ const groupList = await ctl.gc.list(admin);
 const paperCountInput = Number(await rl.question('? Number of papers to create(default 20): '));
 const paperCount = paperCountInput <= 0 ? 20 : paperCountInput;
 await Promise.all(
-  [...Array(paperCount)].map((_, i) => {
+  [...Array(paperCount)].map((_) => {
     return ctl.pc.create({
-      abstract: nanoid(100),
-      title: `Paper ${i}`,
+      abstract: cnLorem.article({ len: 600 }),
+      title: cnLorem.phrase({ min: 15, max: 30 }),
       category: Math.round(Math.random() * 100),
-      keywords: [...Array(5)].map(_ => nanoid(5)),
+      keywords: [...Array(5)].map(_ => cnLorem.phrase({ min: 3, max: 8 })),
       canDownload: Math.random() < 0.5,
       isFeatured: Math.random() < 0.3,
       isPublic: true,
