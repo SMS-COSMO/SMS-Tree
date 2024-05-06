@@ -45,12 +45,18 @@ const { $api } = useNuxtApp();
 const device = useDevice();
 
 const formRef = ref<FormInstance>();
-const userInfo = await useTrpcAsyncData(() => $api.user.profile.query({ id: props.userId }));
+
+const { data: userInfo, suspense } = useQuery({
+  queryKey: ['user.profile', { id: props.userId }],
+  queryFn: () => $api.user.profile.query({ id: props.userId }),
+});
+await suspense();
+
 const form = reactive({
-  username: userInfo?.username ?? '',
-  schoolId: userInfo?.schoolId ?? '',
-  role: userInfo?.role ?? 'student',
-  classId: userInfo?.classId ?? '',
+  username: userInfo.value?.username ?? '',
+  schoolId: userInfo.value?.schoolId ?? '',
+  role: userInfo.value?.role ?? 'student',
+  classId: userInfo.value?.classId ?? '',
 });
 
 const rules = reactive<FormRules<TUserRegister>> ({

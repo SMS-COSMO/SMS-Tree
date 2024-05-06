@@ -97,7 +97,7 @@ const queryClient = useQueryClient();
 const { mutate: submitNote, isPending: isSubmitPending } = useMutation({
   mutationFn: $api.note.createSafe.mutate,
   onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['groupInfo'] });
+    queryClient.invalidateQueries({ queryKey: ['group.info'] });
     useMessage({ message: '创建成功', type: 'success' });
   },
   onError: err => useErrorHandler(err),
@@ -106,7 +106,7 @@ const { mutate: submitNote, isPending: isSubmitPending } = useMutation({
 const { mutate: modifyNote, isPending: isModifyPending } = useMutation({
   mutationFn: $api.note.modifySafe.mutate,
   onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['groupInfo'] });
+    queryClient.invalidateQueries({ queryKey: ['group.info'] });
     useMessage({ message: '修改成功', type: 'success' });
   },
   onError: err => useErrorHandler(err),

@@ -95,7 +95,7 @@ const columns: Column<any>[] = [
     title: '操作',
     cellRenderer: ({ cellData: id }) => (
       <>
-        <ElButton size="small" onClick={() => navigateTo(`/admin/user/${id}`)}>
+        <ElButton size="small" onClick={() => navigateTo(`/admin/user/${id}?action=modify`)}>
           修改
         </ElButton>
         <ElPopconfirm

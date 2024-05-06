@@ -61,7 +61,12 @@ watch(showDialog, async () => {
 });
 
 async function downloadFile(id: string) {
-  const url = await useTrpcAsyncData<string>(() => $api.attachment.fileUrl.query(id));
-  navigateTo(url, { external: true });
+  const { data: url, suspense } = useQuery({
+    queryKey: ['attachment.fileUrl', { id }],
+    queryFn: () => $api.attachment.fileUrl.query(id),
+  });
+  await suspense();
+
+  navigateTo(url.value, { external: true });
 }
 </script>

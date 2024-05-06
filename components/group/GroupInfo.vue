@@ -161,7 +161,7 @@ const queryClient = useQueryClient();
 const { mutate: modifyProjectName, isPending } = useMutation({
   mutationFn: $api.group.modifyProjectName.mutate,
   onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['groupInfo'] });
+    queryClient.invalidateQueries({ queryKey: ['group.info'] });
     useMessage({ message: '修改成功', type: 'success' });
   },
   onError: err => useErrorHandler(err),
@@ -169,7 +169,7 @@ const { mutate: modifyProjectName, isPending } = useMutation({
 
 const userStore = useUserStore();
 const { data: groupInfo, suspense: groupInfoSuspense } = useQuery({
-  queryKey: ['groupInfo', { id: userStore.activeGroupIds[0] }],
+  queryKey: ['group.info', { id: userStore.activeGroupIds[0] }],
   queryFn: () => $api.group.info.query({ id: userStore.activeGroupIds[0] }),
 });
 await groupInfoSuspense();

@@ -52,15 +52,22 @@ const { $api } = useNuxtApp();
 const userStore = useUserStore();
 const device = useDevice();
 
-const [classInfo, userInfo] = await useTrpcAsyncData(() => Promise.all([
-  (userStore.classId ? $api.class.info.query({ id: userStore.classId }) : undefined),
-  $api.user.profile.query({ id: userStore.userId }),
-])) ?? [];
+const { data: classInfo, suspense: classInfoSuspense } = useQuery({
+  queryKey: ['class.info', { id: userStore.classId }],
+  queryFn: () => userStore.classId ? $api.class.info.query({ id: userStore.classId }) : undefined,
+});
+await classInfoSuspense();
+
+const { data: userInfo, suspense: userInfoSuspense } = useQuery({
+  queryKey: ['user.profile', { id: userStore.userId }],
+  queryFn: () => $api.user.profile.query({ id: userStore.userId }),
+});
+await userInfoSuspense();
 
 onMounted(() => {
   if (userInfo) {
-    userStore.activeGroupIds = userInfo.groups.filter(x => !x.archived).map(x => x.id);
-    userStore.classId = userInfo.classId ?? '';
+    userStore.activeGroupIds = userInfo.value?.groups.filter(x => !x.archived).map(x => x.id) ?? [];
+    userStore.classId = userInfo.value?.classId ?? '';
   }
 });
 </script>

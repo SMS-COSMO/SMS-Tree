@@ -115,7 +115,7 @@ const { processedListData } = await useSearch<TPaperListSafeItem>(
   searchContent,
   fuseOptions,
   $api.paper.list.query,
-  ['paperSearch'],
+  ['paper.list'],
   e => e.item,
   (o: TPaperListSafeItem) => {
     if (searchOptions.filter.onlyCanDownload && !o.canDownload)

@@ -43,7 +43,7 @@ const searchContent = ref('');
 
 const userStore = useUserStore();
 const { data: teacherClasses, suspense } = useQuery({
-  queryKey: ['teacherClasses', { id: userStore.userId }],
+  queryKey: ['user.teacherClasses', { id: userStore.userId }],
   queryFn: () => $api.user.teacherClasses.query(userStore.userId),
 });
 await suspense();
@@ -52,7 +52,7 @@ const { processedListData } = await useSearch<TClassListItem>(
   searchContent,
   templateSearchOption(['className', 'teacher']),
   () => $api.class.list.query(),
-  ['classSearch'],
+  ['class.list'],
   e => e.item,
   (e) => {
     return showAll.value || (teacherClasses.value ?? []).includes(e.id);

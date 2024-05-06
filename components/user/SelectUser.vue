@@ -2,7 +2,7 @@
   <client-only>
     <el-select-v2
       v-model="selected"
-      :options="options"
+      :options="options ?? []"
       :multiple="multiple"
       :max-collapse-tags="3"
       :props="selectProps"
@@ -47,5 +47,10 @@ const selectProps = {
   value: 'id',
 };
 
-const options = (await useTrpcAsyncData(() => $api.user.list.query({ role: props.role }))) ?? [];
+// TODO: don't show all the students
+const { data: options, suspense } = useQuery({
+  queryKey: ['user.list', { role: props.role }],
+  queryFn: () => $api.user.list.query({ role: props.role }),
+});
+await suspense();
 </script>

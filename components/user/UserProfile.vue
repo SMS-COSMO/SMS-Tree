@@ -16,10 +16,10 @@
           </div>
         </template>
         <span class="text-[16px]!">
-          {{ info?.username }}
+          {{ userInfo?.username }}
         </span>
       </el-descriptions-item>
-      <el-descriptions-item v-if="type === 'admin' && info?.schoolId">
+      <el-descriptions-item v-if="type === 'admin' && userInfo?.schoolId">
         <template #label>
           <div class="text-[16px]!">
             <el-icon class="i-tabler:number" />
@@ -27,10 +27,10 @@
           </div>
         </template>
         <span class="text-[16px]!">
-          {{ info?.schoolId }}
+          {{ userInfo?.schoolId }}
         </span>
       </el-descriptions-item>
-      <el-descriptions-item v-if="info?.role === 'student'">
+      <el-descriptions-item v-if="userInfo?.role === 'student'">
         <template #label>
           <div class="text-[16px]!">
             <el-icon class="i-tabler:school" />
@@ -39,12 +39,12 @@
         </template>
         <span class="text-[16px]!">
           <template v-if="type === 'admin'">
-            <el-link :href="`/admin/class/${info?.classId}`">
-              {{ info?.className }}
+            <el-link :href="`/admin/class/${userInfo?.classId}`">
+              {{ userInfo?.className }}
             </el-link>
           </template>
           <template v-else>
-            {{ info?.className }}
+            {{ userInfo?.className }}
           </template>
         </span>
       </el-descriptions-item>
@@ -56,7 +56,7 @@
           </div>
         </template>
         <el-tag>
-          {{ roleName[info?.role ?? 'student'] }}
+          {{ roleName[userInfo?.role ?? 'student'] }}
         </el-tag>
       </el-descriptions-item>
     </el-descriptions>
@@ -77,7 +77,7 @@
   </FoldableCard>
 
   <el-button
-    v-if="device.isMobileOrTablet && useUserStore().userId === info?.id"
+    v-if="device.isMobileOrTablet && useUserStore().userId === userInfo?.id"
     class="mt-4 w-full"
     @click="useLogout"
   >
@@ -94,7 +94,6 @@ const props = defineProps<{
 }>();
 
 const { $api } = useNuxtApp();
-
 const device = useDevice();
 
 const roleName = {
@@ -103,15 +102,17 @@ const roleName = {
   admin: '管理员',
 };
 
-const { info, papers } = await useTrpcAsyncData(async () => {
-  const info = props.type === 'admin'
-    ? await $api.user.profile.query({ id: props.userId })
-    : await $api.user.profile.query({ id: props.userId }) as TUserProfile;
+const { data: userInfo, suspense } = useQuery({
+  queryKey: ['user.profile', { id: props.userId }],
+  queryFn: () => $api.user.profile.query({ id: props.userId }),
+});
+await suspense();
 
-  let papers: (Partial<TRawPaper> | undefined)[] = [];
-  for (const group of (info?.groups ?? []))
-    papers = papers.concat(group.papers);
+const papers = computed(() => {
+  let res: (Partial<TRawPaper> | undefined)[] = [];
+  for (const group of (userInfo.value?.groups ?? []))
+    res = res.concat(group.papers);
 
-  return { info, papers };
-}) ?? { info: undefined, papers: undefined };
+  return res;
+});
 </script>

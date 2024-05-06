@@ -42,17 +42,26 @@ watch(cascaderValue, (v) => {
     groupId.value = v[v?.length - 1];
 });
 
-const classList = await useTrpcAsyncData(() => $api.class.list.query());
+const { data: classList, suspense: classListSuspense } = useQuery({
+  queryKey: ['class.list'],
+  queryFn: () => $api.class.list.query(),
+});
+await classListSuspense();
 const groupList = ref<TGroupList>([]);
 
 const options: CascaderOption[] = await Promise.all(
-  classList?.map(async (v) => {
-    const groups = await useTrpcAsyncData(() => $api.group.list.query({ classId: v.id })) ?? [];
-    groupList.value = groupList.value.concat(groups);
+  classList.value?.map(async (v) => {
+    const { data: groups, suspense: groupListSuspense } = useQuery({
+      queryKey: ['group.list', { classId: v.id }],
+      queryFn: () => $api.group.list.query({ classId: v.id }),
+    });
+    await groupListSuspense();
+
+    groupList.value = groupList.value.concat(groups.value ?? []);
     return {
       value: v.id,
       label: v.className,
-      children: groups.map(v1 => ({
+      children: (groups.value ?? []).map(v1 => ({
         value: v1.id,
         label: v1.projectName ?? '未知课题名',
       })),

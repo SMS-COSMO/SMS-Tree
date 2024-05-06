@@ -119,7 +119,7 @@ const queryClient = useQueryClient();
 const { mutate: commentMutate } = useMutation({
   mutationFn: $api.report.modify.mutate,
   onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['classInfo'] });
+    queryClient.invalidateQueries({ queryKey: ['class.info'] });
     useMessage({ message: '批阅成功', type: 'success' });
   },
   onError: err => useErrorHandler(err),

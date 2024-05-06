@@ -2,7 +2,7 @@
   <client-only>
     <el-select-v2
       v-model="selected"
-      :options="options"
+      :options="options ?? []"
       :props="selectProps"
       filterable
       placeholder="请选择（输入可搜索）"
@@ -34,5 +34,9 @@ const selectProps = {
   value: 'id',
 };
 
-const options = (await useTrpcAsyncData(() => $api.class.list.query())) ?? [];
+const { data: options, suspense } = useQuery({
+  queryKey: ['class.list'],
+  queryFn: () => $api.class.list.query(),
+});
+await suspense();
 </script>

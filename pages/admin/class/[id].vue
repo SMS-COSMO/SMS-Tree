@@ -166,7 +166,7 @@ const id = useRoute().params.id.toString();
 
 const queryClient = useQueryClient();
 const { data: classInfo, suspense: classInfoSuspense } = useQuery({
-  queryKey: ['classInfo', { id }],
+  queryKey: ['class.info', { id }],
   queryFn: () => $api.class.infoFull.query({ id }),
 });
 await classInfoSuspense();
@@ -191,8 +191,8 @@ function revertTimetableChange() {
 const { mutate: modifyMutation } = useMutation({
   mutationFn: $api.class.modify.mutate,
   onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['classInfo'] });
-    queryClient.invalidateQueries({ queryKey: ['groupList'] });
+    queryClient.invalidateQueries({ queryKey: ['class.info'] });
+    queryClient.invalidateQueries({ queryKey: ['group.list'] });
   },
   onError: (err) => {
     revertTimetableChange();
@@ -204,8 +204,8 @@ const newGroupCount = ref(8);
 const { mutate: createEmptyGroups } = useMutation({
   mutationFn: $api.class.initGroups.mutate,
   onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['classInfo'] });
-    queryClient.invalidateQueries({ queryKey: ['groupList'] });
+    queryClient.invalidateQueries({ queryKey: ['class.info'] });
+    queryClient.invalidateQueries({ queryKey: ['group.list'] });
     useMessage({ type: 'success', message: '创建成功' });
   },
   onError: err => useErrorHandler(err),

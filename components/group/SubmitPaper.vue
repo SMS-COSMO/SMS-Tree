@@ -97,7 +97,7 @@ async function create(submittedForm: FormInstance | undefined) {
           ids: form.paperFile.concat(form.attachments),
           paperId,
         });
-        queryClient.invalidateQueries({ queryKey: ['groupInfo'] });
+        queryClient.invalidateQueries({ queryKey: ['group.info'] });
         useMessage({ message: '创建成功', type: 'success' });
       } catch (err) {
         useErrorHandler(err);

@@ -100,7 +100,7 @@ const id = route.params.id.toString();
 const device = useDevice();
 
 const { data: info, suspense: infoSuspense } = useQuery({
-  queryKey: ['paperInfo', { id }],
+  queryKey: ['paper.info', { id }],
   queryFn: () => $api.paper.info.query({ id }),
 });
 await infoSuspense();

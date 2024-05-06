@@ -40,7 +40,7 @@ const props = withDefaults(defineProps<{
 const { $api } = useNuxtApp();
 
 const { data: fileUrl, suspense } = useQuery({
-  queryKey: ['fileUrl', { id: props.attachment?.S3FileId }],
+  queryKey: ['attachment.fileUrl', { id: props.attachment?.S3FileId }],
   queryFn: () => $api.attachment.fileUrl.query(props.attachment!.id),
 });
 await suspense();

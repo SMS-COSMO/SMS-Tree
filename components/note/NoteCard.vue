@@ -115,7 +115,7 @@ const queryClient = useQueryClient();
 const { mutate: removeNote, isPending } = useMutation({
   mutationFn: $api.note.remove.mutate,
   onSuccess: (message) => {
-    queryClient.invalidateQueries({ queryKey: ['groupInfo'] });
+    queryClient.invalidateQueries({ queryKey: ['group.info'] });
     useMessage({ message, type: 'success' });
   },
   onError: err => useErrorHandler(err),

@@ -68,7 +68,7 @@ const userStore = useUserStore();
 
 const queryClient = useQueryClient();
 const { data: availableGroups, suspense: availableGroupsSuspense } = useQuery({
-  queryKey: ['availableGroups'],
+  queryKey: ['group.list', { classId: userStore.classId }],
   queryFn: () => $api.group.list.query({ classId: userStore.classId }),
 });
 await availableGroupsSuspense();
@@ -76,7 +76,7 @@ await availableGroupsSuspense();
 const { mutate: joinGroup } = useMutation({
   mutationFn: $api.group.join.mutate,
   onSuccess: (message, input) => {
-    queryClient.invalidateQueries({ queryKey: ['availableGroups'] });
+    queryClient.invalidateQueries({ queryKey: ['group.list', { classId: userStore.classId }] });
     useMessage({ message, type: 'success' });
     userStore.setGroupId([input.groupId]);
   },
@@ -86,7 +86,7 @@ const { mutate: joinGroup } = useMutation({
 const { mutate: leaveGroup } = useMutation({
   mutationFn: $api.group.leave.mutate,
   onSuccess: (message) => {
-    queryClient.invalidateQueries({ queryKey: ['availableGroups'] });
+    queryClient.invalidateQueries({ queryKey: ['group.list', { classId: userStore.classId }] });
     useMessage({ message, type: 'success' });
     userStore.setGroupId([]);
   },
@@ -96,7 +96,7 @@ const { mutate: leaveGroup } = useMutation({
 const { mutate: changeGroup } = useMutation({
   mutationFn: $api.group.change.mutate,
   onSuccess: (message, input) => {
-    queryClient.invalidateQueries({ queryKey: ['availableGroups'] });
+    queryClient.invalidateQueries({ queryKey: ['group.list', { classId: userStore.classId }] });
     useMessage({ message, type: 'success' });
     userStore.setGroupId([input.newGroupId]);
   },
@@ -106,7 +106,7 @@ const { mutate: changeGroup } = useMutation({
 const { mutate: becomeLeader } = useMutation({
   mutationFn: $api.group.setLeader.mutate,
   onSuccess: (message) => {
-    queryClient.invalidateQueries({ queryKey: ['availableGroups'] });
+    queryClient.invalidateQueries({ queryKey: ['group.list', { classId: userStore.classId }] });
     useMessage({ message, type: 'success' });
   },
   onError: err => useErrorHandler(err),
@@ -115,7 +115,7 @@ const { mutate: becomeLeader } = useMutation({
 const { mutate: removeLeader } = useMutation({
   mutationFn: $api.group.removeLeader.mutate,
   onSuccess: (message) => {
-    queryClient.invalidateQueries({ queryKey: ['availableGroups'] });
+    queryClient.invalidateQueries({ queryKey: ['group.list', { classId: userStore.classId }] });
     useMessage({ message, type: 'success' });
   },
   onError: err => useErrorHandler(err),

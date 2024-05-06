@@ -113,7 +113,11 @@ const props = defineProps<{
 
 const { $api } = useNuxtApp();
 
-const info = await useTrpcAsyncData(() => $api.paper.infoWithClass.query({ id: props.id }));
+const { data: info, suspense } = useQuery({
+  queryKey: ['paper.infoWithClass', { id: props.id }],
+  queryFn: () => $api.paper.infoWithClass.query({ id: props.id }),
+});
+await suspense();
 
 function searchTag(keyword: string) {
   navigateTo({
@@ -134,7 +138,7 @@ const queryClient = useQueryClient();
 const { mutate: scoreMutation, isPending } = useMutation({
   mutationFn: $api.paper.score.mutate,
   onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['scoringQueue'] });
+    queryClient.invalidateQueries({ queryKey: ['paper.scoreList'] });
   },
   onError: err => useErrorHandler(err),
 });

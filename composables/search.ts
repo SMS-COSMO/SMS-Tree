@@ -34,7 +34,7 @@ export function useUserSearch(searchContent: Ref<string>, role: 'student' | 'tea
     searchContent,
     templateSearchOption(['schoolId', 'username', 'projectName', 'className']),
     () => $api.user.list.query({ role }),
-    ['userSearch', { role }],
+    ['user.list', { role }],
   );
 }
 

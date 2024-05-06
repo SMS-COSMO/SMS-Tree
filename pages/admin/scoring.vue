@@ -7,7 +7,7 @@
             v-model="filterClass"
             :options="classFilterOptions"
             placeholder="筛选班级"
-            @change="queryClient.invalidateQueries({ queryKey: ['scoringQueue'] });"
+            @change="queryClient.invalidateQueries({ queryKey: ['paper.scoreList'] });"
           />
         </div>
         <el-scrollbar v-if="scoringQueue?.list?.length">
@@ -46,7 +46,7 @@ const queryClient = useQueryClient();
 
 const filterClass = ref<string | undefined>();
 const { data: scoringQueue, suspense } = useQuery({
-  queryKey: ['scoringQueue'],
+  queryKey: ['paper.scoreList'],
   queryFn: () => $api.paper.scoringList.query(filterClass.value),
   refetchInterval: 10 * 60 * 1000, // 10min
 });

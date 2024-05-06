@@ -87,7 +87,7 @@ async function create(submittedForm: FormInstance | undefined) {
           });
         }
 
-        queryClient.invalidateQueries({ queryKey: ['groupInfo'] });
+        queryClient.invalidateQueries({ queryKey: ['group.info'] });
         useMessage({ message: `${props.type === 'create' ? '创建' : '修改'}成功`, type: 'success' });
       } catch (err) {
         useErrorHandler(err);
