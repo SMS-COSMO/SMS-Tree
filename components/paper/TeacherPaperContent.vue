@@ -99,9 +99,24 @@
       </el-col>
     </el-row>
 
-    <template v-if="info?.attachments?.length && (info?.attachments?.findIndex(e => e.S3FileId) !== -1)">
-      <Preview :attachment="info?.attachments?.filter(a => a.category === 'paperDocument')[0]" full-height />
-    </template>
+    <h3>论文</h3>
+    <Preview :attachment="info?.attachments?.filter(a => a.category === 'paperDocument')[0]" full-height />
+    <h3>附件</h3>
+    <el-collapse>
+      <el-collapse-item
+        v-for="attachment in info?.attachments.filter(a => a.category !== 'paperDocument')"
+        :key="attachment.id"
+      >
+        <template #title>
+          <div class="space-x-2">
+            <span class="text-[15px]">
+              {{ attachment.name }}
+            </span>
+          </div>
+        </template>
+        <Preview :attachment="attachment" />
+      </el-collapse-item>
+    </el-collapse>
   </div>
 </template>
 
