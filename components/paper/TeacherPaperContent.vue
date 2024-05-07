@@ -99,24 +99,42 @@
       </el-col>
     </el-row>
 
-    <h3>论文</h3>
-    <Preview :attachment="info?.attachments?.filter(a => a.category === 'paperDocument')[0]" full-height />
-    <h3>附件</h3>
-    <el-collapse>
-      <el-collapse-item
-        v-for="attachment in info?.attachments.filter(a => a.category !== 'paperDocument')"
-        :key="attachment.id"
-      >
-        <template #title>
-          <div class="space-x-2">
-            <span class="text-[15px]">
-              {{ attachment.name }}
-            </span>
-          </div>
-        </template>
-        <Preview :attachment="attachment" />
-      </el-collapse-item>
-    </el-collapse>
+    <h3>
+      论文文件
+      <el-tag v-if="paperDocuments?.length" class="ml-2" effect="plain" type="info">
+        {{ paperDocuments[0]?.name }}
+      </el-tag>
+    </h3>
+    <el-empty
+      v-if="!paperDocuments?.length"
+      description="无论文文件"
+      class="py-0!"
+    />
+    <Preview
+      v-for="attachment in paperDocuments"
+      v-else
+      :key="attachment.id"
+      :attachment="attachment"
+      full-height
+    />
+    <template v-if="attachmentDocuments?.length">
+      <h3>附件</h3>
+      <el-collapse>
+        <el-collapse-item
+          v-for="attachment in attachmentDocuments"
+          :key="attachment.id"
+        >
+          <template #title>
+            <div class="space-x-2">
+              <span class="text-[15px]">
+                {{ attachment.name }}
+              </span>
+            </div>
+          </template>
+          <Preview :attachment="attachment" />
+        </el-collapse-item>
+      </el-collapse>
+    </template>
   </div>
 </template>
 
@@ -133,6 +151,9 @@ const { data: info, suspense } = useQuery({
   queryFn: () => $api.paper.infoWithClass.query({ id: props.id }),
 });
 await suspense();
+
+const paperDocuments = info.value?.attachments?.filter(a => a.category === 'paperDocument');
+const attachmentDocuments = info.value?.attachments?.filter(a => a.category !== 'paperDocument');
 
 function searchTag(keyword: string) {
   navigateTo({
