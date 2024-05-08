@@ -8,6 +8,7 @@ import { usersToGroups } from '~/server/db/schema/userToGroup';
 import { classes } from '~/server/db/schema/class';
 import { groups } from '~/server/db/schema/group';
 import type { TPaperScore } from '~/types';
+import { reports } from '~/server/db/schema/report';
 
 export class PaperController {
   async create(newPaper: TNewPaper) {
@@ -265,6 +266,12 @@ export class PaperController {
         };
       }),
     };
+  }
+
+
+  async modify(id:string, newPaper: Partial<TNewPaper>) {
+    await db.update(papers).set(newPaper).where(eq(papers.id, id));
+    return '修改成功';
   }
 
   // TODO: This seems unsafe
