@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { protectedProcedure, requireRoles, router } from '../trpc';
 
-const classIdZod = z.string().min(1, '班级id不存在');
-const stateZod = z.enum([
+const classIdSchema = z.string().min(1, '班级id不存在');
+const stateSchema = z.enum([
   'initialized', // 初始化
   'selectGroup', // 选择小组
   'thesisProposal', // 开题报告
@@ -10,17 +10,17 @@ const stateZod = z.enum([
   'submitPaper', // 提交论文
 ]);
 
-const createZod = z.object({
+const createSchema = z.object({
   index: z.number().int().min(0, '班级号至少为0').max(100, '班级号最大为100'),
   enterYear: z.number().int().min(2000, '请输入正确的入学年份').max(9999, '请输入正确的入学年份'),
-  state: stateZod,
+  state: stateSchema,
   teacherId: z.string().min(1, '老师不存在'),
   stateTimetable: z.array(z.date()).max(5, '最多5个状态').optional(),
 });
 
 export const classRouter = router({
   create: protectedProcedure
-    .input(createZod.extend({ students: z.array(z.string().min(1, '学生不存在')) }))
+    .input(createSchema.extend({ students: z.array(z.string().min(1, '学生不存在')) }))
     .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
       return await ctx.classController.create(input);
@@ -28,20 +28,20 @@ export const classRouter = router({
 
   modify: protectedProcedure
     .use(requireRoles(['admin', 'teacher']))
-    .input(createZod.partial().extend({ id: classIdZod }))
+    .input(createSchema.partial().extend({ id: classIdSchema }))
     .mutation(async ({ ctx, input }) => {
       const { id, ...data } = input;
       return await ctx.classController.modify(id, data);
     }),
 
   info: protectedProcedure
-    .input(z.object({ id: classIdZod }))
+    .input(z.object({ id: classIdSchema }))
     .query(async ({ ctx, input }) => {
       return await ctx.classController.info(input.id);
     }),
 
   infoFull: protectedProcedure
-    .input(z.object({ id: classIdZod }))
+    .input(z.object({ id: classIdSchema }))
     .use(requireRoles(['admin', 'teacher']))
     .query(async ({ ctx, input }) => {
       return await ctx.classController.infoFull(input.id);
@@ -55,7 +55,7 @@ export const classRouter = router({
     }),
 
   remove: protectedProcedure
-    .input(z.object({ id: classIdZod }))
+    .input(z.object({ id: classIdSchema }))
     .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
       return await ctx.classController.remove(input.id);
@@ -64,7 +64,7 @@ export const classRouter = router({
   initGroups: protectedProcedure
     .use(requireRoles(['teacher', 'admin']))
     .input(z.object({
-      id: classIdZod,
+      id: classIdSchema,
       amount: z.number().int().gt(0).lte(20, '最多创建二十个班级'),
     }))
     .mutation(async ({ ctx, input }) => {

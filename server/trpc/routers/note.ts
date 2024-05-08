@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { protectedProcedure, requireRoles, router } from '../trpc';
 
-const noteIdZod = z.string().min(1, '活动记录id不存在');
-const createSafeZod = z.object({
+const noteIdSchema = z.string().min(1, '活动记录id不存在');
+const createSafeSchema = z.object({
   title: z
     .string()
     .min(1, { message: '请输入活动记录主题' })
@@ -17,26 +17,26 @@ const createSafeZod = z.object({
 
 export const noteRouter = router({
   create: protectedProcedure
-    .input(createSafeZod.extend({ groupId: z.string() }))
+    .input(createSafeSchema.extend({ groupId: z.string() }))
     .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
       return await ctx.noteController.create(input);
     }),
 
   createSafe: protectedProcedure
-    .input(createSafeZod)
+    .input(createSafeSchema)
     .mutation(async ({ ctx, input }) => {
       return await ctx.noteController.createSafe(input, ctx.user);
     }),
 
   modifySafe: protectedProcedure
-    .input(createSafeZod.extend({ id: noteIdZod }))
+    .input(createSafeSchema.extend({ id: noteIdSchema }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.noteController.modifySafe(input, ctx.user);
     }),
 
   remove: protectedProcedure
-    .input(z.object({ id: noteIdZod }))
+    .input(z.object({ id: noteIdSchema }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.noteController.remove(input.id, ctx.user);
     }),

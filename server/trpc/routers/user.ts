@@ -2,20 +2,20 @@ import { z } from 'zod';
 import { protectedProcedure, publicProcedure, requireRoles, router } from '../trpc';
 import { passwordRegex } from '~/constants/user';
 
-const roleEnumZod = z.enum(['student', 'teacher', 'admin'], { errorMap: () => ({ message: '提交了不存在的用户身份' }) });
-const userIdZod = z.string().min(1, { message: '用户不存在' });
-const schoolIdZod = z.string().min(4, { message: '学工号长度应至少为4' }).max(24, { message: '学工号超出长度范围' });
-const usernameZod = z.string().min(2, { message: '用户名长度应至少为2' }).max(15, { message: '用户名超出长度范围' });
-const newPasswordZod = z.string().min(8, { message: '用户密码长度应至少为8' }).regex(passwordRegex, '密码必须包含大小写字母、数字与特殊符号');
+const roleEnumSchema = z.enum(['student', 'teacher', 'admin'], { errorMap: () => ({ message: '提交了不存在的用户身份' }) });
+const userIdSchema = z.string().min(1, { message: '用户不存在' });
+const schoolIdSchema = z.string().min(4, { message: '学工号长度应至少为4' }).max(24, { message: '学工号超出长度范围' });
+const usernameSchema = z.string().min(2, { message: '用户名长度应至少为2' }).max(15, { message: '用户名超出长度范围' });
+const newPasswordSchema = z.string().min(8, { message: '用户密码长度应至少为8' }).regex(passwordRegex, '密码必须包含大小写字母、数字与特殊符号');
 
 export const userRouter = router({
   register: protectedProcedure
     .use(requireRoles(['teacher', 'admin']))
     .input(z.object({
-      schoolId: schoolIdZod,
-      role: roleEnumZod,
-      username: usernameZod,
-      password: newPasswordZod,
+      schoolId: schoolIdSchema,
+      role: roleEnumSchema,
+      username: usernameSchema,
+      password: newPasswordSchema,
       groupId: z.string().optional(),
       classId: z.string().optional(),
     }))
@@ -24,7 +24,7 @@ export const userRouter = router({
     }),
 
   remove: protectedProcedure
-    .input(z.object({ id: userIdZod }))
+    .input(z.object({ id: userIdSchema }))
     .use(requireRoles(['teacher', 'admin']))
     .mutation(async ({ ctx, input }) => {
       return await ctx.userController.remove(input.id);
@@ -32,9 +32,9 @@ export const userRouter = router({
 
   modifyPassword: protectedProcedure
     .input(z.object({
-      id: userIdZod,
+      id: userIdSchema,
       oldPassword: z.string(),
-      newPassword: newPasswordZod,
+      newPassword: newPasswordSchema,
     }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.userController.modifyPassword(ctx.user, input.id, input.oldPassword, input.newPassword);
@@ -67,10 +67,10 @@ export const userRouter = router({
 
   modify: protectedProcedure
     .input(z.object({
-      id: userIdZod,
-      schoolId: schoolIdZod,
-      username: usernameZod,
-      role: roleEnumZod,
+      id: userIdSchema,
+      schoolId: schoolIdSchema,
+      username: usernameSchema,
+      role: roleEnumSchema,
     }))
     .use(requireRoles(['teacher', 'admin']))
     .mutation(async ({ ctx, input }) => {
@@ -80,19 +80,19 @@ export const userRouter = router({
 
   teacherClasses: protectedProcedure
     .use(requireRoles(['teacher', 'admin']))
-    .input(userIdZod)
+    .input(userIdSchema)
     .query(async ({ ctx, input }) => {
       return await ctx.userController.teacherClasses(input);
     }),
 
   profile: protectedProcedure
-    .input(z.object({ id: userIdZod }))
+    .input(z.object({ id: userIdSchema }))
     .query(async ({ ctx, input }) => {
       return await ctx.userController.profile(input.id, ctx.user);
     }),
 
   list: protectedProcedure
-    .input(z.object({ role: roleEnumZod.optional() }))
+    .input(z.object({ role: roleEnumSchema.optional() }))
     .use(requireRoles(['teacher', 'admin']))
     .query(async ({ ctx, input }) => {
       return await ctx.userController.list(input.role ?? 'all');
