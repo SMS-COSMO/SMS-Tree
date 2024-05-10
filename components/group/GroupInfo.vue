@@ -81,15 +81,6 @@
           </template>
         </div>
       </el-descriptions-item>
-      <el-descriptions-item v-if="groupInfo?.paper">
-        <template #label>
-          <div class="mb-[-12px] text-[16px]!">
-            <el-icon class="i-tabler:file-text" />
-            论文
-          </div>
-        </template>
-        <PaperCard :paper="groupInfo?.paper" :show-authors="false" is-admin />
-      </el-descriptions-item>
     </el-descriptions>
   </el-card>
   <el-tabs v-model="tabState" type="border-card">
