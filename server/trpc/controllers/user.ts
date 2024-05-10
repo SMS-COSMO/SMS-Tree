@@ -10,7 +10,6 @@ import { classesToStudents } from '../../db/schema/classToStudents';
 import { Auth } from '../utils/auth';
 import { TRPCForbidden, getClassName, makeId } from '../../trpc/utils/shared';
 import { classes } from '~/server/db/schema/class';
-import { papers } from '~/server/db/schema/paper';
 
 export class UserController {
   private auth: Auth;
@@ -177,8 +176,7 @@ export class UserController {
                 archived: true,
               },
               with: {
-                papers: {
-                  where: accessible ? undefined : eq(papers.isPublic, true),
+                paper: {
                   columns: {
                     id: true,
                     canDownload: true,
@@ -218,7 +216,12 @@ export class UserController {
     return {
       ...info,
       className: getClassName(res.classesToStudents[0]?.classes),
-      groups: res.usersToGroups.map(x => x.group),
+      groups: res.usersToGroups.map((x) => {
+        const g = x.group;
+        if (!accessible && !g.paper?.isPublic)
+          g.paper = null;
+        return g;
+      }),
       classId: res.classesToStudents[0]?.classes.id ?? '',
       schoolId: accessible ? schoolId : undefined,
     };

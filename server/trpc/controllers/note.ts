@@ -15,10 +15,15 @@ export class NoteController {
     newNote: Omit<TNewNote, 'id' | 'groupId'>,
     user: TRawUser,
   ) {
-    const group = await db.query.usersToGroups.findFirst({
+    const group = (await db.query.usersToGroups.findMany({
       where: eq(usersToGroups.userId, user.id),
       columns: { groupId: true },
-    });
+      with: {
+        group: {
+          columns: { archived: true },
+        },
+      },
+    })).filter(g => !g.group.archived)[0];
     if (!group)
       throw new TRPCError({ code: 'NOT_FOUND', message: '用户无小组' });
 
@@ -36,10 +41,15 @@ export class NoteController {
     newNote: Omit<TRawNote, 'groupId' | 'createdAt'>,
     user: TRawUser,
   ) {
-    const group = await db.query.usersToGroups.findFirst({
+    const group = (await db.query.usersToGroups.findMany({
       where: eq(usersToGroups.userId, user.id),
       columns: { groupId: true },
-    });
+      with: {
+        group: {
+          columns: { archived: true },
+        },
+      },
+    })).filter(g => !g.group.archived)[0];
     if (!group)
       throw new TRPCError({ code: 'NOT_FOUND', message: '用户无小组' });
 

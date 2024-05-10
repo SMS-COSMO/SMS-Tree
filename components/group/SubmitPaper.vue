@@ -1,50 +1,44 @@
 <template>
-  <el-card class="mb-5">
-    <template #header>
-      提交论文
-    </template>
-
-    <el-form
-      ref="formRef"
-      class="mx-auto max-w-[800px] lg:py-4"
-      :label-position="device.isMobileOrTablet ? 'top' : 'right'"
-      :model="form"
-      :rules="rules"
-      label-width="120px"
-    >
-      <el-form-item prop="title" label="标题">
-        <el-input v-model="form.title" />
-      </el-form-item>
-      <el-form-item prop="abstract" label="摘要">
-        <el-input v-model="form.abstract" :autosize="{ minRows: 4, maxRows: 8 }" type="textarea" />
-      </el-form-item>
-      <el-form-item prop="category" label="分类">
-        <CategorySelect v-model="form.category" />
-      </el-form-item>
-      <el-form-item prop="keywords" label="关键词">
-        <keywordEditor v-model="form.keywords" />
-      </el-form-item>
-      <el-form-item prop="canDownload" label="允许下载">
-        <el-switch
-          v-model="form.canDownload"
-          size="large"
-          active-text="是" inactive-text="否" inline-prompt
-          style="--el-switch-on-color: #15803d; --el-switch-off-color: #db3131;"
-        />
-      </el-form-item>
-      <el-form-item prop="paperFile" label="论文文件">
-        <UploadFile v-model="form.paperFile" category="paperDocument" />
-      </el-form-item>
-      <el-form-item prop="attachments" label="附件">
-        <UploadFile v-model="form.attachments" multiple category="paperAttachment" />
-      </el-form-item>
-      <el-form-item>
-        <el-button color="#15803d" :loading="buttonLoading" @click="create(formRef)">
-          提交
-        </el-button>
-      </el-form-item>
-    </el-form>
-  </el-card>
+  <el-form
+    ref="formRef"
+    class="mx-auto max-w-[800px] lg:py-4"
+    :label-position="device.isMobileOrTablet ? 'top' : 'right'"
+    :model="form"
+    :rules="rules"
+    label-width="120px"
+  >
+    <el-form-item prop="title" label="标题">
+      <el-input v-model="form.title" />
+    </el-form-item>
+    <el-form-item prop="abstract" label="摘要">
+      <el-input v-model="form.abstract" :autosize="{ minRows: 4, maxRows: 8 }" type="textarea" />
+    </el-form-item>
+    <el-form-item prop="category" label="分类">
+      <CategorySelect v-model="form.category" />
+    </el-form-item>
+    <el-form-item prop="keywords" label="关键词">
+      <keywordEditor v-model="form.keywords" />
+    </el-form-item>
+    <el-form-item prop="canDownload" label="允许下载">
+      <el-switch
+        v-model="form.canDownload"
+        size="large"
+        active-text="是" inactive-text="否" inline-prompt
+        style="--el-switch-on-color: #15803d; --el-switch-off-color: #db3131;"
+      />
+    </el-form-item>
+    <el-form-item prop="paperFile" label="论文文件">
+      <UploadFile v-model="form.paperFile" category="paperDocument" />
+    </el-form-item>
+    <el-form-item prop="attachments" label="附件">
+      <UploadFile v-model="form.attachments" multiple category="paperAttachment" />
+    </el-form-item>
+    <el-form-item>
+      <el-button color="#15803d" :loading="buttonLoading" @click="create(formRef)">
+        提交
+      </el-button>
+    </el-form-item>
+  </el-form>
 </template>
 
 <script setup lang="ts">

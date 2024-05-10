@@ -121,7 +121,7 @@ export class ClassController {
                 },
               },
             },
-            papers: {
+            paper: {
               columns: {
                 id: true,
                 canDownload: true,

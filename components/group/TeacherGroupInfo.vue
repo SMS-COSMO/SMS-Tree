@@ -87,18 +87,14 @@
           </template>
         </div>
       </el-descriptions-item>
-      <el-descriptions-item v-if="info?.papers?.length">
+      <el-descriptions-item v-if="info?.paper">
         <template #label>
           <div class="mb-[-12px] text-[16px]!">
             <el-icon class="i-tabler:file-text" />
             论文
           </div>
         </template>
-        <div :class="info?.papers?.length > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
-          <template v-for="paper in info.papers" :key="paper.id">
-            <PaperCard :paper="paper" :show-authors="false" is-admin />
-          </template>
-        </div>
+        <PaperCard :paper="info?.paper" :show-authors="false" is-admin />
       </el-descriptions-item>
     </el-descriptions>
   </el-card>

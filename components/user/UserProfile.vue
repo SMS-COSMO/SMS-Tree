@@ -86,8 +86,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { TRawPaper } from '~/server/db/db';
-
 const props = defineProps<{
   userId: string;
   type: 'normal' | 'admin';
@@ -108,11 +106,5 @@ const { data: userInfo, suspense } = useQuery({
 });
 await suspense();
 
-const papers = computed(() => {
-  let res: (Partial<TRawPaper> | undefined)[] = [];
-  for (const group of (userInfo.value?.groups ?? []))
-    res = res.concat(group.papers);
-
-  return res;
-});
+const papers = computed(() => userInfo.value?.groups.map(g => g.paper).filter(p => p));
 </script>

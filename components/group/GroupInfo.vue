@@ -68,18 +68,6 @@
           {{ groupInfo?.projectName ?? '待填写' }}
         </span>
       </el-descriptions-item>
-      <el-descriptions-item>
-        <template #label>
-          <div class="mb-[-12px] text-[16px]!">
-            <el-icon class="i-tabler:clipboard" />
-            活动记录
-          </div>
-        </template>
-        <template v-for="note in groupInfo?.notes" :key="note.id">
-          <NoteCard :note="note" />
-        </template>
-        <NewNote />
-      </el-descriptions-item>
       <el-descriptions-item v-if="groupInfo?.reports?.length">
         <template #label>
           <div class="mb-[-12px] text-[16px]!">
@@ -93,61 +81,64 @@
           </template>
         </div>
       </el-descriptions-item>
-      <el-descriptions-item v-if="groupInfo?.papers?.length">
+      <el-descriptions-item v-if="groupInfo?.paper">
         <template #label>
           <div class="mb-[-12px] text-[16px]!">
             <el-icon class="i-tabler:file-text" />
             论文
           </div>
         </template>
-        <div :class="groupInfo?.papers?.length > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
-          <template v-for="paper in groupInfo.papers" :key="paper.id">
-            <PaperCard :paper="paper" :show-authors="false" />
-          </template>
-        </div>
+        <PaperCard :paper="groupInfo?.paper" :show-authors="false" is-admin />
       </el-descriptions-item>
     </el-descriptions>
   </el-card>
-  <template v-if="classState === 'submitPaper' && groupInfo?.papers !== undefined">
-    <SubmitPaper v-if="!groupInfo?.papers.length" />
-    <el-card v-else>
-      <el-result
-        icon="success"
-        title="论文已提交"
-        sub-title="等待老师批改论文"
+  <el-tabs v-model="tabState" type="border-card">
+    <el-tab-pane label="活动记录" name="">
+      <template v-for="note in groupInfo?.notes" :key="note.id">
+        <NoteCard :note="note" />
+      </template>
+      <NewNote />
+    </el-tab-pane>
+    <el-tab-pane v-if="reachedState('thesisProposal')" label="开题报告" name="thesisProposal">
+      <ReportForm
+        v-if="!groupInfo?.reports?.some(x => x.category === 'thesisProposal')"
+        category="thesisProposal"
+        type="create"
       />
-    </el-card>
-  </template>
-  <template v-else-if="classState === 'thesisProposal'">
-    <SubmitReport
-      v-if="!groupInfo?.reports?.some(x => x.category === 'thesisProposal')"
-      category="thesisProposal"
-    />
-    <el-card v-else>
       <el-result
+        v-else
         icon="success"
         title="开题报告已提交"
         sub-title="等待老师反馈"
       />
-    </el-card>
-  </template>
-  <template v-else-if="classState === 'concludingReport'">
-    <SubmitReport
-      v-if="!groupInfo?.reports?.some(x => x.category === 'concludingReport')"
-      category="concludingReport"
-    />
-    <el-card v-else>
+    </el-tab-pane>
+    <el-tab-pane v-if="reachedState('concludingReport')" label="结题报告" name="concludingReport">
+      <ReportForm
+        v-if="!groupInfo?.reports?.some(x => x.category === 'concludingReport')"
+        category="concludingReport"
+        type="create"
+      />
       <el-result
+        v-else
         icon="success"
         title="结题报告已提交"
         sub-title="等待老师反馈"
       />
-    </el-card>
-  </template>
+    </el-tab-pane>
+    <el-tab-pane v-if="reachedState('submitPaper')" label="论文" name="submitPaper">
+      <SubmitPaper v-if="!groupInfo?.paper" />
+      <el-result
+        v-else
+        icon="success"
+        title="论文已提交"
+        sub-title="等待老师批改论文"
+      />
+    </el-tab-pane>
+  </el-tabs>
 </template>
 
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   classState: TClassState;
 }>();
 
@@ -173,6 +164,12 @@ const { data: groupInfo, suspense: groupInfoSuspense } = useQuery({
   queryFn: () => $api.group.info.query({ id: userStore.activeGroupIds[0] }),
 });
 await groupInfoSuspense();
+
+const tabState = ref(props.classState);
+
+function reachedState(currentState: string) {
+  return classStateSteps.indexOf(props.classState) >= classStateSteps.indexOf(currentState);
+}
 
 onMounted(() => {
   newProjectName.value = groupInfo.value?.projectName;

@@ -73,7 +73,7 @@ export class GroupController {
             },
           },
         },
-        papers: {
+        paper: {
           columns: {
             id: true,
             canDownload: true,
@@ -103,7 +103,7 @@ export class GroupController {
 
     if (!['admin', 'teacher'].includes(user.role) && !res.usersToGroups.some(x => x.user.id === user.id)) {
       res.notes = [];
-      res.papers = [];
+      res.paper = null;
       res.reports = [];
       res.projectName = '';
       res.classId = '';
@@ -137,7 +137,7 @@ export class GroupController {
             },
           },
         },
-        papers: {
+        paper: {
           columns: {
             id: true,
             canDownload: true,

@@ -19,10 +19,15 @@ export class ReportController {
   }
 
   async createSafe(user: TRawUser, category: 'thesisProposal' | 'concludingReport') {
-    const group = await db.query.usersToGroups.findFirst({
+    const group = (await db.query.usersToGroups.findMany({
       where: eq(usersToGroups.userId, user.id),
       columns: { groupId: true },
-    });
+      with: {
+        group: {
+          columns: { archived: true },
+        },
+      },
+    })).filter(g => !g.group.archived)[0];
     if (!group)
       throw new TRPCError({ code: 'BAD_REQUEST', message: '用户无小组' });
 

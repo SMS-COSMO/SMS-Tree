@@ -22,7 +22,7 @@ export const groupsRelations = relations(groups, ({ many, one }) => ({
   usersToGroups: many(usersToGroups),
   notes: many(notes),
   reports: many(reports),
-  papers: many(papers),
+  paper: one(papers),
   class: one(classes, {
     fields: [groups.classId],
     references: [classes.id],
