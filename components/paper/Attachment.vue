@@ -15,11 +15,6 @@
         >
           <template #title>
             <div class="space-x-2">
-              <el-button
-                icon="i-tabler:download"
-                size="small" text bg circle
-                @click="downloadFile(attachment.id)"
-              />
               <el-tag v-if="attachment.category === 'paperDocument'" type="success">
                 <el-icon class="i-tabler:star" />
               </el-tag>
@@ -59,14 +54,4 @@ watch(showDialog, async () => {
     useErrorHandler(err);
   }
 });
-
-async function downloadFile(id: string) {
-  const { data: url, suspense } = useQuery({
-    queryKey: ['attachment.fileUrl', { id }],
-    queryFn: () => $api.attachment.fileUrl.query(id),
-  });
-  await suspense();
-
-  navigateTo(url.value, { external: true });
-}
 </script>

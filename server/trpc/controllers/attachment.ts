@@ -3,7 +3,7 @@ import { TRPCError } from '@trpc/server';
 import type { TNewAttachment, TRawUser } from '../../db/db';
 import { db } from '../../db/db';
 import { ctl } from '../context';
-import { TRPCForbidden } from '../utils/shared';
+import { TRPCForbidden, makeId } from '../utils/shared';
 import { attachments } from '~/server/db/schema/attachment';
 import { allowFileType } from '~/constants/attachment';
 import { papers } from '~/server/db/schema/paper';
@@ -80,15 +80,22 @@ export class AttachmentController {
     }
   };
 
-  async create(newAttachment: TNewAttachment, user: TRawUser) {
+  async create(newAttachment: Omit<TNewAttachment, 'S3FileId'>, user: TRawUser) {
     if (!allowFileType[newAttachment.category].includes(newAttachment.fileType))
       throw new TRPCError({ code: 'BAD_REQUEST', message: '不允许的文件类型' });
 
     if (!await this.hasPerm(user, { paperId: newAttachment.paperId, reportId: newAttachment.reportId }))
       throw TRPCForbidden;
 
-    const id = (await db.insert(attachments).values(newAttachment).returning({ id: attachments.id }).get()).id;
-    const url = await ctl.s3.getStandardUploadPresignedUrl(newAttachment.S3FileId);
+    const S3FileId = makeId(12);
+    const id = (
+      await db
+        .insert(attachments)
+        .values({ ...newAttachment, S3FileId })
+        .returning({ id: attachments.id })
+        .get()
+    ).id;
+    const url = await ctl.s3.getStandardUploadPresignedUrl(S3FileId);
     if (!url)
       throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '无法获取文件上传URL' });
     return { id, url };

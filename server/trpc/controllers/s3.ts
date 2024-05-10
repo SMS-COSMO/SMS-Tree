@@ -16,7 +16,7 @@ export class S3Controller {
   }
 
   /**
-   * ## **INTERNAL USE ONLY**
+   * ## INTERNAL USE ONLY
    *
    * Generates a presigned URL for standard upload to S3.
    * @param key - The key of the object in S3.
@@ -35,7 +35,7 @@ export class S3Controller {
   }
 
   /**
-   * ## **INTERNAL USE ONLY**
+   * ## INTERNAL USE ONLY
    *
    * Retrieves the signed URL for a file with the given key.
    * @param key - The key of the file.
@@ -53,7 +53,7 @@ export class S3Controller {
   }
 
   /**
-   * ## **INTERNAL USE ONLY**
+   * ## INTERNAL USE ONLY
    *
    * Retrieves pre-signed URLs for uploading file parts in a multipart upload.
    * @param key - The key of the object in the S3 bucket.
@@ -100,7 +100,7 @@ export class S3Controller {
   }
 
   /**
-   * ## **INTERNAL USE ONLY**
+   * ## INTERNAL USE ONLY
    *
    * Completes a multipart upload by providing the key, upload Id, and parts.
    * @param key - The key of the object in the S3 bucket.

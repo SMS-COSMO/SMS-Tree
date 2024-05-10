@@ -24,7 +24,6 @@
 <script setup lang="ts">
 import type { UploadFile, UploadFiles, UploadRawFile, UploadRequestOptions } from 'element-plus';
 import axios from 'axios';
-import { nanoid } from 'nanoid';
 
 const props = withDefaults(defineProps<{
   category: TAttachmentCategory;
@@ -73,12 +72,10 @@ async function handleUpload(option: UploadRequestOptions) {
   }
 
   try {
-    const key = `${nanoid(10)}-${option.file.name}`;
     const { id, url } = await $api.attachment.create.mutate({
       category: props.category,
       fileType: file.type,
       name: file.name,
-      S3FileId: key,
     });
     attachmentIdList.value.push(id);
     fileUidToAttachmentId.set(file.uid, id);

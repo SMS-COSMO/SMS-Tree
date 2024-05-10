@@ -3,18 +3,16 @@ import { protectedProcedure, router } from '../trpc';
 
 const categorySchema = z.enum(['paperDocument', 'paperAttachment', 'reportDocument', 'reportPresentation']);
 const attachmentIdSchema = z.string().min(0, '附件不存在');
-const attachmentSchema = z.object({
-  paperId: z.string().optional(),
-  reportId: z.string().optional(),
-  name: z.string().min(0, '文件名最短为1').max(100, '文件名最长为100'),
-  fileType: z.string(),
-  category: categorySchema,
-  S3FileId: z.string().min(0, '请上传文件'),
-});
 
 export const attachmentRouter = router({
   create: protectedProcedure
-    .input(attachmentSchema)
+    .input(z.object({
+      paperId: z.string().optional(),
+      reportId: z.string().optional(),
+      name: z.string().min(0, '文件名最短为1').max(100, '文件名最长为100'),
+      fileType: z.string(),
+      category: categorySchema,
+    }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.attachmentController.create(input, ctx.user);
     }),
