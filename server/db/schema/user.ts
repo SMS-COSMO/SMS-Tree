@@ -10,6 +10,7 @@ export const users = sqliteTable('users', {
   schoolId: text('school_id').notNull().unique(),
   username: text('username').notNull(),
   password: text('password').notNull(),
+  firstTimeLogin: integer('first_time_login', { mode: 'boolean' }).notNull().default(true),
   role: text('role', { enum: ['admin', 'student', 'teacher'] }).notNull().default('student'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });

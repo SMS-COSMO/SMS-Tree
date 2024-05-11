@@ -9,7 +9,9 @@ import { usersToGroups } from '../../db/schema/userToGroup';
 import { classesToStudents } from '../../db/schema/classToStudents';
 import { Auth } from '../utils/auth';
 import { TRPCForbidden, getClassName, makeId } from '../../trpc/utils/shared';
+import { Seiue } from '../utils/seiue';
 import { classes } from '~/server/db/schema/class';
+import { env } from '~/server/env';
 
 export class UserController {
   private auth: Auth;
@@ -114,8 +116,21 @@ export class UserController {
         },
       },
     });
-    if (!(user && (await bcrypt.compare(password, user.password))))
-      throw new TRPCError({ code: 'UNAUTHORIZED', message: '用户名或密码错误' });
+    if (!user)
+      throw new TRPCError({ code: 'UNAUTHORIZED', message: '学号或密码错误' });
+
+    if (!await bcrypt.compare(password, user.password)) {
+      if (user.firstTimeLogin && env.SEIUE_LOGIN) {
+        const seiue = await Seiue.init({ schoolId, password });
+        if (!seiue)
+          throw new TRPCError({ code: 'UNAUTHORIZED', message: '学号或密码错误' });
+
+        // change password to seiue password
+        await db.update(users).set({ password: await bcrypt.hash(password, 8) }).where(eq(users.id, user.id));
+      } else {
+        throw new TRPCError({ code: 'UNAUTHORIZED', message: '学号或密码错误' });
+      }
+    }
 
     const accessToken = await this.auth.produceAccessToken(user.id);
     const refreshToken = await this.auth.produceRefreshToken(user.id);
@@ -127,6 +142,8 @@ export class UserController {
       ...info
     } = user;
 
+    if (user.firstTimeLogin)
+      await db.update(users).set({ firstTimeLogin: false }).where(eq(users.id, user.id));
     return {
       ...info,
       activeGroupIds: user.usersToGroups.filter(x => !x.group.archived).map(x => x.group.id),

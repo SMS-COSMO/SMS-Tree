@@ -21,6 +21,10 @@ const envSchema = z.object({
   S3_SECRET_ACCESS_KEY: z.string(),
   BUCKET_NAME: z.string(),
   SERVER_URL: z.string(),
+  SEIUE_LOGIN: z.enum(['true', 'false']).transform(value => value === 'true'),
+  SEIUE_API_URL: z.string(),
+  SEIUE_CHALK_URL: z.string(),
+  SEIUE_PASSPORT_URL: z.string(),
 });
 
 const envParse = envSchema.safeParse(process.env);

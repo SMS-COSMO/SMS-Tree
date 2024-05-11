@@ -9,7 +9,6 @@ export const useUserStore = defineStore('user', () => {
   const role = ref<TUserRole>('student');
   const classId = ref<string>('');
   const activeGroupIds = ref<string[]>([]);
-  const isDefaultPassword = ref(true);
 
   const login = (data: TUserLogin) => {
     loggedIn.value = true;
@@ -38,10 +37,6 @@ export const useUserStore = defineStore('user', () => {
     activeGroupIds.value = [];
   };
 
-  const passwordChange = () => {
-    isDefaultPassword.value = false;
-  };
-
   const setGroupId = (newId: string[]) => {
     activeGroupIds.value = newId;
   };
@@ -55,10 +50,8 @@ export const useUserStore = defineStore('user', () => {
     role,
     classId,
     activeGroupIds,
-    isDefaultPassword,
     login,
     logout,
-    passwordChange,
     setGroupId,
   };
 }, {

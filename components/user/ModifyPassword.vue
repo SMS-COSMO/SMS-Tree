@@ -42,7 +42,6 @@
 
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus';
-import { useUserStore } from '~/stores/user';
 
 const props = defineProps<{
   userId: string;
@@ -85,8 +84,6 @@ const { mutate: changePassword, isPending } = useMutation({
   mutationFn: $api.user.modifyPassword.mutate,
   onSuccess: (message) => {
     useMessage({ message, type: 'success' });
-    const userStore = useUserStore();
-    userStore.passwordChange();
   },
   onError: err => useErrorHandler(err),
 });
