@@ -187,9 +187,13 @@
 
 /* Alert */
 .el-alert {
-  height: 40px !important;
+  padding: 15px !important;
   box-shadow: none !important;
   border-radius: 10px !important;
+}
+
+.el-alert__title.with-description {
+  font-weight: bold;
 }
 
 /* Carousel */
@@ -256,10 +260,6 @@
 /* Tabs */
 .el-tabs--left .el-tabs__item.is-left {
   height: 50px !important;
-}
-
-.el-tabs--border-card>.el-tabs__header {
-  border-bottom-width: 2px !important;
 }
 
 .el-tabs--border-card {

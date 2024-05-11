@@ -68,21 +68,18 @@
           {{ groupInfo?.projectName ?? '待填写' }}
         </span>
       </el-descriptions-item>
-      <el-descriptions-item v-if="groupInfo?.reports?.length">
-        <template #label>
-          <div class="mb-[-12px] text-[16px]!">
-            <el-icon class="i-tabler:presentation" />
-            报告
-          </div>
-        </template>
-        <div :class="groupInfo?.reports?.length ?? 0 > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
-          <template v-for="report in groupInfo?.reports" :key="report.id">
-            <ReportCard :report="report" />
-          </template>
-        </div>
-      </el-descriptions-item>
     </el-descriptions>
   </el-card>
+  <DefineTemplate v-slot="{ name }">
+    <el-alert
+      class="mb-4!"
+      :title="`${name}提交成功`"
+      type="success"
+      description="等待老师反馈"
+      show-icon
+      :closable="false"
+    />
+  </DefineTemplate>
   <el-tabs v-model="tabState" type="border-card">
     <el-tab-pane label="活动记录" name="">
       <template v-for="note in groupInfo?.notes" :key="note.id">
@@ -96,12 +93,10 @@
         category="thesisProposal"
         type="create"
       />
-      <el-result
-        v-else
-        icon="success"
-        title="开题报告已提交"
-        sub-title="等待老师反馈"
-      />
+      <template v-else>
+        <ReuseTemplate name="开题报告" />
+        <ReportContent :report="groupInfo?.reports?.find(x => x.category === 'thesisProposal')!" />
+      </template>
     </el-tab-pane>
     <el-tab-pane v-if="reachedState('concludingReport')" label="结题报告" name="concludingReport">
       <ReportForm
@@ -109,21 +104,17 @@
         category="concludingReport"
         type="create"
       />
-      <el-result
-        v-else
-        icon="success"
-        title="结题报告已提交"
-        sub-title="等待老师反馈"
-      />
+      <template v-else>
+        <ReuseTemplate name="结题报告" />
+        <ReportContent :report="groupInfo?.reports?.find(x => x.category === 'concludingReport')!" />
+      </template>
     </el-tab-pane>
     <el-tab-pane v-if="reachedState('submitPaper')" label="论文" name="submitPaper">
       <SubmitPaper v-if="!groupInfo?.paper" />
-      <el-result
-        v-else
-        icon="success"
-        title="论文已提交"
-        sub-title="等待老师批改论文"
-      />
+      <template v-else>
+        <ReuseTemplate name="论文" />
+        <PaperContent :id="groupInfo?.paper.id" />
+      </template>
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -132,6 +123,8 @@
 const props = defineProps<{
   classState: TClassState;
 }>();
+
+const [DefineTemplate, ReuseTemplate] = createReusableTemplate();
 
 const { $api } = useNuxtApp();
 const device = useDevice();
