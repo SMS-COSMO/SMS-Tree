@@ -1,5 +1,5 @@
 <template>
-  <el-card
+  <CompactCard
     v-once
     class="mb-2 cursor-pointer lg:mb-2.5 hover:border-color-[#D4D7DE]! hover:bg-hover-bg!"
     @click="navigateTo(`${isAdmin ? '/admin' : ''}/paper/${paper.id}`)"
@@ -44,7 +44,7 @@
         {{ paper?.abstract }}
       </el-text>
     </el-row>
-  </el-card>
+  </CompactCard>
 </template>
 
 <script setup lang="ts">

@@ -1,5 +1,5 @@
 <template>
-  <el-card class="mb-2 cursor-pointer lg:mb-2.5 hover:border-color-[#D4D7DE]! hover:bg-hover-bg!" @click="dialogVisible = true">
+  <CompactCard class="mb-2 cursor-pointer lg:mb-2.5 hover:border-color-[#D4D7DE]! hover:bg-hover-bg!" @click="dialogVisible = true">
     <el-tag type="info" disable-transitions>
       {{ note.time.toLocaleDateString('zh-CN') }}
     </el-tag>
@@ -8,7 +8,7 @@
         {{ note.title }}
       </el-text>
     </div>
-  </el-card>
+  </CompactCard>
 
   <client-only>
     <el-dialog

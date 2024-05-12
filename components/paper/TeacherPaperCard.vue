@@ -1,5 +1,5 @@
 <template>
-  <el-card
+  <CompactCard
     :class="`mb-2 cursor-pointer hover:border-color-[#D4D7DE]! hover:bg-hover-bg! ${currentSelected === paper.id ? 'bg-hover-bg!' : ''}`"
     @click="$emit('selected', paper.id)"
   >
@@ -22,7 +22,7 @@
         <GroupMembers :authors="paper.authors" type="text" :show-leader="false" />
       </el-text>
     </el-row>
-  </el-card>
+  </CompactCard>
 </template>
 
 <script setup lang="ts">

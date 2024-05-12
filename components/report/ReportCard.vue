@@ -1,5 +1,8 @@
 <template>
-  <el-card class="mb-2 cursor-pointer lg:mb-2.5 hover:border-color-[#D4D7DE]! hover:bg-hover-bg!" @click="dialogVisible = true">
+  <CompactCard
+    class="mb-2 cursor-pointer lg:mb-2.5 hover:border-color-[#D4D7DE]! hover:bg-hover-bg!"
+    @click="dialogVisible = true"
+  >
     <el-row class="gap-[6px]">
       <el-tag v-if="isAdmin && report.read" type="success">
         <el-icon class="i-tabler:check" />
@@ -14,7 +17,7 @@
         {{ report.category === 'thesisProposal' ? '开题报告' : '结题报告' }}
       </el-text>
     </div>
-  </el-card>
+  </CompactCard>
 
   <client-only>
     <el-dialog
