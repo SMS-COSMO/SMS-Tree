@@ -1,5 +1,5 @@
 /* menu */
-.el-menu {
+.el-menu:not(.el-menu--inline) {
   padding-bottom: 10px;
 }
 
@@ -13,6 +13,14 @@
   height: 45px !important;
   border: none !important;
   border-radius: 10px !important;
+}
+
+.el-menu--vertical .el-menu-item {
+  margin: 8px 0 0 10px !important;
+}
+
+.el-menu-item-group__title {
+  margin-bottom: -8px;
 }
 
 .el-sub-menu__title:hover,

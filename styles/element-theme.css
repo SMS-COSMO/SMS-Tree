@@ -5,6 +5,7 @@
   --el-checkbox-height: 35px !important;
   --el-popper-border-radius: 10px !important;
   --el-popover-border-radius: 10px !important;
+  --el-menu-level-padding: 12px !important;
 }
 
 .main-nav {
