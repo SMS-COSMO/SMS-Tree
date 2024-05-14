@@ -28,7 +28,15 @@
         </template>
         <el-menu-item index="/admin/class/delete">
           <el-icon class="i-tabler:trash-x" />
-          删除过期班级
+          删除班级
+        </el-menu-item>
+        <el-menu-item index="/admin/user/import">
+          <el-icon class="i-tabler:users" />
+          导入新生
+        </el-menu-item>
+        <el-menu-item index="/admin/class/import">
+          <el-icon class="i-tabler:school" />
+          导入班级
         </el-menu-item>
       </el-menu-item-group>
 

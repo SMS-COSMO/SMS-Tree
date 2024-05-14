@@ -15,9 +15,7 @@
       class="cursor-pointer"
       @row-click="(row) => navigateTo(`/admin/class/${row.id}`)"
     >
-      <el-table-column show-overflow-tooltip prop="className" label="班级" :min-width="200">
-        <template #header />
-      </el-table-column>
+      <el-table-column show-overflow-tooltip prop="className" label="班级" :min-width="200" />
       <el-table-column :width="200" prop="teacher.username" label="教师" />
       <el-table-column :width="200" prop="enterYear" label="入学年份" />
       <el-table-column :width="200" show-overflow-tooltip label="状态">

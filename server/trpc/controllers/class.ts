@@ -3,7 +3,7 @@ import { TRPCError } from '@trpc/server';
 import { db } from '../../db/db';
 import { classes } from '../../db/schema/class';
 import { classesToStudents } from '../../db/schema/classToStudents';
-import { getClassName } from '../utils/shared';
+import { useClassName } from '~/composables/className';
 import { groups } from '~/server/db/schema/group';
 import type { TClassState } from '~/types';
 
@@ -161,7 +161,7 @@ export class ClassController {
     return {
       ...info,
       students: res.classesToStudents.map(x => x.users),
-      className: getClassName(info),
+      className: useClassName(info),
       groups: groups.map((group) => {
         const { usersToGroups, leader: _, ...info } = group;
         const members = usersToGroups.map(u => u.user);
@@ -189,7 +189,7 @@ export class ClassController {
     });
 
     return res.map(x => ({
-      className: getClassName(x),
+      className: useClassName(x),
       ...x,
     }));
   }

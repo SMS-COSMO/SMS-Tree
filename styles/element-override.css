@@ -38,7 +38,7 @@
   border-bottom: none !important;
 }
 
-.el-popper.is-light:not(.el-select__popper):not(.el-popover):not(.el-cascader__dropdown):not(.el-picker__popper):not(:has(.el-cascader__collapse-tags)):not(:has(.el-select__selection)) {
+.el-popper.is-light:not(.el-select__popper):not(.el-popover):not(.el-cascader__dropdown):not(.el-picker__popper):not(:has(.el-cascader__collapse-tags)):not(:has(.el-select__selection)):not(.el-table-filter) {
   border: none !important;
   background: none !important;
 }

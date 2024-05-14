@@ -3,11 +3,12 @@ import { TRPCError } from '@trpc/server';
 import { db } from '../../db/db';
 import type { TNewPaper, TRawUser } from '../../db/db';
 import { papers } from '../../db/schema/paper';
-import { TRPCForbidden, getClassName } from '../utils/shared';
+import { TRPCForbidden } from '../utils/shared';
 import { usersToGroups } from '~/server/db/schema/userToGroup';
 import { classes } from '~/server/db/schema/class';
 import { groups } from '~/server/db/schema/group';
 import type { TPaperScore } from '~/types';
+import { useClassName } from '~/composables/className';
 
 export class PaperController {
   async create(newPaper: TNewPaper) {
@@ -152,7 +153,7 @@ export class PaperController {
       leader: authors.find(x => x.id === group.leader),
       class: {
         ...group.class,
-        className: getClassName(group.class),
+        className: useClassName(group.class),
       },
     };
   }
@@ -260,12 +261,12 @@ export class PaperController {
     });
 
     return {
-      managedClasses: managedClasses.map(x => ({ ...x, className: getClassName(x) })),
+      managedClasses: managedClasses.map(x => ({ ...x, className: useClassName(x) })),
       list: res.map((x) => {
         const { group, ...info } = x;
         return {
           authors: group.usersToGroups.map(u => ({ username: u.user.username })),
-          className: getClassName(group.class),
+          className: useClassName(group.class),
           ...info,
         };
       }),

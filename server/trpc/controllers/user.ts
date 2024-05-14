@@ -8,8 +8,9 @@ import { refreshTokens, users } from '../../db/schema/user';
 import { usersToGroups } from '../../db/schema/userToGroup';
 import { classesToStudents } from '../../db/schema/classToStudents';
 import { Auth } from '../utils/auth';
-import { TRPCForbidden, getClassName, makeId } from '../../trpc/utils/shared';
+import { TRPCForbidden, makeId } from '../../trpc/utils/shared';
 import { Seiue } from '../utils/seiue';
+import { useClassName } from '~/composables/className';
 import { classes } from '~/server/db/schema/class';
 import { env } from '~/server/env';
 
@@ -232,7 +233,7 @@ export class UserController {
 
     return {
       ...info,
-      className: getClassName(res.classesToStudents[0]?.classes),
+      className: useClassName(res.classesToStudents[0]?.classes),
       groups: res.usersToGroups.map((x) => {
         const g = x.group;
         if (!accessible && !g.paper?.isPublic)
@@ -279,7 +280,7 @@ export class UserController {
       return {
         ...info,
         projectName: user.usersToGroups[0]?.group.projectName,
-        className: getClassName(user.classesToStudents[0]?.classes),
+        className: useClassName(user.classesToStudents[0]?.classes),
         classId: user.classesToStudents[0]?.classes.id ?? '',
       };
     });
