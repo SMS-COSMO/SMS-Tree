@@ -24,7 +24,7 @@ const t = initTRPC
                 return {
                   // only replace strings without Chinese characters
                   // silly, but it works lol
-                  message: /[\u4E00-\u9FA5]+/g.test(message) ? message : localizeError(x).message,
+                  message: /[\u4E00-\u9FA5]+/.test(message) ? message : localizeError(x).message,
                   ...rest,
                 };
               })

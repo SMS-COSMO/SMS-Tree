@@ -61,6 +61,13 @@ export const classRouter = router({
       return await ctx.classController.remove(input.id);
     }),
 
+  batchRemove: protectedProcedure
+    .input(z.object({ ids: classIdSchema.array() }))
+    .use(requireRoles(['admin', 'teacher']))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.classController.batchRemove(input.ids);
+    }),
+
   initGroups: protectedProcedure
     .use(requireRoles(['teacher', 'admin']))
     .input(z.object({

@@ -57,6 +57,11 @@ export class ClassController {
     return '删除成功';
   }
 
+  async batchRemove(ids: string[]) {
+    await Promise.all(ids.map(x => this.remove(x)));
+    return '删除成功';
+  }
+
   async modify(id: string, newClass: Partial<{
     index: number;
     enterYear: number;

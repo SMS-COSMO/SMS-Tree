@@ -70,7 +70,12 @@
           <el-button @click="showDeleteDialog = false">
             取消
           </el-button>
-          <el-button type="danger" :disabled="deleteConfirmation !== '删除班级'" @click="showDeleteDialog = false">
+          <el-button
+            type="danger"
+            :disabled="deleteConfirmation !== '删除班级'"
+            :loading="isPending"
+            @click="batchRemove({ ids: selected.map(x => x.id) })"
+          >
             确认删除
           </el-button>
         </div>
@@ -102,7 +107,6 @@ const teacherOptions = Array.from(
 }));
 
 type TClassRow = (Exclude<typeof listData.value, undefined>)[0];
-
 function enterYearFilterHandler(value: string, row: TClassRow) {
   return row?.enterYear.toString() === value;
 }
@@ -117,4 +121,15 @@ function handleSelectionChange(val: TClassRow[]) {
 
 const showDeleteDialog = ref(false);
 const deleteConfirmation = ref('');
+
+const queryClient = useQueryClient();
+const { mutate: batchRemove, isPending } = useMutation({
+  mutationFn: $api.class.batchRemove.mutate,
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['class.list'] });
+    useMessage({ message: '删除成功', type: 'success' });
+    showDeleteDialog.value = false;
+  },
+  onError: err => useErrorHandler(err),
+});
 </script>
