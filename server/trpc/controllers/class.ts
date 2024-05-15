@@ -132,7 +132,6 @@ export class ClassController {
                 canDownload: true,
                 category: true,
                 createdAt: true,
-                downloadCount: true,
                 isFeatured: true,
                 score: true,
                 title: true,

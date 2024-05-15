@@ -87,12 +87,6 @@ export const paperRouter = router({
       return await ctx.paperController.scoringList(ctx.user, input);
     }),
 
-  updateDownloadCount: protectedProcedure
-    .input(z.object({ id: paperIdSchema }))
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.paperController.updateDownloadCount(input.id, ctx.user);
-    }),
-
   score: protectedProcedure
     .use(requireRoles(['admin', 'teacher']))
     .input(z.object({

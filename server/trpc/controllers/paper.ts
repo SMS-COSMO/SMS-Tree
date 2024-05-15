@@ -166,7 +166,6 @@ export class PaperController {
         canDownload: true,
         category: true,
         createdAt: true,
-        downloadCount: true,
         isFeatured: true,
         isPublic: true,
         keywords: true,
@@ -275,41 +274,6 @@ export class PaperController {
 
   async modify(id: string, newPaper: Partial<TNewPaper>) {
     await db.update(papers).set(newPaper).where(eq(papers.id, id));
-    return '修改成功';
-  }
-
-  // TODO: This seems unsafe
-  async updateDownloadCount(id: string, user: TRawUser) {
-    const rawPaper = await db.query.papers.findFirst({
-      where: eq(papers.id, id),
-      columns: {
-        isPublic: true,
-        canDownload: true,
-        downloadCount: true,
-      },
-      with: {
-        group: {
-          columns: {},
-          with: {
-            usersToGroups: {
-              columns: {},
-              with: {
-                user: {
-                  columns: { id: true },
-                },
-              },
-            },
-          },
-        },
-      },
-    });
-    if (!rawPaper)
-      throw new TRPCError({ code: 'NOT_FOUND', message: '论文不存在' });
-
-    const isOwned = rawPaper.group.usersToGroups.some(u => u.user.id === user.id);
-    if (rawPaper.canDownload && !isOwned && !['teacher', 'admin'].includes(user.role))
-      await db.update(papers).set({ downloadCount: rawPaper.downloadCount + 1 }).where(eq(papers.id, id));
-
     return '修改成功';
   }
 

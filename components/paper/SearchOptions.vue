@@ -43,9 +43,6 @@
         <el-radio-button value="score">
           分数
         </el-radio-button>
-        <el-radio-button value="downloadCount">
-          下载
-        </el-radio-button>
       </el-radio-group>
       <br>
       <el-radio-group v-model="modelValue.isAsc" class="ml-4">

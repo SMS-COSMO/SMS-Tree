@@ -200,7 +200,6 @@ export class UserController {
                     canDownload: true,
                     category: true,
                     createdAt: true,
-                    downloadCount: true,
                     isFeatured: true,
                     isPublic: true,
                     score: true,

@@ -135,8 +135,6 @@ const { processedListData } = await useSearch<TPaperListSafeItem>(
       return ((a.score?.charCodeAt(0) ?? 68) - (b.score?.charCodeAt(0) ?? 68)) * searchOptions.isAsc; // Greater
     if (searchOptions.sortOption === 'time')
       return (a.createdAt > b.createdAt ? -1 : 1) * searchOptions.isAsc; // Newest
-    if (searchOptions.sortOption === 'downloadCount')
-      return (b.downloadCount - a.downloadCount) * searchOptions.isAsc; // Greater
     return 0;
   },
 );

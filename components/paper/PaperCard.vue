@@ -27,9 +27,6 @@
       <el-tag type="info" disable-transitions>
         {{ paper?.createdAt?.toLocaleDateString('zh-CN') }}
       </el-tag>
-      <el-text v-if="paper?.canDownload" type="info" size="small">
-        下载次数：{{ paper?.downloadCount }}
-      </el-text>
     </el-row>
     <el-row class="mt-2 gap-2">
       <el-text class="break-normal font-bold text-xl!">

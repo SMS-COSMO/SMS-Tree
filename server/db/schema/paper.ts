@@ -15,7 +15,6 @@ export const papers = sqliteTable('papers', {
   score: text('score', { enum: ['A', 'B', 'C', 'D'] }),
   canDownload: integer('can_download', { mode: 'boolean' }).notNull().default(false),
   isFeatured: integer('is_featured', { mode: 'boolean' }).notNull().default(false),
-  downloadCount: integer('download_count').notNull().default(0),
   comment: text('comment'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });

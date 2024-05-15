@@ -59,7 +59,7 @@ export interface TSearchOption {
   };
   isAsc: -1 | 1;
   searchSelectValue: string[];
-  sortOption: 'time' | 'score' | 'downloadCount' | 'default';
+  sortOption: 'time' | 'score' | 'default';
 }
 
 export interface TMinimalUser {

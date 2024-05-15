@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   paperId?: string;
   canDownload?: boolean;
   attachments?: TAttachment[];
@@ -46,10 +46,8 @@ const showDialog = ref(false);
 
 watch(showDialog, async () => {
   try {
-    if (showDialog.value && firstOpen) {
-      await $api.paper.updateDownloadCount.mutate({ id: props.paperId! });
+    if (showDialog.value && firstOpen)
       firstOpen = false;
-    }
   } catch (err) {
     useErrorHandler(err);
   }
