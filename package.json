@@ -15,7 +15,7 @@
     "db:createAdmin": "tsx ./scripts/createDefaultUser.ts",
     "db:createSampleDB": "tsx ./scripts/createSampleDB.ts",
     "db:studio": "drizzle-kit studio",
-    "db:push": "drizzle-kit push:sqlite",
+    "db:push": "drizzle-kit push",
     "test": "cp test.sqlite testRuntime.sqlite || copy test.sqlite testRuntime.sqlite && vitest",
     "test:ui": "cp test.sqlite testRuntime.sqlite || copy test.sqlite testRuntime.sqlite && vitest --ui",
     "coverage": "cp test.sqlite testRuntime.sqlite || copy test.sqlite testRuntime.sqlite && vitest run --coverage"
@@ -75,7 +75,7 @@
     "@vue/test-utils": "^2.4.6",
     "cn-lorem-ipsum": "^0.1.2",
     "dotenv": "^16.4.5",
-    "drizzle-kit": "^0.20.18",
+    "drizzle-kit": "^0.21.2",
     "element-plus": "^2.7.3",
     "eslint": "^8.57.0",
     "eslint-plugin-drizzle": "^0.2.3",

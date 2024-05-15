@@ -9,10 +9,12 @@
       />
 
       <el-table
+        ref="tableRef"
         :data="listData"
         class="cursor-pointer"
         row-key="id"
         @selection-change="handleSelectionChange"
+        @row-click="row => tableRef?.toggleRowSelection(row, !selected.includes(row))"
       >
         <el-table-column type="selection" width="55" />
         <el-table-column
@@ -85,6 +87,8 @@
 </template>
 
 <script setup lang="ts">
+import type { ElTable } from 'element-plus';
+
 const { $api } = useNuxtApp();
 const { data: listData, suspense } = useQuery({
   queryKey: ['class.list'],
@@ -114,6 +118,7 @@ function teacherFilterHandler(value: string, row: TClassRow) {
   return row?.teacher.username === value;
 }
 
+const tableRef = ref<InstanceType<typeof ElTable>>();
 const selected = ref<TClassRow[]>([]);
 function handleSelectionChange(val: TClassRow[]) {
   selected.value = val;
