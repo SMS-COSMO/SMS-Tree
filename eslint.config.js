@@ -10,7 +10,7 @@ export default antfu({
   },
   typescript: true,
   vue: true,
-  ignores: ['.github/**/*', 'docs/**/*', 'public/**'],
+  ignores: ['.github/**/*', 'public/**'],
 }, {
   plugins: {
     drizzle,
