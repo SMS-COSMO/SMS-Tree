@@ -8,12 +8,10 @@ const { publicKey: signPublic, privateKey: signPrivate } = await generateKeyPair
 const encKeyId = `enc-${new Date().toISOString()}`;
 const signKeyId = `sign-${new Date().toISOString()}`;
 
-console.log(`encPrivate：\n`, await exportPKCS8(encPrivate));
-console.log(`encPublic：\n`, await exportSPKI(encPublic));
-console.log('encKeyId:', encKeyId);
+console.log(`ENC_PUBLIC_KEY="${(await exportSPKI(encPublic)).trim()}"`);
+console.log(`ENC_PRIVATE_KEY="${(await exportPKCS8(encPrivate)).trim()}"`);
+console.log(`ENC_KID="${encKeyId}"`);
 
-console.log('\n-------------------\n');
-
-console.log(`signPrivate：\n`, await exportPKCS8(signPrivate));
-console.log(`signPublic：\n`, await exportSPKI(signPublic));
-console.log('signKeyId:', signKeyId);
+console.log(`SIGN_PRIVATE_KEY="${(await exportPKCS8(signPrivate)).trim()}"`);
+console.log(`SIGN_PUBLIC_KEY="${(await exportSPKI(signPublic)).trim()}"`);
+console.log(`SIGN_KID="${signKeyId}"`);

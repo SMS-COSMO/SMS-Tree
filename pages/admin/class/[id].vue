@@ -127,6 +127,14 @@
           </el-card>
         </el-col>
       </el-row>
+      <template v-if="showStudentsFree">
+        <el-card>
+          <template #header>
+            未分组人员
+          </template>
+          <GroupMembers :authors="studentsFree" type="link" class="inline" />
+        </el-card>
+      </template>
       <el-collapse-transition>
         <template v-if="classInfo.state === 'initialized'">
           <div class="flex flex-row gap-2">
@@ -229,4 +237,19 @@ function modifyTimetable() {
     return;
   modifyMutation({ id: classInfo.value.id, stateTimetable: newStateTimetable.value });
 }
+
+const studentsWithGroup = computed(
+  () => classInfo.value?.groups.map(x => x.members).reduce((a, b) => a.concat(b)),
+);
+
+const studentsFree = computed(() => {
+  const list = [];
+  for (const s of (classInfo.value?.students ?? [])) {
+    if (!(studentsWithGroup.value ?? []).find(student => student.id === s.id))
+      list.push(s);
+  }
+  return list;
+});
+
+const showStudentsFree = computed(() => studentsFree.value.length !== 0);
 </script>
