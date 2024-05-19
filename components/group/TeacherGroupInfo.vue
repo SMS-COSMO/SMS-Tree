@@ -114,7 +114,7 @@ const newProjectName = ref();
 const { mutate: removeGroup } = useMutation({
   mutationFn: $api.group.remove.mutate,
   onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['class.list'] });
+    queryClient.invalidateQueries({ queryKey: ['class.info'] });
   },
   onError: err => useErrorHandler(err),
 });

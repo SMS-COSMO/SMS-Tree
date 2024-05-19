@@ -62,6 +62,7 @@
                     <el-table
                       :data="classInfo?.students"
                       class="cursor-pointer mt-0!"
+                      :row-class-name="tableRowClassName"
                       @row-click="row => navigateTo(`/admin/user/${row.id}`)"
                     >
                       <el-table-column type="index" width="50" />
@@ -127,13 +128,13 @@
           </el-card>
         </el-col>
       </el-row>
-      <template v-if="showStudentsFree">
-        <el-card>
-          <template #header>
-            未分组人员
+      <template v-if="studentsFree?.length">
+        <el-alert type="warning" show-icon :closable="false">
+          <template #title>
+            还有 {{ studentsFree.length }} 名同学没有小组
           </template>
-          <GroupMembers :authors="studentsFree" type="link" class="inline" />
-        </el-card>
+          <GroupMembers :authors="studentsFree" type="link" class="inline" is-admin />
+        </el-alert>
       </template>
       <el-collapse-transition>
         <template v-if="classInfo.state === 'initialized'">
@@ -239,7 +240,11 @@ function modifyTimetable() {
 }
 
 const studentsWithGroup = computed(
-  () => classInfo.value?.groups.map(x => x.members).reduce((a, b) => a.concat(b)),
+  () => {
+    if (!classInfo.value?.groups.length)
+      return [];
+    return classInfo.value.groups.map(x => x.members).reduce((a, b) => a.concat(b));
+  },
 );
 
 const studentsFree = computed(() => {
@@ -251,5 +256,9 @@ const studentsFree = computed(() => {
   return list;
 });
 
-const showStudentsFree = computed(() => studentsFree.value.length !== 0);
+function tableRowClassName({ row }: { row: TMinimalUser }) {
+  if (studentsFree.value.some(s => s.id === row.id))
+    return 'bg-amber-50!';
+  return '';
+}
 </script>

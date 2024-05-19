@@ -1,5 +1,5 @@
 <template>
-  <span v-once class="break-all text-wrap space-x-1.5">
+  <span class="break-all text-wrap space-x-1.5">
     <span
       v-for="(author, index) of authors" :key="index"
       :class="`${showLeader && author?.id === leader?.id ? 'font-bold!' : ''}`"
@@ -8,8 +8,8 @@
         {{ author?.username }}
       </template>
       <el-link
-        v-else-if="type === 'link'"
-        :href="`/user/${author?.id}`"
+        v-else
+        :href="`${isAdmin ? '/admin' : ''}/user/${author?.id}`"
         :class="`${showLeader && author?.id === leader?.id ? 'font-bold!' : ''}`"
       >
         {{ author?.username }}
@@ -26,8 +26,10 @@ withDefaults(defineProps<{
   leader?: Partial<TMinimalUser | TUserProfile>;
   type?: 'text' | 'link';
   showLeader?: boolean;
+  isAdmin?: boolean;
 }>(), {
   type: 'text',
   showLeader: true,
+  isAdmin: false,
 });
 </script>

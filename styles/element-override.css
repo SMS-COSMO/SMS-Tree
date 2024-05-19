@@ -422,3 +422,8 @@
 .el-check-tag {
   transition: none !important;
 }
+
+/* Drawer */
+.el-drawer__header {
+  margin-bottom: 0 !important;
+}

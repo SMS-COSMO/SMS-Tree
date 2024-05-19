@@ -29,6 +29,10 @@
   --el-badge-font-size: 13px !important;
 }
 
+.el-tag {
+  --el-tag-font-size: 13.5px !important;
+}
+
 .el-tag--primary,
 .el-check-tag--primary,
 .el-button {
