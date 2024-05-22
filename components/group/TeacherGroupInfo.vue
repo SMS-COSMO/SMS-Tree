@@ -70,6 +70,8 @@
           :data="info?.members"
           class="cursor-pointer"
           @row-click="row => navigateTo(`/admin/user/${row.id}`)"
+          @row-contextmenu="dialogVisible = true"
+          @contextmenu.prevent
         >
           <el-table-column prop="username" label="姓名">
             <template #default="scope">
@@ -118,6 +120,7 @@
       </el-descriptions-item>
     </el-descriptions>
   </el-card>
+  <ChangeGroup v-if="info?.classId" v-model="dialogVisible" :class-id="info.classId" />
 </template>
 
 <script setup lang="ts">
@@ -153,4 +156,6 @@ const { mutate: modifyProjectName, isPending } = useMutation({
   },
   onError: err => useErrorHandler(err),
 });
+
+const dialogVisible = ref(false);
 </script>

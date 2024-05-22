@@ -2,7 +2,7 @@
   <client-only>
     <el-cascader v-model="cascaderValue" :options="options" filterable>
       <template #default="{ node, data }">
-        <el-popover v-if="node.isLeaf" placement="top" :width="400" trigger="hover">
+        <el-popover v-if="node.isLeaf" placement="top" :width="400" trigger="hover" :show-after="600">
           <template #reference>
             {{ data.label }}
           </template>
