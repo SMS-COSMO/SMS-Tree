@@ -7,6 +7,26 @@
       <span class="font-bold">
         {{ info?.projectName ?? '暂无课题名' }}
       </span>
+      <el-popover
+        v-if="info"
+        placement="bottom"
+        title="修改课题名"
+        :width="300"
+        trigger="click"
+      >
+        <template #reference>
+          <el-link icon="i-tabler:edit" class="ml-2 text-[16px]!">
+            修改
+          </el-link>
+        </template>
+        <el-input v-model="newProjectName" @blur="edit = false">
+          <template #append>
+            <el-button :loading="isPending" @click="modifyProjectName({ groupId: info!.id, newProjectName })">
+              <el-icon class="i-tabler:check" />
+            </el-button>
+          </template>
+        </el-input>
+      </el-popover>
       <el-popconfirm
         v-if="info"
         title="确定要删除小组吗？"
@@ -121,5 +141,16 @@ const { mutate: removeGroup } = useMutation({
 
 onMounted(() => {
   newProjectName.value = props.info?.projectName;
+});
+
+const edit = ref(false);
+
+const { mutate: modifyProjectName, isPending } = useMutation({
+  mutationFn: $api.group.modifyProjectName.mutate,
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['class.info'] });
+    useMessage({ message: '修改成功', type: 'success' });
+  },
+  onError: err => useErrorHandler(err),
 });
 </script>
