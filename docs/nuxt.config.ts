@@ -1,7 +1,5 @@
+// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  // https://github.com/nuxt-themes/docus
-  extends: ['@nuxt-themes/docus'],
   devtools: { enabled: true },
-
-  modules: [],
+  extends: ['shadcn-docs-nuxt'],
 });

@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-if="user"
-    v-model="user"
+    v-model="showDialog"
     title="用户操作"
     width="500"
     draggable
@@ -40,6 +40,7 @@ defineProps<{
 }>();
 
 const user = defineModel<TMinimalUser | undefined>();
+const showDialog = computed(() => user.value !== undefined);
 const changeGroupDialog = ref(false);
 
 const { $api } = useNuxtApp();

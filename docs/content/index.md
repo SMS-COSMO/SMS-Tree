@@ -1,22 +1,16 @@
 ---
-title: "SMS-Tree 项目帮助文档"
-description: "SMS-Tree 项目帮助文档"
 navigation: false
-layout: page
-main:
-  fluid: false
 ---
 
-:ellipsis{right=0px width=75% blur=150px}
-
-::block-hero
+::hero
 ---
-cta:
-  - 开发者指南
-  - /developer/introduction/getting-started
-secondary:
-  - Star on GitHub →
-  - https://github.com/sms-cosmo/sms-tree
+actions:
+  - name: 开发者指南
+    to: /developer/introduction/getting-started
+  - name: Star on GitHub →
+    variant: outline
+    to: https://github.com/sms-cosmo/sms-tree
+    leftIcon: 'lucide:github'
 ---
 
 #title
@@ -24,6 +18,4 @@ SMS-Tree 项目帮助文档
 
 #description
 为开发者和用户提供的详细指南。
-
-#root
-:ellipsis{left=0px width=40rem top=10rem blur=140px}
+::

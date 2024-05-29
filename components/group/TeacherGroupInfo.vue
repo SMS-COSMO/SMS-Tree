@@ -163,5 +163,5 @@ const { mutate: modifyProjectName, isPending } = useMutation({
   onError: err => useErrorHandler(err),
 });
 
-const changGroupUser = ref(false);
+const changGroupUser = ref();
 </script>
