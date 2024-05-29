@@ -70,7 +70,7 @@
           :data="info?.members"
           class="cursor-pointer"
           @row-click="row => navigateTo(`/admin/user/${row.id}`)"
-          @row-contextmenu="row => changGroupUser = row"
+          @row-contextmenu="row => changeGroupUser = row"
           @contextmenu.prevent
         >
           <el-table-column prop="username" label="姓名">
@@ -122,7 +122,7 @@
   </el-card>
   <UserActions
     v-if="info?.classId"
-    v-model="changGroupUser"
+    v-model="changeGroupUser"
     :class-id="info.classId"
     :group-id="info.id"
     :leader="info.leader?.id"
@@ -163,5 +163,5 @@ const { mutate: modifyProjectName, isPending } = useMutation({
   onError: err => useErrorHandler(err),
 });
 
-const changGroupUser = ref();
+const changeGroupUser = ref();
 </script>
