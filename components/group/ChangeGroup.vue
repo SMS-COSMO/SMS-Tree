@@ -1,16 +1,17 @@
 <template>
   <el-dialog
-    v-model="dialogVisible"
-    title="更改小组"
+    v-model="showDialog"
+    title="移动至小组"
     width="500"
+    draggable
   >
-    <select-group-from-class :class-id="classId" />
+    <select-group-from-class v-model="newGroupId" :class-id="classId" />
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="dialogVisible = false">
+        <el-button @click="showDialog = false">
           取消
         </el-button>
-        <el-button type="primary" @click="dialogVisible = false">
+        <el-button type="primary" :loading="isPending" @click="changeGroup({ userId, oldGroupId, newGroupId })">
           确认
         </el-button>
       </div>
@@ -20,8 +21,23 @@
 
 <script setup lang="ts">
 defineProps<{
+  oldGroupId: string;
   classId: string;
+  userId: string;
 }>();
 
-const dialogVisible = defineModel<boolean>();
+const showDialog = defineModel<boolean>();
+const newGroupId = ref();
+
+const { $api } = useNuxtApp();
+const queryClient = useQueryClient();
+const { mutate: changeGroup, isPending } = useMutation({
+  mutationFn: $api.group.change.mutate,
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['class.info'] });
+    useMessage({ message: '修改成功', type: 'success' });
+    showDialog.value = false;
+  },
+  onError: err => useErrorHandler(err),
+});
 </script>

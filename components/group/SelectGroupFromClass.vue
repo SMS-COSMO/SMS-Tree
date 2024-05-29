@@ -8,6 +8,9 @@
       @change="emit('update:modelValue', selected)"
     >
       <template #default="{ item }">
+        <el-tag type="info" class="mr-2 -ml-3" effect="plain" disable-transitions>
+          小组 {{ options.findIndex(e => e.value === item.value) + 1 }}
+        </el-tag>
         <el-popover placement="top" :width="400" trigger="hover" :show-after="600">
           <template #reference>
             {{ item.label }}
