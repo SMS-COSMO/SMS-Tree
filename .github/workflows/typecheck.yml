@@ -20,5 +20,10 @@ jobs:
         working-directory: .
         run: pnpm i
 
+      - name: Install docs deps
+        working-directory: ./docs
+        run: pnpm i
+
       - name: Run typecheck
+        working-directory: .
         run: pnpm nuxt typecheck
