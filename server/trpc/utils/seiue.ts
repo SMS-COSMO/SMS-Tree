@@ -3,6 +3,7 @@
  */
 import { ofetch } from 'ofetch';
 import { env } from '~/server/env';
+import type { TCredentials, TDirectCredentials, TSeiueAuthResponse, TSeiueUser } from '~/types/seiue';
 
 export function cookiesParser(cookies: string[]) {
   const parsedCookies: Record<string, string> = {};
@@ -13,15 +14,6 @@ export function cookiesParser(cookies: string[]) {
   }
   return parsedCookies;
 }
-
-export interface TCredentials { schoolId: string; password: string };
-export interface TDirectCredentials { accessToken: string; activeReflectionId: number }
-export interface TSeiueAuthResponse {
-  token_type: 'bearer';
-  expires_in: number;
-  access_token: string;
-  active_reflection_id: number;
-};
 
 export class Seiue {
   private accessToken: string;
@@ -108,5 +100,15 @@ export class Seiue {
     } catch {
       return false;
     }
+  }
+
+  static async me(accessToken: string) {
+    return await ofetch<TSeiueUser>(`${env.SEIUE_OPEN_API_URL}/v3/oauth/me`, {
+      method: 'GET',
+      headers: {
+        'x-school-id': '282',
+        'authorization': `Bearer ${accessToken}`,
+      },
+    });
   }
 }

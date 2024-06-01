@@ -44,6 +44,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 interface CreateContextOptions {
   user?: TRawUser;
+  seiueToken?: string;
 }
 
 /**
@@ -55,6 +56,7 @@ export function createInnerContext(opts: CreateContextOptions) {
   return {
     db,
     user: opts.user,
+    seiueToken: opts.seiueToken,
     s3Controller,
     userController,
     noteController,
@@ -84,8 +86,9 @@ export const ctl = {
  */
 export async function createContext(event: H3Event) {
   const header = getRequestHeader(event, 'Authorization');
+  const seiueToken = getRequestHeader(event, 'x-seiue-token');
   const user = await userController.getUserFromHeader(header);
-  return createInnerContext({ user });
+  return createInnerContext({ user, seiueToken });
 }
 
 export type Context = inferAsyncReturnType<typeof createContext>;

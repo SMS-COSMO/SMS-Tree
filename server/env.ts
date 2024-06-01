@@ -23,6 +23,7 @@ const envSchema = z.object({
   SERVER_URL: z.string(),
   SEIUE_LOGIN: z.enum(['true', 'false']).transform(value => value === 'true'),
   SEIUE_API_URL: z.string(),
+  SEIUE_OPEN_API_URL: z.string(),
   SEIUE_CHALK_URL: z.string(),
   SEIUE_PASSPORT_URL: z.string(),
 });

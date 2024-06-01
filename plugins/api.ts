@@ -13,9 +13,9 @@ export default defineNuxtPlugin(() => {
         url: '/api/trpc',
         maxURLLength: 4000,
         headers() {
-          const userStore = useUserStore();
           return {
-            Authorization: userStore.accessToken,
+            'Authorization': useUserStore().accessToken,
+            'x-seiue-token': useSeiueStore().accessToken,
           };
         },
       }),

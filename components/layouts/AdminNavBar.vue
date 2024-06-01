@@ -9,7 +9,7 @@
       批改论文
     </el-menu-item>
     <el-menu-item index="/admin/class/list">
-      <el-icon class="i-tabler:list" />
+      <el-icon class="i-tabler:school" />
       班级列表
     </el-menu-item>
     <el-menu-item index="/admin/user/list">
@@ -64,6 +64,10 @@
         <NuxtImg src="/seiue.svg" class="mr-0.75 w-6" />
         已登陆希悦
       </template>
+      <el-menu-item>
+        <el-icon class="i-tabler:user-square-rounded" />
+        {{ data?.name }}
+      </el-menu-item>
       <el-menu-item @click="seiueStore.logout">
         <el-icon class="i-tabler:logout" />
         登出
@@ -78,4 +82,12 @@
 
 <script setup lang="ts">
 const seiueStore = useSeiueStore();
+
+const { $api } = useNuxtApp();
+const enabled = computed(() => seiueStore.loggedIn);
+const { data } = useQuery({
+  queryKey: ['seiue.me'],
+  queryFn: () => $api.seiue.me.query(),
+  enabled,
+});
 </script>

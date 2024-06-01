@@ -39,11 +39,13 @@ const form = reactive({
   password: '',
 });
 
+const queryClient = useQueryClient();
 const { mutate: loginMutation, isPending } = useMutation({
   mutationFn: $api.seiue.login.mutate,
   onSuccess: (res) => {
     useSeiueStore().login(res);
     useRouter().back();
+    queryClient.invalidateQueries({ queryKey: ['seiue.me'] });
     useMessage({
       message: '登录成功',
       type: 'success',

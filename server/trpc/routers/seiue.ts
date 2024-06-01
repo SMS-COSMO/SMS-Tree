@@ -29,4 +29,12 @@ export const seiueRouter = router({
     .mutation(async ({ input }) => {
       return await Seiue.retrieveToken(input.cookies);
     }),
+
+  me: protectedProcedure
+    .use(requireRoles(['admin', 'teacher']))
+    .query(async ({ ctx }) => {
+      if (!ctx.seiueToken)
+        throw new TRPCError({ code: 'UNAUTHORIZED', message: '请登陆希悦' });
+      return await Seiue.me(ctx.seiueToken);
+    }),
 });
