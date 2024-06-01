@@ -44,7 +44,6 @@
         <template #title>
           <span>创建</span>
         </template>
-
         <el-menu-item index="/admin/user/create">
           <el-icon class="i-tabler:user-plus" />
           创建账户
@@ -59,5 +58,24 @@
         </el-menu-item>
       </el-menu-item-group>
     </el-sub-menu>
+
+    <el-sub-menu v-if="seiueStore.loggedIn" index="1">
+      <template #title>
+        <NuxtImg src="/seiue.svg" class="mr-0.75 w-6" />
+        已登陆希悦
+      </template>
+      <el-menu-item @click="seiueStore.logout">
+        <el-icon class="i-tabler:logout" />
+        登出
+      </el-menu-item>
+    </el-sub-menu>
+    <el-menu-item v-else index="/admin/seiue/login">
+      <NuxtImg src="/seiue.svg" class="mr-0.75 w-6" />
+      登陆希悦
+    </el-menu-item>
   </el-menu>
 </template>
+
+<script setup lang="ts">
+const seiueStore = useSeiueStore();
+</script>

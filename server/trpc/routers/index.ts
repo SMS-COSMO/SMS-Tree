@@ -6,10 +6,12 @@ import { classRouter } from './class';
 import { attachmentRouter } from './attachment';
 import { noteRouter } from './note';
 import { reportRouter } from './report';
+import { seiueRouter } from './seiue';
 
 export const appRouter = router({
   user: userRouter,
   note: noteRouter,
+  seiue: seiueRouter,
   paper: paperRouter,
   group: groupRouter,
   class: classRouter,
