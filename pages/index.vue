@@ -34,6 +34,7 @@
               <el-icon class="i-tabler:presentation" />
               作业进度
             </template>
+            <StateStep :class-info="classInfo" direction="horizontal" />
           </el-card>
         </el-col>
         <el-col v-else :span="device.isMobileOrTablet ? 24 : 17" class="mt-3 lg:mt-0">
@@ -57,6 +58,14 @@ useHeadSafe({
 const device = useDevice();
 const quickSearchContent = ref('');
 const userStore = useUserStore();
+const { $api } = useNuxtApp();
+
+const { data: classInfo, suspense: classInfoSuspense } = useQuery({
+  queryKey: ['class.info', { id: userStore.classId }],
+  queryFn: () =>
+    (userStore.classId && userStore.loggedIn && userStore.role === 'student') ? $api.class.info.query({ id: userStore.classId }) : undefined,
+});
+await classInfoSuspense();
 
 function quickSearch() {
   navigateTo({

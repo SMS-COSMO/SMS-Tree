@@ -4,7 +4,6 @@
     v-model="showDialog"
     title="用户操作"
     width="500"
-    draggable
     @close="user = undefined"
   >
     <div class="mb-4 flex bg-slate-50 p-3 rounded">
