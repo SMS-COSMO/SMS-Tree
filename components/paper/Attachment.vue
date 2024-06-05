@@ -38,7 +38,6 @@ defineProps<{
   attachments?: TAttachment[];
 }>();
 
-const { $api } = useNuxtApp();
 const userStore = useUserStore();
 
 let firstOpen = true;

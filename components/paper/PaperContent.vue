@@ -17,12 +17,6 @@
             分数：{{ info.score }}
           </el-text>
         </el-tag>
-        <el-tag v-if="info?.canDownload" type="info" size="large" disable-transitions>
-          <el-icon class="i-tabler:download" />
-          <el-text style="color: var(--el-color-info);">
-            下载次数：{{ info?.downloadCount ?? 0 }}
-          </el-text>
-        </el-tag>
       </el-space>
       <h1 v-if="device.isMobileOrTablet" class="w-full text-3xl lg:pr-[2em] lg:text-4xl">
         {{ info?.title }}
