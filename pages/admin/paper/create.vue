@@ -50,16 +50,25 @@
         <SelectGroup v-model="form.groupId" />
       </el-form-item>
       <el-form-item prop="paperFile" label="论文文件">
-        <UploadFile v-model="form.paperFile" category="paperDocument" />
+        <UploadFile
+          v-model="form.paperFile"
+          v-model:uploading="uploading"
+          category="paperDocument"
+        />
       </el-form-item>
       <el-form-item prop="attachments" label="附件">
-        <UploadFile v-model="form.attachments" multiple category="paperAttachment" />
+        <UploadFile
+          v-model="form.attachments"
+          v-model:uploading="uploading"
+          multiple
+          category="paperAttachment"
+        />
       </el-form-item>
       <el-form-item label="评语">
         <TiptapEditor v-model="form.comment" />
       </el-form-item>
       <el-form-item>
-        <el-button color="#15803d" :loading="buttonLoading" @click="create(formRef)">
+        <el-button color="#15803d" :loading="buttonLoading" :disabled="uploading" @click="create(formRef)">
           创建
         </el-button>
       </el-form-item>
@@ -92,6 +101,8 @@ const form = reactive<TPaperCreateForm>({
   paperFile: [],
   attachments: [],
 });
+
+const uploading = ref(false);
 
 const rules = reactive<FormRules<TPaperCreateForm>>({
   title: [

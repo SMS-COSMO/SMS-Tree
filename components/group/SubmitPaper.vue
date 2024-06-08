@@ -28,13 +28,27 @@
       />
     </el-form-item>
     <el-form-item prop="paperFile" label="论文文件">
-      <UploadFile v-model="form.paperFile" category="paperDocument" />
+      <UploadFile
+        v-model="form.paperFile"
+        v-model:uploading="uploading"
+        category="paperDocument"
+      />
     </el-form-item>
     <el-form-item prop="attachments" label="附件">
-      <UploadFile v-model="form.attachments" multiple category="paperAttachment" />
+      <UploadFile
+        v-model="form.attachments"
+        v-model:uploading="uploading"
+        multiple
+        category="paperAttachment"
+      />
     </el-form-item>
     <el-form-item>
-      <el-button color="#15803d" :loading="buttonLoading" @click="create(formRef)">
+      <el-button
+        color="#15803d"
+        :loading="buttonLoading"
+        :disabled="uploading"
+        @click="create(formRef)"
+      >
         提交
       </el-button>
     </el-form-item>
@@ -76,8 +90,10 @@ const rules = reactive<FormRules<TPaperCreateSafeForm>>({
   paperFile: [{ required: true, message: '请上传论文文件' }],
 });
 
-const queryClient = useQueryClient();
 const buttonLoading = ref(false);
+const uploading = ref(false);
+
+const queryClient = useQueryClient();
 async function create(submittedForm: FormInstance | undefined) {
   if (!submittedForm)
     return;

@@ -8,13 +8,21 @@
     label-width="120px"
   >
     <el-form-item prop="documentFile" label="报告文档">
-      <UploadFile v-model="form.documentFile" category="reportDocument" />
+      <UploadFile
+        v-model="form.documentFile"
+        v-model:uploading="uploading"
+        category="reportDocument"
+      />
     </el-form-item>
     <el-form-item prop="presentationFile" label="报告PPT">
-      <UploadFile v-model="form.presentationFile" category="reportPresentation" />
+      <UploadFile
+        v-model="form.presentationFile"
+        v-model:uploading="uploading"
+        category="reportPresentation"
+      />
     </el-form-item>
     <el-form-item>
-      <el-button color="#15803d" :loading="buttonLoading" @click="create(formRef)">
+      <el-button color="#15803d" :loading="buttonLoading" :disabled="uploading" @click="create(formRef)">
         提交
       </el-button>
     </el-form-item>
@@ -45,6 +53,8 @@ const rules = reactive<FormRules<TReportCreateForm>>({
   documentFile: [{ required: true, message: '请上传报告文档' }],
   presentationFile: [{ required: true, message: '请上传报告PPT' }],
 });
+
+const uploading = ref(false);
 
 const queryClient = useQueryClient();
 const buttonLoading = ref(false);

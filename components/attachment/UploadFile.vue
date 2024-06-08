@@ -35,6 +35,9 @@ const props = withDefaults(defineProps<{
   documentSizeLimit: 30000000, // 30MB
   attachmentSizeLimit: 50000000, // 50MB
 });
+
+const uploading = defineModel<boolean>('uploading');
+
 const attachmentIdList = defineModel<string[]>({ default: [] });
 const { $api } = useNuxtApp();
 
@@ -53,6 +56,7 @@ function removeFileFromList(f: UploadFile | undefined, message: string) {
 }
 
 async function handleUpload(option: UploadRequestOptions) {
+  uploading.value = true;
   const { file } = option;
   const f = getFile(file);
 
@@ -60,6 +64,7 @@ async function handleUpload(option: UploadRequestOptions) {
     removeFileFromList(f, '不支持的文件类型');
     if (f)
       handleRemove(f);
+    uploading.value = false;
     return;
   }
 
@@ -68,6 +73,7 @@ async function handleUpload(option: UploadRequestOptions) {
   if (f?.size && f.size > sizeLimit) {
     removeFileFromList(f, `文件大小不应超过 ${Math.round(sizeLimit / 10 ** 6)}MB，当前文件大小：${Math.round(f.size / 10 ** 6)}MB`);
     handleRemove(f);
+    uploading.value = false;
     return;
   }
 
@@ -82,15 +88,17 @@ async function handleUpload(option: UploadRequestOptions) {
     await axios.put(url, file.slice(), {
       headers: { 'Content-Type': file.type },
       onUploadProgress: (p) => {
+        const percentage = Math.round((p.progress ?? 0) * 100);
         if (f) {
           f.status = 'uploading';
-          f.percentage = Math.round((p.progress ?? 0) * 100);
+          f.percentage = percentage;
         }
       },
     });
   } catch (err) {
     removeFileFromList(f, '上传失败');
   }
+  uploading.value = false;
 }
 
 function handleRemove(uploadFile: UploadFile) {
