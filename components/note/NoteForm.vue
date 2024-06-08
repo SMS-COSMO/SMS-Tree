@@ -62,6 +62,7 @@ const form = ref<TNoteCreateSafe>(props.oldNote ?? {
   reflections: '',
   time: new Date(),
 });
+usePreventLeave(form);
 
 const rules = reactive<FormRules<TNoteCreateSafe>>({
   title: [

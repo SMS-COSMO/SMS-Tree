@@ -58,6 +58,7 @@ const form = reactive({
   role: userInfo.value?.role ?? 'student',
   classId: userInfo.value?.classId ?? '',
 });
+usePreventLeave(form);
 
 const rules = reactive<FormRules<TUserRegister>> ({
   username: [

@@ -62,6 +62,7 @@ const form = reactive<TUserRegister>({
   classId: '',
   groupId: '',
 });
+usePreventLeave(form);
 
 const rules = reactive<FormRules<TUserRegister>>({
   schoolId: [

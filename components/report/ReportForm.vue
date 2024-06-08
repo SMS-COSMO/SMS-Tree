@@ -48,6 +48,7 @@ const form = reactive<TReportCreateForm>({
   documentFile: [],
   presentationFile: [],
 });
+usePreventLeave(form);
 
 const rules = reactive<FormRules<TReportCreateForm>>({
   documentFile: [{ required: true, message: '请上传报告文档' }],

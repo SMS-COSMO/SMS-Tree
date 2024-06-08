@@ -48,6 +48,7 @@ const form = reactive<TClassCreate>({
   teacherId: '',
   stateTimetable: undefined,
 });
+usePreventLeave(form);
 
 const buttonLoading = ref(false);
 async function create() {

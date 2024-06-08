@@ -331,6 +331,11 @@
   margin-right: 0 !important;
 }
 
+.el-message-box {
+  border-radius: 10px !important;
+  padding: 15px !important;
+}
+
 /* Back to top */
 .el-backtop {
   box-sizing: border-box;

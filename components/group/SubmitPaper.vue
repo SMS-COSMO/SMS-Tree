@@ -93,6 +93,8 @@ const rules = reactive<FormRules<TPaperCreateSafeForm>>({
 const buttonLoading = ref(false);
 const uploading = ref(false);
 
+usePreventLeave(form);
+
 const queryClient = useQueryClient();
 async function create(submittedForm: FormInstance | undefined) {
   if (!submittedForm)

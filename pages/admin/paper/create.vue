@@ -101,6 +101,7 @@ const form = reactive<TPaperCreateForm>({
   paperFile: [],
   attachments: [],
 });
+usePreventLeave(form);
 
 const uploading = ref(false);
 
