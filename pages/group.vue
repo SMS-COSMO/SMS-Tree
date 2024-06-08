@@ -36,7 +36,7 @@
           <GroupInfo v-else :class-state="classInfo.state" />
         </template>
       </div>
-      <div v-if="device.isDesktop" class="box-border h-content max-w-100px py-2">
+      <div v-if="device.isDesktop" class="box-border h-content max-w-[150px] min-w-[100px] py-2">
         <StateStep :class-info="classInfo" direction="vertical" />
       </div>
     </div>
@@ -52,11 +52,12 @@ const { $api } = useNuxtApp();
 const userStore = useUserStore();
 const device = useDevice();
 
-const { data: classInfo, suspense: classInfoSuspense } = useQuery({
+const enabled = computed(() => userStore.classId !== undefined && userStore.classId.length !== 0);
+const { data: classInfo } = useQuery({
   queryKey: ['class.info', { id: userStore.classId }],
-  queryFn: () => userStore.classId ? $api.class.info.query({ id: userStore.classId }) : undefined,
+  queryFn: () => $api.class.info.query({ id: userStore.classId }),
+  enabled,
 });
-await classInfoSuspense();
 
 const { data: userInfo, suspense: userInfoSuspense } = useQuery({
   queryKey: ['user.profile', { id: userStore.userId }],

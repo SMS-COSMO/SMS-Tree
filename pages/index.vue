@@ -13,7 +13,7 @@
     <template v-if="userStore.loggedIn">
       <el-row :gutter="20">
         <el-col :span="device.isMobileOrTablet ? 24 : 7">
-          <el-card>
+          <el-card class="h-full">
             <template #header>
               <el-icon class="i-tabler:search" />
               快速搜索
@@ -60,12 +60,12 @@ const quickSearchContent = ref('');
 const userStore = useUserStore();
 const { $api } = useNuxtApp();
 
-const { data: classInfo, suspense: classInfoSuspense } = useQuery({
+const enabled = computed(() => userStore.classId !== undefined && userStore.classId.length > 0 && userStore.loggedIn && userStore.role === 'student');
+const { data: classInfo } = useQuery({
   queryKey: ['class.info', { id: userStore.classId }],
-  queryFn: () =>
-    (userStore.classId && userStore.loggedIn && userStore.role === 'student') ? $api.class.info.query({ id: userStore.classId }) : undefined,
+  queryFn: () => $api.class.info.query({ id: userStore.classId }),
+  enabled,
 });
-await classInfoSuspense();
 
 function quickSearch() {
   navigateTo({

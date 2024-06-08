@@ -6,7 +6,7 @@
     <el-table :data="availableGroups">
       <el-table-column prop="leader" label="组长" width="150">
         <template #default="{ row }">
-          <span v-if="!row.leader">还没有组员~</span>
+          <span v-if="!row.leader" class="text-gray">还没有组长</span>
           <el-tag v-else class="m-1 font-bold" disable-transitions size="large" type="success">
             {{ row.leader.username }}
           </el-tag>
@@ -14,7 +14,7 @@
       </el-table-column>
       <el-table-column prop="members" label="已有组员" min-width="400">
         <template #default="{ row }">
-          <span v-if="!row.members.length">还没有组员~</span>
+          <span v-if="!row.members.length" class="text-gray">还没有组员</span>
           <span v-else>
             <template v-for="member in row.members" :key="member.id">
               <el-tag class="m-1 font-bold" disable-transitions size="large">{{ member.username }}</el-tag>
@@ -33,7 +33,7 @@
           </el-button>
           <template v-else-if="userStore.activeGroupIds.includes(row.id)">
             <el-button type="danger" @click="leaveGroup({ userId: userStore.userId, groupId: row.id })">
-              退出小组
+              退出
             </el-button>
             <template v-if="row.leader?.id === userStore.userId">
               <el-button type="primary" @click="removeLeader({ groupId: row.id })">
@@ -54,7 +54,7 @@
               newGroupId: row.id,
             })"
           >
-            更换为此小组
+            加入
           </el-button>
         </template>
       </el-table-column>

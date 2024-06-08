@@ -10,7 +10,7 @@
         :key="s"
         :icon="classStateIcons[s]"
         :title="classStateNames[s]"
-        :class="s === 4 ? 'is-flex' : ''"
+        :class="[s === 4 && 'is-flex']"
       >
         <template v-if="classInfo?.stateTimetable[s]" #description>
           <span class="text-sm">
