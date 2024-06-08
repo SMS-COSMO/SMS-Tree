@@ -53,7 +53,6 @@
               </span>
             </el-descriptions-item>
           </el-descriptions>
-          <Attachment :can-download="info?.canDownload" :paper-id="info?.id" :attachments="info?.attachments" />
         </FoldableCard>
       </el-col>
       <el-col :span="device.isMobileOrTablet ? 24 : 18" class="mt-3 lg:mt-0">
