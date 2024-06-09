@@ -24,8 +24,8 @@ export class UserController {
     if (!authorization)
       return undefined;
     const result = await this.auth.getUserFromToken(authorization);
-    if (result.err)
-      return undefined;
+    if (result.err === 'ERR_JWT_EXPIRED')
+      return result.err;
     return result.user;
   }
 

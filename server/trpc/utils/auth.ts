@@ -45,10 +45,10 @@ export class Auth {
       return { user: userSelectResult[0] };
     } catch (err) {
       if (err instanceof jose.errors.JWEDecryptionFailed)
-        return { err: err.code };
+        return { err: 'ERR_JWE_DECRYPTION_FAILED' as const };
       else if (err instanceof jose.errors.JWTExpired)
-        return { err: err.code };
-      else return { err: 'ERR_INVALID_TOKEN' };
+        return { err: 'ERR_JWT_EXPIRED' as const };
+      else return { err: 'ERR_INVALID_TOKEN' as const };
     }
   }
 
