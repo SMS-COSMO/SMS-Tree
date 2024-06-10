@@ -1,34 +1,36 @@
 <template>
   <div class="box-border w-full p-3 rounded border-normal">
-    <div class="pb-1 space-x-1">
-      <el-check-tag :checked="editor.isActive('bold')" @change="editor.chain().focus().toggleBold().run()">
-        <el-icon class="i-tabler:bold" />
-      </el-check-tag>
-      <el-check-tag :checked="editor.isActive('italic')" @change="editor.chain().focus().toggleItalic().run()">
-        <el-icon class="i-tabler:italic" />
-      </el-check-tag>
-      <el-check-tag :checked="editor.isActive('underline')" @change="editor.chain().focus().toggleUnderline().run()">
-        <el-icon class="i-tabler:underline" />
-      </el-check-tag>
-      <el-check-tag :checked="editor.isActive('bulletList')" type="success" @change="editor.chain().focus().toggleBulletList().run()">
-        <el-icon class="i-tabler:list" />
-      </el-check-tag>
-      <el-check-tag :checked="editor.isActive('orderedList')" type="success" @change="editor.chain().focus().toggleOrderedList().run()">
-        <el-icon class="i-tabler:list-numbers" />
-      </el-check-tag>
-      <el-check-tag :checked="editor.isActive('heading', { level: 1 })" type="danger" @change="editor.chain().focus().toggleHeading({ level: 1 }).run()">
-        <el-icon class="i-tabler:h-1" />
-      </el-check-tag>
-      <el-check-tag :checked="editor.isActive('heading', { level: 2 })" type="danger" @change="editor.chain().focus().toggleHeading({ level: 2 }).run()">
-        <el-icon class="i-tabler:h-2" />
-      </el-check-tag>
-      <el-check-tag :checked="editor.isActive('heading', { level: 3 })" type="danger" @change="editor.chain().focus().toggleHeading({ level: 3 }).run()">
-        <el-icon class="i-tabler:h-3" />
-      </el-check-tag>
-      <el-check-tag :checked="editor.isActive('highlight')" type="warning" @change="editor.chain().focus().toggleHighlight().run()">
-        <el-icon class="i-tabler:highlight" />
-      </el-check-tag>
-    </div>
+    <el-scrollbar>
+      <div class="whitespace-nowrap pb-1 space-x-1">
+        <el-check-tag :checked="editor.isActive('bold')" @change="editor.chain().focus().toggleBold().run()">
+          <el-icon class="i-tabler:bold" />
+        </el-check-tag>
+        <el-check-tag :checked="editor.isActive('italic')" @change="editor.chain().focus().toggleItalic().run()">
+          <el-icon class="i-tabler:italic" />
+        </el-check-tag>
+        <el-check-tag :checked="editor.isActive('underline')" @change="editor.chain().focus().toggleUnderline().run()">
+          <el-icon class="i-tabler:underline" />
+        </el-check-tag>
+        <el-check-tag :checked="editor.isActive('bulletList')" type="success" @change="editor.chain().focus().toggleBulletList().run()">
+          <el-icon class="i-tabler:list" />
+        </el-check-tag>
+        <el-check-tag :checked="editor.isActive('orderedList')" type="success" @change="editor.chain().focus().toggleOrderedList().run()">
+          <el-icon class="i-tabler:list-numbers" />
+        </el-check-tag>
+        <el-check-tag :checked="editor.isActive('heading', { level: 1 })" type="danger" @change="editor.chain().focus().toggleHeading({ level: 1 }).run()">
+          <el-icon class="i-tabler:h-1" />
+        </el-check-tag>
+        <el-check-tag :checked="editor.isActive('heading', { level: 2 })" type="danger" @change="editor.chain().focus().toggleHeading({ level: 2 }).run()">
+          <el-icon class="i-tabler:h-2" />
+        </el-check-tag>
+        <el-check-tag :checked="editor.isActive('heading', { level: 3 })" type="danger" @change="editor.chain().focus().toggleHeading({ level: 3 }).run()">
+          <el-icon class="i-tabler:h-3" />
+        </el-check-tag>
+        <el-check-tag :checked="editor.isActive('highlight')" type="warning" @change="editor.chain().focus().toggleHighlight().run()">
+          <el-icon class="i-tabler:highlight" />
+        </el-check-tag>
+      </div>
+    </el-scrollbar>
     <el-scrollbar max-height="200px" class="editor-scrollbar">
       <EditorContent
         :editor="editor"

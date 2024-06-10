@@ -21,8 +21,8 @@
           @keyup.enter="form.schoolId && form.password ? login() : () => { }"
         />
       </el-form-item>
-      <el-form-item class="m-0">
-        <el-button class="ml-auto" color="#15803d" :loading="isPending" @click="login">
+      <el-form-item>
+        <el-button color="#15803d" :loading="isPending" @click="login">
           登录
         </el-button>
       </el-form-item>
