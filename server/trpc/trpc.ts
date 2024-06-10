@@ -40,6 +40,8 @@ export const middleware = t.middleware;
 export const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   if (!ctx.user)
     throw new TRPCError({ code: 'UNAUTHORIZED', message: '用户未登录' });
+  else if (ctx.user === 'ERR_JWT_EXPIRED')
+    throw new TRPCError({ code: 'UNAUTHORIZED', message: '登录已过期' });
 
   return next({
     ctx: {

@@ -12,8 +12,15 @@ export async function useErrorHandler(err: unknown): Promise<void> {
         useMessage({ message: issue.message, type: 'error' });
     } else {
       useMessage({ message: err.message, type: 'error' });
-      if (err.message === '用户未登录')
+      if (err.message === '用户未登录') {
         onNuxtReady(() => navigateTo('/user/login'));
+      } else if (err.message === '登录已过期') {
+        onNuxtReady(() => {
+          const userStore = useUserStore();
+          userStore.logout();
+          navigateTo('/user/login');
+        });
+      }
     }
   } else {
     useMessage({ message: '未知错误', type: 'error' });

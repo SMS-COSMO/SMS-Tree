@@ -43,7 +43,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 interface CreateContextOptions {
-  user?: TRawUser;
+  user?: TRawUser | 'ERR_JWT_EXPIRED';
   seiueToken?: string;
 }
 
