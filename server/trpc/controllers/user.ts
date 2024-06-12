@@ -85,7 +85,7 @@ export class UserController {
 
     if (newPassword === oldPassword)
       throw new TRPCError({ code: 'BAD_REQUEST', message: '新密码不能与旧密码相同' });
-    if (!await bcrypt.compare(oldPassword, targetUser.password))
+    if (!['admin', 'teacher'].includes(user.role) && !await bcrypt.compare(oldPassword, targetUser.password))
       throw new TRPCError({ code: 'BAD_REQUEST', message: '旧密码不正确' });
 
     await db.update(users).set({ password: await bcrypt.hash(newPassword, 8) }).where(eq(users.id, id));

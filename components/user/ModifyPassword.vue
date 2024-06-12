@@ -7,7 +7,7 @@
       class="mx-auto max-w-[500px]"
       :label-position="device.isMobileOrTablet ? 'top' : 'right'"
     >
-      <el-form-item prop="oldPassword">
+      <el-form-item v-if="userStore.role === 'student'" prop="oldPassword">
         <div>
           <el-icon class="i-tabler:lock" />
           原密码
@@ -48,6 +48,7 @@ const props = defineProps<{
 }>();
 const { $api } = useNuxtApp();
 const device = useDevice();
+const userStore = useUserStore();
 
 const formRef = ref<FormInstance>();
 const form = reactive({
