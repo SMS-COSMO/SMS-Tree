@@ -14,21 +14,24 @@
         {{ user.schoolId }}
       </span>
     </div>
-
-    <el-button @click="changeGroupDialog = true">
-      移动至其他小组
-    </el-button>
-    <template v-if="leader === user.id">
-      <el-button type="primary" @click="removeLeader({ groupId })">
-        取消组长
-      </el-button>
+    <select-group-from-class v-model="newGroupId" :class-id="classId" />
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button :loading="isPending" @click="changeGroup({ userId: user.id, oldGroupId: groupId, newGroupId })">
+          移动
+        </el-button>
+        <template v-if="leader === user.id">
+          <el-button type="primary" @click="removeLeader({ groupId })">
+            取消组长
+          </el-button>
+        </template>
+        <template v-else>
+          <el-button type="primary" @click="becomeLeader({ userId: user.id, groupId })">
+            设为组长
+          </el-button>
+        </template>
+      </div>
     </template>
-    <template v-else>
-      <el-button type="primary" @click="becomeLeader({ userId: user.id, groupId })">
-        设为组长
-      </el-button>
-    </template>
-    <ChangeGroup v-model="changeGroupDialog" :user-id="user.id" :class-id="classId" :old-group-id="groupId" />
   </el-dialog>
 </template>
 
@@ -41,10 +44,10 @@ defineProps<{
 
 const user = defineModel<TMinimalUser | undefined>();
 const showDialog = computed(() => user.value !== undefined);
-const changeGroupDialog = ref(false);
 
 const { $api } = useNuxtApp();
 const queryClient = useQueryClient();
+const newGroupId = ref();
 
 const { mutate: becomeLeader } = useMutation({
   mutationFn: $api.group.setLeader.mutate,
@@ -60,6 +63,15 @@ const { mutate: removeLeader } = useMutation({
   onSuccess: (message) => {
     queryClient.invalidateQueries({ queryKey: ['class.info'] });
     useMessage({ message, type: 'success' });
+  },
+  onError: err => useErrorHandler(err),
+});
+
+const { mutate: changeGroup, isPending } = useMutation({
+  mutationFn: $api.group.change.mutate,
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['class.info'] });
+    useMessage({ message: '修改成功', type: 'success' });
   },
   onError: err => useErrorHandler(err),
 });
