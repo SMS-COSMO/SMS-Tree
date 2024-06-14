@@ -4,7 +4,7 @@
     v-model="showDialog"
     title="用户操作"
     width="500"
-    @close="user = undefined"
+    @close="user = undefined; edited = false"
   >
     <div class="mb-4 flex bg-slate-50 p-3 rounded">
       <span class="text-[16px]">
@@ -17,16 +17,20 @@
     <select-group-from-class v-model="newGroupId" :class-id="classId" />
     <template #footer>
       <div class="dialog-footer">
-        <el-button :loading="isPending" @click="changeGroup({ userId: user.id, oldGroupId: groupId, newGroupId })">
+        <el-button
+          :loading="isPending"
+          :disabled="newGroupId === groupId"
+          @click="changeGroup({ userId: user.id, oldGroupId: groupId, newGroupId }); edited = true"
+        >
           移动
         </el-button>
         <template v-if="leader === user.id">
-          <el-button type="primary" @click="removeLeader({ groupId })">
+          <el-button type="primary" @click="removeLeader({ groupId }); edited = true">
             取消组长
           </el-button>
         </template>
         <template v-else>
-          <el-button type="primary" @click="becomeLeader({ userId: user.id, groupId })">
+          <el-button type="primary" @click="becomeLeader({ userId: user.id, groupId }); edited = true">
             设为组长
           </el-button>
         </template>
@@ -43,7 +47,8 @@ defineProps<{
 }>();
 
 const user = defineModel<TMinimalUser | undefined>();
-const showDialog = computed(() => user.value !== undefined);
+const edited = ref(false);
+const showDialog = computed(() => (user.value !== undefined && edited?.value === false) ? true : undefined);
 
 const { $api } = useNuxtApp();
 const queryClient = useQueryClient();
