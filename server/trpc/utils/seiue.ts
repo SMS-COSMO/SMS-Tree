@@ -18,21 +18,10 @@ export function cookiesParser(cookies: string[]) {
 export class Seiue {
   private accessToken: string;
   private activeReflectionId: number;
-  private fetcher: typeof ofetch;
 
   constructor({ accessToken, activeReflectionId }: TDirectCredentials) {
     this.accessToken = accessToken;
     this.activeReflectionId = activeReflectionId;
-    this.fetcher = ofetch.create({
-      headers: {
-        'authorization': `Bearer ${this.accessToken}`,
-        'x-reflection-id': this.activeReflectionId.toString(),
-        'x-school-id': '282',
-        'referer': env.SEIUE_CHALK_URL,
-      },
-      retry: 2,
-      retryDelay: 50,
-    });
   }
 
   static async init(credentials: TCredentials): Promise<Seiue> {
