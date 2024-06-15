@@ -18,6 +18,9 @@ export default defineNuxtPlugin(() => {
             'x-seiue-token': useSeiueStore().accessToken,
           };
         },
+        fetch: (url, options) => {
+          return fetch(url, { ...options, credentials: 'omit' });
+        },
       }),
     ],
     transformer: superjson,
