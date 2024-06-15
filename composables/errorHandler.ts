@@ -16,8 +16,8 @@ export async function useErrorHandler(err: unknown): Promise<void> {
         onNuxtReady(() => navigateTo('/user/login'));
       } else if (err.message === '登录已过期') {
         onNuxtReady(() => {
-          const userStore = useUserStore();
-          userStore.logout();
+          useUserStore().logout();
+          useSeiueStore().logout();
           navigateTo('/user/login');
         });
       }
