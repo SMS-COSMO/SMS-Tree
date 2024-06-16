@@ -15,12 +15,12 @@
     </el-alert>
 
     <div v-loading="isFetching" element-loading-text="正在获取班级信息...">
-      <el-checkbox-group v-model="selectedClasses">
+      <el-checkbox-group v-model="selectedClassIds">
         <el-checkbox
           v-for="item in classList"
           :key="item.id"
           :label="item.name"
-          :value="{ classId: item.id, name: item.name }"
+          :value="item.id"
           size="large"
           checked
         >
@@ -55,5 +55,13 @@ const { data: classList, isFetching } = useQuery({
   queryFn: () => $api.seiue.classList.query({ semesterId: props.semesterId }),
 });
 
-const selectedClasses = ref<{ classId: number; name: string }[]>([]);
+const selectedClassIds = ref<number[]>([]);
+const selectedClasses = computed(() => {
+  return (classList.value ?? []).reduce((acc, cur) => {
+    if (selectedClassIds.value.includes(cur.id)) {
+      acc.push({ classId: cur.id, name: cur.name });
+    }
+    return acc;
+  }, [] as { classId: number; name: string }[]);
+});
 </script>
