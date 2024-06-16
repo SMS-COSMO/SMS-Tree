@@ -42,9 +42,10 @@ const defaultCodeIcon = {
 };
 
 export default defineAppConfig({
-  shadcnDocs: () => ({
+  shadcnDocs: {
     site: {
       name: 'SMS-Tree 项目帮助文档',
+      description: 'Beautifully designed Nuxt Content template built with shadcn-vue. Customizable. Compatible. Open Source.',
     },
     header: {
       title: 'SMS-Tree 项目帮助文档',
@@ -86,5 +87,5 @@ export default defineAppConfig({
       enable: true,
       inAside: false,
     },
-  }),
+  },
 });

@@ -1,1 +1,3 @@
 title: 用户指南
+icon: lucide:user
+navigation.redirect: /user/introduction/intro
