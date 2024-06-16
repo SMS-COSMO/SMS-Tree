@@ -45,6 +45,7 @@ if (process.env.NODE_ENV !== 'production') {
 interface CreateContextOptions {
   user?: TRawUser | 'ERR_JWT_EXPIRED';
   seiueToken?: string;
+  seiueReflectionId?: string;
 }
 
 /**
@@ -57,6 +58,7 @@ export function createInnerContext(opts: CreateContextOptions) {
     db,
     user: opts.user,
     seiueToken: opts.seiueToken,
+    seiueReflectionId: opts.seiueReflectionId ? Number.parseInt(opts.seiueReflectionId) : undefined,
     s3Controller,
     userController,
     noteController,
@@ -87,8 +89,9 @@ export const ctl = {
 export async function createContext(event: H3Event) {
   const header = getRequestHeader(event, 'Authorization');
   const seiueToken = getRequestHeader(event, 'x-seiue-token');
+  const seiueReflectionId = getRequestHeader(event, 'x-seiue-reflection-id');
   const user = await userController.getUserFromHeader(header);
-  return createInnerContext({ user, seiueToken });
+  return createInnerContext({ user, seiueToken, seiueReflectionId });
 }
 
 export type Context = inferAsyncReturnType<typeof createContext>;

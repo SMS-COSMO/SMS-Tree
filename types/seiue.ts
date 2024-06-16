@@ -28,3 +28,40 @@ export interface TSeiueUser {
   // outer_id?: string;
   // deleted_at?: string;
 }
+
+export interface TSeiueSemester {
+  id: number;
+  name: string;
+  is_current: boolean;
+}
+
+export type TSeiueSemesterList = TSeiueSemester[];
+
+export interface TSeiueClass {
+  id: number;
+  name: string;
+  extra_fields: {
+    subject_name: string;
+  };
+}
+
+export type TSeiueClassList = TSeiueClass[];
+
+export interface TSeiueClassMember {
+  reflection: {
+    id: number;
+    admin_classes: string[];
+    usin: string;
+    name: string;
+    grade: {
+      id: number;
+      name: string;
+    };
+    graduates_in: {
+      id: number;
+      name: string;
+    };
+  };
+}
+
+export type TSeiueClassMemberList = TSeiueClassMember[];

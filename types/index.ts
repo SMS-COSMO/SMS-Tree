@@ -67,3 +67,9 @@ export interface TMinimalUser {
   schoolId: string;
   id: string;
 }
+
+export type TImportDataResult = {
+  classId: number;
+  name: string;
+  success: boolean;
+}[];

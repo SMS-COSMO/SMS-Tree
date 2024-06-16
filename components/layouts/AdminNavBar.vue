@@ -30,13 +30,9 @@
           <el-icon class="i-tabler:trash-x" />
           删除班级
         </el-menu-item>
-        <el-menu-item index="/admin/user/import">
+        <el-menu-item index="/admin/import">
           <el-icon class="i-tabler:users" />
-          导入新生
-        </el-menu-item>
-        <el-menu-item index="/admin/class/import">
-          <el-icon class="i-tabler:school" />
-          导入班级
+          导入学生数据
         </el-menu-item>
       </el-menu-item-group>
 
@@ -87,7 +83,7 @@ const { $api } = useNuxtApp();
 const enabled = computed(() => seiueStore.loggedIn);
 const { data } = useQuery({
   queryKey: ['seiue.me'],
-  queryFn: () => $api.seiue.me.query(),
+  queryFn: () => $api.seiue.me.query(), // TODO: refresh token
   enabled,
 });
 </script>

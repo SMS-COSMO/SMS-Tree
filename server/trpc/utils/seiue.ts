@@ -3,7 +3,15 @@
  */
 import { ofetch } from 'ofetch';
 import { env } from '~/server/env';
-import type { TCredentials, TDirectCredentials, TSeiueAuthResponse, TSeiueUser } from '~/types/seiue';
+import type {
+  TCredentials,
+  TDirectCredentials,
+  TSeiueAuthResponse,
+  TSeiueClassList,
+  TSeiueClassMemberList,
+  TSeiueSemesterList,
+  TSeiueUser,
+} from '~/types/seiue';
 
 export function cookiesParser(cookies: string[]) {
   const parsedCookies: Record<string, string> = {};
@@ -99,5 +107,64 @@ export class Seiue {
         'authorization': `Bearer ${accessToken}`,
       },
     });
+  }
+}
+
+export class SeiueDataHelper {
+  private seiue: Seiue;
+  private fetcher: typeof ofetch;
+
+  constructor(seiue: Seiue) {
+    this.seiue = seiue;
+    const user = this.seiue.user();
+    this.fetcher = ofetch.create({
+      headers: {
+        'authorization': `Bearer ${user.accessToken}`,
+        'x-reflection-id': user.activeReflectionId.toString(),
+        'x-school-id': '282',
+        'x-role': 'teacher',
+      },
+      retry: 2,
+      retryDelay: 50,
+    });
+  }
+
+  async fetchSemesters() {
+    return await this.fetcher<TSeiueSemesterList>(`${env.SEIUE_API_URL}/chalk/system/semesters`, {
+      method: 'GET',
+      params: {
+        expand: 'is_current',
+        paginated: 0,
+        sort: '-start_at',
+      },
+    });
+  }
+
+  async fetchClassList(semesterId: number) {
+    const res = await this.fetcher<TSeiueClassList>(
+      `${env.SEIUE_API_URL}/chalk/group/reflections/${this.seiue.user().activeReflectionId}/groups`,
+      {
+        method: 'GET',
+        params: {
+          scope_in: `class.semester-${semesterId}`,
+          paginated: 0,
+        },
+      },
+    );
+    return res.filter(info => info.extra_fields.subject_name === '综合实践') as TSeiueClassList;
+  }
+
+  async fetchClassMembers(classId: number) {
+    return await this.fetcher<TSeiueClassMemberList>(
+      `${env.SEIUE_API_URL}/chalk/group/groups/${classId}/members`,
+      {
+        method: 'GET',
+        params: {
+          expand: 'reflection',
+          member_type: 'student',
+          paginated: 0,
+        },
+      },
+    );
   }
 }

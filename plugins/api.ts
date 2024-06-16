@@ -14,8 +14,8 @@ export default defineNuxtPlugin(() => {
         maxURLLength: 4000,
         headers() {
           return {
-            'Authorization': useUserStore().accessToken,
-            'x-seiue-token': useSeiueStore().accessToken,
+            Authorization: useUserStore().accessToken,
+            ...useSeiueStore().seiueHeaders(),
           };
         },
         fetch: (url, options) => {

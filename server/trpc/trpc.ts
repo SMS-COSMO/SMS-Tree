@@ -64,5 +64,16 @@ export function requireRoles(roles: string[]) {
   });
 }
 
+export const requireSeiueLoggedIn = t.middleware(({ ctx, next }) => {
+  if (!ctx.seiueToken || !ctx.seiueReflectionId)
+    throw new TRPCError({ code: 'UNAUTHORIZED', message: '请登陆希悦' });
+  return next({
+    ctx: {
+      seiueToken: ctx.seiueToken,
+      seiueReflectionId: ctx.seiueReflectionId,
+    },
+  });
+});
+
 export const publicProcedure = t.procedure;
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);

@@ -6,6 +6,15 @@ export const useSeiueStore = defineStore('seiue', () => {
   const activeReflectionId = ref<number>();
   const cookies = ref<Record<string, string>>();
 
+  const seiueHeaders = () => {
+    if (!accessToken.value || !activeReflectionId.value)
+      return {};
+    return {
+      'x-seiue-token': accessToken.value,
+      'x-seiue-reflection-id': activeReflectionId.value.toString(),
+    };
+  };
+
   const login = async (res: {
     accessToken: string;
     activeReflectionId: number;
@@ -15,6 +24,19 @@ export const useSeiueStore = defineStore('seiue', () => {
     accessToken.value = res.accessToken;
     activeReflectionId.value = res.activeReflectionId;
     cookies.value = res.cookies;
+  };
+
+  const refreshToken = async () => {
+    if (!cookies.value)
+      return false;
+    const { $api } = useNuxtApp();
+    const res = await $api.seiue.token.mutate({
+      cookies: cookies.value,
+    });
+    if (!res)
+      return false;
+    accessToken.value = res.access_token;
+    return true;
   };
 
   const logout = () => {
@@ -29,6 +51,8 @@ export const useSeiueStore = defineStore('seiue', () => {
     accessToken,
     activeReflectionId,
     cookies,
+    seiueHeaders,
+    refreshToken,
     login,
     logout,
   };
