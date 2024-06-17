@@ -39,11 +39,17 @@ const props = withDefaults(defineProps<{
 const uploading = defineModel<boolean>('uploading');
 
 const attachmentIdList = defineModel<string[]>({ default: [] });
+const fileList = ref<UploadFiles>([]);
+
+watch(attachmentIdList, (v) => {
+  if (!v.length)
+    fileList.value = [];
+});
+
 const { $api } = useNuxtApp();
 
 const fileUidToAttachmentId = new Map<number, string>();
 
-const fileList = ref<UploadFiles>([]);
 // Get file with upload meta data
 function getFile(rawFile: UploadRawFile): UploadFile | undefined {
   return fileList.value.find(file => file.uid === rawFile.uid);

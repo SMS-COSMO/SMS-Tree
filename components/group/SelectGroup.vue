@@ -42,6 +42,12 @@ watch(cascaderValue, (v) => {
     groupId.value = v[v?.length - 1];
 });
 
+// Reset cascader when modelValue changes
+watch(groupId, (v) => {
+  if (v === '')
+    cascaderValue.value = [];
+});
+
 const { data: classList, suspense: classListSuspense } = useQuery({
   queryKey: ['class.list'],
   queryFn: () => $api.class.list.query(),

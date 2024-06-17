@@ -21,4 +21,10 @@ watch(cascaderValue, (v: any) => {
   if (v)
     model.value = v[1] ?? 0;
 });
+
+// Reset cascader when modelValue changes
+watch(model, (v) => {
+  if (v === -1)
+    cascaderValue.value = v;
+});
 </script>
