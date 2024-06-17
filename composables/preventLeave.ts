@@ -1,10 +1,11 @@
 export function usePreventLeave(form: any) {
-  let changed = false;
-  watch(form, () => changed = true);
+  const changed = ref(false);
+  const hasReset = ref(false);
+  watch(form, () => changed.value = true);
 
   onMounted(() => {
     window.onbeforeunload = () => {
-      if (changed)
+      if (!hasReset.value && changed.value)
         return 'Are you sure you want to lose unsaved changes?';
     };
   });
@@ -14,7 +15,7 @@ export function usePreventLeave(form: any) {
   });
 
   onBeforeRouteLeave(async () => {
-    if (changed) {
+    if (!hasReset.value && changed.value) {
       try {
         await ElMessageBox.confirm(
           '修改未提交，确定要离开吗？',
@@ -26,4 +27,10 @@ export function usePreventLeave(form: any) {
       }
     }
   });
+
+  function reset() {
+    hasReset.value = true;
+  };
+
+  return { reset };
 }

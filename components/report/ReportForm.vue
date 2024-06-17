@@ -48,7 +48,7 @@ const form = reactive<TReportCreateForm>({
   documentFile: [],
   presentationFile: [],
 });
-usePreventLeave(form);
+const { reset } = usePreventLeave(form);
 
 const rules = reactive<FormRules<TReportCreateForm>>({
   documentFile: [{ required: true, message: '请上传报告文档' }],
@@ -100,6 +100,7 @@ async function create(submittedForm: FormInstance | undefined) {
 
         queryClient.invalidateQueries({ queryKey: ['group.info'] });
         useMessage({ message: `${props.type === 'create' ? '创建' : '修改'}成功`, type: 'success' });
+        resetForm(submittedForm);
       } catch (err) {
         useErrorHandler(err);
       }
@@ -108,5 +109,12 @@ async function create(submittedForm: FormInstance | undefined) {
       useMessage({ message: '表单内有错误，请修改后再提交', type: 'error' });
     }
   });
+}
+
+function resetForm(formEl: FormInstance | undefined) {
+  if (!formEl)
+    return;
+  formEl.resetFields();
+  reset();
 }
 </script>

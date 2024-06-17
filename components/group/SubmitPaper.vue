@@ -93,7 +93,7 @@ const rules = reactive<FormRules<TPaperCreateSafeForm>>({
 const buttonLoading = ref(false);
 const uploading = ref(false);
 
-usePreventLeave(form);
+const { reset } = usePreventLeave(form);
 
 const queryClient = useQueryClient();
 async function create(submittedForm: FormInstance | undefined) {
@@ -111,6 +111,7 @@ async function create(submittedForm: FormInstance | undefined) {
         });
         queryClient.invalidateQueries({ queryKey: ['group.info'] });
         useMessage({ message: '创建成功', type: 'success' });
+        resetForm(submittedForm);
       } catch (err) {
         useErrorHandler(err);
       }
@@ -119,5 +120,12 @@ async function create(submittedForm: FormInstance | undefined) {
       useMessage({ message: '表单内有错误，请修改后再提交', type: 'error' });
     }
   });
+}
+
+function resetForm(formEl: FormInstance | undefined) {
+  if (!formEl)
+    return;
+  formEl.resetFields();
+  reset();
 }
 </script>

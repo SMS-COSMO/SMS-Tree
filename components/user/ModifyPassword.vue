@@ -85,6 +85,7 @@ const { mutate: changePassword, isPending } = useMutation({
   mutationFn: $api.user.modifyPassword.mutate,
   onSuccess: (message) => {
     useMessage({ message, type: 'success' });
+    resetForm(formRef.value);
   },
   onError: err => useErrorHandler(err),
 });
@@ -104,5 +105,11 @@ async function modify(formEl: FormInstance | undefined) {
       });
     }
   });
+}
+
+function resetForm(formEl: FormInstance | undefined) {
+  if (!formEl)
+    return;
+  formEl.resetFields();
 }
 </script>

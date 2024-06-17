@@ -58,7 +58,7 @@ const form = reactive({
   role: userInfo.value?.role ?? 'student',
   classId: userInfo.value?.classId ?? '',
 });
-usePreventLeave(form);
+const { reset } = usePreventLeave(form);
 
 const rules = reactive<FormRules<TUserRegister>> ({
   username: [
@@ -68,7 +68,10 @@ const rules = reactive<FormRules<TUserRegister>> ({
 
 const { mutate: modifyMutation, isPending } = useMutation({
   mutationFn: $api.user.modify.mutate,
-  onSuccess: message => useMessage({ message, type: 'success' }),
+  onSuccess: (message) => {
+    useMessage({ message, type: 'success' });
+    resetForm(formRef.value);
+  },
   onError: err => useErrorHandler(err),
 });
 
@@ -82,5 +85,12 @@ async function modify(submittedForm: FormInstance | undefined) {
     else
       useMessage({ message: '表单内有错误，请修改后再提交', type: 'error' });
   });
+}
+
+function resetForm(formEl: FormInstance | undefined) {
+  if (!formEl)
+    return;
+  formEl.resetFields();
+  reset();
 }
 </script>

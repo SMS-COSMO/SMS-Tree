@@ -101,8 +101,8 @@ const form = reactive<TPaperCreateForm>({
   paperFile: [],
   attachments: [],
 });
-usePreventLeave(form);
 
+const { reset } = usePreventLeave(form);
 const uploading = ref(false);
 
 const rules = reactive<FormRules<TPaperCreateForm>>({
@@ -138,6 +138,7 @@ async function create(submittedForm: FormInstance | undefined) {
           paperId,
         });
         useMessage({ message: '创建成功', type: 'success' });
+        resetForm(submittedForm);
       } catch (err) {
         useErrorHandler(err);
       }
@@ -146,5 +147,12 @@ async function create(submittedForm: FormInstance | undefined) {
       useMessage({ message: '表单内有错误，请修改后再提交', type: 'error' });
     }
   });
+}
+
+function resetForm(formEl: FormInstance | undefined) {
+  if (!formEl)
+    return;
+  formEl.resetFields();
+  reset();
 }
 </script>

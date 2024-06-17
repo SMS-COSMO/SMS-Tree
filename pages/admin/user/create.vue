@@ -62,7 +62,7 @@ const form = reactive<TUserRegister>({
   classId: '',
   groupId: '',
 });
-usePreventLeave(form);
+const { reset } = usePreventLeave(form);
 
 const rules = reactive<FormRules<TUserRegister>>({
   schoolId: [
@@ -83,7 +83,10 @@ const rules = reactive<FormRules<TUserRegister>>({
 
 const { mutate: registerMutation, isPending } = useMutation({
   mutationFn: $api.user.register.mutate,
-  onSuccess: message => useMessage({ message, type: 'success' }),
+  onSuccess: (message) => {
+    useMessage({ message, type: 'success' });
+    resetForm(formRef.value);
+  },
   onError: err => useErrorHandler(err),
 });
 
@@ -97,5 +100,12 @@ async function register(submittedForm: FormInstance | undefined) {
     else
       useMessage({ message: '表单内有错误，请修改后再提交', type: 'error' });
   });
+}
+
+function resetForm(formEl: FormInstance | undefined) {
+  if (!formEl)
+    return;
+  formEl.resetFields();
+  reset();
 }
 </script>

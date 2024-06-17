@@ -62,7 +62,7 @@ const form = ref<TNoteCreateSafe>(props.oldNote ?? {
   reflections: '',
   time: new Date(),
 });
-usePreventLeave(form);
+const { reset } = usePreventLeave(form);
 
 const rules = reactive<FormRules<TNoteCreateSafe>>({
   title: [
@@ -100,6 +100,7 @@ const { mutate: submitNote, isPending: isSubmitPending } = useMutation({
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['group.info'] });
     useMessage({ message: '创建成功', type: 'success' });
+    resetForm(formRef.value);
   },
   onError: err => useErrorHandler(err),
 });
@@ -109,6 +110,7 @@ const { mutate: modifyNote, isPending: isModifyPending } = useMutation({
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['group.info'] });
     useMessage({ message: '修改成功', type: 'success' });
+    resetForm(formRef.value);
   },
   onError: err => useErrorHandler(err),
 });
@@ -134,5 +136,12 @@ async function submit(submittedForm: FormInstance | undefined) {
       useMessage({ message: '表单内有错误，请修改后再提交', type: 'error' });
     }
   });
+}
+
+function resetForm(formEl: FormInstance | undefined) {
+  if (!formEl)
+    return;
+  formEl.resetFields();
+  reset();
 }
 </script>

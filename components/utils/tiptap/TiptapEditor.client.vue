@@ -69,6 +69,10 @@ const editor = new Editor({
   },
 });
 
+watch(() => props.modelValue, (v) => {
+  editor.commands.setContent(v ? JSON.parse(v) : undefined);
+});
+
 function resetEditor() {
   editor.commands.clearContent(true);
 }
