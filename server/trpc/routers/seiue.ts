@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { eq } from 'drizzle-orm';
+import bcrypt from 'bcrypt';
+import { nanoid } from 'nanoid';
 import { protectedProcedure, requireRoles, requireSeiueLoggedIn, router } from '../trpc';
 import { Seiue, SeiueDataHelper } from '../utils/seiue';
 import { db } from '~/server/db/db';
@@ -80,16 +82,34 @@ export const seiueRouter = router({
   importData: protectedProcedure
     .use(requireRoles(['admin', 'teacher']))
     .use(requireSeiueLoggedIn)
-    .input(z.object({ classId: z.number(), name: z.string() }).array())
+    .input(z.array(
+      z.object({
+        classId: z.number(),
+        name: z.string(),
+      }),
+    ))
     .mutation(async ({ ctx, input }) => {
       if (input.length === 0)
         throw new TRPCError({ code: 'BAD_REQUEST', message: '请至少选择一个班级' });
 
       const seiue = new Seiue({ accessToken: ctx.seiueToken, activeReflectionId: ctx.seiueReflectionId });
       const dataHelper = new SeiueDataHelper(seiue);
-      const promiseArray: Promise<{ classId: number; name: string; success: boolean }>[] = [];
-      const classId2Name = Object.fromEntries(input.map(item => [item.classId, item.name])) as Record<number, string>;
+      const promiseArray: Promise<{
+        classId: number;
+        name: string;
+        passwords: {
+          schoolId: string;
+          username: string;
+          password: string;
+        }[];
+        success: boolean;
+      }>[] = [];
+
+      const classId2Name = Object.fromEntries(
+        input.map(item => [item.classId, item.name]),
+      ) as Record<number, string>;
       const classIds = Object.keys(classId2Name) as unknown as number[];
+
       for (const classId of classIds) {
         const classMembers = await dataHelper.fetchClassMembers(classId);
         const transactionPromise = db.transaction(async (trx) => {
@@ -107,34 +127,61 @@ export const seiueRouter = router({
               stateTimetable: [],
             }).returning().get();
 
+            // store created password
+            const passwords: {
+              schoolId: string;
+              username: string;
+              password: string;
+            }[] = [];
+
             // 2. update class <-> student relations (will create new students if necessary)
             for (const member of classMembers) {
               const existingStudent = await trx.query.users.findFirst({ where: eq(users.schoolId, member.reflection.usin) });
               if (existingStudent) {
-              // delete existing class <-> student relations
+                // delete existing class <-> student relations
                 await trx.delete(classesToStudents).where(eq(classesToStudents.userId, existingStudent.id));
                 await trx.insert(classesToStudents).values({
                   classId: newClass.id,
                   userId: existingStudent.id,
                 });
               } else {
-              // create a new student
+                const password = nanoid(12);
+                const hash = await bcrypt.hash(password, 8);
+                // create a new student
                 const newStudent = await trx.insert(users).values({
                   username: member.reflection.name,
                   schoolId: member.reflection.usin,
-                  password: '', // TODO: generate a random password
+                  password: hash,
                   role: 'student',
                 }).returning().get();
+
+                passwords.push({
+                  schoolId: member.reflection.usin,
+                  username: member.reflection.name,
+                  password,
+                });
+
+                // create user to class relation
                 await trx.insert(classesToStudents).values({
                   classId: newClass.id,
                   userId: newStudent.id,
                 });
               }
             }
-            return { classId, name: classId2Name[classId], success: true };
+            return {
+              classId,
+              name: classId2Name[classId],
+              passwords,
+              success: true,
+            };
           } catch {
             trx.rollback();
-            return { classId, name: classId2Name[classId], success: false };
+            return {
+              classId,
+              name: classId2Name[classId],
+              passwords: [],
+              success: false,
+            };
           }
         });
         promiseArray.push(transactionPromise);

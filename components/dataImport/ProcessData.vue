@@ -18,24 +18,23 @@
         <el-button color="#15803d" @click="$emit('reset')">
           开始新的导入
         </el-button>
+        {{ importResult }}
       </template>
-      <template v-if="!isSuccess && failedClassNames.length" #sub-title>
-        <div class="flex items-center justify-center gap-4">
-          <div>
-            <h4>导入失败的班级</h4>
-            <div class="flex flex-wrap gap-2">
-              <el-tag v-for="className in failedClassNames" :key="className" type="danger">
-                {{ className }}
-              </el-tag>
-            </div>
+      <template #sub-title>
+        <div v-if="!isSuccess && failedClassNames.length">
+          <h4>导入失败的班级</h4>
+          <div class="flex flex-wrap gap-2">
+            <el-tag v-for="className in failedClassNames" :key="className" type="danger">
+              {{ className }}
+            </el-tag>
           </div>
-          <div>
-            <h4>导入成功的班级</h4>
-            <div class="flex flex-wrap gap-2">
-              <el-tag v-for="className in successClassNames" :key="className" type="success">
-                {{ className }}
-              </el-tag>
-            </div>
+        </div>
+        <div v-else-if="isSuccess && successClassNames.length">
+          <h4>导入成功的班级</h4>
+          <div class="flex flex-wrap justify-center gap-2">
+            <el-tag v-for="className in successClassNames" :key="className" type="success">
+              {{ className }}
+            </el-tag>
           </div>
         </div>
       </template>

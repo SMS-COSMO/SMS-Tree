@@ -68,8 +68,4 @@ export interface TMinimalUser {
   id: string;
 }
 
-export type TImportDataResult = {
-  classId: number;
-  name: string;
-  success: boolean;
-}[];
+export type TImportDataResult = RouterOutput['seiue']['importData'];
