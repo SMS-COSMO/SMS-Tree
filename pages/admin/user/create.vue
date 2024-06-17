@@ -14,7 +14,7 @@
         <el-input v-model="form.username" />
       </el-form-item>
       <el-form-item prop="password" label="密码">
-        <el-input v-model="form.password" type="password" show-password />
+        <el-input v-model="form.password" />
       </el-form-item>
       <el-form-item prop="role" label="用户权限">
         <client-only>

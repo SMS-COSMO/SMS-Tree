@@ -36,10 +36,8 @@
       </el-main>
     </el-container>
   </el-card>
-  <el-card v-else class="w-full">
-    <span class="text-lg">
-      请先在侧栏登录希悦
-    </span>
+  <el-card v-else class="h-content w-full">
+    <SeiueLogin :router-back="false" />
   </el-card>
 </template>
 

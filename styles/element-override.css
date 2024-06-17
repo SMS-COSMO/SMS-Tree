@@ -193,6 +193,11 @@
   border-bottom-width: 2px !important;
 }
 
+.h-content>.el-card__body {
+  box-sizing: border-box;
+  height: 100%;
+}
+
 /* Alert */
 .el-alert {
   padding: 15px !important;

@@ -77,11 +77,6 @@ const selected = computed({
   padding: 15px;
 }
 
-.h-content>.el-card__body {
-  box-sizing: border-box;
-  height: 100%;
-}
-
 .content-enter-active,
 .content-leave-active {
   transition: opacity 0.1s ease;
