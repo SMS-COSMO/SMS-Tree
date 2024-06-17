@@ -1,6 +1,6 @@
 <template>
   <el-card v-if="seiueStore.loggedIn" class="h-full w-full">
-    <el-container class="my-4 h-full">
+    <el-container class="mx-auto my-4 h-full max-w-5xl">
       <el-header>
         <el-steps
           align-center

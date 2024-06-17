@@ -4,6 +4,10 @@
     :router="true"
     :default-active="$route.path"
   >
+    <el-menu-item index="/admin">
+      <el-icon class="i-tabler:home" />
+      管理主页
+    </el-menu-item>
     <el-menu-item index="/admin/scoring">
       <el-icon class="i-tabler:pencil" />
       批改论文

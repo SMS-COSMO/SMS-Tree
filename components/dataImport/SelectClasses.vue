@@ -6,7 +6,7 @@
     <el-alert
       v-if="!isFetching && classList && classList.length"
       title="注意"
-      type="error"
+      type="warning"
       :closable="false"
     >
       由于希悦所有班级中含有不需要的班级，请务必在希悦上查看班级信息以确认是否需要导入，并在下方取消勾选不需要的班级，否则可能导致数据导入失败。
@@ -30,6 +30,7 @@
     </div>
     <div class="w-full flex justify-between">
       <el-button @click="$emit('back')">
+        <el-icon class="i-tabler:arrow-left" />
         上一步
       </el-button>
       <el-button
@@ -37,6 +38,7 @@
         @click="$emit('next', selectedClasses)"
       >
         确认导入
+        <el-icon class="i-tabler:check" />
       </el-button>
     </div>
   </div>
