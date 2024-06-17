@@ -18,9 +18,6 @@ export default defineNuxtPlugin(() => {
             ...useSeiueStore().seiueHeaders(),
           };
         },
-        fetch: (url, options) => {
-          return fetch(url, { ...options, credentials: 'omit' });
-        },
       }),
     ],
     transformer: superjson,
