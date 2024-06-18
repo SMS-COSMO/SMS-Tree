@@ -1,7 +1,7 @@
 <template>
   <el-card>
     <template #header>
-      <el-icon class="i-tabler:user-circle" />
+      <el-icon class="i-tabler:id" />
       用户信息
     </template>
     <el-descriptions

@@ -13,6 +13,7 @@
   height: 45px !important;
   border: none !important;
   border-radius: 10px !important;
+  font-size: 16px !important;
 }
 
 .el-menu--vertical .el-menu-item {
@@ -384,6 +385,7 @@
 
 /* Descriptions */
 .el-descriptions__label {
+  display: block;
   font-weight: bold;
 }
 

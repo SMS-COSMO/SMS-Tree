@@ -88,7 +88,7 @@ const columns: Column<any>[] = [
   {
     key: 'op',
     dataKey: 'id',
-    width: 170,
+    width: 200,
     flexShrink: 1,
     fixed: TableV2FixedDir.RIGHT,
     align: 'right',
@@ -96,6 +96,7 @@ const columns: Column<any>[] = [
     cellRenderer: ({ cellData: id }) => (
       <>
         <ElButton size="small" onClick={() => navigateTo(`/admin/user/${id}?action=modify`)}>
+          <el-icon class="i-tabler:pencil" />
           修改
         </ElButton>
         <ElPopconfirm
@@ -109,6 +110,7 @@ const columns: Column<any>[] = [
           {{
             reference: () => (
               <ElButton size="small" type="danger">
+                <el-icon class="i-tabler:trash" />
                 删除
               </ElButton>
             ),

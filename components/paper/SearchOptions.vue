@@ -5,6 +5,7 @@
   </div>
 
   <el-divider content-position="left">
+    <el-icon class="i-tabler:object-scan" />
     搜索范围
   </el-divider>
   <client-only>
@@ -34,13 +35,16 @@
   <el-collapse-transition>
     <div v-if="modelValue.sortOption !== 'default'">
       <el-divider content-position="left">
-        排序
+        <el-icon class="i-tabler:filter" />
+        排序依据
       </el-divider>
       <el-radio-group v-model="modelValue.sortOption">
         <el-radio-button value="time">
+          <el-icon class="i-tabler:calendar-time" />
           时间
         </el-radio-button>
         <el-radio-button value="score">
+          <el-icon class="i-tabler:chart-bar" />
           分数
         </el-radio-button>
       </el-radio-group>
