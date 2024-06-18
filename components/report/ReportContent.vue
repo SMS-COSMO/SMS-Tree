@@ -9,10 +9,12 @@
   <el-tag type="info" disable-transitions>
     {{ report.createdAt.toLocaleDateString('zh-CN') }}
   </el-tag>
-  <div class="mb-2 mt-4 text-lg font-bold">
-    报告文档
-  </div>
-  <Preview :attachment="reportDocument" />
+  <template v-if="reportDocument">
+    <div class="mb-2 mt-4 text-lg font-bold">
+      报告文档
+    </div>
+    <Preview :attachment="reportDocument" />
+  </template>
   <div class="mb-2 mt-4 text-lg font-bold">
     报告PPT
   </div>

@@ -7,7 +7,7 @@
     :rules="type === 'create' ? rules : {}"
     label-width="120px"
   >
-    <el-form-item prop="documentFile" label="报告文档">
+    <el-form-item v-if="category !== 'concludingReport'" prop="documentFile" label="报告文档">
       <UploadFile
         v-model="form.documentFile"
         v-model:uploading="uploading"
