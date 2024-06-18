@@ -21,7 +21,7 @@
         {{ importResult }}
       </template>
       <template #sub-title>
-        <div v-if="!isSuccess && failedClassNames.length">
+        <div v-if="failedClassNames.length">
           <h4>导入失败的班级</h4>
           <div class="flex flex-wrap gap-2">
             <el-tag v-for="className in failedClassNames" :key="className" type="danger">
@@ -29,7 +29,7 @@
             </el-tag>
           </div>
         </div>
-        <div v-else-if="isSuccess && successClassNames.length">
+        <div v-if="successClassNames.length">
           <h4>导入成功的班级</h4>
           <div class="flex flex-wrap justify-center gap-2">
             <el-tag v-for="className in successClassNames" :key="className" type="success">
