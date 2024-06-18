@@ -47,6 +47,11 @@ export default defineAppConfig({
       name: 'SMS-Tree 项目帮助文档',
       description: 'Beautifully designed Nuxt Content template built with shadcn-vue. Customizable. Compatible. Open Source.',
     },
+    theme: {
+      customizable: true,
+      color: 'green',
+      radius: 0.5,
+    },
     header: {
       title: 'SMS-Tree 项目帮助文档',
       showTitle: false,
