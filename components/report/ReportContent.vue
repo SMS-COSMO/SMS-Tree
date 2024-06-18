@@ -36,7 +36,7 @@
     <el-button
       v-else-if="!report.read"
       color="#15803d"
-      @click="commentMutate({ id: report.id, comment, read: true }); modifyDialogVisible = false"
+      @click="commentMutate({ id: report.id, comment, read: true })"
     >
       完成批阅
     </el-button>
@@ -99,6 +99,7 @@ const { mutate: commentMutate } = useMutation({
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['class.info'] });
     useMessage({ message: '批阅成功', type: 'success' });
+    modifyDialogVisible.value = false;
   },
   onError: err => useErrorHandler(err),
 });

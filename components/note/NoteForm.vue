@@ -50,6 +50,8 @@ const props = defineProps<{
   oldNote?: TNote;
 }>();
 
+const emit = defineEmits(['reset']);
+
 const { $api } = useNuxtApp();
 const device = useDevice();
 const formRef = ref<FormInstance>();
@@ -115,6 +117,13 @@ const { mutate: modifyNote, isPending: isModifyPending } = useMutation({
   onError: err => useErrorHandler(err),
 });
 
+watch(() => props.oldNote, (v) => {
+  if (v) {
+    const { id: _, ...rest } = v;
+    form.value = rest;
+  }
+});
+
 onMounted(() => {
   if (props.oldNote) {
     const { id: _, ...rest } = props.oldNote;
@@ -143,5 +152,6 @@ function resetForm(formEl: FormInstance | undefined) {
     return;
   formEl.resetFields();
   reset();
+  emit('reset');
 }
 </script>

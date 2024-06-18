@@ -35,6 +35,11 @@ const props = defineProps<{
 const emit = defineEmits(['update:modelValue']);
 const l = ref(props.modelValue ?? ([...Array(5)].map((_, i) => i === 0 ? new Date() : undefined)));
 
+watch(() => props.modelValue, (v) => {
+  if (!v?.length)
+    l.value = ([...Array(5)].map((_, i) => i === 0 ? new Date() : undefined));
+});
+
 const classStateIcons = [
   'i-tabler-clock',
   'i-tabler:users',

@@ -20,17 +20,17 @@
         <el-button
           :loading="isPending"
           :disabled="newGroupId === groupId"
-          @click="changeGroup({ userId: user.id, oldGroupId: groupId, newGroupId }); edited = true"
+          @click="changeGroup({ userId: user.id, oldGroupId: groupId, newGroupId })"
         >
           移动
         </el-button>
         <template v-if="leader === user.id">
-          <el-button type="primary" @click="removeLeader({ groupId }); edited = true">
+          <el-button type="primary" @click="removeLeader({ groupId })">
             取消组长
           </el-button>
         </template>
         <template v-else>
-          <el-button type="primary" @click="becomeLeader({ userId: user.id, groupId }); edited = true">
+          <el-button type="primary" @click="becomeLeader({ userId: user.id, groupId })">
             设为组长
           </el-button>
         </template>
@@ -59,6 +59,7 @@ const { mutate: becomeLeader } = useMutation({
   onSuccess: (message) => {
     queryClient.invalidateQueries({ queryKey: ['class.info'] });
     useMessage({ message, type: 'success' });
+    edited.value = true;
   },
   onError: err => useErrorHandler(err),
 });
@@ -68,6 +69,7 @@ const { mutate: removeLeader } = useMutation({
   onSuccess: (message) => {
     queryClient.invalidateQueries({ queryKey: ['class.info'] });
     useMessage({ message, type: 'success' });
+    edited.value = true;
   },
   onError: err => useErrorHandler(err),
 });
@@ -77,6 +79,7 @@ const { mutate: changeGroup, isPending } = useMutation({
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['class.info'] });
     useMessage({ message: '修改成功', type: 'success' });
+    edited.value = true;
   },
   onError: err => useErrorHandler(err),
 });

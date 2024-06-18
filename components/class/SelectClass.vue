@@ -6,7 +6,6 @@
       :props="selectProps"
       filterable
       placeholder="请选择（输入可搜索）"
-      @change="emit('update:modelValue', selected)"
     />
     <template #fallback>
       <SelectPlaceholder />
@@ -17,18 +16,16 @@
 <script lang="ts" setup>
 import SelectPlaceholder from '../utils/SelectPlaceholder.vue';
 
-const props = withDefaults(defineProps<{
-  modelValue: string | undefined;
+withDefaults(defineProps<{
   role?: 'student' | 'teacher';
 }>(), {
   multiple: true,
   role: 'student',
 });
-const emit = defineEmits(['update:modelValue']);
+const selected = defineModel();
 
 const { $api } = useNuxtApp();
 
-const selected = ref(props.modelValue);
 const selectProps = {
   label: 'className',
   value: 'id',

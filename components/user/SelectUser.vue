@@ -11,7 +11,6 @@
       collapse-tags-tooltip
       filterable
       placeholder="请选择（输入可搜索）"
-      @change="emit('update:modelValue', selected)"
     >
       <template #default="{ item }">
         <span>
@@ -30,18 +29,16 @@
 import SelectPlaceholder from '../utils/SelectPlaceholder.vue';
 
 const props = withDefaults(defineProps<{
-  modelValue: string[] | string;
   multiple?: boolean;
   role?: 'student' | 'teacher';
 }>(), {
   multiple: true,
   role: 'student',
 });
-const emit = defineEmits(['update:modelValue']);
+const selected = defineModel();
 
 const { $api } = useNuxtApp();
 
-const selected = ref(props.modelValue);
 const selectProps = {
   label: 'username',
   value: 'id',

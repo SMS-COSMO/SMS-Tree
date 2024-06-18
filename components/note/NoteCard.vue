@@ -98,7 +98,7 @@
       draggable align-center
       title="修改活动记录"
     >
-      <NoteForm type="modify" :old-note="note" />
+      <NoteForm type="modify" :old-note="note" @reset="modifyDialogVisible = false" />
     </el-dialog>
   </client-only>
 </template>
