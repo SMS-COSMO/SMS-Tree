@@ -42,7 +42,7 @@ export const seiueRouter = router({
     .use(requireSeiueLoggedIn)
     .query(async ({ ctx }) => {
       if (!ctx.seiueToken)
-        throw new TRPCError({ code: 'UNAUTHORIZED', message: '请登陆希悦' });
+        throw new TRPCError({ code: 'UNAUTHORIZED', message: '请登录希悦' });
       return await Seiue.me(ctx.seiueToken);
     }),
 

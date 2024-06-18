@@ -81,7 +81,7 @@
     class="mt-4 w-full"
     @click="useLogout"
   >
-    退出登陆
+    退出登录
   </el-button>
 </template>
 

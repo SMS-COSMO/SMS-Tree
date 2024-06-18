@@ -2,7 +2,7 @@
   <div class="h-full flex">
     <el-card class="mx-auto w-xl self-center">
       <template #header>
-        登陆希悦账号
+        登录希悦账号
       </template>
       <el-form :label-position="device.isMobileOrTablet ? 'top' : 'right'">
         <el-form-item>

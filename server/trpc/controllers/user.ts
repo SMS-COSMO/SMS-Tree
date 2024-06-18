@@ -160,7 +160,7 @@ export class UserController {
       .where(and(eq(refreshTokens.token, refreshToken), eq(refreshTokens.owner, id)))
       .returning();
     if (!token[0])
-      throw new TRPCError({ code: 'UNAUTHORIZED', message: '请重新登陆' });
+      throw new TRPCError({ code: 'UNAUTHORIZED', message: '请重新登录' });
 
     const newRefreshToken = await this.auth.produceRefreshToken(id);
     const newAccessToken = await this.auth.produceAccessToken(id);

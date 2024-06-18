@@ -62,7 +62,7 @@
     <el-sub-menu v-if="seiueStore.loggedIn" index="1">
       <template #title>
         <NuxtImg src="/seiue.svg" class="mr-0.75 w-6" />
-        已登陆希悦
+        已登录希悦
       </template>
       <el-menu-item>
         <el-icon class="i-tabler:user-square-rounded" />
@@ -75,7 +75,7 @@
     </el-sub-menu>
     <el-menu-item v-else index="/admin/seiue/login">
       <NuxtImg src="/seiue.svg" class="mr-0.75 w-6" />
-      登陆希悦
+      登录希悦
     </el-menu-item>
   </el-menu>
 </template>

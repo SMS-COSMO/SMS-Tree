@@ -66,7 +66,7 @@ export function requireRoles(roles: string[]) {
 
 export const requireSeiueLoggedIn = t.middleware(({ ctx, next }) => {
   if (!ctx.seiueToken || !ctx.seiueReflectionId)
-    throw new TRPCError({ code: 'UNAUTHORIZED', message: '请登陆希悦' });
+    throw new TRPCError({ code: 'UNAUTHORIZED', message: '请登录希悦' });
   return next({
     ctx: {
       seiueToken: ctx.seiueToken,
