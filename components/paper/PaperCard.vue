@@ -4,10 +4,14 @@
     class="mb-2 cursor-pointer lg:mb-2.5 hover:border-color-[#D4D7DE]! hover:bg-hover-bg!"
     @click="navigateTo(`${isAdmin ? '/admin' : ''}/paper/${paper.id}`)"
   >
+    <!-- Card Row 1: Shows the status and category -->
     <el-row class="gap-[6px]">
       <el-tag v-if="paper?.isPublic !== undefined && !paper.isPublic" type="danger" disable-transitions>
         <el-icon class="i-tabler:pencil" />
         待批改
+      </el-tag>
+      <el-tag type="warning" disable-transitions>
+        {{ getCategoryName(paper?.category) }}
       </el-tag>
       <el-tag v-if="paper?.isFeatured" type="success" disable-transitions>
         <el-icon class="i-tabler:star" />
@@ -17,29 +21,37 @@
         <el-icon class="i-tabler:download" />
         可下载
       </el-tag>
-      <el-tag type="warning" disable-transitions>
-        {{ getCategoryName(paper?.category) }}
-      </el-tag>
-      <el-tag v-if="paper?.score" :type="useScoreColor(paper.score)" disable-transitions>
-        <el-icon class="i-tabler:chart-bar" />
-        分数：{{ paper.score }}
-      </el-tag>
-      <el-tag type="info" disable-transitions>
-        {{ paper?.createdAt?.toLocaleDateString('zh-CN') }}
-      </el-tag>
     </el-row>
+
+    <!-- Card Row 2: Shows the title -->
     <el-row class="mt-2 gap-2">
       <el-text class="break-normal font-bold text-xl!">
         {{ paper?.title }}
-      </el-text>
-      <el-text v-if="showAuthors && 'authors' in paper">
-        <GroupMembers :authors="paper.authors" type="text" :show-leader="false" />
       </el-text>
     </el-row>
     <el-row v-if="showAbstract && 'abstract' in paper" class="mt-2.5">
       <el-text size="small" :line-clamp="lineClamp" type="info" class="break-normal">
         {{ paper?.abstract }}
       </el-text>
+    </el-row>
+
+    <!-- Card Row 3: Shows the authors -->
+    <el-row class="mt-1">
+      <el-text v-if="showAuthors && 'authors' in paper">
+        <GroupMembers :authors="paper.authors" type="text" :show-leader="false" />
+      </el-text>
+    </el-row>
+
+    <!-- Card Row 4: Shows the sortable info -->
+    <el-row class="mt-2 gap-[6px]">
+      <el-tag v-if="paper?.score" :type="useScoreColor(paper.score)" disable-transitions>
+        <el-icon class="i-tabler:chart-bar" />
+        分数：{{ paper.score }}
+      </el-tag>
+      <el-tag type="info" disable-transitions>
+        <el-icon class="i-tabler:calendar-time" />
+        {{ paper?.createdAt?.toLocaleDateString('zh-CN') }}
+      </el-tag>
     </el-row>
   </CompactCard>
 </template>

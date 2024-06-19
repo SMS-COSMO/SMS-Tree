@@ -4,6 +4,7 @@
 }
 
 .el-menu--horizontal.el-menu {
+  box-shadow: var(--el-box-shadow-light) !important;
   height: 65px !important;
 }
 
