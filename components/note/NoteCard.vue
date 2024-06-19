@@ -1,6 +1,7 @@
 <template>
   <CompactCard class="mb-2 cursor-pointer lg:mb-2.5 hover:border-color-[#D4D7DE]! hover:bg-hover-bg!" @click="dialogVisible = true">
     <el-tag type="info" disable-transitions>
+      <el-icon class="i-tabler:calendar-time" />
       {{ note.time.toLocaleDateString('zh-CN') }}
     </el-tag>
     <div class="mt-1">

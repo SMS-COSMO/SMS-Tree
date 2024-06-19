@@ -14,11 +14,11 @@
     </el-menu-item>
     <el-menu-item index="/admin/class/list">
       <el-icon class="i-tabler:school" />
-      班级列表
+      班级管理
     </el-menu-item>
     <el-menu-item index="/admin/user/list">
       <el-icon class="i-tabler:users" />
-      学生列表
+      学生管理
     </el-menu-item>
     <el-sub-menu index="0">
       <template #title>

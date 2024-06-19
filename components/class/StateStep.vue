@@ -19,7 +19,10 @@
         </template>
         <template v-if="classInfo?.stateTimetable[s]" #description>
           <span class="text-xs md:text-sm">
-            {{ new Date(classInfo.stateTimetable[s]).toLocaleDateString('zh-CN') }}
+            {{ new Date(classInfo.stateTimetable[s]).toLocaleDateString('zh-CN', {
+              month: 'numeric',
+              day: 'numeric',
+            }) }}
           </span>
         </template>
       </el-step>
@@ -40,7 +43,10 @@
           </template>
           <template v-if="classInfo?.stateTimetable[s]" #description>
             <span class="text-xs md:text-sm">
-              {{ new Date(classInfo.stateTimetable[s]).toLocaleDateString('zh-CN') }}
+              {{ new Date(classInfo.stateTimetable[s]).toLocaleDateString('zh-CN', {
+                month: 'numeric',
+                day: 'numeric',
+              }) }}
             </span>
           </template>
         </el-step>

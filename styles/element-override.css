@@ -214,11 +214,6 @@
   border-radius: 10px !important;
 }
 
-.el-carousel__arrow {
-  backdrop-filter: blur(8px);
-  background-color: color-mix(in srgb, var(--el-fill-color-light) 33.3%, transparent) !important;
-}
-
 /* Pagination */
 .el-pagination>.btn-next,
 .el-pagination>.btn-prev,
@@ -369,8 +364,8 @@
 
 .el-notification {
   border: var(--el-border);
-  backdrop-filter: blur(8px);
-  background-color: color-mix(in srgb, var(--el-fill-color-light) 33.3%, transparent);
+  backdrop-filter: blur(16px);
+  background-color: #FFFFFFA0;
 }
 
 /* Date Picker */
