@@ -4,7 +4,6 @@
       v-model="cascaderValue"
       :options="categoryCascaderWithAll"
       class="w-full"
-
       clearable collapse-tags collapse-tags-tooltip
       :props="props"
       placeholder="选择分类"

@@ -91,6 +91,7 @@ const searchOptions = reactive<TSearchOption>({
   searchSelectValue: ['title', 'keywords'],
   sortOption: searchContent.value.length ? 'default' : 'time',
 });
+receiveQuery();
 
 const fuseOptions = computed(() => {
   return {
@@ -141,6 +142,16 @@ const { processedListData } = await useSearch<TPaperListSafeItem>(
 
 function load() {
   count.value += Math.min(15, processedListData.value.length - count.value);
+}
+
+function receiveQuery() {
+  const categoryInput = route.query.category?.toString() ?? '';
+  if (!categoryInput.length)
+    return;
+  const categoryId = Number(categoryInput);
+  if (!getCategory(categoryId))
+    return;
+  searchOptions.filter.category.push(Number(categoryInput));
 }
 </script>
 

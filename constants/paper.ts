@@ -103,9 +103,9 @@ export const category: CascaderOption[] = [
 ];
 
 export function getCategoryName(id: number | undefined) {
-  if (!id)
-    return '其他';
+  return getCategory(id)?.label || '未知分类';
+}
 
-  const res = category.find(x => x.value === id)?.label;
-  return (!res || res.length === 0) ? '其他' : res;
+export function getCategory(id: number | undefined) {
+  return id ? (category.find(x => x.value === id) || null) : null;
 }

@@ -38,7 +38,7 @@
               {{ info?.createdAt.toLocaleDateString('zh-CN') }}
             </el-descriptions-item>
             <el-descriptions-item label="分类">
-              <el-tag effect="plain" type="warning">
+              <el-tag effect="plain" class="cursor-pointer" type="warning" @click="searchCategory(info?.category)">
                 {{ getCategoryName(info?.category) }}
               </el-tag>
             </el-descriptions-item>
@@ -100,6 +100,15 @@ function searchTag(keyword: string) {
     path: '/paper/list',
     query: {
       search: keyword,
+    },
+  });
+}
+
+function searchCategory(code: int) {
+  navigateTo({
+    path: '/paper/list',
+    query: {
+      category: code,
     },
   });
 }
