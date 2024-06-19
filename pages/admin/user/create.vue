@@ -4,7 +4,8 @@
       ref="formRef"
       :label-position="device.isMobileOrTablet ? 'top' : 'right'"
       class="mx-auto max-w-[700px] py-5"
-      :model="form" :rules="rules"
+      :model="form"
+      :rules="rules"
       label-width="100px"
     >
       <el-form-item prop="schoolId" label="学工号">
