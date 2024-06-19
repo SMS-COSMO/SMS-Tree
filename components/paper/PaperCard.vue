@@ -34,8 +34,8 @@
         {{ paper?.title }}
       </el-text>
     </el-row>
-    <el-row class="mt-1">
-      <el-text v-if="showAuthors && 'authors' in paper">
+    <el-row v-if="showAuthors && 'authors' in paper" class="mt-1">
+      <el-text>
         <GroupMembers :authors="paper.authors" type="text" :show-leader="false" />
       </el-text>
     </el-row>
