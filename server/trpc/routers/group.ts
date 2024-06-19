@@ -3,6 +3,8 @@ import { protectedProcedure, requireRoles, router } from '../trpc';
 
 export const groupRouter = router({
   create: protectedProcedure
+    .meta({ description: '创建小组。要求教师及以上权限。' })
+    .use(requireRoles(['admin', 'teacher']))
     .input(z.object({
       leader: z.string()
         .max(24, { message: '组长Id超出长度范围' })
@@ -24,12 +26,12 @@ export const groupRouter = router({
       archived: z.boolean().optional(),
       enterYear: z.number(),
     }))
-    .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
       return await ctx.groupController.create(input);
     }),
 
   info: protectedProcedure
+    .meta({ description: '获取小组信息。' })
     .input(z.object({ id: z.string().min(1, '小组id不存在') }))
     .query(async ({ ctx, input }) => {
       return await ctx.groupController.info(input.id, ctx.user);
@@ -49,6 +51,7 @@ export const groupRouter = router({
     }),
 
   modifyProjectName: protectedProcedure
+    .meta({ description: '修改课题名称。' })
     .input(z.object({
       groupId: z.string().min(1, '不可以传入空Id'),
       newProjectName: z.string().max(50, '课题名称最长为50'),
@@ -58,6 +61,7 @@ export const groupRouter = router({
     }),
 
   remove: protectedProcedure
+    .meta({ description: '删除小组。' })
     .input(z.object({ id: z.string().min(1, '小组id不存在') }))
     .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
@@ -65,6 +69,7 @@ export const groupRouter = router({
     }),
 
   join: protectedProcedure
+    .meta({ description: '加入小组。' })
     .input(z.object({
       groupId: z.string().min(1, '小组id不存在'),
       userId: z.string().min(1, '用户id不存在'),
@@ -74,6 +79,7 @@ export const groupRouter = router({
     }),
 
   leave: protectedProcedure
+    .meta({ description: '离开小组。' })
     .input(z.object({
       groupId: z.string().min(1, '小组id不存在'),
       userId: z.string().min(1, '用户id不存在'),
@@ -83,6 +89,7 @@ export const groupRouter = router({
     }),
 
   change: protectedProcedure
+    .meta({ description: '变更用户所在的小组。' })
     .input(z.object({
       oldGroupId: z.string().min(1, '小组id不存在'),
       userId: z.string().min(1, '用户id不存在'),
@@ -93,6 +100,7 @@ export const groupRouter = router({
     }),
 
   setLeader: protectedProcedure
+    .meta({ description: '设置组长。' })
     .input(z.object({
       groupId: z.string().min(1, '小组id不存在'),
       userId: z.string().min(1, '用户id不存在'),
@@ -102,6 +110,7 @@ export const groupRouter = router({
     }),
 
   removeLeader: protectedProcedure
+    .meta({ description: '取消组长。' })
     .input(z.object({
       groupId: z.string().min(1, '小组id不存在'),
     }))

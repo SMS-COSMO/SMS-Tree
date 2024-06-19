@@ -6,6 +6,7 @@ const attachmentIdSchema = z.string().min(0, '附件不存在');
 
 export const attachmentRouter = router({
   create: protectedProcedure
+    .meta({ description: '创建附件。' })
     .input(z.object({
       paperId: z.string().optional(),
       reportId: z.string().optional(),
@@ -18,6 +19,7 @@ export const attachmentRouter = router({
     }),
 
   batchMoveToPaper: protectedProcedure
+    .meta({ description: '批量将附件关联到论文。' })
     .input(z.object({
       ids: z.array(z.string()),
       paperId: z.string(),
@@ -32,6 +34,7 @@ export const attachmentRouter = router({
     }),
 
   batchMoveToReport: protectedProcedure
+    .meta({ description: '批量将附件关联到报告。' })
     .input(z.object({
       ids: z.array(z.string()),
       reportId: z.string(),
@@ -46,6 +49,7 @@ export const attachmentRouter = router({
     }),
 
   batchReplaceReport: protectedProcedure
+    .meta({ description: '批量将附件关联到报告并覆盖。' })
     .input(z.object({
       ids: z.array(z.string()),
       reportId: z.string(),
@@ -62,6 +66,7 @@ export const attachmentRouter = router({
 
   // TODO: this seems unsafe
   fileUrl: protectedProcedure
+    .meta({ description: '查询附件的 URL。' })
     .input(attachmentIdSchema)
     .query(async ({ ctx, input }) => {
       return await ctx.attachmentController.getFileUrl(input, ctx.user);

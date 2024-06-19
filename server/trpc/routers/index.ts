@@ -8,6 +8,9 @@ import { noteRouter } from './note';
 import { reportRouter } from './report';
 import { seiueRouter } from './seiue';
 
+/**
+ * Entrance Router.
+ */
 export const appRouter = router({
   user: userRouter,
   note: noteRouter,

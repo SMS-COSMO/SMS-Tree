@@ -20,13 +20,15 @@ const createSchema = z.object({
 
 export const classRouter = router({
   create: protectedProcedure
-    .input(createSchema.extend({ students: z.array(z.string().min(1, '学生不存在')) }))
+    .meta({ description: '创建班级。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
+    .input(createSchema.extend({ students: z.array(z.string().min(1, '学生不存在')) }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.classController.create(input);
     }),
 
   modify: protectedProcedure
+    .meta({ description: '修改班级信息。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
     .input(createSchema.partial().extend({ id: classIdSchema }))
     .mutation(async ({ ctx, input }) => {
@@ -35,12 +37,14 @@ export const classRouter = router({
     }),
 
   info: protectedProcedure
+    .meta({ description: '获取班级信息。' })
     .input(z.object({ id: classIdSchema }))
     .query(async ({ ctx, input }) => {
       return await ctx.classController.info(input.id);
     }),
 
   infoFull: protectedProcedure
+    .meta({ description: '获取完整的班级信息。要求教师及以上权限。' })
     .input(z.object({ id: classIdSchema }))
     .use(requireRoles(['admin', 'teacher']))
     .query(async ({ ctx, input }) => {
@@ -48,28 +52,32 @@ export const classRouter = router({
     }),
 
   list: protectedProcedure
-    .input(z.string().optional())
+    .meta({ description: '列出班级。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
+    .input(z.string().optional())
     .query(async ({ ctx, input }) => {
       return await ctx.classController.getList(input);
     }),
 
   remove: protectedProcedure
-    .input(z.object({ id: classIdSchema }))
+    .meta({ description: '删除班级。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
+    .input(z.object({ id: classIdSchema }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.classController.remove(input.id);
     }),
 
   batchRemove: protectedProcedure
-    .input(z.object({ ids: classIdSchema.array() }))
+    .meta({ description: '批量删除班级。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
+    .input(z.object({ ids: classIdSchema.array() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.classController.batchRemove(input.ids);
     }),
 
   initGroups: protectedProcedure
-    .use(requireRoles(['teacher', 'admin']))
+    .meta({ description: '批量初始化新班级。要求教师及以上权限。' })
+    .use(requireRoles(['admin', 'teacher']))
     .input(z.object({
       id: classIdSchema,
       amount: z.number().int().gt(0).lte(20, '最多创建二十个班级'),

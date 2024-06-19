@@ -13,6 +13,7 @@ import { classes } from '~/server/db/schema/class';
 // everything here should be admin/teacher only
 export const seiueRouter = router({
   login: protectedProcedure
+    .meta({ description: '登录希悦用户。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
     .input(z.object({
       schoolId: z.string().min(1).max(20),
@@ -29,6 +30,7 @@ export const seiueRouter = router({
     }),
 
   token: protectedProcedure
+    .meta({ description: '获取希悦令牌。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
     .input(z.object({
       cookies: z.record(z.string()),
@@ -38,6 +40,7 @@ export const seiueRouter = router({
     }),
 
   me: protectedProcedure
+    .meta({ description: '获取希悦个人信息。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
     .use(requireSeiueLoggedIn)
     .query(async ({ ctx }) => {
@@ -47,6 +50,7 @@ export const seiueRouter = router({
     }),
 
   semesters: protectedProcedure
+    .meta({ description: '获取希悦学期信息。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
     .use(requireSeiueLoggedIn)
     .query(async ({ ctx }) => {
@@ -56,6 +60,7 @@ export const seiueRouter = router({
     }),
 
   classList: protectedProcedure
+    .meta({ description: '获取希悦班级列表。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
     .use(requireSeiueLoggedIn)
     .input(z.object({
@@ -68,6 +73,7 @@ export const seiueRouter = router({
     }),
 
   classMembers: protectedProcedure
+    .meta({ description: '获取希悦班级成员。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
     .use(requireSeiueLoggedIn)
     .input(z.object({
@@ -80,6 +86,7 @@ export const seiueRouter = router({
     }),
 
   importData: protectedProcedure
+    .meta({ description: '导入希悦班级数据。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
     .use(requireSeiueLoggedIn)
     .input(z.array(

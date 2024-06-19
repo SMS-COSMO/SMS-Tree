@@ -7,11 +7,11 @@ const reportIdSchema = z.string().min(1, '报告id不存在');
 
 export const reportRouter = router({
   create: protectedProcedure
+    .use(requireRoles(['admin', 'teacher']))
     .input(z.object({
       category: categorySchema,
       groupId: groupIdSchema,
     }))
-    .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
       return await ctx.reportController.create(input);
     }),
@@ -25,6 +25,7 @@ export const reportRouter = router({
     }),
 
   modify: protectedProcedure
+    .use(requireRoles(['admin', 'teacher']))
     .input(
       z.object({
         category: z.enum(['thesisProposal', 'concludingReport']),
@@ -34,7 +35,6 @@ export const reportRouter = router({
         .partial()
         .extend({ id: z.string().min(1) }),
     )
-    .use(requireRoles(['admin', 'teacher']))
     .mutation(async ({ ctx, input }) => {
       const { id, ...data } = input;
       return await ctx.reportController.modify(id, data);

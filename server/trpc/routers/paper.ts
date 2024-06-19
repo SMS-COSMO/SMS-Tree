@@ -24,8 +24,9 @@ const createSchema = z.object({
 
 export const paperRouter = router({
   create: protectedProcedure
-    .input(createSchema)
+    .meta({ description: '创建论文。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
+    .input(createSchema)
     .mutation(async ({ ctx, input }) => {
       return await ctx.paperController.create(input);
     }),
@@ -48,28 +49,32 @@ export const paperRouter = router({
     }),
 
   info: protectedProcedure
+    .meta({ description: '获取论文信息。' })
     .input(z.object({ id: paperIdSchema }))
     .query(async ({ ctx, input }) => {
       return await ctx.paperController.info(input.id, ctx.user);
     }),
 
   infoWithClass: protectedProcedure
-    .input(z.object({ id: paperIdSchema }))
+    .meta({ description: '获取包括班级在内的论文信息。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
+    .input(z.object({ id: paperIdSchema }))
     .query(async ({ ctx, input }) => {
       return await ctx.paperController.infoWithClass(input.id);
     }),
 
   remove: protectedProcedure
-    .input(z.object({ id: paperIdSchema }))
+    .meta({ description: '删除论文。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
+    .input(z.object({ id: paperIdSchema }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.paperController.remove(input.id);
     }),
 
   modify: protectedProcedure
-    .input(createSchema.extend({ id: paperIdSchema }))
+    .meta({ description: '修改论文信息。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
+    .input(createSchema.extend({ id: paperIdSchema }))
     .mutation(async ({ ctx, input }) => {
       const { id, ...data } = input;
       return await ctx.paperController.modify(id, data);
@@ -81,13 +86,14 @@ export const paperRouter = router({
     }),
 
   scoringList: protectedProcedure
-    .input(z.string().optional())
     .use(requireRoles(['admin', 'teacher']))
+    .input(z.string().optional())
     .query(async ({ ctx, input }) => {
       return await ctx.paperController.scoringList(ctx.user, input);
     }),
 
   score: protectedProcedure
+    .meta({ description: '提交对指定论文的评分和评语。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
     .input(z.object({
       paperId: z.string().min(1, '论文id不存在'),
