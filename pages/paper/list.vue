@@ -7,8 +7,7 @@
     </el-col>
     <el-col v-on-click-outside="closeSearchOptions" :span="device.isMobileOrTablet ? 24 : 18">
       <el-input
-        v-model="searchInput" placeholder="搜索论文" clearable class="list-search acrylic-input-group mb-2.5"
-        :suffix-icon="device.isMobileOrTablet ? 'i-tabler:search' : ''"
+        v-model="searchInput" placeholder="搜索论文" clearable class="list-search mb-2.5" :suffix-icon="device.isMobileOrTablet ? 'i-tabler:search' : ''"
         @change="$router.replace({ query: { search: searchInput } });"
       >
         <template #prepend>
@@ -150,10 +149,6 @@ function load() {
   height: 45px !important;
 }
 
-.infinite-list {
-  margin-top: -45px !important;
-}
-
 .infinite-list::-webkit-scrollbar {
   display: none;
 }
@@ -169,16 +164,6 @@ function load() {
 .list-enter-from,
 .list-leave-to {
   opacity: 0;
-}
-
-.acrylic-input-group {
-  z-index: 1;
-  backdrop-filter: blur(19.19810px) contrast(1.14514);
-  background-color: transparent;
-}
-
-.acrylic-input-group >* {
-  background-color: color-mix(in srgb, var(--el-fill-color-light) 61.8%, transparent);
 }
 
 .mobile-search-option-transition-enter-active {

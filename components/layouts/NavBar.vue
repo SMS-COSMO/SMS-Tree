@@ -12,45 +12,45 @@
       </el-menu-item>
       <template v-if="!device.isMobileOrTablet">
         <el-menu-item index="/">
-          <el-icon class="i-tabler:home" />
+          <el-icon size="14" class="i-tabler:home" />
           首页
         </el-menu-item>
         <el-menu-item index="/paper/list">
-          <el-icon class="i-tabler:list-details" />
+          <el-icon size="14" class="i-tabler:list-details" />
           论文列表
         </el-menu-item>
         <el-menu-item
           v-if="userStore.loggedIn && userStore.role === 'student'"
           index="/group"
         >
-          <div class="i-tabler:book" />
+          <el-icon size="14" class="i-tabler:book" />
           我的小组
         </el-menu-item>
         <el-menu-item
           v-if="userStore.role === 'admin' || userStore.role === 'teacher'"
           index="/admin"
         >
-          <el-icon class="i-tabler:puzzle" />
+          <el-icon size="14" class="i-tabler:puzzle" />
           管理
         </el-menu-item>
       </template>
       <div class="flex-grow" />
       <el-sub-menu v-if="userStore.loggedIn" index="4">
         <template #title>
-          <el-icon class="i-tabler:user-check" />
+          <el-icon size="14" class="i-tabler:user-check" />
           {{ userStore.username }}
         </template>
         <el-menu-item :index="`/user/${userStore.userId}`">
-          <el-icon class="i-tabler:id" />
+          <el-icon size="14" class="i-tabler:id" />
           用户信息
         </el-menu-item>
         <el-menu-item @click="useLogout">
-          <el-icon class="i-tabler:logout" />
+          <el-icon size="14" class="i-tabler:logout" />
           登出
         </el-menu-item>
       </el-sub-menu>
       <el-menu-item v-else index="/user/login">
-        <el-icon class="i-tabler:login-2" />
+        <el-icon size="14" class="i-tabler:login-2" />
         登录
       </el-menu-item>
     </el-menu>
