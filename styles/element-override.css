@@ -384,7 +384,11 @@
 
 /* Descriptions */
 .el-descriptions__label {
-  font-weight: bold;
+  font-weight: bold !important;
+}
+
+.el-descriptions__label.is-vertical-label {
+  padding-bottom: 2px !important;
 }
 
 /* Checkbox */

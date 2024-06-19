@@ -30,7 +30,7 @@
             <el-icon class="i-tabler:info-circle" />
             论文信息
           </template>
-          <el-descriptions :column="1">
+          <el-descriptions :column="1" direction="vertical">
             <el-descriptions-item v-if="info?.authors" label="作者">
               <GroupMembers :authors="info?.authors" :leader="info?.leader" type="link" class="inline" />
             </el-descriptions-item>
