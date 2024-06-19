@@ -104,7 +104,7 @@ function searchTag(keyword: string) {
   });
 }
 
-function searchCategory(code: number) {
+function searchCategory(code: number | undefined) {
   navigateTo({
     path: '/paper/list',
     query: {
