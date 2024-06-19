@@ -1,3 +1,5 @@
+<!-- HTTP Response Code Error Page -->
+
 <template>
   <el-card class="mx-auto mt-[30vh] max-w-200">
     <h1 class="m-4 text-center text-20">

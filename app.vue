@@ -1,3 +1,5 @@
+<!-- Main App Page -->
+
 <template>
   <el-config-provider :locale="zhCn">
     <NuxtLoadingIndicator :height="5" color="#4AA06F" />
