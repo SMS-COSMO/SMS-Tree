@@ -87,6 +87,7 @@ export class PaperController {
     const isAdmin = ['teacher', 'admin'].includes(user.role);
 
     if (!isAdmin && !isOwned) {
+      rawPaper.score = null;
       if (!rawPaper.isPublic)
         throw TRPCForbidden;
       if (!rawPaper.canDownload)
@@ -180,7 +181,7 @@ export class PaperController {
               columns: {},
               with: {
                 user: {
-                  columns: { username: true },
+                  columns: { username: true, id: true },
                 },
               },
             },
@@ -190,6 +191,10 @@ export class PaperController {
     });
 
     return rawPaper.map((x) => {
+      const isAdmin = ['teacher', 'admin'].includes(user.role);
+      const isOwned = x.group.usersToGroups.some(u => u.user.id === user.id);
+      if (!isOwned && !isAdmin)
+        x.score = null;
       const { group, ...info } = x;
       return {
         authors: group.usersToGroups.map(u => ({ username: u.user.username })),
