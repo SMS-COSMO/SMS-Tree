@@ -25,6 +25,7 @@
         分数：{{ paper.score }}
       </el-tag>
       <el-tag type="info" disable-transitions>
+        <el-icon class="i-tabler:calendar-time" />
         {{ paper?.createdAt?.toLocaleDateString('zh-CN') }}
       </el-tag>
     </el-row>
@@ -32,6 +33,8 @@
       <el-text class="break-normal font-bold text-xl!">
         {{ paper?.title }}
       </el-text>
+    </el-row>
+    <el-row class="mt-1">
       <el-text v-if="showAuthors && 'authors' in paper">
         <GroupMembers :authors="paper.authors" type="text" :show-leader="false" />
       </el-text>
