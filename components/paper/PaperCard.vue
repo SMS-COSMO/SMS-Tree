@@ -17,7 +17,9 @@
         <el-icon class="i-tabler:download" />
         可下载
       </el-tag>
-      <CategoryLabel :category-id="paper?.category" :interactive="false" />
+      <el-tag type="warning" disable-transitions>
+        {{ getCategoryName(paper?.category) }}
+      </el-tag>
       <el-tag v-if="paper?.score" :type="useScoreColor(paper.score)" disable-transitions>
         <el-icon class="i-tabler:chart-bar" />
         分数：{{ paper.score }}

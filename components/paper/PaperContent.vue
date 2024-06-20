@@ -38,10 +38,19 @@
               {{ info?.createdAt.toLocaleDateString('zh-CN') }}
             </el-descriptions-item>
             <el-descriptions-item label="分类">
-              <CategoryLabel :category-id="info?.category" />
+              <el-tag effect="plain" class="cursor-pointer" type="warning" @click="searchCategory(info?.category)">
+                {{ getCategoryName(info?.category) }}
+              </el-tag>
             </el-descriptions-item>
             <el-descriptions-item v-if="info?.keywords.length" label="关键词">
-              <KeywordLabelGroup :keywords="info?.keywords" />
+              <span class="space-x-1">
+                <el-tag
+                  v-for="(keyword, index) in info?.keywords" :key="index" class="my-1 cursor-pointer" type="info"
+                  effect="plain" @click="searchTag(keyword)"
+                >
+                  {{ keyword }}
+                </el-tag>
+              </span>
             </el-descriptions-item>
           </el-descriptions>
         </FoldableCard>
@@ -85,4 +94,22 @@ const { data: info, suspense: infoSuspense } = useQuery({
   queryFn: () => $api.paper.info.query({ id: props.id }),
 });
 await infoSuspense();
+
+function searchTag(keyword: string) {
+  navigateTo({
+    path: '/paper/list',
+    query: {
+      search: keyword,
+    },
+  });
+}
+
+function searchCategory(code: number | undefined) {
+  navigateTo({
+    path: '/paper/list',
+    query: {
+      category: code,
+    },
+  });
+}
 </script>

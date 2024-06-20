@@ -4,7 +4,9 @@
     @click="$emit('selected', paper.id)"
   >
     <el-row class="gap-[6px]">
-      <CategoryLabel :category-id="paper?.category" :interactive="false" />
+      <el-tag type="warning" disable-transitions>
+        {{ getCategoryName(paper?.category) }}
+      </el-tag>
       <el-tag type="primary" disable-transitions>
         {{ paper.className }}
       </el-tag>
