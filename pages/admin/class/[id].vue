@@ -1,8 +1,8 @@
 <template>
   <div class="space-y-4">
     <template v-if="classInfo">
-      <el-row :gutter="16">
-        <el-col :span="device.isMobileOrTablet ? 24 : 8">
+      <div class="flex flex-col gap-4 md:flex-row">
+        <div class="md:basis-1/3">
           <el-card class="h-full">
             <template #header>
               <el-icon class="i-tabler:school" />
@@ -74,8 +74,8 @@
               </el-descriptions-item>
             </el-descriptions>
           </el-card>
-        </el-col>
-        <el-col :span="device.isMobileOrTablet ? 24 : 16">
+        </div>
+        <div class="md:basis-2/3">
           <el-card class="mt-2 h-full md:mt-0">
             <template #header>
               <el-icon class="i-tabler:timeline-event" />
@@ -126,8 +126,8 @@
               </div>
             </div>
           </el-card>
-        </el-col>
-      </el-row>
+        </div>
+      </div>
       <template v-if="studentsFree?.length">
         <el-alert type="warning" show-icon :closable="false">
           <template #title>
@@ -166,7 +166,6 @@
 
 <script lang="ts" setup>
 const { $api } = useNuxtApp();
-const device = useDevice();
 useHeadSafe({
   title: '班级信息',
 });

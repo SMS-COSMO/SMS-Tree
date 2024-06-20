@@ -18,7 +18,6 @@
           @row-click="(row) => navigateTo(`/admin/class/${row.id}`)"
         >
           <el-table-column
-
             prop="className"
             label="班级"
             sortable show-overflow-tooltip

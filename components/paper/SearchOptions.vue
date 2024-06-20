@@ -1,7 +1,11 @@
 <template>
   <div class="space-y-1.5">
-    <el-checkbox v-model="modelValue.filter.onlyCanDownload" label="仅查看可下载" border @change="updateValue" />
-    <el-checkbox v-model="modelValue.filter.onlyFeatured" label="仅查看优秀作业" border @change="updateValue" />
+    <div>
+      <el-checkbox v-model="modelValue.filter.onlyCanDownload" label="可下载" border @change="updateValue" />
+    </div>
+    <div>
+      <el-checkbox v-model="modelValue.filter.onlyFeatured" label="优秀作业" border @change="updateValue" />
+    </div>
   </div>
 
   <el-divider content-position="left">

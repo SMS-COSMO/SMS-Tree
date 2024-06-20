@@ -103,7 +103,7 @@ export const category: CascaderOption[] = [
 ];
 
 export function getCategoryName(id: number | undefined) {
-  return getCategory(id)?.label || '未知分类';
+  return getCategory(id)?.label || '其他';
 }
 
 export function getCategory(id: number | undefined) {

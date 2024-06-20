@@ -4,7 +4,7 @@
       <template #header>
         登录希悦账号
       </template>
-      <el-form :label-position="device.isMobileOrTablet ? 'top' : 'right'">
+      <el-form label-position="top">
         <el-form-item>
           <div>
             <el-icon class="i-tabler:user" />
@@ -36,7 +36,6 @@
 const props = defineProps<{
   routerBack: boolean;
 }>();
-const device = useDevice();
 
 const { $api } = useNuxtApp();
 const form = reactive({

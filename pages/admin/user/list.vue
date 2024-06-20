@@ -30,7 +30,7 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column prop="projectName" label="课题" />
+          <el-table-column prop="projectName" label="课题" min-width="400" />
           <el-table-column prop="op" label="操作" width="250">
             <template #default="scope">
               <el-button size="small" @click="() => navigateTo(`/admin/user/${scope.row.id}?action=modify`)">

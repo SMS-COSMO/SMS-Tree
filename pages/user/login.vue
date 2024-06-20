@@ -1,12 +1,12 @@
 <template>
   <div class="h-content flex justify-center">
     <el-card class="w-xl self-center">
-      <el-tabs v-model="selected">
+      <el-tabs v-model="selected" class="mb-2">
         <el-tab-pane label="深中树账号" name="tree" />
         <el-tab-pane label="希悦账号" name="seiue" />
       </el-tabs>
 
-      <el-form :label-position="device.isMobileOrTablet ? 'top' : 'right'">
+      <el-form label-position="top">
         <el-form-item>
           <div>
             <el-icon class="i-tabler:user" />
@@ -46,7 +46,6 @@ useHeadSafe({
 
 const { $api } = useNuxtApp();
 const userStore = useUserStore();
-const device = useDevice();
 
 const selected = ref<'tree' | 'seiue'>('tree');
 

@@ -64,6 +64,9 @@
           <div class="mb-[-12px] text-[16px]!">
             <el-icon class="i-tabler:users" />
             小组成员
+            <el-tag type="info" effect="plain" size="small" class="mb-1 ml-1 font-normal">
+              {{ info?.members.length }} 人
+            </el-tag>
           </div>
         </template>
         <el-table
