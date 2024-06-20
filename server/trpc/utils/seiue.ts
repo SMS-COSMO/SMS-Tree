@@ -45,13 +45,13 @@ export class Seiue {
   static async login(credentials: TCredentials) {
     try {
       const { schoolId, password } = credentials;
-      const loginRes = await ofetch.raw(`${env.SEIUE_PASSPORT_URL}/login?school_id=282`, {
+      const loginRes = await ofetch.raw(`${env.SEIUE_PASSPORT_URL}/login?school_id=${env.SEIUE_SCHOOL_ID}`, {
         method: 'POST',
         headers: {
           'content-type': 'application/x-www-form-urlencoded',
         },
         redirect: 'manual',
-        body: new URLSearchParams({ email: schoolId, password, school_id: '282', submit: '提交' }),
+        body: new URLSearchParams({ email: schoolId, password, school_id: env.SEIUE_SCHOOL_ID.toString(), submit: '提交' }),
       });
       const cookies = cookiesParser(loginRes.headers.getSetCookie());
       const authorizeRes = await this.retrieveToken(cookies);
@@ -103,7 +103,7 @@ export class Seiue {
     return await ofetch<TSeiueUser>(`${env.SEIUE_OPEN_API_URL}/v3/oauth/me`, {
       method: 'GET',
       headers: {
-        'x-school-id': '282',
+        'x-school-id': env.SEIUE_SCHOOL_ID.toString(),
         'authorization': `Bearer ${accessToken}`,
       },
     });
@@ -121,7 +121,7 @@ export class SeiueDataHelper {
       headers: {
         'authorization': `Bearer ${user.accessToken}`,
         'x-reflection-id': user.activeReflectionId.toString(),
-        'x-school-id': '282',
+        'x-school-id': env.SEIUE_SCHOOL_ID.toString(),
         'x-role': 'teacher',
       },
       retry: 2,
@@ -151,7 +151,7 @@ export class SeiueDataHelper {
         },
       },
     );
-    return res.filter(info => info.extra_fields.subject_name === '综合实践') as TSeiueClassList;
+    return res.filter(info => info.extra_fields.subject_name === env.SEIUE_IMPORT_FILTER_KEY) as TSeiueClassList;
   }
 
   async fetchClassMembers(classId: number) {

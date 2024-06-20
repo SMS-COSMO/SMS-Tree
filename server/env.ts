@@ -21,11 +21,13 @@ const envSchema = z.object({
   S3_SECRET_ACCESS_KEY: z.string(),
   BUCKET_NAME: z.string(),
   SERVER_URL: z.string(),
-  SEIUE_LOGIN: z.enum(['true', 'false']).transform(value => value === 'true'),
-  SEIUE_API_URL: z.string(),
-  SEIUE_OPEN_API_URL: z.string(),
-  SEIUE_CHALK_URL: z.string(),
-  SEIUE_PASSPORT_URL: z.string(),
+  SEIUE_SCHOOL_ID: z.coerce.number().default(282),
+  SEIUE_LOGIN: z.enum(['true', 'false']).default('true').transform(value => value === 'true'),
+  SEIUE_API_URL: z.string().default('https://api.seiue.com'),
+  SEIUE_OPEN_API_URL: z.string().default('https://open.seiue.com/api'),
+  SEIUE_CHALK_URL: z.string().default('https://chalk.seiue.com'),
+  SEIUE_PASSPORT_URL: z.string().default('https://passport.seiue.com'),
+  SEIUE_IMPORT_FILTER_KEY: z.string().default('综合实践'),
 });
 
 const envParse = envSchema.safeParse(process.env);
