@@ -43,7 +43,7 @@
                 cancel-button-text="否"
                 width="220"
                 confirm-button-type="danger"
-                @confirm="() => deleteUser(scope.row.id)"
+                @confirm="() => deleteUser({ id: scope.row.id })"
               >
                 <template #reference>
                   <el-button size="small" type="danger">
@@ -75,7 +75,8 @@ useHeadSafe({
 });
 
 const searchContent = ref('');
-const { listData, processedListData: searchListData } = await useUserSearch(searchContent, 'student');
+const queryClient = useQueryClient();
+const { processedListData: searchListData } = await useUserSearch(searchContent, 'student');
 
 const currentPage = ref(1);
 const pageSize = ref(20);
@@ -85,13 +86,13 @@ const processedListData = computed(() => searchListData.value.slice(
   currentPage.value * pageSize.value,
 ));
 
-async function deleteUser(id: string) {
-  try {
-    await $api.user.remove.mutate({ id });
-    if (listData.value)
-      listData.value.splice(listData.value.findIndex(e => e.id === id), 1);
-  } catch (err) {
-    useErrorHandler(err);
-  }
-}
+const { mutate: deleteUser } = useMutation({
+  mutationFn: $api.user.remove.mutate,
+  onSuccess: () => {
+    useMessage({ message: '删除成功', type: 'success' });
+    // TODO: reactivity lost
+    queryClient.invalidateQueries({ queryKey: ['user.list', { role: 'student' }] });
+  },
+  onError: err => useErrorHandler(err),
+});
 </script>

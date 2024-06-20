@@ -1,6 +1,6 @@
 <template>
-  <div class="mx-auto mt-[30vh] max-w-120">
-    <el-card class="mt-4">
+  <div class="h-content flex justify-center">
+    <el-card class="w-xl self-center">
       <template #header>
         登录
       </template>
