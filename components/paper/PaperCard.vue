@@ -9,11 +9,23 @@
         <el-icon class="i-tabler:pencil" />
         待批改
       </el-tag>
-      <IsFeaturedLabel :is-featured="paper?.isFeatured" />
-      <CanDownloadLabel :can-download="paper?.canDownload" />
+      <el-tag v-if="paper?.isFeatured" type="success" disable-transitions>
+        <el-icon class="i-tabler:star" />
+        优秀作业
+      </el-tag>
+      <el-tag v-if="paper?.canDownload" disable-transitions>
+        <el-icon class="i-tabler:download" />
+        可下载
+      </el-tag>
       <CategoryLabel :category-id="paper?.category" :interactive="false" />
-      <ScoreLabel :score="paper?.score" />
-      <DateLabel :date="paper?.createdAt" />
+      <el-tag v-if="paper?.score" :type="useScoreColor(paper.score)" disable-transitions>
+        <el-icon class="i-tabler:chart-bar" />
+        分数：{{ paper.score }}
+      </el-tag>
+      <el-tag type="info" disable-transitions>
+        <el-icon class="i-tabler:calendar-time" />
+        {{ paper?.createdAt?.toLocaleDateString('zh-CN') }}
+      </el-tag>
     </el-row>
     <el-row class="mt-2 gap-2">
       <el-text class="break-normal font-bold text-xl!">

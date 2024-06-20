@@ -5,8 +5,18 @@
         {{ info?.title }}
       </h1>
       <el-space :size="10">
-        <IsFeaturedLabel :is-featured="info?.isFeatured" size="large" />
-        <ScoreLabel :score="info?.score" size="large" />
+        <el-tag v-if="info?.isFeatured" type="success" size="large">
+          <el-text style="color: var(--el-color-success);">
+            <el-icon class="i-tabler:star" />
+            优秀作业
+          </el-text>
+        </el-tag>
+        <el-tag v-if="info?.score" size="large" :type="useScoreColor(info.score)" disable-transitions>
+          <el-icon class="i-tabler:chart-bar" />
+          <el-text :style="`color: var(--el-color-${useScoreColor(info.score)});`">
+            分数：{{ info.score }}
+          </el-text>
+        </el-tag>
       </el-space>
       <h1 v-if="device.isMobileOrTablet" class="w-full text-3xl lg:pr-[2em] lg:text-4xl">
         {{ info?.title }}

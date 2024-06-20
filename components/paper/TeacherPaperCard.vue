@@ -8,7 +8,9 @@
       <el-tag type="primary" disable-transitions>
         {{ paper.className }}
       </el-tag>
-      <DateLabel :date="paper?.createdAt" />
+      <el-tag type="info" disable-transitions>
+        {{ paper?.createdAt?.toLocaleDateString('zh-CN') }}
+      </el-tag>
     </el-row>
     <el-row class="mt-1 gap-1">
       <el-text class="break-normal font-bold text-lg!">
