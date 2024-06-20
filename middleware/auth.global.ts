@@ -1,6 +1,5 @@
-/* eslint-disable node/prefer-global/process */
 export default defineNuxtRouteMiddleware((to) => {
-  if (process.client) {
+  if (import.meta.client) {
     const userStore = useUserStore();
     if (to.path === '/')
       return;

@@ -18,6 +18,8 @@ export default defineNuxtPlugin(() => {
             ...useSeiueStore().seiueHeaders(),
           };
         },
+
+        
       }),
     ],
     transformer: superjson,
