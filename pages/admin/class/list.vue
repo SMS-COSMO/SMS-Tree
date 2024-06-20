@@ -18,10 +18,10 @@
           @row-click="(row) => navigateTo(`/admin/class/${row.id}`)"
         >
           <el-table-column
-            show-overflow-tooltip
+
             prop="className"
             label="班级"
-            sortable
+            sortable show-overflow-tooltip
             :min-width="200"
           />
           <el-table-column :width="200" prop="teacher.username" label="教师" />

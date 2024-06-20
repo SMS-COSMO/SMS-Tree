@@ -19,7 +19,6 @@ export default defineNuxtPlugin(() => {
           };
         },
 
-        
       }),
     ],
     transformer: superjson,
