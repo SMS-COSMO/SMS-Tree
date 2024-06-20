@@ -14,9 +14,11 @@
 }
 
 .admin-nav {
-  --el-menu-bg-color: #f1f5f9 !important;
-  --el-menu-hover-bg-color: #dbe1e7 !important;
+  --el-menu-bg-color: #f1f5f5 !important;
+  --el-menu-hover-text-color: var(--el-text-color-primary) !important;
+  --el-menu-hover-bg-color: #dbe1e0 !important;
   --el-menu-active-color: var(--el-text-color-primary) !important;
+  --el-menu-active-bg-color: #dbe1e0 !important;
 }
 
 .el-card {
