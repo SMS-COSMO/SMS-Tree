@@ -1,5 +1,5 @@
 <template>
-  <el-card class="h-content">
+  <el-card class="h-admin-content">
     <el-check-tag :checked="showAll" class="mb-2" @change="showAll = !showAll">
       展示所有班级
     </el-check-tag>

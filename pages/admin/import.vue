@@ -36,7 +36,7 @@
       </el-main>
     </el-container>
   </el-card>
-  <el-card v-else class="h-content w-full">
+  <el-card v-else class="w-full h-admin-content">
     <SeiueLogin :router-back="false" />
   </el-card>
 </template>

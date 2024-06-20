@@ -1,5 +1,5 @@
 <template>
-  <el-card class="h-content">
+  <el-card class="h-admin-content">
     <el-scrollbar>
       <div class="overflow-x-hidden!">
         <TeacherPaperContent :id="id" class="relative" :is-scoring="false" />
@@ -16,7 +16,7 @@ const id = useRoute().params.id.toString();
 </script>
 
 <style>
-.h-content>.el-card__body {
+.h-admin-content>.el-card__body {
   box-sizing: border-box;
   height: 100%;
 }

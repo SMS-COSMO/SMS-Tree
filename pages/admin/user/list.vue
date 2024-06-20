@@ -1,5 +1,5 @@
 <template>
-  <el-card class="h-content">
+  <el-card class="h-admin-content">
     <el-input
       v-model="searchContent"
       placeholder="搜索学生"

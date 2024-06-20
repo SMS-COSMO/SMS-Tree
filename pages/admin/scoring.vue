@@ -1,7 +1,7 @@
 <template>
   <el-row :gutter="16">
     <el-col :span="6">
-      <el-card class="flow h-content">
+      <el-card class="flow h-admin-content">
         <div class="floating absolute z-10 w-40 rounded">
           <el-select-v2
             v-model="filterClass"
@@ -22,7 +22,7 @@
       </el-card>
     </el-col>
     <el-col :span="18">
-      <el-card class="h-content">
+      <el-card class="h-admin-content">
         <el-scrollbar v-if="selected">
           <transition name="content" mode="out-in" class="overflow-x-hidden!">
             <TeacherPaperContent

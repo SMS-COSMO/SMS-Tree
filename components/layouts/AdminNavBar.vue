@@ -1,8 +1,8 @@
 <template>
   <el-menu
-    class="admin-nav rounded border-normal"
-    eclipse="false"
-    mode="horizontal"
+    class="admin-nav h-full select-none rounded h-[69px]! lg:w-[220px] border-normal lg:h-auto!"
+    :eclipse="false"
+    :mode="mode"
     popper-class="admin-nav"
     :default-active="$route.path"
     :router="true"
@@ -30,19 +30,14 @@
         <el-icon class="i-tabler:adjustments-alt" />
         <span>批量管理</span>
       </template>
-      <el-menu-item-group>
-        <template #title>
-          <span>批量管理</span>
-        </template>
-        <el-menu-item index="/admin/class/delete">
-          <el-icon class="i-tabler:users-minus" />
-          删除班级
-        </el-menu-item>
-        <el-menu-item index="/admin/import">
-          <el-icon class="i-tabler:users-plus" />
-          导入学生数据
-        </el-menu-item>
-      </el-menu-item-group>
+      <el-menu-item index="/admin/class/delete">
+        <el-icon class="i-tabler:users-minus" />
+        删除班级
+      </el-menu-item>
+      <el-menu-item index="/admin/import">
+        <el-icon class="i-tabler:users-plus" />
+        导入学生数据
+      </el-menu-item>
     </el-sub-menu>
 
     <el-sub-menu index="1">
@@ -50,23 +45,18 @@
         <el-icon class="i-tabler:database-cog" />
         <span>数据管理</span>
       </template>
-      <el-menu-item-group>
-        <template #title>
-          <span>数据管理</span>
-        </template>
-        <el-menu-item index="/admin/user/create">
-          <el-icon class="i-tabler:user-plus" />
-          创建账户
-        </el-menu-item>
-        <el-menu-item index="/admin/class/create">
-          <el-icon class="i-tabler:school" />
-          创建班级
-        </el-menu-item>
-        <el-menu-item index="/admin/paper/create">
-          <el-icon class="i-tabler:file-plus" />
-          创建论文
-        </el-menu-item>
-      </el-menu-item-group>
+      <el-menu-item index="/admin/user/create">
+        <el-icon class="i-tabler:user-plus" />
+        创建账户
+      </el-menu-item>
+      <el-menu-item index="/admin/class/create">
+        <el-icon class="i-tabler:school" />
+        创建班级
+      </el-menu-item>
+      <el-menu-item index="/admin/paper/create">
+        <el-icon class="i-tabler:file-plus" />
+        创建论文
+      </el-menu-item>
     </el-sub-menu>
 
     <el-sub-menu v-if="seiueStore.loggedIn" index="2">
@@ -91,9 +81,14 @@
 </template>
 
 <script setup lang="ts">
+defineProps<{
+  mode: 'vertical' | 'horizontal';
+}>();
+
 const seiueStore = useSeiueStore();
 
 const { $api } = useNuxtApp();
+
 const enabled = computed(() => seiueStore.loggedIn);
 const { data } = useQuery({
   queryKey: ['seiue.me'],

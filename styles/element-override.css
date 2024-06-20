@@ -4,7 +4,7 @@
 }
 
 .el-menu--horizontal.el-menu {
-  height: 65px !important;
+  min-height: 65px !important;
 }
 
 .el-menu-item,
@@ -193,7 +193,8 @@
   border-bottom-width: 2px !important;
 }
 
-.h-content>.el-card__body {
+.h-content>.el-card__body,
+.h-admin-content>.el-card__body {
   box-sizing: border-box;
   height: 100%;
 }
