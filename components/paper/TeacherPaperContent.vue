@@ -69,19 +69,10 @@
               {{ info?.createdAt.toLocaleDateString('zh-CN') }}
             </el-descriptions-item>
             <el-descriptions-item label="分类">
-              <el-tag effect="plain" class="cursor-pointer" type="warning" @click="searchCategory(info?.category)">
-                {{ getCategoryName(info?.category) }}
-              </el-tag>
+              <CategoryLabel :category-id="info?.category" />
             </el-descriptions-item>
             <el-descriptions-item v-if="info?.keywords.length" label="关键词">
-              <span class="space-x-1">
-                <el-tag
-                  v-for="(keyword, index) in info?.keywords" :key="index" class="my-1 cursor-pointer" type="info"
-                  effect="plain" @click="searchTag(keyword)"
-                >
-                  {{ keyword }}
-                </el-tag>
-              </span>
+              <KeywordLabelGroup :keywords="info?.keywords" />
             </el-descriptions-item>
           </el-descriptions>
         </el-card>
@@ -154,24 +145,6 @@ await suspense();
 
 const paperDocuments = info.value?.attachments?.filter(a => a.category === 'paperDocument');
 const attachmentDocuments = info.value?.attachments?.filter(a => a.category !== 'paperDocument');
-
-function searchTag(keyword: string) {
-  navigateTo({
-    path: '/paper/list',
-    query: {
-      search: keyword,
-    },
-  });
-}
-
-function searchCategory(code: number | undefined) {
-  navigateTo({
-    path: '/paper/list',
-    query: {
-      category: code,
-    },
-  });
-}
 
 const form = reactive({
   comment: undefined,
