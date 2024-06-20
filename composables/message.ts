@@ -5,7 +5,7 @@ export function useMessage(
 ) {
   onNuxtReady(() =>
     ElNotification({
-      offset: useDevice().isMobileOrTablet ? 0 : 60,
+      offset: useScreen().isSmaller('md') ? 0 : 60,
       ...opt,
     }),
   );

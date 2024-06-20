@@ -69,7 +69,7 @@
     <div v-if="!papers?.length">
       <el-empty :image-size="130" description="暂无论文" />
     </div>
-    <div v-else :class="papers?.length > 1 ? 'lg:columns-2 lg:gap-2.5' : ''">
+    <div v-else :class="papers?.length > 1 ? 'md:columns-2 md:gap-2.5' : ''">
       <template v-for="paper in papers" :key="paper.id">
         <PaperCard v-if="paper" :paper="paper" show-abstract :is-admin="type === 'admin'" />
       </template>

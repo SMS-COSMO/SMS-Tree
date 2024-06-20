@@ -1,6 +1,6 @@
 <template>
   <el-menu
-    class="admin-nav h-full select-none rounded h-[69px]! lg:w-[220px] border-normal lg:h-auto!"
+    class="admin-nav h-full select-none rounded h-[69px]! md:w-[220px] border-normal md:h-auto!"
     :eclipse="false"
     :mode="mode"
     popper-class="admin-nav"

@@ -8,11 +8,6 @@
   --el-menu-level-padding: 12px !important;
 }
 
-.main-nav {
-  --el-menu-bg-color: #15803d !important;
-  --el-menu-hover-bg-color: #136d34 !important;
-}
-
 .admin-nav {
   --el-menu-bg-color: #f1f5f5 !important;
   --el-menu-hover-text-color: var(--el-text-color-primary) !important;

@@ -1,5 +1,5 @@
 <template>
-  <CompactCard class="mb-2 cursor-pointer lg:mb-2.5 hover:border-color-[#D4D7DE]! hover:bg-hover-bg!" @click="dialogVisible = true">
+  <CompactCard class="mb-2 cursor-pointer md:mb-2.5 hover:border-color-[#D4D7DE]! hover:bg-hover-bg!" @click="dialogVisible = true">
     <el-tag type="info" disable-transitions>
       <el-icon class="i-tabler:calendar-time" />
       {{ note.time.toLocaleDateString('zh-CN') }}
@@ -18,7 +18,7 @@
     >
       <el-descriptions
         :column="1"
-        :direction="device.isMobileOrTablet ? 'vertical' : 'horizontal'"
+        :direction="breakpoint.isSmaller('md') ? 'vertical' : 'horizontal'"
         size="large"
         border
       >
@@ -107,7 +107,7 @@
 <script setup lang="ts">
 defineProps<{ note: TNote }>();
 const { $api } = useNuxtApp();
-const device = useDevice();
+const breakpoint = useScreen();
 
 const dialogVisible = ref(false);
 const modifyDialogVisible = ref(false);

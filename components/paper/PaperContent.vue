@@ -1,7 +1,7 @@
 <template>
-  <div class="space-y-3 lg:space-y-4">
-    <div class="lg:flex">
-      <h1 v-if="!device.isMobileOrTablet" class="w-full text-3xl lg:pr-[2em] lg:text-4xl">
+  <div class="space-y-3 md:space-y-4">
+    <div class="md:flex">
+      <h1 class="hidden w-full text-3xl md:block md:pr-[2em] md:text-4xl">
         {{ info?.title }}
       </h1>
       <el-space :size="10">
@@ -14,14 +14,14 @@
           分数：{{ info.score }}
         </el-tag>
       </el-space>
-      <h1 v-if="device.isMobileOrTablet" class="w-full text-3xl lg:pr-[2em] lg:text-4xl">
+      <h1 class="w-full text-3xl md:hidden md:pr-[2em] md:text-4xl">
         {{ info?.title }}
       </h1>
     </div>
 
-    <el-row :gutter="20">
-      <el-col :span="device.isMobileOrTablet ? 24 : 6">
-        <FoldableCard :can-fold="device.isMobileOrTablet" class="box-border h-full">
+    <div class="flex flex-col gap-4 md:flex-row">
+      <div class="md:basis-1/4">
+        <el-card class="box-border h-full">
           <template #header>
             <el-icon class="i-tabler:info-circle" />
             论文信息
@@ -49,20 +49,20 @@
               </span>
             </el-descriptions-item>
           </el-descriptions>
-        </FoldableCard>
-      </el-col>
-      <el-col :span="device.isMobileOrTablet ? 24 : 18" class="mt-3 lg:mt-0">
-        <FoldableCard :can-fold="device.isMobileOrTablet" class="box-border h-full">
+        </el-card>
+      </div>
+      <div class="md:basis-3/4">
+        <el-card class="box-border h-full">
           <template #header>
             <el-icon class="i-tabler:align-box-left-top" />
             摘要
           </template>
-          <div class="whitespace-break-spaces text-justify text-[15px] leading-normal lg:text-base">
+          <div class="whitespace-break-spaces text-justify text-[15px] leading-normal md:text-base">
             {{ info?.abstract }}
           </div>
-        </FoldableCard>
-      </el-col>
-    </el-row>
+        </el-card>
+      </div>
+    </div>
 
     <template v-if="info?.attachments?.length && (info?.attachments?.findIndex(e => e.S3FileId) !== -1)">
       <Preview :attachment="info?.attachments?.filter(a => a.category === 'paperDocument')[0]" full-height />
@@ -84,7 +84,6 @@ const props = defineProps<{
 }>();
 
 const { $api } = useNuxtApp();
-const device = useDevice();
 
 const { data: info, suspense: infoSuspense } = useQuery({
   queryKey: ['paper.info', { id: props.id }],

@@ -11,12 +11,12 @@
     </div>
 
     <template v-if="userStore.loggedIn">
-      <el-row :gutter="20">
-        <el-col :span="device.isMobileOrTablet ? 24 : 7">
+      <div class="flex flex-col gap-4 lg:flex-row">
+        <div class="lg:basis-1/4">
           <el-card class="h-full">
             <template #header>
               <el-icon class="i-tabler:search" />
-              快速搜索
+              搜索论文
             </template>
             <el-row :gutter="10">
               <el-col :span="19">
@@ -27,8 +27,8 @@
               </el-col>
             </el-row>
           </el-card>
-        </el-col>
-        <el-col v-if="userStore.role === 'student'" :span="device.isMobileOrTablet ? 24 : 17" class="mt-3 lg:mt-0">
+        </div>
+        <div v-if="userStore.role === 'student'" class="lg:basis-3/4">
           <el-card>
             <template #header>
               <el-icon class="i-tabler:presentation" />
@@ -36,16 +36,16 @@
             </template>
             <StateStep :class-info="classInfo" direction="horizontal" />
           </el-card>
-        </el-col>
-        <el-col v-else :span="device.isMobileOrTablet ? 24 : 17" class="mt-3 lg:mt-0">
+        </div>
+        <div v-else class="lg:basis-3/4">
           <el-card>
             <template #header>
               <el-icon class="i-tabler:bolt" />
               快速管理
             </template>
           </el-card>
-        </el-col>
-      </el-row>
+        </div>
+      </div>
     </template>
   </el-space>
 </template>
@@ -55,7 +55,6 @@ useHeadSafe({
   title: '首页',
 });
 
-const device = useDevice();
 const quickSearchContent = ref('');
 const userStore = useUserStore();
 const { $api } = useNuxtApp();

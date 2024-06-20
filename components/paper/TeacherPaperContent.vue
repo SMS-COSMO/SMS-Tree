@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-3 lg:space-y-4">
+  <div class="space-y-3 md:space-y-4">
     <el-card v-if="isScoring" class="floating absolute right-0 top-0 z-10">
       <div class="m-[-5px] flex flex-row gap-2">
         <el-tooltip content="是否选为优秀作业" placement="top" :show-after="800">
@@ -86,13 +86,13 @@
           </el-descriptions>
         </el-card>
       </el-col>
-      <el-col :span="17" class="mt-3 lg:mt-0">
+      <el-col :span="17" class="mt-3 md:mt-0">
         <el-card class="box-border h-full">
           <template #header>
             <el-icon class="i-tabler:align-box-left-top" />
             摘要
           </template>
-          <div class="text-justify text-[15px] leading-normal lg:text-base">
+          <div class="text-justify text-[15px] leading-normal md:text-base">
             {{ info?.abstract }}
           </div>
         </el-card>

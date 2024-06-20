@@ -2,7 +2,7 @@
   <el-scrollbar height="80svh">
     <el-form
       ref="formRef"
-      class="mx-auto max-w-[800px] lg:p-4"
+      class="mx-auto max-w-[800px] md:p-4"
       :label-position="device.isMobileOrTablet ? 'top' : 'right'"
       :model="form"
       :rules="rules"

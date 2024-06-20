@@ -1,5 +1,5 @@
 <template>
-  <PaperContent :id="id" class="mb-22 lg:mb-8" />
+  <PaperContent :id="id" />
 </template>
 
 <script setup lang="ts">

@@ -48,8 +48,8 @@ export default defineConfig({
     'border-normal': 'border-solid! border-[2px]! border-border-light!',
     'border-top-normal': 'border-t-solid! border-t-[2px]! border-border-light!',
     'nav': 'fixed inset-x-auto w-screen select-none z-36',
-    'h-content': 'h-[calc(100vh-100px)]', // Height of the full page
-    'h-admin-content': 'h-[calc(100vh-100px-80px)] lg:h-[calc(100vh-100px)]', // Height of the full admin page
+    'h-content': 'h-[calc(100vh-95px)]', // Height of the full page
+    'h-admin-content': 'h-[calc(100vh-100px-80px)] md:h-[calc(100vh-95px)]', // Height of the full admin page
     'max-h-content': 'max-h-[calc(100vh-100px)]', // Height of the full page
   },
   rules: [

@@ -1,7 +1,7 @@
 <template>
   <el-form
     ref="formRef"
-    class="mx-auto max-w-[800px] lg:py-4"
+    class="mx-auto max-w-[800px] md:py-4"
     :label-position="device.isMobileOrTablet ? 'top' : 'right'"
     :model="form"
     :rules="rules"

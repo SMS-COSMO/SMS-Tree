@@ -1,12 +1,6 @@
 <template>
-  <div>
-    <NavBar />
-    <div :class="`${device.isMobileOrTablet ? 'mt-5' : 'mt-20'} mx-auto max-w-[1300px] px-4 lg:px-5`">
-      <slot />
-    </div>
-  </div>
+  <NavBar />
+  <main class="mx-auto mt-4 max-w-[1300px] px-4 pb-4 md:mt-20 md:px-5">
+    <slot />
+  </main>
 </template>
-
-<script setup lang="ts">
-const device = useDevice();
-</script>

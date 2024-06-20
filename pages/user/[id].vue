@@ -7,13 +7,13 @@
       :tab-position="device.isMobileOrTablet ? 'top' : 'left'"
       @tab-change="$router.replace({ query: { action: selectedTab } })"
     >
-      <el-tab-pane name="info" label="用户信息" class="lg:ml-3">
+      <el-tab-pane name="info" label="用户信息" class="md:ml-3">
         <UserProfile type="normal" :user-id="id" />
       </el-tab-pane>
-      <el-tab-pane name="password" label="修改密码" class="lg:ml-3">
+      <el-tab-pane name="password" label="修改密码" class="md:ml-3">
         <ModifyPassword :user-id="id" />
       </el-tab-pane>
-      <el-tab-pane v-if="['teacher', 'admin'].includes(userStore.role)" name="modify" label="修改用户信息" class="lg:ml-3">
+      <el-tab-pane v-if="['teacher', 'admin'].includes(userStore.role)" name="modify" label="修改用户信息" class="md:ml-3">
         <ModifyUser :user-id="id" />
       </el-tab-pane>
     </el-tabs>

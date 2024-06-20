@@ -1,8 +1,8 @@
 <template>
   <div class="nav top-0 bg-primary-0">
     <el-menu
-      v-if="!device.isMobileOrTablet"
-      :class="`${isAdmin ? '' : 'max-w-[1300px]'} mx-auto! border-none! pr-3 main-nav`"
+      class="main-nav pr-3 mx-auto! hidden! border-none! md:flex!"
+      :class="[!isAdmin && 'max-w-[1300px]']"
       :ellipsis="false" mode="horizontal"
       background-color="#15803d" text-color="#FFFFFF" active-text-color="#FFFFFF"
       :router="true" :default-active="$route.path"
@@ -10,30 +10,28 @@
       <el-menu-item disabled class="cursor-default! opacity-100!">
         <NuxtImg preload src="/logo.png" class="h-[30px]" />
       </el-menu-item>
-      <template v-if="!device.isMobileOrTablet">
-        <el-menu-item index="/">
-          <el-icon size="14" class="i-tabler:home" />
-          首页
-        </el-menu-item>
-        <el-menu-item index="/paper/list">
-          <el-icon size="14" class="i-tabler:list-details" />
-          论文列表
-        </el-menu-item>
-        <el-menu-item
-          v-if="userStore.loggedIn && userStore.role === 'student'"
-          index="/group"
-        >
-          <el-icon size="14" class="i-tabler:book" />
-          我的小组
-        </el-menu-item>
-        <el-menu-item
-          v-if="userStore.role === 'admin' || userStore.role === 'teacher'"
-          index="/admin"
-        >
-          <el-icon size="14" class="i-tabler:puzzle" />
-          管理
-        </el-menu-item>
-      </template>
+      <el-menu-item index="/">
+        <el-icon size="14" class="i-tabler:home" />
+        首页
+      </el-menu-item>
+      <el-menu-item index="/paper/list">
+        <el-icon size="14" class="i-tabler:list-details" />
+        论文列表
+      </el-menu-item>
+      <el-menu-item
+        v-if="userStore.loggedIn && userStore.role === 'student'"
+        index="/group"
+      >
+        <el-icon size="14" class="i-tabler:book" />
+        我的小组
+      </el-menu-item>
+      <el-menu-item
+        v-if="userStore.role === 'admin' || userStore.role === 'teacher'"
+        index="/admin"
+      >
+        <el-icon size="14" class="i-tabler:puzzle" />
+        管理
+      </el-menu-item>
       <div class="flex-grow" />
       <el-sub-menu v-if="userStore.loggedIn" index="4">
         <template #title>
@@ -56,7 +54,7 @@
     </el-menu>
   </div>
 
-  <div v-if="device.isMobileOrTablet" class="nav bottom-0 border-t-1 border-t-border-light border-t-solid bg-white">
+  <div class="nav bottom-0 border-t-1 border-t-border-light border-t-solid bg-white md:hidden!">
     <el-row class="px-2">
       <MobileNavButton label="首页" href="/">
         <template #icon>
@@ -113,7 +111,6 @@ import { useUserStore } from '~/stores/user';
 
 const userStore = useUserStore();
 const route = useRoute();
-const device = useDevice();
 
 const isAdmin = ref(false);
 watch(() => route.matched[0].path, (value) => {
@@ -121,3 +118,10 @@ watch(() => route.matched[0].path, (value) => {
 });
 isAdmin.value = route.matched[0].path === '/admin';
 </script>
+
+<style>
+.main-nav {
+  --el-menu-bg-color: #15803d !important;
+  --el-menu-hover-bg-color: #136d34 !important;
+}
+</style>

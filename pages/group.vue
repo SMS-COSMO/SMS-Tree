@@ -12,11 +12,11 @@
     </el-result>
   </el-card>
   <template v-else>
-    <div v-if="device.isMobileOrTablet" class="mb-2 text-sm!">
+    <div class="mb-2 md:hidden text-sm!">
       <StateStep :class-info="classInfo" direction="horizontal" />
     </div>
     <div class="box-border flex flex-row gap-8 px-0">
-      <div class="mb-22 w-full lg:mb-5 space-y-4">
+      <div class="w-full space-y-4">
         <el-card v-if="classInfo?.state === 'initialized'">
           <el-result
             icon="info"
@@ -36,7 +36,7 @@
           <GroupInfo v-else :class-state="classInfo.state" />
         </template>
       </div>
-      <div v-if="device.isDesktop" class="box-border h-content max-w-[150px] min-w-[100px] py-2">
+      <div class="sticky top-20 box-border hidden h-content max-w-[150px] min-w-[100px] pt-2 md:block">
         <StateStep :class-info="classInfo" direction="vertical" />
       </div>
     </div>
@@ -50,7 +50,6 @@ useHeadSafe({
 
 const { $api } = useNuxtApp();
 const userStore = useUserStore();
-const device = useDevice();
 
 const enabled = computed(() => userStore.classId !== undefined && userStore.classId.length !== 0);
 const { data: classInfo } = useQuery({

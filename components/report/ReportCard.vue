@@ -1,6 +1,6 @@
 <template>
   <CompactCard
-    class="mb-2 cursor-pointer lg:mb-2.5 hover:border-color-[#D4D7DE]! hover:bg-hover-bg!"
+    class="mb-2 cursor-pointer md:mb-2.5 hover:border-color-[#D4D7DE]! hover:bg-hover-bg!"
     @click="dialogVisible = true"
   >
     <el-row class="gap-[6px]">

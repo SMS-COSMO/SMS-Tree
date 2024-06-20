@@ -155,7 +155,7 @@
       </el-collapse-transition>
     </template>
     <template v-if="classInfo?.groups">
-      <div class="grid gap-2 lg:grid-cols-2 lg:gap-4">
+      <div class="grid gap-2 md:grid-cols-2 md:gap-4">
         <template v-for="(group, index) in classInfo.groups" :key="group.id">
           <TeacherGroupInfo :info="group" :index="index + 1" />
         </template>

@@ -1,18 +1,21 @@
 <template>
-  <el-row :gutter="20">
-    <el-col v-if="!device.isMobileOrTablet" :span="device.isMobileOrTablet ? 24 : 6">
+  <div class="flex flex-col gap-4 lg:flex-row">
+    <div class="hidden lg:flex lg:basis-1/4">
       <el-card class="relative z-10">
         <SearchOptions v-model="searchOptions" />
       </el-card>
-    </el-col>
-    <el-col v-on-click-outside="closeSearchOptions" :span="device.isMobileOrTablet ? 24 : 18">
+    </div>
+    <div v-on-click-outside="closeSearchOptions" class="basis-3/4">
       <el-input
-        v-model="searchInput" placeholder="搜索论文" clearable class="list-search mb-2.5" :suffix-icon="device.isMobileOrTablet ? 'i-tabler:search' : ''"
+        v-model="searchInput"
+        placeholder="搜索论文"
+        clearable
+        class="list-search mb-2.5"
         @change="$router.replace({ query: { search: searchInput } });"
       >
         <template #prepend>
-          <el-icon v-if="!device.isMobileOrTablet" class="i-tabler:search" />
-          <el-button v-else @click="showSearchOptions = !showSearchOptions">
+          <el-icon class="i-tabler:search hidden! lg:block!" />
+          <el-button class="lg:hidden!" @click="showSearchOptions = !showSearchOptions">
             <el-icon v-if="!showSearchOptions" class="i-tabler:chevron-down" />
             <el-icon v-else class="i-tabler:chevron-up" />
           </el-button>
@@ -33,30 +36,30 @@
             class="infinite-list fixed left-0 m-0 h-[calc(100svh-95px-65px)] w-screen list-none overflow-x-hidden overflow-y-scroll p-0 scrollbar-hidden"
           >
             <li v-for="(paper, index) in processedListData.slice(0, count)" :key="index">
-              <div class="mx-auto max-w-[1300px] px-4 lg:px-5">
-                <el-row :gutter="20">
-                  <el-col :span="6" />
-                  <el-col :span="device.isMobileOrTablet ? 24 : 18">
+              <div class="mx-auto max-w-[1300px] px-4 md:px-5">
+                <div class="flex flex-col lg:flex-row lg:gap-4">
+                  <div class="lg:basis-1/4" />
+                  <div class="lg:basis-3/4">
                     <PaperCard :paper="paper" />
-                  </el-col>
-                </el-row>
+                  </div>
+                </div>
               </div>
             </li>
             <li v-if="processedListData.length === 0" class="text-center">
-              <div class="mx-auto max-w-[1300px] px-4 lg:px-5">
-                <el-row :gutter="20">
-                  <el-col :span="6" />
-                  <el-col :span="device.isMobileOrTablet ? 24 : 18">
+              <div class="mx-auto max-w-[1300px] px-4 md:px-5">
+                <div class="flex flex-col lg:flex-row lg:gap-4">
+                  <div class="lg:basis-1/4" />
+                  <div class="lg:basis-3/4">
                     <el-empty description="无结果，换个搜索条件试试？" />
-                  </el-col>
-                </el-row>
+                  </div>
+                </div>
               </div>
             </li>
           </TransitionGroup>
         </div>
       </Transition>
-    </el-col>
-  </el-row>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -68,7 +71,6 @@ useHeadSafe({
 const { $api } = useNuxtApp();
 
 const route = useRoute();
-const device = useDevice();
 
 const count = ref(10);
 
