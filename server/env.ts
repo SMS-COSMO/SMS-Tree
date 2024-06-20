@@ -25,7 +25,7 @@ const envSchema = z.object({
   SEIUE_LOGIN: z.enum(['true', 'false']).default('true').transform(value => value === 'true'),
   SEIUE_API_URL: z.string().default('https://api.seiue.com'),
   SEIUE_OPEN_API_URL: z.string().default('https://open.seiue.com/api'),
-  SEIUE_CHALK_URL: z.string().default('https://chalk.seiue.com'),
+  SEIUE_CHALK_URL: z.string().default('https://chalk-c3.seiue.com'),
   SEIUE_PASSPORT_URL: z.string().default('https://passport.seiue.com'),
   SEIUE_IMPORT_FILTER_KEY: z.string().default('综合实践'),
 });
