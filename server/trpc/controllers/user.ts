@@ -92,7 +92,10 @@ export class UserController {
     return '修改成功';
   }
 
-  async login(schoolId: string, password: string) {
+  async login(schoolId: string, password: string, isSeiue: boolean) {
+    if (isSeiue && !env.SEIUE_LOGIN)
+      throw new TRPCError({ code: 'UNAUTHORIZED', message: '暂不允许使用希悦登陆' });
+
     const user = await db.query.users.findFirst({
       where: eq(users.schoolId, schoolId),
       with: {
@@ -120,17 +123,17 @@ export class UserController {
     if (!user)
       throw new TRPCError({ code: 'UNAUTHORIZED', message: '学号或密码错误' });
 
-    if (!await bcrypt.compare(password, user.password)) {
-      if (user.firstTimeLogin && env.SEIUE_LOGIN) {
+    if (isSeiue) {
+      try {
         const seiue = await Seiue.init({ schoolId, password });
         if (!seiue)
           throw new TRPCError({ code: 'UNAUTHORIZED', message: '学号或密码错误' });
-
-        // change password to seiue password
-        await db.update(users).set({ password: await bcrypt.hash(password, 8) }).where(eq(users.id, user.id));
-      } else {
+      } catch {
         throw new TRPCError({ code: 'UNAUTHORIZED', message: '学号或密码错误' });
       }
+    } else {
+      if (!await bcrypt.compare(password, user.password))
+        throw new TRPCError({ code: 'UNAUTHORIZED', message: '学号或密码错误' });
     }
 
     const accessToken = await this.auth.produceAccessToken(user.id);

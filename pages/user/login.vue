@@ -1,16 +1,21 @@
 <template>
   <div class="h-content flex justify-center">
     <el-card class="w-xl self-center">
-      <template #header>
-        登录
-      </template>
+      <el-tabs v-model="selected">
+        <el-tab-pane label="深中树账号" name="tree" />
+        <el-tab-pane label="希悦账号" name="seiue" />
+      </el-tabs>
+
       <el-form :label-position="device.isMobileOrTablet ? 'top' : 'right'">
         <el-form-item>
           <div>
             <el-icon class="i-tabler:user" />
             学工号
           </div>
-          <el-input v-model="form.schoolId" />
+          <el-input
+            v-model="form.schoolId"
+            @keyup.enter="form.schoolId && form.password ? loginMutation(form) : () => {}"
+          />
         </el-form-item>
         <el-form-item>
           <div>
@@ -19,11 +24,11 @@
           </div>
           <el-input
             v-model="form.password" type="password" show-password
-            @keyup.enter="form.schoolId && form.password ? login() : () => { }"
+            @keyup.enter="form.schoolId && form.password ? loginMutation(form) : () => {}"
           />
         </el-form-item>
         <el-form-item class="m-0">
-          <el-button class="ml-auto" color="#15803d" :loading="isPending" @click="login">
+          <el-button class="ml-auto" color="#15803d" :loading="isPending" @click="loginMutation(form)">
             登录
           </el-button>
         </el-form-item>
@@ -43,16 +48,33 @@ const { $api } = useNuxtApp();
 const userStore = useUserStore();
 const device = useDevice();
 
+const selected = ref<'tree' | 'seiue'>('tree');
+
 const form = reactive({
   schoolId: '',
   password: '',
 });
 
 const { mutate: loginMutation, isPending } = useMutation({
-  mutationFn: $api.user.login.mutate,
+  mutationFn: async (input: { schoolId: string; password: string }) => {
+    if (selected.value === 'tree')
+      return await $api.user.login.mutate(input);
+    else
+      return await $api.user.seiueLogin.mutate(input);
+  },
   onSuccess: (res) => {
     userStore.login(res);
-    useRouter().back();
+    if (res.firstTimeLogin) {
+      navigateTo({
+        path: `/user/${res.id}`,
+        query: {
+          action: 'password',
+        },
+      });
+    } else {
+      // TODO: don't just use back()
+      useRouter().back();
+    }
     useMessage({
       message: '登录成功',
       type: 'success',
@@ -60,8 +82,4 @@ const { mutate: loginMutation, isPending } = useMutation({
   },
   onError: err => useErrorHandler(err),
 });
-
-async function login() {
-  loginMutation({ ...form });
-}
 </script>
