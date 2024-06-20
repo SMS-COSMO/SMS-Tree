@@ -4,6 +4,7 @@
       <el-alert
         title="注意"
         type="warning"
+        show-icon
         :closable="false"
       >
         在导入数据前，

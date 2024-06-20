@@ -69,7 +69,7 @@
               {{ info?.createdAt.toLocaleDateString('zh-CN') }}
             </el-descriptions-item>
             <el-descriptions-item label="分类">
-              <el-tag effect="plain" class="cursor-pointer" type="warning" @click="searchCategory(info?.category)">
+              <el-tag effect="light" class="cursor-pointer" type="warning" @click="searchCategory(info?.category)">
                 {{ getCategoryName(info?.category) }}
               </el-tag>
             </el-descriptions-item>

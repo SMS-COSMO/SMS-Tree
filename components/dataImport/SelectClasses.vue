@@ -7,6 +7,7 @@
       v-if="!isFetching && classList && classList.length"
       title="注意"
       type="warning"
+      show-icon
       :closable="false"
     >
       由于希悦所有班级中含有不需要的班级，请务必在希悦上查看班级信息以确认是否需要导入，并在下方取消勾选不需要的班级，否则可能导致数据导入失败。

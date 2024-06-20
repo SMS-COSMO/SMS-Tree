@@ -34,7 +34,7 @@
               {{ info?.createdAt.toLocaleDateString('zh-CN') }}
             </el-descriptions-item>
             <el-descriptions-item label="分类">
-              <el-tag effect="plain" class="cursor-pointer" type="warning" @click="searchCategory(info?.category)">
+              <el-tag effect="light" class="cursor-pointer" type="warning" @click="searchCategory(info?.category)">
                 {{ getCategoryName(info?.category) }}
               </el-tag>
             </el-descriptions-item>
@@ -70,6 +70,7 @@
 
     <el-card v-if="info?.comment">
       <template #header>
+        <el-icon class="i-tabler:message" />
         教师评语
       </template>
       <TiptapViewer :content="info?.comment" />

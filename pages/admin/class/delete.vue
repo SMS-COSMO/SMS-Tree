@@ -2,9 +2,10 @@
   <el-card>
     <div class="space-y-4">
       <el-alert
-        title="危险！"
-        type="error"
+        title="危险"
+        type="warning"
         description="操作不可撤销，请注意检查后再操作。"
+        show-icon
         :closable="false"
       />
 
@@ -39,8 +40,8 @@
         />
       </el-table>
 
-      <el-button :disabled="!selected.length" @click="showDeleteDialog = true">
-        删除选中的班级
+      <el-button type="danger" :disabled="!selected.length" @click="showDeleteDialog = true">
+        删除所选
       </el-button>
     </div>
   </el-card>
@@ -48,13 +49,13 @@
   <client-only>
     <el-dialog
       v-model="showDeleteDialog"
-      title="删除班级"
+      title="确认删除班级"
       width="500"
-      draggable
     >
       <div class="space-y-1">
         <div class="bg-slate-50 p-2 rounded border-normal">
           <div class="p-1 text-[16px] font-bold">
+            <el-icon class="i-tabler:trash" />
             确定要删除以下班级吗？
           </div>
           <el-tag v-for="c in selected" :key="c?.id" type="info" effect="plain" class="m-1 font-bold">

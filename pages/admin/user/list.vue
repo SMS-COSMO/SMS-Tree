@@ -34,7 +34,7 @@
           <el-table-column prop="op" label="操作" width="250">
             <template #default="scope">
               <el-button size="small" @click="() => navigateTo(`/admin/user/${scope.row.id}?action=modify`)">
-                <el-icon class="i-tabler:pencil" />
+                <el-icon class="i-tabler:edit" />
                 修改
               </el-button>
               <el-popconfirm
