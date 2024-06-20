@@ -4,6 +4,7 @@
       v-model="searchContent"
       placeholder="搜索学生"
       prefix-icon="i-tabler:search"
+      @input="currentPage = 1"
     />
     <el-scrollbar>
       <div class="pb-10 pt-4">
