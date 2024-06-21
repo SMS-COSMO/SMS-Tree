@@ -1,6 +1,6 @@
 <template>
   <el-card class="mb-5">
-    <div class="flex flex-row gap-4 text-center">
+    <div class="flex flex-col gap-4 text-center md:flex-row">
       <el-card class="basis-1/4">
         <el-statistic :value="statistic?.scorePaperCount">
           <template #title>

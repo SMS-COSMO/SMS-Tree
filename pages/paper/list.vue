@@ -16,13 +16,12 @@
         <template #prepend>
           <el-icon class="i-tabler:search hidden! lg:block!" />
           <el-button class="lg:hidden!" @click="showSearchOptions = !showSearchOptions">
-            <el-icon v-if="!showSearchOptions" class="i-tabler:chevron-down" />
-            <el-icon v-else class="i-tabler:chevron-up" />
+            <el-icon class="i-tabler:chevron-down transition-all" :class="[showSearchOptions && 'rotate-180']" />
           </el-button>
         </template>
       </el-input>
       <Transition name="mobile-search-option-transition">
-        <el-card v-show="showSearchOptions" class="mb-2.5">
+        <el-card v-show="showSearchOptions" class="mb-2.5 lg:hidden">
           <SearchOptions v-model="searchOptions" />
         </el-card>
       </Transition>

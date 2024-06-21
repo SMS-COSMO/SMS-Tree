@@ -4,7 +4,7 @@
     class="mb-2 cursor-pointer md:mb-2.5 hover:border-color-[#D4D7DE]! hover:bg-hover-bg!"
     @click="navigateTo(`${isAdmin ? '/admin' : ''}/paper/${paper.id}`)"
   >
-    <div class="flex gap-1.5">
+    <div class="flex flex-wrap gap-1.5">
       <el-tag v-if="paper?.isPublic !== undefined && !paper.isPublic" type="danger" disable-transitions>
         <el-icon class="i-tabler:pencil" />
         待批改

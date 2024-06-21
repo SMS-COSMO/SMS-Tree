@@ -1,9 +1,8 @@
 <template>
   <el-menu
-    class="admin-nav h-full select-none rounded h-[69px]! md:w-[220px] border-normal md:h-auto!"
-    :eclipse="false"
+    class="admin-nav h-full select-none overflow-x-auto rounded h-[69px]! md:w-[220px] border-normal md:h-auto!"
+    :ellipsis="false"
     :mode="mode"
-    popper-class="admin-nav"
     :default-active="$route.path"
     :router="true"
     :show-timeout="0"
