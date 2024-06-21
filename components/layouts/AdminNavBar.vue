@@ -89,10 +89,9 @@ const seiueStore = useSeiueStore();
 const { $api } = useNuxtApp();
 
 const enabled = computed(() => seiueStore.loggedIn);
-const { data, suspense } = useQuery({
+const { data } = useQuery({
   queryKey: ['seiue.me'],
   queryFn: () => $api.seiue.me.query(), // TODO: refresh token
   enabled,
 });
-await suspense();
 </script>
