@@ -18,23 +18,22 @@
         <el-option v-for="item in searchSelectOptions" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
       <CategorySelectMultiple v-model="modelValue.filter.category" />
-      <div>
-        <el-checkbox v-model="modelValue.filter.restrictEnterYear" label="按届筛选" />
-      </div>
-      <el-collapse-transition>
-        <div v-show="modelValue.filter.restrictEnterYear">
-          <el-input-number v-model="modelValue.filter.enterYear" />
-        </div>
-      </el-collapse-transition>
     </div>
     <template #fallback>
       <div class="space-y-2">
         <select-placeholder />
         <select-placeholder />
-        <select-placeholder />
       </div>
     </template>
   </client-only>
+  <div>
+    <el-checkbox v-model="modelValue.filter.restrictEnterYear" label="按届筛选" />
+  </div>
+  <el-collapse-transition>
+    <div v-show="modelValue.filter.restrictEnterYear">
+      <el-input-number v-model="modelValue.filter.enterYear" />
+    </div>
+  </el-collapse-transition>
 
   <el-collapse-transition>
     <div v-if="modelValue.sortOption !== 'default'">

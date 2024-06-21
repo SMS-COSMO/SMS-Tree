@@ -55,7 +55,7 @@
   </div>
 
   <div class="nav bottom-0 border-t-1 border-t-border-light border-t-solid bg-white md:hidden!">
-    <el-row class="px-2">
+    <div class="flex px-2">
       <MobileNavButton label="首页" href="/">
         <template #icon>
           <div class="i-tabler:home" />
@@ -102,7 +102,7 @@
           <div class="i-tabler:login" />
         </template>
       </MobileNavButton>
-    </el-row>
+    </div>
   </div>
 </template>
 

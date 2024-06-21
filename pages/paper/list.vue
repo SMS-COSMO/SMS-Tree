@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-4 lg:flex-row">
     <div class="hidden lg:flex lg:basis-1/4">
-      <el-card class="relative z-10">
+      <el-card class="z-10 w-full">
         <SearchOptions v-model="searchOptions" />
       </el-card>
     </div>
@@ -36,7 +36,7 @@
             class="infinite-list fixed left-0 m-0 h-[calc(100svh-95px-65px)] w-screen list-none overflow-x-hidden overflow-y-scroll p-0 scrollbar-hidden"
           >
             <li v-for="(paper, index) in processedListData.slice(0, count)" :key="index">
-              <div class="mx-auto max-w-[1300px] px-4 md:px-5">
+              <div class="mx-auto max-w-[1300px] px-4 lg:px-5">
                 <div class="flex flex-col lg:flex-row lg:gap-4">
                   <div class="lg:basis-1/4" />
                   <div class="lg:basis-3/4">
@@ -46,7 +46,7 @@
               </div>
             </li>
             <li v-if="processedListData.length === 0" class="text-center">
-              <div class="mx-auto max-w-[1300px] px-4 md:px-5">
+              <div class="mx-auto max-w-[1300px] px-4 lg:px-5">
                 <div class="flex flex-col lg:flex-row lg:gap-4">
                   <div class="lg:basis-1/4" />
                   <div class="lg:basis-3/4">

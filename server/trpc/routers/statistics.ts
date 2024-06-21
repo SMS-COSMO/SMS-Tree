@@ -11,6 +11,7 @@ export const statisticsRouter = router({
     .query(async () => {
       // TODO: maybe exclude archived students?
       const studentCount = (await db.select({ count: count() }).from(users).where(eq(users.role, 'student')).get())?.count;
+      // TODO: get teacher's own scoring list only.
       const scorePaperCount = (await db.select({ count: count() }).from(papers).where(eq(papers.isPublic, false)).get())?.count;
       const publicPaperCount = (await db.select({ count: count() }).from(papers).where(eq(papers.isPublic, true)).get())?.count;
       const classCount = (await db.select({ count: count() }).from(classes).get())?.count;

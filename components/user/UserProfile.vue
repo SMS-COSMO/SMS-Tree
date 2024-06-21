@@ -61,7 +61,7 @@
       </el-descriptions-item>
     </el-descriptions>
   </el-card>
-  <FoldableCard class="mt-5">
+  <el-card class="mt-5">
     <template #header>
       <el-icon class="i-tabler:files" />
       参与的论文
@@ -70,11 +70,11 @@
       <el-empty :image-size="130" description="暂无论文" />
     </div>
     <div v-else :class="papers?.length > 1 ? 'md:columns-2 md:gap-2.5' : ''">
-      <template v-for="paper in papers" :key="paper.id">
+      <template v-for="paper in papers" :key="paper?.id">
         <PaperCard v-if="paper" :paper="paper" show-abstract :is-admin="type === 'admin'" />
       </template>
     </div>
-  </FoldableCard>
+  </el-card>
 
   <el-button
     v-if="device.isMobileOrTablet && useUserStore().userId === userInfo?.id"
