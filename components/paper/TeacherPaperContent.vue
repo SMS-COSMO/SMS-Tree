@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-3 md:space-y-4">
-    <el-card v-if="isScoring" class="floating absolute right-0 top-0 z-10">
-      <div class="m-[-5px] flex flex-row gap-2">
+    <el-card v-if="isScoring" class="right-0 top-0 z-10 md:absolute">
+      <div class="m-[-5px] flex flex-col gap-2 md:flex-row">
         <el-tooltip content="是否选为优秀作业" placement="top" :show-after="800">
           <el-switch
             v-model="form.isFeatured" active-text="优秀" inactive-text="普通" inline-prompt
@@ -49,14 +49,14 @@
       {{ info?.title }}
     </h1>
 
-    <el-row :gutter="20">
-      <el-col :span="7">
+    <div class="flex flex-col gap-4 md:flex-row">
+      <div class="md:basis-1/4">
         <el-card class="box-border h-full">
           <template #header>
             <el-icon class="i-tabler:info-circle" />
             论文信息
           </template>
-          <el-descriptions :column="1">
+          <el-descriptions :column="1" direction="vertical">
             <el-descriptions-item label="班级">
               <el-link :href="`/admin/class/${info?.class?.id}`">
                 {{ info?.class?.className }}
@@ -85,8 +85,8 @@
             </el-descriptions-item>
           </el-descriptions>
         </el-card>
-      </el-col>
-      <el-col :span="17" class="mt-3 md:mt-0">
+      </div>
+      <div class="md:basis-3/4">
         <el-card class="box-border h-full">
           <template #header>
             <el-icon class="i-tabler:align-box-left-top" />
@@ -96,8 +96,8 @@
             {{ info?.abstract }}
           </div>
         </el-card>
-      </el-col>
-    </el-row>
+      </div>
+    </div>
 
     <h3>
       论文文件

@@ -1,6 +1,6 @@
 <template>
   <CompactCard
-    :class="`mb-2 cursor-pointer hover:border-color-[#D4D7DE]! hover:bg-hover-bg! ${currentSelected === paper.id ? 'bg-hover-bg!' : ''}`"
+    :class="`cursor-pointer hover:border-color-[#D4D7DE]! hover:bg-hover-bg! ${currentSelected === paper.id ? 'bg-hover-bg!' : ''}`"
     @click="$emit('selected', paper.id)"
   >
     <el-row class="gap-[6px]">
@@ -14,14 +14,21 @@
         {{ paper?.createdAt?.toLocaleDateString('zh-CN') }}
       </el-tag>
     </el-row>
-    <el-row class="mt-1 gap-1">
-      <el-text class="break-normal font-bold text-lg!">
+    <div class="mt-2 gap-2">
+      <el-text class="break-normal font-bold text-xl!">
         {{ paper?.title }}
       </el-text>
-      <el-text v-if="showAuthors && 'authors' in paper" size="small">
+    </div>
+    <div v-if="showAuthors && 'authors' in paper" class="mt-1">
+      <el-text>
         <GroupMembers :authors="paper.authors" type="text" :show-leader="false" />
       </el-text>
-    </el-row>
+    </div>
+    <div v-if="showAbstract && 'abstract' in paper" class="mt-2.5">
+      <el-text size="small" :line-clamp="lineClamp" type="info" class="break-normal">
+        {{ paper?.abstract }}
+      </el-text>
+    </div>
   </CompactCard>
 </template>
 

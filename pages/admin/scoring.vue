@@ -1,27 +1,29 @@
 <template>
-  <el-row :gutter="16">
-    <el-col :span="6">
-      <el-card class="flow h-admin-content">
-        <div class="floating absolute z-10 w-40 rounded">
-          <el-select-v2
-            v-model="filterClass"
-            :options="classFilterOptions"
-            placeholder="筛选班级"
-            @change="queryClient.invalidateQueries({ queryKey: ['paper.scoreList'] });"
-          />
-        </div>
+  <div class="flex flex-col gap-4 lg:flex-row">
+    <div class="lg:basis-1/4">
+      <el-card class="flow h-auto h-admin-content lg:h-admin-content!">
         <el-scrollbar v-if="scoringQueue?.list?.length">
-          <div class="h-12" />
-          <template v-for="item in scoringQueue?.list" :key="item">
-            <TeacherPaperCard
-              :paper="item" :current-selected="selected" @selected="id => selected = id"
+          <div class="sticky top-0 z-10 mb-2 w-full rounded">
+            <el-select-v2
+              v-model="filterClass"
+              :options="classFilterOptions"
+              placeholder="筛选班级"
+              @change="queryClient.invalidateQueries({ queryKey: ['paper.scoreList'] });"
             />
-          </template>
+          </div>
+          <div class="flex flex-row gap-2 lg:flex-col">
+            <template v-for="item in scoringQueue?.list" :key="item">
+              <TeacherPaperCard
+                :paper="item" :current-selected="selected" class="min-w-[300px] lg:min-w-auto"
+                @selected="id => selected = id"
+              />
+            </template>
+          </div>
         </el-scrollbar>
         <el-empty v-else description="暂无论文" class="mt-10" />
       </el-card>
-    </el-col>
-    <el-col :span="18">
+    </div>
+    <div class="lg:basis-3/4">
       <el-card class="h-admin-content">
         <el-scrollbar v-if="selected">
           <transition name="content" mode="out-in" class="overflow-x-hidden!">
@@ -33,8 +35,8 @@
           </transition>
         </el-scrollbar>
       </el-card>
-    </el-col>
-  </el-row>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
