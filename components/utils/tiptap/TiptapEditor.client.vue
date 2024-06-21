@@ -31,12 +31,12 @@
         </el-check-tag>
       </div>
     </el-scrollbar>
-    <el-scrollbar max-height="200px" class="editor-scrollbar">
+    <div class="h-40">
       <EditorContent
         :editor="editor"
-        class="h-full min-h-8 px-1"
+        class="box-border h-full min-h-8 px-1"
       />
-    </el-scrollbar>
+    </div>
   </div>
 </template>
 
