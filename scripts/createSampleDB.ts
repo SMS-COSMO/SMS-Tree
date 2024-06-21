@@ -39,7 +39,6 @@ await Promise.all(
       username: cnLorem.name(),
       password: pwd,
       role: 'student',
-      firstTimeLogin: false,
     });
   }).concat(
     [...Array(classCount)].map((_, i) => {
