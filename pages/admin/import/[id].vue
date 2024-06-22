@@ -1,0 +1,14 @@
+<template>
+  <ImportResult :id="id" :data="data" show-remove :show-header="false" />
+</template>
+
+<script setup lang="ts">
+const id = useRoute().params.id.toString();
+
+const { $api } = useNuxtApp();
+const { data, suspense } = useQuery({
+  queryKey: [],
+  queryFn: () => $api.importHistory.info.query({ id }),
+});
+await suspense();
+</script>

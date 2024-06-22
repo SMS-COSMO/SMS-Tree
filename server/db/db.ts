@@ -18,6 +18,7 @@ import * as noteSchema from './schema/note';
 import * as reportSchema from './schema/report';
 import * as userToGroupSchema from './schema/userToGroup';
 import * as classToStudentsSchema from './schema/classToStudents';
+import * as importHistorySchema from './schema/importHistory';
 
 const options = (() => {
   switch (env.DATABASE_CONNECTION_TYPE) {
@@ -38,6 +39,7 @@ export const db = drizzle(client, {
     ...reportSchema,
     ...userToGroupSchema,
     ...classToStudentsSchema,
+    ...importHistorySchema,
   },
 });
 

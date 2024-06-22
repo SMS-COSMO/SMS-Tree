@@ -8,6 +8,7 @@ import { noteRouter } from './note';
 import { reportRouter } from './report';
 import { seiueRouter } from './seiue';
 import { statisticsRouter } from './statistics';
+import { importHistoryRouter } from './importHistory';
 
 /**
  * Entrance Router.
@@ -22,6 +23,7 @@ export const appRouter = router({
   report: reportRouter,
   attachment: attachmentRouter,
   statistics: statisticsRouter,
+  importHistory: importHistoryRouter,
 });
 
 export type AppRouter = typeof appRouter;

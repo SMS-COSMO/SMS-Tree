@@ -37,6 +37,10 @@
         <el-icon class="i-tabler:users-plus" />
         导入学生数据
       </el-menu-item>
+      <el-menu-item index="/admin/import/history">
+        <el-icon class="i-tabler:history" />
+        导入历史
+      </el-menu-item>
     </el-sub-menu>
 
     <el-sub-menu index="1">

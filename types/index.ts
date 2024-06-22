@@ -69,3 +69,4 @@ export interface TMinimalUser {
 }
 
 export type TImportDataResult = RouterOutput['seiue']['importData'];
+export type TImportHistory = RouterOutput['importHistory']['info'];

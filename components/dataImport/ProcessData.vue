@@ -18,27 +18,9 @@
         <el-button color="#15803d" @click="$emit('reset')">
           开始新的导入
         </el-button>
-        {{ importResult }}
-      </template>
-      <template #sub-title>
-        <div v-if="failedClassNames.length">
-          <h4>导入失败的班级</h4>
-          <div class="flex flex-wrap gap-2">
-            <el-tag v-for="className in failedClassNames" :key="className" type="danger">
-              {{ className }}
-            </el-tag>
-          </div>
-        </div>
-        <div v-if="successClassNames.length">
-          <h4>导入成功的班级</h4>
-          <div class="flex flex-wrap justify-center gap-2">
-            <el-tag v-for="className in successClassNames" :key="className" type="success">
-              {{ className }}
-            </el-tag>
-          </div>
-        </div>
       </template>
     </el-result>
+    <ImportResult :data="{ data: importResult }" :show-remove="false" show-header />
   </div>
 </template>
 
@@ -50,7 +32,8 @@ const props = defineProps<{
   importResult: TImportDataResult;
 }>();
 defineEmits<{ reset: [] }>();
-const isSuccess = computed(() => props.importResult.length && props.importResult.every(item => item.success));
-const failedClassNames = computed(() => props.importResult.filter(item => !item.success).map(item => item.name));
-const successClassNames = computed(() => props.importResult.filter(item => item.success).map(item => item.name));
+
+const isSuccess = computed(
+  () => props.importResult.length && props.importResult.every(item => item.success),
+);
 </script>

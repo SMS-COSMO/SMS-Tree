@@ -9,6 +9,7 @@ import { db } from '~/server/db/db';
 import { classesToStudents } from '~/server/db/schema/classToStudents';
 import { users } from '~/server/db/schema/user';
 import { classes } from '~/server/db/schema/class';
+import { importHistory } from '~/server/db/schema/importHistory';
 
 // everything here should be admin/teacher only
 export const seiueRouter = router({
@@ -193,6 +194,11 @@ export const seiueRouter = router({
         });
         promiseArray.push(transactionPromise);
       }
-      return await Promise.all(promiseArray);
+      const res = await Promise.all(promiseArray);
+      await db.insert(importHistory).values({
+        data: res,
+        importer: ctx.user.id,
+      });
+      return res;
     }),
 });
