@@ -10,6 +10,7 @@ import * as noteSchema from '../../server/db/schema/note';
 import * as reportSchema from '../../server/db/schema/report';
 import * as userToGroupSchema from '../../server/db/schema/userToGroup';
 import * as classToStudentsSchema from '../../server/db/schema/classToStudents';
+import * as importHistorySchema from '../../server/db/schema/importHistory';
 
 const client = createClient({ url: 'file:testRuntime.sqlite' });
 export const db = drizzle(client, {
@@ -23,5 +24,6 @@ export const db = drizzle(client, {
     ...reportSchema,
     ...userToGroupSchema,
     ...classToStudentsSchema,
+    ...importHistorySchema,
   },
 });
