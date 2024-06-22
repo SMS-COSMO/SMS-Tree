@@ -436,6 +436,14 @@
 }
 
 /* Tag */
+.el-tag.cursor-pointer {
+  transition: filter 0.2s;
+}
+
+.el-tag.cursor-pointer:hover {
+  filter: brightness(0.925);
+}
+
 .el-check-tag {
   transition: none !important;
 }
