@@ -74,9 +74,9 @@
               </el-tag>
             </el-descriptions-item>
             <el-descriptions-item v-if="info?.keywords.length" label="关键词">
-              <span class="space-x-1">
+              <span class="flex flex-wrap gap-1">
                 <el-tag
-                  v-for="(keyword, index) in info?.keywords" :key="index" class="my-1 cursor-pointer" type="info"
+                  v-for="(keyword, index) in info?.keywords" :key="index" class="cursor-pointer" type="info"
                   effect="plain" @click="searchTag(keyword)"
                 >
                   {{ keyword }}

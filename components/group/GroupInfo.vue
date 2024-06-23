@@ -28,7 +28,7 @@
             小组成员
           </div>
         </template>
-        <span class="space-x-2 text-[16px]!">
+        <span class="text-[16px]!">
           <GroupMembers :authors="groupInfo?.members" :leader="groupInfo?.leader" type="link" class="inline" />
         </span>
       </el-descriptions-item>
