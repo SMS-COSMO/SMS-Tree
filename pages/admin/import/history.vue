@@ -38,6 +38,10 @@
 <script setup lang="ts">
 import type { ElTable } from 'element-plus';
 
+useHeadSafe({
+  title: '导入记录',
+});
+
 const { $api } = useNuxtApp();
 
 const queryClient = useQueryClient();

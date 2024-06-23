@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-4 lg:flex-row">
     <div class="lg:basis-1/4">
       <el-card class="flow h-auto h-admin-content lg:h-admin-content!">
-        <el-scrollbar v-if="scoringQueue?.list?.length">
+        <el-scrollbar>
           <div class="sticky top-0 z-10 mb-2 w-full rounded">
             <el-select-v2
               v-model="filterClass"
@@ -11,7 +11,7 @@
               @change="queryClient.invalidateQueries({ queryKey: ['paper.scoreList'] });"
             />
           </div>
-          <div class="flex flex-row gap-2 lg:flex-col">
+          <div v-if="scoringQueue?.list?.length" class="flex flex-row gap-2 lg:flex-col">
             <template v-for="item in scoringQueue?.list" :key="item">
               <TeacherPaperCard
                 :paper="item" :current-selected="selected" class="min-w-[300px] lg:min-w-auto"
@@ -19,8 +19,8 @@
               />
             </template>
           </div>
+          <el-empty v-else description="暂无论文" />
         </el-scrollbar>
-        <el-empty v-else description="暂无论文" class="mt-10" />
       </el-card>
     </div>
     <div class="lg:basis-3/4">

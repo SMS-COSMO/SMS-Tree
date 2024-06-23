@@ -90,6 +90,10 @@
 <script setup lang="ts">
 import type { ElTable } from 'element-plus';
 
+useHeadSafe({
+  title: '删除班级',
+});
+
 const { $api } = useNuxtApp();
 const { data: listData, suspense } = useQuery({
   queryKey: ['class.list'],

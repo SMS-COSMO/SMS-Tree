@@ -441,7 +441,7 @@
 }
 
 .el-tag.cursor-pointer:hover {
-  filter: brightness(0.925);
+  filter: brightness(0.975);
 }
 
 .el-check-tag {

@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 useHeadSafe({
-  title: '管理用户',
+  title: '学生管理',
 });
 
 const route = useRoute();

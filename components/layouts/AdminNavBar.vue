@@ -39,7 +39,7 @@
       </el-menu-item>
       <el-menu-item index="/admin/import/history">
         <el-icon class="i-tabler:history" />
-        导入历史
+        导入记录
       </el-menu-item>
     </el-sub-menu>
 

@@ -3,6 +3,9 @@
 </template>
 
 <script setup lang="ts">
+useHeadSafe({
+  title: '导入记录',
+});
 const id = useRoute().params.id.toString();
 
 const { $api } = useNuxtApp();

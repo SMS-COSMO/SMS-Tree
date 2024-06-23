@@ -3,3 +3,9 @@
     <SeiueLogin router-back />
   </el-card>
 </template>
+
+<script setup lang="ts">
+useHeadSafe({
+  title: '登陆希悦',
+});
+</script>

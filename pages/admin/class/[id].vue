@@ -166,9 +166,6 @@
 
 <script lang="ts" setup>
 const { $api } = useNuxtApp();
-useHeadSafe({
-  title: '班级信息',
-});
 
 const id = useRoute().params.id.toString();
 
@@ -178,6 +175,10 @@ const { data: classInfo, suspense: classInfoSuspense } = useQuery({
   queryFn: () => $api.class.infoFull.query({ id }),
 });
 await classInfoSuspense();
+
+useHeadSafe({
+  title: `${classInfo.value?.className}· 班级管理`,
+});
 
 const userListDialog = ref(false);
 

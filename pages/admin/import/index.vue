@@ -44,6 +44,10 @@
 <script setup lang="ts">
 import type { TImportDataResult } from '~/types';
 
+useHeadSafe({
+  title: '导入学生数据',
+});
+
 const seiueStore = useSeiueStore();
 const activeStep = ref(1);
 const selectedSemesterId = ref<number>();
