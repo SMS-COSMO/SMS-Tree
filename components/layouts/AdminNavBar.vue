@@ -1,6 +1,6 @@
 <template>
   <el-menu
-    class="admin-nav h-full select-none overflow-x-auto rounded h-[69px]! md:w-[220px] border-normal md:h-auto!"
+    class="admin-nav h-full select-none overflow-x-auto rounded h-[69px]! md:min-w-[200px] border-normal md:h-auto!"
     :ellipsis="false"
     :mode="mode"
     :default-active="$route.path"
