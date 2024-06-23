@@ -1,18 +1,18 @@
 import { z } from 'zod';
 import { protectedProcedure, requireRoles, router } from '../trpc';
 
-const noteIdSchema = z.string().min(1, '活动记录id不存在');
+const noteIdSchema = z.string().min(1, '活动记录 ID 不存在');
 const createSafeSchema = z.object({
   title: z
     .string()
-    .min(1, { message: '请输入活动记录主题' })
-    .max(256, { message: '活动记录主题长度不应超过 256' }),
+    .min(1, { message: '活动记录主题不能为空' })
+    .max(256, { message: '活动记录主题最长为 256 字符' }),
   time: z.date(),
-  followUp: z.string().max(1000, '上次活动跟进最长1000字'),
-  newDiscussion: z.string().max(1000, '新的讨论内容最长1000字'),
-  content: z.string().max(1000, '活动笔记最长1000字'),
-  plans: z.string().max(1000, '下次活动计划最长1000字'),
-  reflections: z.string().max(1000, '反思最长1000字'),
+  followUp: z.string().max(1000, '上次活动跟进最长为 1000 字符'),
+  newDiscussion: z.string().max(1000, '新的讨论内容最长为 1000 字符'),
+  content: z.string().max(1000, '活动笔记最长为 1000 字符'),
+  plans: z.string().max(1000, '下次活动计划最长为 1000 字符'),
+  reflections: z.string().max(1000, '反思最长为 1000 字符'),
 });
 
 export const noteRouter = router({

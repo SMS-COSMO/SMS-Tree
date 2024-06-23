@@ -1,19 +1,19 @@
 import { z } from 'zod';
 import { protectedProcedure, requireRoles, router } from '../trpc';
 
-const paperIdSchema = z.string().min(1, '论文id不存在');
+const paperIdSchema = z.string().min(1, '论文 ID 不存在');
 const scoreEnumSchema = z.enum(['A', 'B', 'C', 'D'], { errorMap: () => ({ message: '请输入正确的等级' }) }).optional();
 
 const createSchema = z.object({
   title: z
     .string()
-    .min(1, { message: '请输入论文标题' })
-    .max(256, { message: '论文标题长度不应超过 256' }),
+    .min(1, { message: '论文标题不能为空' })
+    .max(256, { message: '论文标题最长为 256 字符' }),
   category: z.number().int(),
   keywords: z
-    .array(z.string().max(8, { message: '关键词最长为8个字符' }))
-    .max(8, { message: '最多8个关键词' }),
-  abstract: z.string().max(5000, '摘要最长5000字'),
+    .array(z.string().max(8, { message: '关键词最长为 8 字符' }))
+    .max(8, { message: '最多设置 8 个关键词' }),
+  abstract: z.string().max(5000, '摘要最长为 5000 字符'),
   groupId: z.string(),
   canDownload: z.boolean(),
   score: scoreEnumSchema,
@@ -35,13 +35,13 @@ export const paperRouter = router({
     .input(z.object({
       title: z
         .string()
-        .min(1, { message: '请输入论文标题' })
-        .max(256, { message: '论文标题长度不应超过 256' }),
+        .min(1, { message: '论文标题不能为空' })
+        .max(256, { message: '论文标题最长为 256 字符' }),
       category: z.number().int(),
       keywords: z
-        .array(z.string().max(8, { message: '关键词最长为8个字符' }))
-        .max(8, { message: '最多8个关键词' }),
-      abstract: z.string().max(5000, '摘要最长5000字'),
+        .array(z.string().max(8, { message: '关键词最长为 8 字符' }))
+        .max(8, { message: '最多设置 8 个关键词' }),
+      abstract: z.string().max(5000, '摘要最长为 5000 字符'),
       canDownload: z.boolean(),
     }))
     .mutation(async ({ ctx, input }) => {
@@ -96,9 +96,9 @@ export const paperRouter = router({
     .meta({ description: '提交对指定论文的评分和评语。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
     .input(z.object({
-      paperId: z.string().min(1, '论文id不存在'),
+      paperId: z.string().min(1, '论文 ID 不存在'),
       newPaper: z.object({
-        comment: z.string().min(1, '评语长度不能为零').max(500, '评论最长为500').optional(),
+        comment: z.string().min(1, '评语不能为空').max(500, '评语最长为 500 字符').optional(),
         isFeatured: z.boolean().optional(),
         score: scoreEnumSchema,
       }),

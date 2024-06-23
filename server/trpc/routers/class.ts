@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { protectedProcedure, requireRoles, router } from '../trpc';
 
-const classIdSchema = z.string().min(1, '班级id不存在');
+const classIdSchema = z.string().min(1, '班级 ID 不存在');
 const stateSchema = z.enum([
   'initialized', // 初始化
   'selectGroup', // 选择小组
@@ -11,18 +11,18 @@ const stateSchema = z.enum([
 ]);
 
 const createSchema = z.object({
-  index: z.number().int().min(0, '班级号至少为0').max(100, '班级号最大为100'),
+  index: z.number().int().min(0, '班级号至少为 0').max(100, '班级号最大为 100'),
   enterYear: z.number().int().min(2000, '请输入正确的入学年份').max(9999, '请输入正确的入学年份'),
   state: stateSchema,
-  teacherId: z.string().min(1, '老师不存在'),
-  stateTimetable: z.array(z.date()).max(5, '最多5个状态').optional(),
+  teacherId: z.string().min(1, '教师 ID 不存在'),
+  stateTimetable: z.array(z.date()).max(5, '每个班级最多存在 5 个状态').optional(),
 });
 
 export const classRouter = router({
   create: protectedProcedure
     .meta({ description: '创建班级。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
-    .input(createSchema.extend({ students: z.array(z.string().min(1, '学生不存在')) }))
+    .input(createSchema.extend({ students: z.array(z.string().min(1, '学生 ID 不存在')) }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.classController.create(input);
     }),
@@ -80,7 +80,7 @@ export const classRouter = router({
     .use(requireRoles(['admin', 'teacher']))
     .input(z.object({
       id: classIdSchema,
-      amount: z.number().int().gt(0).lte(20, '最多创建二十个班级'),
+      amount: z.number().int().gt(0).lte(20, '最多同时创建 20 个班级'),
     }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.classController.initGroups(input.id, input.amount);

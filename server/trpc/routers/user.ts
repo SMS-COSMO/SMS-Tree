@@ -2,11 +2,11 @@ import { z } from 'zod';
 import { protectedProcedure, publicProcedure, requireRoles, router } from '../trpc';
 import { passwordRegex } from '~/constants/user';
 
-const roleEnumSchema = z.enum(['student', 'teacher', 'admin'], { errorMap: () => ({ message: '提交了不存在的用户身份' }) });
+const roleEnumSchema = z.enum(['student', 'teacher', 'admin'], { errorMap: () => ({ message: '提供的权限级别不存在' }) });
 const userIdSchema = z.string().min(1, { message: '用户不存在' });
-const schoolIdSchema = z.string().min(4, { message: '学工号长度应至少为4' }).max(24, { message: '学工号超出长度范围' });
-const usernameSchema = z.string().min(2, { message: '用户名长度应至少为2' }).max(15, { message: '用户名超出长度范围' });
-const newPasswordSchema = z.string().min(8, { message: '用户密码长度应至少为8' }).regex(passwordRegex, '密码必须包含大小写字母、数字与特殊符号');
+const schoolIdSchema = z.string().min(4, { message: '学工号长度至少为 4 字符' }).max(24, { message: '学工号超出长度范围' });
+const usernameSchema = z.string().min(2, { message: '用户名长度至少为 2 字符' }).max(15, { message: '用户名超出长度范围' });
+const newPasswordSchema = z.string().min(8, { message: '密码长度至少为 8 字符' }).regex(passwordRegex, '密码必须同时包含大小写字母、数字与特殊符号');
 
 export const userRouter = router({
   register: protectedProcedure

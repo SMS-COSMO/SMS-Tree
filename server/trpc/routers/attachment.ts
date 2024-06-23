@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { protectedProcedure, router } from '../trpc';
 
 const categorySchema = z.enum(['paperDocument', 'paperAttachment', 'reportDocument', 'reportPresentation']);
-const attachmentIdSchema = z.string().min(0, '附件不存在');
+const attachmentIdSchema = z.string().min(1, '附件不存在');
 
 export const attachmentRouter = router({
   create: protectedProcedure
@@ -10,7 +10,7 @@ export const attachmentRouter = router({
     .input(z.object({
       paperId: z.string().optional(),
       reportId: z.string().optional(),
-      name: z.string().min(0, '文件名最短为1').max(100, '文件名最长为100'),
+      name: z.string().min(1, '文件名不能为空').max(100, '文件名最长为 100 字符'),
       fileType: z.string(),
       category: categorySchema,
     }))
