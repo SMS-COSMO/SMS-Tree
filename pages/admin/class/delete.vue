@@ -9,9 +9,10 @@
         :closable="false"
       />
 
+      <el-checkbox v-model="showMine" size="large" label="仅展示我的班级" border />
       <el-table
         ref="tableRef"
-        :data="listData"
+        :data="listData?.filter(x => !showMine || teacherClasses?.includes(x.id))"
         class="cursor-pointer"
         row-key="id"
         @selection-change="handleSelectionChange"
@@ -100,6 +101,14 @@ const { data: listData, suspense } = useQuery({
   queryFn: () => $api.class.list.query(),
 });
 await suspense();
+
+const userStore = useUserStore();
+const showMine = ref(userStore.role !== 'admin');
+const { data: teacherClasses, suspense: teacherClassesSuspense } = useQuery({
+  queryKey: ['user.teacherClasses', { id: userStore.userId }],
+  queryFn: () => $api.user.teacherClasses.query(userStore.userId),
+});
+await teacherClassesSuspense();
 
 const enterYearOptions = Array.from(
   new Set(listData.value?.map(x => x.enterYear)),
