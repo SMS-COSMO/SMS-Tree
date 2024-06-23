@@ -10,7 +10,7 @@ const newPasswordSchema = z.string().min(8, { message: '密码长度至少为 8 
 
 export const userRouter = router({
   register: protectedProcedure
-    .meta({ description: '注册用户要求教师及以上权限' })
+    .meta({ description: '注册用户。要求教师及以上权限。' })
     .use(requireRoles(['teacher', 'admin']))
     .input(z.object({
       schoolId: schoolIdSchema,
@@ -25,7 +25,7 @@ export const userRouter = router({
     }),
 
   remove: protectedProcedure
-    .meta({ description: '删除指定用户要求教师及以上权限' })
+    .meta({ description: '删除指定用户。要求教师及以上权限。' })
     .use(requireRoles(['teacher', 'admin']))
     .input(z.object({ id: userIdSchema }))
     .mutation(async ({ ctx, input }) => {
@@ -33,7 +33,7 @@ export const userRouter = router({
     }),
 
   modifyPassword: protectedProcedure
-    .meta({ description: '修改用户密码' })
+    .meta({ description: '修改用户密码。' })
     .input(z.object({
       id: userIdSchema,
       oldPassword: z.string(),
@@ -44,32 +44,32 @@ export const userRouter = router({
     }),
 
   login: publicProcedure
-    .meta({ description: '登录' })
+    .meta({ description: '深中树用户登录。' })
     .input(z.object({ schoolId: z.string(), password: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.userController.login(input.schoolId, input.password, false);
     }),
 
   seiueLogin: publicProcedure
-    .meta({ description: '希悦登录' })
+    .meta({ description: '希悦用户登录。' })
     .input(z.object({ schoolId: z.string(), password: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.userController.login(input.schoolId, input.password, true);
     }),
 
   tokenValidity: protectedProcedure
-    .meta({ description: '核验令牌' })
+    .meta({ description: '核验令牌。' })
     .query(() => { }), // protectedProcedure will check if user is logged in
 
   refreshAccessToken: publicProcedure
-    .meta({ description: '刷新令牌' })
+    .meta({ description: '刷新令牌。' })
     .input(z.object({ username: z.string(), refreshToken: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.userController.refreshAccessToken(input.refreshToken, input.username);
     }),
 
   bulkRegister: protectedProcedure
-    .meta({ description: '批量注册用户要求教师及以上权限' })
+    .meta({ description: '批量注册用户。要求教师及以上权限。' })
     .use(requireRoles(['teacher', 'admin']))
     .input(z.object({
       users: z.object({ schoolId: z.string().min(1).max(24), username: z.string().min(1) }).array().nonempty(),
@@ -80,7 +80,7 @@ export const userRouter = router({
     }),
 
   modify: protectedProcedure
-    .meta({ description: '修改用户信息要求教师及以上权限' })
+    .meta({ description: '修改用户信息。要求教师及以上权限。' })
     .use(requireRoles(['teacher', 'admin']))
     .input(z.object({
       id: userIdSchema,
@@ -94,7 +94,7 @@ export const userRouter = router({
     }),
 
   teacherClasses: protectedProcedure
-    .meta({ description: '获取指定教师所负责的班级ID列表要求教师及以上权限' })
+    .meta({ description: '获取指定教师所负责的班级 ID 列表。要求教师及以上权限。' })
     .use(requireRoles(['teacher', 'admin']))
     .input(userIdSchema)
     .query(async ({ ctx, input }) => {
@@ -102,7 +102,7 @@ export const userRouter = router({
     }),
 
   profile: protectedProcedure
-    .meta({ description: '获取指定用户的用户信息' })
+    .meta({ description: '获取指定用户的用户信息。' })
     .input(z.object({ id: userIdSchema }))
     .query(async ({ ctx, input }) => {
       return await ctx.userController.profile(input.id, ctx.user);
