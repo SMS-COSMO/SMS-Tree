@@ -1,10 +1,16 @@
 <template>
   <div class="space-y-1.5">
     <div>
-      <el-checkbox v-model="modelValue.filter.onlyCanDownload" label="可下载" border @change="updateValue" />
+      <el-checkbox v-model="modelValue.filter.onlyCanDownload" border @change="updateValue">
+        <el-icon class="i-tabler:download" />
+        可下载
+      </el-checkbox>
     </div>
     <div>
-      <el-checkbox v-model="modelValue.filter.onlyFeatured" label="优秀作业" border @change="updateValue" />
+      <el-checkbox v-model="modelValue.filter.onlyFeatured" border @change="updateValue">
+        <el-icon class="i-tabler:star" />
+        优秀作业
+      </el-checkbox>
     </div>
   </div>
 

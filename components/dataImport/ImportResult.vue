@@ -58,14 +58,22 @@
       </el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button size="small" @click="exportPassword(scope.row.name, scope.row.passwords)">
+          <el-button
+            size="small"
+            :disabled="!scope.row.passwords.length"
+            @click="exportPassword(scope.row.name, scope.row.passwords)"
+          >
             导出初始密码
           </el-button>
         </template>
       </el-table-column>
     </el-table>
     <div class="mt-4">
-      <el-button type="primary" @click="exportAll">
+      <el-button
+        type="primary"
+        :disabled="!data?.data?.some(x => x.passwords.length)"
+        @click="exportAll"
+      >
         导出全部初始密码
       </el-button>
       <el-button v-if="showRemove" type="danger" @click="openDeleteDialog">
@@ -137,7 +145,9 @@ async function exportPassword(className: string, passwords: THistoryRow[]) {
 
 async function exportAll() {
   await Promise.all(
-    (props.data?.data ?? []).map(x => exportPassword(x.name, x.passwords)),
+    (props.data?.data ?? [])
+      .filter(x => x.passwords.length)
+      .map(x => exportPassword(x.name, x.passwords)),
   );
 }
 </script>

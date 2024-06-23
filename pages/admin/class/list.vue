@@ -1,13 +1,13 @@
 <template>
   <el-card class="h-admin-content">
-    <el-check-tag :checked="showAll" class="mb-2" @change="showAll = !showAll">
-      展示所有班级
-    </el-check-tag>
-    <el-input
-      v-model="searchContent"
-      placeholder="搜索班级"
-      prefix-icon="i-tabler:search"
-    />
+    <div class="flex flex-col gap-3 md:flex-row">
+      <el-checkbox v-model="showMine" size="large" label="仅展示我的班级" border />
+      <el-input
+        v-model="searchContent"
+        placeholder="搜索班级"
+        prefix-icon="i-tabler:search"
+      />
+    </div>
 
     <el-scrollbar>
       <div class="pb-20 pt-4">
@@ -48,11 +48,11 @@ const { $api } = useNuxtApp();
 useHeadSafe({
   title: '班级列表',
 });
+const userStore = useUserStore();
 
-const showAll = ref(false);
+const showMine = ref(userStore.role !== 'admin');
 const searchContent = ref('');
 
-const userStore = useUserStore();
 const { data: teacherClasses, suspense } = useQuery({
   queryKey: ['user.teacherClasses', { id: userStore.userId }],
   queryFn: () => $api.user.teacherClasses.query(userStore.userId),
@@ -66,7 +66,7 @@ const { processedListData, listData } = await useSearch<TClassListItem>(
   ['class.list'],
   e => e.item,
   (e) => {
-    return showAll.value || (teacherClasses.value ?? []).includes(e.id);
+    return !showMine.value || (teacherClasses.value ?? []).includes(e.id);
   },
 );
 
@@ -80,10 +80,4 @@ const enterYearOptions = Array.from(
 function enterYearFilterHandler(value: string, row: TClassListItem) {
   return row?.enterYear.toString() === value;
 }
-
-onMounted(() => {
-  const userStore = useUserStore();
-  if (userStore.role === 'admin')
-    showAll.value = true;
-});
 </script>

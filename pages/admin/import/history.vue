@@ -1,8 +1,10 @@
 <template>
   <el-card>
+    <el-checkbox v-model="showMine" label="仅展示我的记录" border class="mb-2" />
     <el-table
       ref="tableRef"
-      :data="data"
+      :data="data?.filter(x => !showMine || x.importer?.id === userId)"
+      :default-sort="{ prop: 'createdAt', order: 'descending' }"
       class="cursor-pointer"
       @selection-change="handleSelectionChange"
       @row-click="row => navigateTo(`/admin/import/${row.id}`)"
@@ -22,7 +24,7 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="导入时间">
+      <el-table-column prop="createdAt" label="导入时间" sortable>
         <template #default="scope">
           {{ scope.row.createdAt.toLocaleString('zh-CN') }}
         </template>
@@ -43,6 +45,9 @@ useHeadSafe({
 });
 
 const { $api } = useNuxtApp();
+
+const { userId, role } = useUserStore();
+const showMine = ref(role !== 'admin');
 
 const queryClient = useQueryClient();
 const { data, suspense } = useQuery({
