@@ -26,40 +26,43 @@
 
     <el-sub-menu index="0">
       <template #title>
-        <el-icon class="i-tabler:adjustments-alt" />
-        <span>批量管理</span>
-      </template>
-      <el-menu-item index="/admin/class/delete">
-        <el-icon class="i-tabler:users-minus" />
-        删除班级
-      </el-menu-item>
-      <el-menu-item index="/admin/import">
-        <el-icon class="i-tabler:users-plus" />
-        导入学生数据
-      </el-menu-item>
-      <el-menu-item index="/admin/import/history">
-        <el-icon class="i-tabler:history" />
-        导入记录
-      </el-menu-item>
-    </el-sub-menu>
-
-    <el-sub-menu index="1">
-      <template #title>
         <el-icon class="i-tabler:database-cog" />
         <span>数据管理</span>
       </template>
-      <el-menu-item index="/admin/user/create">
-        <el-icon class="i-tabler:user-plus" />
-        创建账户
-      </el-menu-item>
-      <el-menu-item index="/admin/class/create">
-        <el-icon class="i-tabler:school" />
-        创建班级
-      </el-menu-item>
-      <el-menu-item index="/admin/paper/create">
-        <el-icon class="i-tabler:file-plus" />
-        创建论文
-      </el-menu-item>
+      <el-menu-item-group>
+        <template #title>
+          <span>创建</span>
+        </template>
+        <el-menu-item index="/admin/user/create">
+          <el-icon class="i-tabler:user-plus" />
+          创建账户
+        </el-menu-item>
+        <el-menu-item index="/admin/class/create">
+          <el-icon class="i-tabler:school" />
+          创建班级
+        </el-menu-item>
+        <el-menu-item index="/admin/paper/create">
+          <el-icon class="i-tabler:file-plus" />
+          创建论文
+        </el-menu-item>
+      </el-menu-item-group>
+      <el-menu-item-group>
+        <template #title>
+          <span>换届管理</span>
+        </template>
+        <el-menu-item index="/admin/class/delete">
+          <el-icon class="i-tabler:users-minus" />
+          删除班级
+        </el-menu-item>
+        <el-menu-item index="/admin/import">
+          <el-icon class="i-tabler:users-plus" />
+          导入学生数据
+        </el-menu-item>
+        <el-menu-item index="/admin/import/history">
+          <el-icon class="i-tabler:history" />
+          导入记录
+        </el-menu-item>
+      </el-menu-item-group>
     </el-sub-menu>
 
     <el-sub-menu v-if="seiueStore.loggedIn" index="2">
