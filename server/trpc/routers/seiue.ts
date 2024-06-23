@@ -102,7 +102,7 @@ export const seiueRouter = router({
 
       const seiue = new Seiue({ accessToken: ctx.seiueToken, activeReflectionId: ctx.seiueReflectionId });
       const dataHelper = new SeiueDataHelper(seiue);
-      const promiseArray: Promise<{
+      const resultArray: {
         classId: number;
         name: string;
         passwords: {
@@ -111,7 +111,7 @@ export const seiueRouter = router({
           password: string;
         }[];
         success: boolean;
-      }>[] = [];
+      }[] = [];
 
       const classId2Name = Object.fromEntries(
         input.map(item => [item.classId, item.name]),
@@ -120,7 +120,7 @@ export const seiueRouter = router({
 
       for (const classId of classIds) {
         const classMembers = await dataHelper.fetchClassMembers(classId);
-        const transactionPromise = db.transaction(async (trx) => {
+        const transactionResult = await db.transaction(async (trx) => {
           try {
             // we assume that all the members are in the same class
             const classEnterYear = Number.parseInt(classMembers[0].reflection.graduates_in.name.slice(0, -1));
@@ -192,13 +192,12 @@ export const seiueRouter = router({
             };
           }
         });
-        promiseArray.push(transactionPromise);
+        resultArray.push(transactionResult);
       }
-      const res = await Promise.all(promiseArray);
       await db.insert(importHistory).values({
-        data: res,
+        data: resultArray,
         importer: ctx.user.id,
       });
-      return res;
+      return resultArray;
     }),
 });
