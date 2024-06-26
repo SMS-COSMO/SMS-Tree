@@ -39,7 +39,7 @@ const props = withDefaults(defineProps<{
 
 const { $api } = useNuxtApp();
 
-const { data: fileUrl, suspense } = useQuery({
+const { data: rawFileUrl, suspense } = useQuery({
   queryKey: ['attachment.fileUrl', { id: props.attachment?.S3FileId }],
   queryFn: () => $api.attachment.fileUrl.query(props.attachment!.id),
 });
@@ -52,4 +52,5 @@ const docxFileTypes = [
 ];
 
 const pdfFileTypes = ['application/pdf'];
+const fileUrl = computed(() => encodeURIComponent(rawFileUrl.value ?? ''));
 </script>
