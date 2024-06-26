@@ -6,6 +6,8 @@ import { classesToStudents } from '../../db/schema/classToStudents';
 import { useClassName } from '~/composables/className';
 import { groups } from '~/server/db/schema/group';
 import type { TClassState } from '~/types';
+import { reports } from '~/server/db/schema/report';
+import { notes } from '~/server/db/schema/note';
 
 export class ClassController {
   async create(newClass: {
@@ -51,7 +53,11 @@ export class ClassController {
       },
     });
     await Promise.all(g?.groups.map(
-      x => db.update(groups).set({ archived: true }).where(eq(groups.id, x.id)),
+      async (x) => {
+        await db.update(groups).set({ archived: true }).where(eq(groups.id, x.id));
+        await db.delete(reports).where(eq(reports.groupId, x.id));
+        await db.delete(notes).where(eq(notes.groupId, x.id));
+      },
     ) ?? []);
     await db.delete(classes).where(eq(classes.id, id));
     return '删除成功';
