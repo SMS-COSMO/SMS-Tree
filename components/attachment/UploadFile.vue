@@ -28,12 +28,8 @@ import axios from 'axios';
 const props = withDefaults(defineProps<{
   category: TAttachmentCategory;
   multiple?: boolean;
-  documentSizeLimit?: number;
-  attachmentSizeLimit?: number;
 }>(), {
   multiple: false,
-  documentSizeLimit: 30000000, // 30MB
-  attachmentSizeLimit: 50000000, // 50MB
 });
 
 const uploading = defineModel<boolean>('uploading');
@@ -75,7 +71,9 @@ async function handleUpload(option: UploadRequestOptions) {
   }
 
   // f.size in bytes
-  const sizeLimit = props.category === 'paperAttachment' ? props.attachmentSizeLimit : props.documentSizeLimit;
+  const sizeLimit = props.category === 'paperAttachment'
+    ? 50000000 // 50mb
+    : 100000000; // 100mb
   if (f?.size && f.size > sizeLimit) {
     removeFileFromList(f, `文件大小不应超过 ${Math.round(sizeLimit / 10 ** 6)}MB，当前文件大小：${Math.round(f.size / 10 ** 6)}MB`);
     handleRemove(f);
