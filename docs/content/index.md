@@ -1,21 +1,24 @@
 ---
+title: Home
 navigation: false
 ---
 
 ::hero
 ---
 actions:
-  - name: 开发者指南
-    to: /developer/introduction/getting-started
-  - name: Star on GitHub →
+  - name: 使用指南
+    to: /introduction
     variant: outline
-    to: https://github.com/sms-cosmo/sms-tree
-    leftIcon: 'lucide:github'
+    leftIcon: lucide:book-open
+  - name: 常见问题
+    to: /faq
+    variant: outline
+    leftIcon: lucide:message-circle-question
 ---
 
 #title
-SMS-Tree 项目帮助文档
+SMS-Tree 帮助文档
 
 #description
-为开发者和用户提供的详细指南。
+为用户提供的详细指南。
 ::
