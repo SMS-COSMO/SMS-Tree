@@ -7,7 +7,7 @@
       <el-space :size="10">
         <el-tag v-if="info?.isFeatured" type="success" size="large">
           <el-icon class="i-tabler:star" />
-          优秀作业
+          优秀
         </el-tag>
         <el-tag v-if="info?.score" size="large" :type="useScoreColor(info.score)">
           <el-icon class="i-tabler:chart-bar" />

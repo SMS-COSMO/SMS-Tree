@@ -11,7 +11,7 @@
       </el-tag>
       <el-tag v-if="paper?.isFeatured" type="success" disable-transitions>
         <el-icon class="i-tabler:star" />
-        优秀作业
+        优秀
       </el-tag>
       <el-tag v-if="paper?.canDownload" disable-transitions>
         <el-icon class="i-tabler:download" />

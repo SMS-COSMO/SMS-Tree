@@ -9,7 +9,7 @@
     <div>
       <el-checkbox v-model="modelValue.filter.onlyFeatured" border @change="updateValue">
         <el-icon class="i-tabler:star" />
-        优秀作业
+        优秀
       </el-checkbox>
     </div>
   </div>

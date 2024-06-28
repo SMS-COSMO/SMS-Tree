@@ -2,7 +2,7 @@
   <div class="space-y-3 md:space-y-4">
     <el-card v-if="isScoring" class="right-0 top-0 z-10 md:absolute">
       <div class="m-[-5px] flex flex-col gap-2 md:flex-row">
-        <el-tooltip content="是否选为优秀作业" placement="top" :show-after="800">
+        <el-tooltip content="是否选为优秀" placement="top" :show-after="800">
           <el-switch
             v-model="form.isFeatured" active-text="优秀" inactive-text="普通" inline-prompt
             size="large"
@@ -37,7 +37,9 @@
         <el-tooltip content="完成批改" placement="top" :show-after="800">
           <el-button
             :loading="isPending"
-            icon="i-tabler:check" size="small"
+            :disabled="!form.score"
+            icon="i-tabler:check"
+            size="small"
             class="ml-0!"
             @click="scoreMutation({ paperId: id, newPaper: form })"
           />

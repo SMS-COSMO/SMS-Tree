@@ -32,7 +32,7 @@
           style="--el-switch-on-color: #15803d; --el-switch-off-color: #db3131;"
         />
       </el-form-item>
-      <el-form-item prop="isFeatured" label="优秀作业">
+      <el-form-item prop="isFeatured" label="优秀">
         <el-switch
           v-model="form.isFeatured" size="large" active-text="是" inactive-text="否" inline-prompt
           style="--el-switch-on-color: #15803d; --el-switch-off-color: #db3131;"
