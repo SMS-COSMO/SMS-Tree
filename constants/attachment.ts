@@ -17,6 +17,7 @@ export const allowFileType = {
     'image/bmp',
     'application/x-compressed',
     'application/vnd.ms-excel',
+    'application/wps-office.xlsx',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   ],
   reportDocument: [

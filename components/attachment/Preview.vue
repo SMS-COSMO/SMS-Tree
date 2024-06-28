@@ -1,5 +1,21 @@
 <template>
-  <div v-if="props.attachment">
+  <div v-if="props.attachment" class="relative">
+    <el-button
+      class="absolute top-[1px]"
+      size="small"
+      :class="[
+        !pdfFileTypes.includes(props.attachment.fileType)
+          && !docxFileTypes.includes(props.attachment.fileType)
+          && !/^image*/.test(props.attachment.fileType)
+          && !/^video*/.test(props.attachment.fileType)
+          && !/^audio*/.test(props.attachment.fileType)
+          ? 'w-full' : 'right-[1px]',
+      ]"
+      icon="i-tabler:download"
+      @click="download"
+    >
+      下载
+    </el-button>
     <iframe
       v-if="pdfFileTypes.includes(props.attachment.fileType)"
       :src="`/pdfjs-dist/web/viewer.html?file=${fileUrl}`" frameborder="0"
@@ -25,11 +41,14 @@
       <source :src="fileUrl" :type="props.attachment.fileType">
     </video>
     <audio v-else-if="/^audio*/.test(props.attachment.fileType)" controls :src="fileUrl" />
-    <el-empty v-else :image-size="100" description="暂无预览" class="h-40" />
+    <el-empty v-else :image-size="100" description="暂无预览" class="h-60" />
   </div>
 </template>
 
 <script setup lang="ts">
+import axios from 'axios';
+import { saveAs } from 'file-saver';
+
 const props = withDefaults(defineProps<{
   attachment?: TAttachment;
   fullHeight?: boolean;
@@ -53,4 +72,11 @@ const docxFileTypes = [
 
 const pdfFileTypes = ['application/pdf'];
 const fileUrl = computed(() => encodeURIComponent(rawFileUrl.value ?? ''));
+
+async function download() {
+  if (!rawFileUrl.value)
+    return;
+  const res = await axios.get(rawFileUrl.value, { responseType: 'blob' });
+  saveAs(res.data, props.attachment?.name ?? 'untitled.pdf');
+}
 </script>

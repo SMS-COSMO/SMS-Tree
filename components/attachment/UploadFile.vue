@@ -61,7 +61,6 @@ async function handleUpload(option: UploadRequestOptions) {
   uploading.value = true;
   const { file } = option;
   const f = getFile(file);
-
   if (!allowFileType[props.category].includes(file.type)) {
     removeFileFromList(f, '不支持的文件类型');
     if (f)
