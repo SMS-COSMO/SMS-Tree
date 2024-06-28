@@ -4,11 +4,9 @@
       <el-icon class="i-tabler:dice-5" />
       随机优秀论文
     </template>
-    <div class="grid gap-4 lg:grid-cols-3 md:grid-cols-2">
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
       <template v-for="paper in randomPaper" :key="paper.id">
-        <PaperCard :paper="paper">
-          sa
-        </PaperCard>
+        <PaperCard :paper="paper" />
       </template>
     </div>
   </el-card>

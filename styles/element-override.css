@@ -433,6 +433,7 @@
   height: 1.2em !important;
   width: 1.2em !important;
   margin-bottom: -2.6px !important;
+  border-radius: 0 !important;
 }
 
 /* Tag */

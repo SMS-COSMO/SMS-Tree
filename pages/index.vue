@@ -1,5 +1,5 @@
 <template>
-  <el-space :size="20" direction="vertical" fill class="w-full">
+  <div class="w-full flex flex-col gap-6">
     <div class="w-full">
       <el-carousel trigger="click" height="250px">
         <el-carousel-item v-for="item in 4" :key="item">
@@ -43,12 +43,32 @@
               <el-icon class="i-tabler:bolt" />
               快速管理
             </template>
+            <div class="grid grid-cols-3 gap-2 lg:grid-cols-6">
+              <el-button class="ml-0!" icon="i-tabler:home" @click="navigateTo('/admin')">
+                管理中心
+              </el-button>
+              <el-button class="ml-0!" icon="i-tabler:pencil" @click="navigateTo('/admin/scoring')">
+                批改论文
+              </el-button>
+              <el-button class="ml-0!" icon="i-tabler:school" @click="navigateTo('/admin/class/list')">
+                班级管理
+              </el-button>
+              <el-button class="ml-0!" icon="i-tabler:users" @click="navigateTo('/admin/student/list')">
+                学生管理
+              </el-button>
+              <el-button class="ml-0!" icon="i-tabler:users-plus" @click="navigateTo('/admin/import')">
+                导入学生数据
+              </el-button>
+              <el-button class="ml-0!" icon="i-tabler:history" @click="navigateTo('/admin/import/history')">
+                导入记录
+              </el-button>
+            </div>
           </el-card>
         </div>
       </div>
       <RandomPaper />
     </template>
-  </el-space>
+  </div>
 </template>
 
 <script setup lang="ts">
