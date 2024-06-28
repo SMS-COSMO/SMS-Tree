@@ -106,4 +106,12 @@ export const paperRouter = router({
     .mutation(async ({ ctx, input }) => {
       return await ctx.paperController.score(input.paperId, input.newPaper);
     }),
+
+  random: protectedProcedure
+    .input(z.object({
+      count: z.number().int(),
+    }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.paperController.random(input.count);
+    }),
 });

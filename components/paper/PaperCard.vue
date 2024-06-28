@@ -1,7 +1,7 @@
 <template>
   <CompactCard
     v-once
-    class="mb-2 cursor-pointer md:mb-2.5 hover:border-color-[#D4D7DE]! hover:bg-hover-bg!"
+    class="cursor-pointer hover:border-color-[#D4D7DE]! hover:bg-hover-bg!"
     @click="navigateTo(`${isAdmin ? '/admin' : ''}/paper/${paper.id}`)"
   >
     <div class="flex flex-wrap gap-1.5">

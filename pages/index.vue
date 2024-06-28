@@ -46,6 +46,7 @@
           </el-card>
         </div>
       </div>
+      <RandomPaper />
     </template>
   </el-space>
 </template>

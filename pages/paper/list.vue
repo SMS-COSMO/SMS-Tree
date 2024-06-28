@@ -38,7 +38,7 @@
               <div class="mx-auto max-w-[1300px] px-4 lg:px-5">
                 <div class="flex flex-col lg:flex-row lg:gap-4">
                   <div class="lg:basis-1/4" />
-                  <div class="lg:basis-3/4">
+                  <div class="mb-2 lg:basis-3/4">
                     <PaperCard :paper="paper" />
                   </div>
                 </div>
@@ -48,7 +48,7 @@
               <div class="mx-auto max-w-[1300px] px-4 lg:px-5">
                 <div class="flex flex-col lg:flex-row lg:gap-4">
                   <div class="lg:basis-1/4" />
-                  <div class="lg:basis-3/4">
+                  <div class="mb-2 lg:basis-3/4">
                     <el-empty description="无结果，换个搜索条件试试？" />
                   </div>
                 </div>

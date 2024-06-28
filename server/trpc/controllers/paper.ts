@@ -1,4 +1,4 @@
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, eq, gte, inArray, sql } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import { db } from '../../db/db';
 import type { TNewPaper, TRawUser } from '../../db/db';
@@ -292,5 +292,49 @@ export class PaperController {
   ) {
     await db.update(papers).set({ ...newPaper, isPublic: true }).where(eq(papers.id, id));
     return '批改成功';
+  }
+
+  async random(count: number) {
+    const rawList = await db.query.papers.findMany({
+      where: and(
+        eq(papers.isFeatured, true),
+        eq(papers.isPublic, true),
+      ),
+      columns: {
+        id: true,
+        canDownload: true,
+        category: true,
+        createdAt: true,
+        isFeatured: true,
+        keywords: true,
+        title: true,
+      },
+      with: {
+        group: {
+          columns: { enterYear: true },
+          with: {
+            usersToGroups: {
+              columns: {},
+              with: {
+                user: {
+                  columns: { username: true, id: true },
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: sql`RANDOM()`,
+      limit: count,
+    });
+
+    return rawList.map((x) => {
+      const { group, ...info } = x;
+      return {
+        authors: group.usersToGroups.map(u => ({ username: u.user.username })),
+        enterYear: group.enterYear,
+        ...info,
+      };
+    });
   }
 }
