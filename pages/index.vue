@@ -53,7 +53,7 @@
               <el-button class="ml-0!" icon="i-tabler:school" @click="navigateTo('/admin/class/list')">
                 班级管理
               </el-button>
-              <el-button class="ml-0!" icon="i-tabler:users" @click="navigateTo('/admin/student/list')">
+              <el-button class="ml-0!" icon="i-tabler:users" @click="navigateTo('/admin/user/list')">
                 学生管理
               </el-button>
               <el-button class="ml-0!" icon="i-tabler:users-plus" @click="navigateTo('/admin/import')">

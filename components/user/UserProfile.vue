@@ -79,6 +79,7 @@
   <el-button
     v-if="device.isMobileOrTablet && useUserStore().userId === userInfo?.id"
     class="mt-4 w-full"
+    icon="i-tabler:logout"
     @click="useLogout"
   >
     退出登录

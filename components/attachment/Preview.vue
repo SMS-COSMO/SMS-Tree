@@ -23,24 +23,24 @@
     />
     <iframe
       v-else-if="docxFileTypes.includes(props.attachment.fileType)"
-      :src="`https://view.officeapps.live.com/op/embed.aspx?src=${fileUrl}`" frameborder="0"
+      :src="`https://view.officeapps.live.com/op/embed.aspx?src=${rawFileUrl}`" frameborder="0"
       :class="`w-full ${fullHeight ? 'h-[calc(100vh-200px)]' : 'h-150'}`"
     />
     <el-image
       v-else-if="/^image*/.test(props.attachment.fileType)"
       class="h-40 w-40 shadow transition-all rounded hover:shadow-md"
-      :src="fileUrl"
+      :src="rawFileUrl"
       :zoom-rate="1.2"
       :max-scale="7"
       :min-scale="0.2"
       :initial-index="4"
-      :preview-src-list="[fileUrl!]"
+      :preview-src-list="[rawFileUrl!]"
       fit="cover"
     />
     <video v-else-if="/^video*/.test(props.attachment.fileType)" controls width="100%">
-      <source :src="fileUrl" :type="props.attachment.fileType">
+      <source :src="rawFileUrl" :type="props.attachment.fileType">
     </video>
-    <audio v-else-if="/^audio*/.test(props.attachment.fileType)" controls :src="fileUrl" />
+    <audio v-else-if="/^audio*/.test(props.attachment.fileType)" controls :src="rawFileUrl" />
     <el-empty v-else :image-size="100" description="暂无预览" class="h-60" />
   </div>
 </template>
@@ -61,6 +61,7 @@ const { $api } = useNuxtApp();
 const { data: rawFileUrl, suspense } = useQuery({
   queryKey: ['attachment.fileUrl', { id: props.attachment?.S3FileId }],
   queryFn: () => $api.attachment.fileUrl.query(props.attachment!.id),
+  refetchOnWindowFocus: false,
 });
 await suspense();
 

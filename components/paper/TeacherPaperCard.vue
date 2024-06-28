@@ -1,6 +1,6 @@
 <template>
   <CompactCard
-    :class="`cursor-pointer hover:border-color-[#D4D7DE]! hover:bg-hover-bg! ${currentSelected === paper.id ? 'bg-hover-bg!' : ''}`"
+    :class="`card-button ${currentSelected === paper.id ? 'bg-hover-bg!' : ''}`"
     @click="$emit('selected', paper.id)"
   >
     <el-row class="gap-[6px]">

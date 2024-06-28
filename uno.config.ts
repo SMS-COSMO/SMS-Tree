@@ -51,6 +51,7 @@ export default defineConfig({
     'h-content': 'h-[calc(100vh-95px)]', // Height of the full page
     'h-admin-content': 'h-[calc(100vh-100px-80px)] md:h-[calc(100vh-95px)]', // Height of the full admin page
     'max-h-content': 'max-h-[calc(100vh-100px)]', // Height of the full page
+    'card-button': 'cursor-pointer hover:border-color-[#D4D7DE]! hover:bg-hover-bg!',
   },
   rules: [
     ['rounded', { 'border-radius': '10px' }],

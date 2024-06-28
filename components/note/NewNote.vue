@@ -1,6 +1,6 @@
 <template>
   <el-card
-    class="cursor-pointer hover:border-color-[#D4D7DE]! hover:bg-hover-bg!"
+    class="card-button"
     @click="dialogVisible = true"
   >
     <el-icon class="i-tabler:plus" />

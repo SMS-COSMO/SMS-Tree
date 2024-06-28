@@ -1,7 +1,7 @@
 <template>
   <el-card class="mb-5">
     <div class="flex flex-col gap-4 text-center md:flex-row">
-      <el-card class="basis-1/4">
+      <el-card class="basis-1/4 card-button" @click="navigateTo('/admin/scoring')">
         <el-statistic :value="statistic?.scorePaperCount">
           <template #title>
             <el-icon class="i-tabler:pencil" />
@@ -33,7 +33,7 @@
       </el-card>
       <el-card
         v-if="seiueStore.loggedIn"
-        class="card-button relative basis-1/4"
+        class="full-card-height relative basis-1/4"
       >
         <div class="mx-auto flex flex-col self-center">
           <div>
@@ -51,7 +51,7 @@
       </el-card>
       <el-card
         v-else
-        class="card-button basis-1/4 cursor-pointer hover:border-color-[#D4D7DE]! hover:bg-hover-bg!"
+        class="basis-1/4 card-button"
         @click="navigateTo('/admin/seiue/login')"
       >
         <div class="mx-auto flex self-center text-2xl">
@@ -91,7 +91,7 @@ await suspense();
   --el-font-size-extra-small: 0.9rem !important;
 }
 
-.card-button>.el-card__body {
+.full-card-height>.el-card__body {
   height: 100% !important;
   display: flex;
   box-sizing: border-box

@@ -6,6 +6,7 @@
     :default-active="$route.path"
     :router="true"
     :show-timeout="0"
+    :default-openeds="mode === 'vertical' ? ['0', '2'] : []"
   >
     <el-menu-item index="/admin">
       <el-icon class="i-tabler:home" />
