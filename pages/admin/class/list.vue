@@ -66,7 +66,7 @@ const { processedListData, listData } = await useSearch<TClassListItem>(
   ['class.list'],
   e => e.item,
   (e) => {
-    return !showMine.value || (teacherClasses.value ?? []).includes(e.id);
+    return !showMine.value || (teacherClasses.value ?? []).some(x => x.id === e.id);
   },
 );
 

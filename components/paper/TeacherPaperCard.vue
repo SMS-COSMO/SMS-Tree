@@ -8,7 +8,7 @@
         {{ getCategoryName(paper?.category) }}
       </el-tag>
       <el-tag type="primary" disable-transitions>
-        {{ paper.className }}
+        {{ paper.class?.className }}
       </el-tag>
       <el-tag type="info" disable-transitions>
         {{ paper?.createdAt?.toLocaleDateString('zh-CN') }}

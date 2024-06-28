@@ -173,9 +173,17 @@ export class UserController {
   async teacherClasses(id: string) {
     const res = await db.query.classes.findMany({
       where: eq(classes.teacherId, id),
-      columns: { id: true },
+      columns: {
+        id: true,
+        state: true,
+        enterYear: true,
+        index: true,
+      },
     });
-    return res.map(x => x.id);
+    return res.map(x => ({
+      ...x,
+      className: useClassName(x),
+    }));
   }
 
   async modify(id: string, newUser: Partial<Omit<TRawUser, 'password' | 'createdAt'>>) {

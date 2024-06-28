@@ -8,11 +8,11 @@
               v-model="filterClass"
               :options="classFilterOptions"
               placeholder="筛选班级"
-              @change="queryClient.invalidateQueries({ queryKey: ['paper.scoreList'] });"
+              @change="selectedIndex = 0"
             />
           </div>
-          <div v-if="scoringQueue?.list?.length" class="flex flex-row gap-2 lg:flex-col">
-            <template v-for="item in scoringQueue?.list" :key="item">
+          <div v-if="filteredScoringQueue?.length" class="flex flex-row gap-2 lg:flex-col">
+            <template v-for="item in filteredScoringQueue" :key="item">
               <TeacherPaperCard
                 :paper="item" :current-selected="selected" class="min-w-[300px] lg:min-w-auto"
                 @selected="id => selected = id"
@@ -44,7 +44,6 @@ useHeadSafe({
   title: '批改论文',
 });
 const { $api } = useNuxtApp();
-const queryClient = useQueryClient();
 
 const filterClass = ref<string | undefined>();
 const { data: scoringQueue, suspense } = useQuery({
@@ -54,10 +53,25 @@ const { data: scoringQueue, suspense } = useQuery({
 });
 await suspense();
 
+const userStore = useUserStore();
+const { data: teacherClasses, suspense: teacherClassesSuspense } = useQuery({
+  queryKey: ['user.teacherClasses', { id: userStore.userId }],
+  queryFn: () => $api.user.teacherClasses.query(userStore.userId),
+});
+await teacherClassesSuspense();
+
+const filteredScoringQueue = computed(() =>
+  scoringQueue.value?.filter((x) => {
+    if (filterClass.value)
+      return x.class.id === filterClass.value;
+    return teacherClasses.value?.some(c => c.id === x.class.id);
+  }),
+);
+
 const classFilterOptions = computed(() => {
   const initial: ({ label: string; value: string | undefined })[] = [{ label: '全部', value: undefined }];
   return initial.concat(
-    scoringQueue.value?.managedClasses?.map(x => ({
+    teacherClasses.value?.map(x => ({
       label: x.className,
       value: x.id,
     })) ?? [],
@@ -66,10 +80,10 @@ const classFilterOptions = computed(() => {
 
 const selectedIndex = ref(0);
 const selected = computed({
-  get: () => scoringQueue.value?.list?.at(selectedIndex.value)?.id,
+  get: () => filteredScoringQueue.value?.at(selectedIndex.value)?.id,
   set: (v) => {
-    if (scoringQueue.value)
-      selectedIndex.value = scoringQueue.value.list.findIndex(x => x.id === v);
+    if (filteredScoringQueue.value)
+      selectedIndex.value = filteredScoringQueue.value.findIndex(x => x.id === v);
   },
 });
 </script>

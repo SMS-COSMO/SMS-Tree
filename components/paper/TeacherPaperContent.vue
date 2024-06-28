@@ -63,7 +63,7 @@
               </el-link>
             </el-descriptions-item>
             <el-descriptions-item v-if="info?.authors" label="作者">
-              <GroupMembers :authors="info?.authors" :leader="info?.leader" type="link" class="inline" />
+              <GroupMembers :authors="info?.authors" :leader="info?.leader" type="link" class="inline" is-admin />
             </el-descriptions-item>
             <el-descriptions-item label="提交时间">
               {{ info?.createdAt.toLocaleDateString('zh-CN') }}

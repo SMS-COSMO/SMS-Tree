@@ -3,7 +3,7 @@
     <el-checkbox v-model="showMine" label="仅展示我的记录" border class="mb-2" />
     <el-table
       ref="tableRef"
-      :data="data?.filter(x => !showMine || x.importer?.id === userId)"
+      :data="filteredList"
       :default-sort="{ prop: 'createdAt', order: 'descending' }"
       class="cursor-pointer"
       @selection-change="handleSelectionChange"
@@ -55,6 +55,10 @@ const { data, suspense } = useQuery({
   queryFn: () => $api.importHistory.list.query(),
 });
 await suspense();
+
+const filteredList = computed(() =>
+  data.value?.filter(x => !showMine.value || x.importer?.id === userId),
+);
 
 type TImportHistoryRow = (Exclude<typeof data.value, undefined>)[0];
 const tableRef = ref<InstanceType<typeof ElTable>>();

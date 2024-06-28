@@ -1,12 +1,10 @@
-import { and, eq, inArray, sql } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import { db } from '../../db/db';
 import type { TNewPaper, TRawUser } from '../../db/db';
 import { papers } from '../../db/schema/paper';
 import { TRPCForbidden } from '../utils/shared';
 import { usersToGroups } from '~/server/db/schema/userToGroup';
-import { classes } from '~/server/db/schema/class';
-import { groups } from '~/server/db/schema/group';
 import type { TPaperScore } from '~/types';
 import { useClassName } from '~/composables/className';
 
@@ -204,36 +202,10 @@ export class PaperController {
     });
   }
 
-  async scoringList(user: TRawUser, classId?: string) {
-    const managedClasses = await db.query.classes.findMany({
-      where: user.role === 'admin' ? undefined : eq(classes.teacherId, user.id),
-      columns: {
-        id: true,
-        enterYear: true,
-        index: true,
-      },
-    });
-
-    const managedGroups = (await db.query.groups.findMany({
-      where: and(
-        inArray(
-          groups.classId,
-          managedClasses
-            .map(x => x.id)
-            .filter(x => classId ? x === classId : true),
-        ),
-        eq(groups.archived, false),
-      ),
-      columns: { id: true },
-    })).map(x => x.id);
-
-    if (!managedGroups.length)
-      throw new TRPCError({ code: 'NOT_FOUND', message: '教师无小组' });
-
+  async scoringList() {
     const res = await db.query.papers.findMany({
       where: and(
         eq(papers.isPublic, false),
-        inArray(papers.groupId, managedGroups),
       ),
       columns: {
         id: true,
@@ -255,6 +227,7 @@ export class PaperController {
             },
             class: {
               columns: {
+                id: true,
                 enterYear: true,
                 index: true,
               },
@@ -264,17 +237,17 @@ export class PaperController {
       },
     });
 
-    return {
-      managedClasses: managedClasses.map(x => ({ ...x, className: useClassName(x) })),
-      list: res.map((x) => {
-        const { group, ...info } = x;
-        return {
-          authors: group.usersToGroups.map(u => ({ username: u.user.username })),
+    return res.map((x) => {
+      const { group, ...info } = x;
+      return {
+        authors: group.usersToGroups.map(u => ({ username: u.user.username })),
+        class: {
+          ...group.class,
           className: useClassName(group.class),
-          ...info,
-        };
-      }),
-    };
+        },
+        ...info,
+      };
+    });
   }
 
   async modify(id: string, newPaper: Partial<TNewPaper>) {

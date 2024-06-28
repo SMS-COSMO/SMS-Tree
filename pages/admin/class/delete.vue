@@ -111,7 +111,7 @@ const { data: teacherClasses, suspense: teacherClassesSuspense } = useQuery({
 await teacherClassesSuspense();
 
 const filteredList = computed(() =>
-  listData?.value?.filter(x => !showMine.value || teacherClasses?.value?.includes(x.id)),
+  listData?.value?.filter(x => !showMine.value || teacherClasses?.value?.some(e => e.id === x.id)),
 );
 
 const enterYearOptions = Array.from(

@@ -22,6 +22,8 @@ export const statisticsRouter = router({
           where: ctx.user.role === 'admin' ? undefined : eq(classes.teacherId, ctx.user.id),
           columns: { id: true },
         })).map(x => x.id);
+        if (!managedClasses.length)
+          return 0;
 
         const managedGroups = (await db.query.groups.findMany({
           where: and(
@@ -33,6 +35,8 @@ export const statisticsRouter = router({
           ),
           columns: { id: true },
         })).map(x => x.id);
+        if (!managedGroups.length)
+          return 0;
 
         return (
           await db
