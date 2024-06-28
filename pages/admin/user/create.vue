@@ -32,7 +32,7 @@
       <el-form-item prop="classId" label="班级">
         <SelectClass v-model="form.classId" />
       </el-form-item>
-      <el-form-item prop="groupId" label="小组">
+      <el-form-item v-show="form.role === 'student'" prop="groupId" label="小组">
         <SelectGroup v-model="form.groupId" />
       </el-form-item>
       <el-form-item>
