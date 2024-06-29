@@ -51,7 +51,7 @@
       </el-card>
       <el-card
         v-else
-        class="basis-1/4 card-button"
+        class="full-card-height basis-1/4 card-button"
         @click="navigateTo('/admin/seiue/login')"
       >
         <div class="mx-auto flex self-center text-2xl">

@@ -1,7 +1,7 @@
 <template>
   <div v-if="props.attachment" class="relative">
     <el-button
-      class="absolute top-[1px]"
+      class="top-[1px] z-10 absolute!"
       size="small"
       :class="[
         !pdfFileTypes.includes(props.attachment.fileType)
@@ -12,6 +12,7 @@
           ? 'w-full' : 'right-[1px]',
       ]"
       icon="i-tabler:download"
+      :loading="downloading"
       @click="download"
     >
       下载
@@ -74,10 +75,13 @@ const docxFileTypes = [
 const pdfFileTypes = ['application/pdf'];
 const fileUrl = computed(() => encodeURIComponent(rawFileUrl.value ?? ''));
 
+const downloading = ref(false);
 async function download() {
   if (!rawFileUrl.value)
     return;
+  downloading.value = true;
   const res = await axios.get(rawFileUrl.value, { responseType: 'blob' });
+  downloading.value = false;
   saveAs(res.data, props.attachment?.name ?? 'untitled.pdf');
 }
 </script>
