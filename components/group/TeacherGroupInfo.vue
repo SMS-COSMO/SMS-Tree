@@ -1,46 +1,48 @@
 <template>
   <el-card>
     <template #header>
-      <el-tag type="info" effect="plain" class="mr-2 select-none">
-        小组 {{ index }}
-      </el-tag>
-      <span class="font-bold">
-        {{ info?.projectName ?? '暂无课题名' }}
-      </span>
-      <el-popover
-        v-if="info"
-        placement="bottom"
-        title="修改课题名"
-        :width="300"
-        trigger="click"
-      >
-        <template #reference>
-          <el-link icon="i-tabler:edit" class="ml-2 text-[16px]!">
-            修改
-          </el-link>
-        </template>
-        <el-input v-model="newProjectName" @blur="edit = false">
-          <template #append>
-            <el-button :loading="isPending" @click="modifyProjectName({ groupId: info!.id, newProjectName })">
-              <el-icon class="i-tabler:check" />
-            </el-button>
+      <div class="flex gap-2">
+        <el-tag type="info" effect="plain" class="select-none self-center">
+          小组 {{ index }}
+        </el-tag>
+        <span class="self-center font-bold">
+          {{ info?.projectName ?? '暂无课题名' }}
+        </span>
+        <el-popover
+          v-if="info"
+          placement="bottom"
+          title="修改课题名"
+          :width="300"
+          trigger="click"
+        >
+          <template #reference>
+            <el-link icon="i-tabler:edit" class="self-center text-[14px]!">
+              修改
+            </el-link>
           </template>
-        </el-input>
-      </el-popover>
-      <el-popconfirm
-        v-if="info"
-        title="确定要删除小组吗？"
-        width="200"
-        confirm-button-type="danger"
-        hide-icon
-        @confirm="removeGroup({ id: info!.id })"
-      >
-        <template #reference>
-          <el-link icon="i-tabler:trash" type="danger" class="float-right">
-            删除
-          </el-link>
-        </template>
-      </el-popconfirm>
+          <el-input v-model="newProjectName" @blur="edit = false">
+            <template #append>
+              <el-button :loading="isPending" @click="modifyProjectName({ groupId: info!.id, newProjectName })">
+                <el-icon class="i-tabler:check" />
+              </el-button>
+            </template>
+          </el-input>
+        </el-popover>
+        <el-popconfirm
+          v-if="info"
+          title="确定要删除小组吗？"
+          width="200"
+          confirm-button-type="danger"
+          hide-icon
+          @confirm="removeGroup({ id: info!.id })"
+        >
+          <template #reference>
+            <el-link icon="i-tabler:trash" type="danger" class="ml-auto self-center">
+              删除
+            </el-link>
+          </template>
+        </el-popconfirm>
+      </div>
     </template>
     <el-descriptions
       :column="1"
