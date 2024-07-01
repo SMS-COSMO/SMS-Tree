@@ -5,7 +5,7 @@
         <SearchOptions v-model="searchOptions" />
       </el-card>
     </div>
-    <div v-on-click-outside="closeSearchOptions" class="basis-3/4">
+    <div class="basis-3/4">
       <el-input
         v-model="searchInput"
         placeholder="搜索论文"
@@ -62,8 +62,6 @@
 </template>
 
 <script setup lang="ts">
-import { vOnClickOutside } from '@vueuse/components';
-
 useHeadSafe({
   title: '论文列表',
 });
@@ -76,9 +74,6 @@ const count = ref(10);
 const searchInput = ref(route.query.search?.toString() ?? '');
 const searchContent = refDebounced(searchInput, 200);
 const showSearchOptions = ref(false);
-function closeSearchOptions() {
-  showSearchOptions.value = false;
-}
 
 const searchOptions = reactive<TSearchOption>({
   filter: {
