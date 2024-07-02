@@ -71,12 +71,7 @@ const { mutate: loginMutation, isPending } = useMutation({
         },
       });
     } else {
-      const router = useRouter();
-      if (router.options.history.state.back) {
-        router.back();
-      } else {
-        navigateTo('/');
-      }
+      useRouterBack();
     }
     useMessage({
       message: '登录成功',
