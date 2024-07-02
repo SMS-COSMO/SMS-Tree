@@ -65,3 +65,8 @@ export interface TSeiueClassMember {
 }
 
 export type TSeiueClassMemberList = TSeiueClassMember[];
+
+export interface TSeiueGeneratedPhoneCode {
+  ok: boolean;
+  reminder_id: string;
+};

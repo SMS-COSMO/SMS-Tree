@@ -9,6 +9,7 @@ import type {
   TSeiueAuthResponse,
   TSeiueClassList,
   TSeiueClassMemberList,
+  TSeiueGeneratedPhoneCode,
   TSeiueSemesterList,
   TSeiueUser,
 } from '~/types/seiue';
@@ -107,6 +108,48 @@ export class Seiue {
         'authorization': `Bearer ${accessToken}`,
       },
     });
+  }
+
+  static async generatePhoneCode(phone: string) {
+    return await ofetch<TSeiueGeneratedPhoneCode>(`${env.SEIUE_PASSPORT_URL}/login/generate-code`, {
+      method: 'POST',
+      body: {
+        identity: phone,
+      },
+    });
+  }
+
+  static async phoneLogin(
+    phone: string,
+    code: string,
+    reminderId: string,
+  ) {
+    try {
+      const loginRes = await ofetch.raw(`${env.SEIUE_PASSPORT_URL}/login?school_id=${env.SEIUE_SCHOOL_ID}&type=code`, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'manual',
+        body: new URLSearchParams({
+          phone,
+          code,
+          reminder_id: reminderId,
+          school_id: env.SEIUE_SCHOOL_ID.toString(),
+          submit: '提交',
+        }),
+      });
+
+      const cookies = cookiesParser(loginRes.headers.getSetCookie());
+      const authorizeRes = await this.retrieveToken(cookies);
+      return {
+        accessToken: authorizeRes.access_token,
+        activeReflectionId: authorizeRes.active_reflection_id,
+        cookies,
+      };
+    } catch {
+      return null;
+    }
   }
 }
 

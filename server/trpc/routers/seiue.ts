@@ -30,6 +30,31 @@ export const seiueRouter = router({
       return loginRes;
     }),
 
+  generatePhoneCode: protectedProcedure
+    .meta({ description: '获取手机验证码。要求教师及以上权限。' })
+    .use(requireRoles(['admin', 'teacher']))
+    .input(z.object({
+      phone: z.string().min(1).max(30),
+    }))
+    .mutation(async ({ input }) => {
+      return await Seiue.generatePhoneCode(input.phone);
+    }),
+
+  phoneLogin: protectedProcedure
+    .meta({ description: '使用手机验证码登录。要求教师及以上权限。' })
+    .use(requireRoles(['admin', 'teacher']))
+    .input(z.object({
+      phone: z.string().min(1).max(30),
+      code: z.string().min(1).max(10),
+      reminderId: z.string(),
+    }))
+    .mutation(async ({ input }) => {
+      const loginRes = await Seiue.phoneLogin(input.phone, input.code, input.reminderId);
+      if (!loginRes)
+        throw new TRPCError({ code: 'UNAUTHORIZED', message: '验证码错误' });
+      return loginRes;
+    }),
+
   token: protectedProcedure
     .meta({ description: '获取希悦令牌。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))

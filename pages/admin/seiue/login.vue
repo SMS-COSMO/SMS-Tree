@@ -6,6 +6,6 @@
 
 <script setup lang="ts">
 useHeadSafe({
-  title: '登陆希悦',
+  title: '登录希悦',
 });
 </script>
