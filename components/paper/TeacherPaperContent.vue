@@ -47,9 +47,25 @@
       </div>
     </el-card>
 
-    <h1 :class="`${isScoring ? 'max-w-[calc(100%-450px)]' : ''} min-h-15 pr-[2em] text-3xl`">
-      {{ info?.title }}
-    </h1>
+    <div class="md:flex">
+      <h1 class="self-center pr-[2em] text-3xl" :class="[isScoring && 'max-w-[calc(100%-450px)]']">
+        {{ info?.title }}
+      </h1>
+      <div v-if="!isScoring" class="ml-auto flex self-center gap-4">
+        <el-tag v-if="info?.isFeatured" type="success" size="large">
+          <el-icon class="i-tabler:star" />
+          优秀
+        </el-tag>
+        <el-tag v-if="info?.score" size="large" :type="useScoreColor(info.score)">
+          <el-icon class="i-tabler:chart-bar" />
+          分数：{{ info.score }}
+        </el-tag>
+        <el-tag v-if="info?.isPublic !== undefined && !info.isPublic" size="large" type="danger">
+          <el-icon class="i-tabler:pencil" />
+          待批改
+        </el-tag>
+      </div>
+    </div>
 
     <div class="flex flex-col gap-4 md:flex-row">
       <div class="md:basis-1/4">

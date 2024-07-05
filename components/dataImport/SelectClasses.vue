@@ -16,7 +16,7 @@
     </el-alert>
 
     <div v-loading="isFetching" element-loading-text="正在获取班级信息...">
-      <el-checkbox-group v-model="selectedClassIds">
+      <el-checkbox-group v-model="selectedClassIds" class="grid lg:grid-cols-2 xl:grid-cols-3">
         <el-checkbox
           v-for="item in classList"
           :key="item.id"

@@ -43,7 +43,7 @@
               <el-icon class="i-tabler:bolt" />
               快速管理
             </template>
-            <div class="grid grid-cols-3 gap-2 lg:grid-cols-6">
+            <div class="grid grid-cols-2 gap-2 lg:grid-cols-6">
               <el-button class="ml-0!" icon="i-tabler:home" @click="navigateTo('/admin')">
                 管理中心
               </el-button>

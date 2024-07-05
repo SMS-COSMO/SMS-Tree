@@ -94,7 +94,7 @@ export class UserController {
 
   async login(schoolId: string, password: string, isSeiue: boolean) {
     if (isSeiue && !env.SEIUE_LOGIN)
-      throw new TRPCError({ code: 'UNAUTHORIZED', message: '暂不允许使用希悦登陆' });
+      throw new TRPCError({ code: 'UNAUTHORIZED', message: '暂不允许使用希悦登录' });
 
     const user = await db.query.users.findFirst({
       where: eq(users.schoolId, schoolId),

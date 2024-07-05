@@ -1,19 +1,13 @@
 <template>
   <div class="space-y-3 md:space-y-4">
     <div class="md:flex">
-      <h1 class="hidden w-full text-3xl md:block md:pr-[2em] md:text-4xl">
+      <h1 class="hidden w-full self-center text-3xl md:block md:pr-[2em] md:text-4xl">
         {{ info?.title }}
       </h1>
-      <el-space :size="10">
-        <el-tag v-if="info?.isFeatured" type="success" size="large">
-          <el-icon class="i-tabler:star" />
-          优秀
-        </el-tag>
-        <el-tag v-if="info?.score" size="large" :type="useScoreColor(info.score)">
-          <el-icon class="i-tabler:chart-bar" />
-          分数：{{ info.score }}
-        </el-tag>
-      </el-space>
+      <el-tag v-if="info?.isFeatured" type="success" size="large" class="ml-auto self-center">
+        <el-icon class="i-tabler:star" />
+        优秀
+      </el-tag>
       <h1 class="w-full text-3xl md:hidden md:pr-[2em] md:text-4xl">
         {{ info?.title }}
       </h1>

@@ -38,7 +38,7 @@
         <div class="mx-auto flex flex-col self-center">
           <div>
             <el-icon class="i-tabler:check" />
-            已登陆希悦
+            已登录希悦
           </div>
           <span class="mt-2 text-2xl">
             {{ seiueMe?.name }}
