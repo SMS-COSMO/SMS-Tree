@@ -107,7 +107,9 @@ for (const i in classList) {
     (c.classesToStudents
       .map(value => ({ value: value.users, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
-      .map(({ value }) => value)), classGroupCount);
+      .map(({ value }) => value)),
+    classGroupCount,
+  );
 
   await Promise.all(
     [...Array(classGroupCount)].map((_, j) => {

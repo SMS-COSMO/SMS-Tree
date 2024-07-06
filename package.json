@@ -19,7 +19,8 @@
     "test": "cp test.sqlite testRuntime.sqlite || copy test.sqlite testRuntime.sqlite && vitest",
     "test:ui": "cp test.sqlite testRuntime.sqlite || copy test.sqlite testRuntime.sqlite && vitest --ui",
     "coverage": "cp test.sqlite testRuntime.sqlite || copy test.sqlite testRuntime.sqlite && vitest run --coverage",
-    "docs:dev": "pnpm run -C docs dev"
+    "docs:user": "pnpm run -C docs/user dev",
+    "docs:developer": "pnpm run -C docs/developer dev"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.609.0",
