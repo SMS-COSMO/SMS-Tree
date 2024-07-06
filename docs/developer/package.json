@@ -12,6 +12,8 @@
   "dependencies": {
     "nuxt": "^3.12.3",
     "shadcn-docs-nuxt": "latest",
+    "tailwindcss": "^3.4.4",
+    "tailwindcss-animate": "^1.0.7",
     "vue": "^3.4.31",
     "vue-router": "^4.4.0"
   }
