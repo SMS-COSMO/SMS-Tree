@@ -219,7 +219,7 @@ export class ClassController {
         ),
       );
       return '创建成功';
-    } catch (err) {
+    } catch {
       throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '无法创建小组' });
     }
   }

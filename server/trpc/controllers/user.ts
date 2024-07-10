@@ -300,7 +300,7 @@ export class UserController {
     try {
       await db.delete(users).where(eq(users.id, id));
       return '删除成功';
-    } catch (err) {
+    } catch {
       throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '删除失败' });
     }
   }

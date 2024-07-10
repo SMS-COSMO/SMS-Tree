@@ -15,7 +15,7 @@ const html = computed(() => {
   if (props.content) {
     try {
       json = JSON.parse(props.content);
-    } catch (err) {}
+    } catch {}
   }
 
   return generateHTML(json, tipTapExtensions);

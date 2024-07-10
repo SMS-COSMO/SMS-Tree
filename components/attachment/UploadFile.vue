@@ -98,7 +98,7 @@ async function handleUpload(option: UploadRequestOptions) {
         }
       },
     });
-  } catch (err) {
+  } catch {
     removeFileFromList(f, '上传失败');
   }
   uploading.value = false;

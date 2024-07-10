@@ -22,7 +22,7 @@ export function usePreventLeave(form: any) {
           { type: 'warning' },
         );
         return true;
-      } catch (err) {
+      } catch {
         return false;
       }
     }

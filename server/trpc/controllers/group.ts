@@ -314,7 +314,7 @@ export class GroupController {
       });
       if (group?.leader === userId)
         await db.update(groups).set({ leader: null }).where(eq(groups.id, groupId));
-    } catch (err) {
+    } catch {
       // swallow
     }
   }
