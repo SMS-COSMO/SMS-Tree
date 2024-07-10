@@ -14,7 +14,7 @@ export function usePreventLeave(form: any) {
     window.onbeforeunload = () => {};
   });
 
-  onBeforeRouteLeave(async () => {
+  onBeforeRouteUpdate(async () => {
     if (!hasReset.value && changed.value) {
       try {
         await ElMessageBox.confirm(
