@@ -51,8 +51,11 @@
                     名单
                   </div>
                 </template>
-                <el-button size="small" class="mt-1" @click="userListDialog = true">
-                  点击查看
+                <el-button icon="i-tabler:table-export" size="small" class="mt-1" @click="exportStudentList">
+                  导出
+                </el-button>
+                <el-button icon="i-tabler:eye" size="small" class="mt-1" @click="userListDialog = true">
+                  查看
                 </el-button>
                 <el-drawer
                   v-model="userListDialog"
@@ -178,6 +181,8 @@
 </template>
 
 <script lang="ts" setup>
+import writeXlsxFile from 'write-excel-file';
+
 const { $api } = useNuxtApp();
 
 const id = useRoute().params.id.toString();
@@ -246,6 +251,7 @@ function modifyState(delta: number) {
     return;
   modifyMutation({ id: classInfo.value.id, state: step[step.indexOf(classInfo.value.state) + delta] });
 }
+
 function modifyTimetable() {
   if (!classInfo.value)
     return;
@@ -273,5 +279,36 @@ function tableRowClassName({ row }: { row: TMinimalUser }) {
   if (studentsFree.value.some(s => s.id === row.id))
     return 'bg-amber-50!';
   return '';
+}
+
+async function exportStudentList() {
+  const list = classInfo.value?.groups
+    .map((x, i) => x.members.map(e => ({ ...e, group: i + 1 })))
+    .reduce((p, c) => p.concat(c));
+  if (!list)
+    return;
+
+  type TRow = (typeof list)[0];
+  const schema = [{
+    column: '小组',
+    type: Number,
+    value: (x: TRow) => x.group,
+    width: 5,
+  }, {
+    column: '姓名',
+    type: String,
+    value: (x: TRow) => x.username,
+    width: 20,
+  }, {
+    column: '学号',
+    type: String,
+    value: (x: TRow) => x.schoolId,
+    width: 30,
+  }];
+
+  await writeXlsxFile(list, {
+    schema,
+    fileName: `${classInfo.value?.className}名单.xlsx`,
+  });
 }
 </script>
