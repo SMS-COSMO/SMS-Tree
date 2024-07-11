@@ -2,6 +2,7 @@ import { TRPCError, initTRPC } from '@trpc/server';
 import superjson from 'superjson';
 import type { TRPCPanelMeta } from 'trpc-panel';
 import { ZodError } from 'zod';
+import { consola } from 'consola';
 import type { Context } from './context';
 import { localizeError } from './utils/zod';
 
@@ -75,5 +76,34 @@ export const requireSeiueLoggedIn = t.middleware(({ ctx, next }) => {
   });
 });
 
-export const publicProcedure = t.procedure;
-export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+export const loggedProcedure = t.procedure.use(async (opts) => {
+  const start = new Date();
+  const result = await opts.next();
+  const durationMs = Date.now() - start.getTime();
+
+  try {
+    const user = opts.ctx.user === 'ERR_JWT_EXPIRED' ? undefined : opts.ctx.user;
+    let input = JSON.stringify(opts.rawInput);
+    if (input?.includes('password'))
+      input = '***';
+
+    consola.log(
+      start.toLocaleString('zh-CN'),
+      '|',
+    `[${result.ok ? 'ok' : 'error'}]`,
+    `[${opts.type}]`,
+    `[${durationMs}ms]`,
+    opts.path,
+    '->',
+    input,
+    '|',
+    user?.role,
+    user?.id,
+    );
+  } catch {}
+
+  return result;
+});
+
+export const publicProcedure = loggedProcedure;
+export const protectedProcedure = loggedProcedure.use(enforceUserIsAuthed);
