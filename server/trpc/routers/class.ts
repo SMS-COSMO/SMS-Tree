@@ -76,11 +76,11 @@ export const classRouter = router({
     }),
 
   initGroups: protectedProcedure
-    .meta({ description: '批量初始化新班级。要求教师及以上权限。' })
+    .meta({ description: '批量初始化新小组。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
     .input(z.object({
       id: classIdSchema,
-      amount: z.number().int().gt(0).lte(20, '最多同时创建 20 个班级'),
+      amount: z.number().int().gt(0).lte(20, '最多同时创建 20 个小组'),
     }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.classController.initGroups(input.id, input.amount);

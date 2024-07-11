@@ -166,6 +166,14 @@
         </template>
       </div>
     </template>
+    <el-button
+      v-if="classInfo"
+      size="large"
+      @click="createEmptyGroups({ id: classInfo.id, amount: 1 })"
+    >
+      <el-icon class="i-tabler:plus" />
+      创建新小组
+    </el-button>
   </div>
 </template>
 
