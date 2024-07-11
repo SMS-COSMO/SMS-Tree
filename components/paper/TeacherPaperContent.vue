@@ -153,6 +153,13 @@
         </el-collapse-item>
       </el-collapse>
     </template>
+    <el-card v-if="info?.comment">
+      <template #header>
+        <el-icon class="i-tabler:message" />
+        评语
+      </template>
+      <TiptapViewer :content="info?.comment" />
+    </el-card>
   </div>
 </template>
 

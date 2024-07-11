@@ -86,6 +86,7 @@ export class PaperController {
 
     if (!isAdmin && !isOwned) {
       rawPaper.score = null;
+      rawPaper.comment = null;
       if (!rawPaper.isPublic)
         throw TRPCForbidden;
       if (!rawPaper.canDownload)
