@@ -139,9 +139,19 @@
       <template v-if="studentsFree?.length">
         <el-alert type="warning" show-icon :closable="false">
           <template #title>
-            还有 {{ studentsFree.length }} 名同学没有小组
+            还有 {{ studentsFree.length }} 名同学没有小组<span class="text-sm">（右键学生姓名可手动分配小组）</span>
           </template>
-          <GroupMembers :authors="studentsFree" type="link" class="inline" is-admin />
+          <span class="break-all text-wrap space-x-1.5">
+            <span
+              v-for="(author, index) of studentsFree"
+              :key="index"
+              @contextmenu.prevent="changeGroupUser = author"
+            >
+              <el-link :href="`/admin/user/${author?.id}`">
+                {{ author?.username }}
+              </el-link>
+            </span>
+          </span>
         </el-alert>
       </template>
       <el-collapse-transition>
@@ -178,6 +188,10 @@
       创建新小组
     </el-button>
   </div>
+  <UserActions
+    v-model="changeGroupUser"
+    :class-id="id"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -274,6 +288,7 @@ const studentsFree = computed(() => {
   }
   return list;
 });
+const changeGroupUser = ref();
 
 function tableRowClassName({ row }: { row: TMinimalUser }) {
   if (studentsFree.value.some(s => s.id === row.id))

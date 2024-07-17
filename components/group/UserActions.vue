@@ -17,31 +17,34 @@
     <select-group-from-class v-model="newGroupId" :class-id="classId" />
     <template #footer>
       <div class="dialog-footer">
+        <template v-if="groupId">
+          <template v-if="leader === user.id">
+            <el-button @click="removeLeader({ groupId })">
+              取消组长
+            </el-button>
+          </template>
+          <template v-else>
+            <el-button @click="becomeLeader({ userId: user.id, groupId })">
+              设为组长
+            </el-button>
+          </template>
+        </template>
         <el-button
-          :loading="isPending"
+          type="primary"
+          :loading="changePending || joinPending"
           :disabled="newGroupId === groupId"
-          @click="changeGroup({ userId: user.id, oldGroupId: groupId, newGroupId })"
+          @click="moveAction"
         >
           移动
         </el-button>
-        <template v-if="leader === user.id">
-          <el-button type="primary" @click="removeLeader({ groupId })">
-            取消组长
-          </el-button>
-        </template>
-        <template v-else>
-          <el-button type="primary" @click="becomeLeader({ userId: user.id, groupId })">
-            设为组长
-          </el-button>
-        </template>
       </div>
     </template>
   </el-dialog>
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  groupId: string;
+const props = defineProps<{
+  groupId?: string;
   classId: string;
   leader?: string;
 }>();
@@ -52,7 +55,11 @@ const showDialog = computed(() => (user.value !== undefined && edited?.value ===
 
 const { $api } = useNuxtApp();
 const queryClient = useQueryClient();
+
 const newGroupId = ref();
+watch(user, () => {
+  newGroupId.value = undefined;
+});
 
 const { mutate: becomeLeader } = useMutation({
   mutationFn: $api.group.setLeader.mutate,
@@ -74,7 +81,7 @@ const { mutate: removeLeader } = useMutation({
   onError: err => useErrorHandler(err),
 });
 
-const { mutate: changeGroup, isPending } = useMutation({
+const { mutate: changeGroup, isPending: changePending } = useMutation({
   mutationFn: $api.group.change.mutate,
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['class.info'] });
@@ -83,4 +90,33 @@ const { mutate: changeGroup, isPending } = useMutation({
   },
   onError: err => useErrorHandler(err),
 });
+
+const { mutate: joinGroup, isPending: joinPending } = useMutation({
+  mutationFn: $api.group.join.mutate,
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['class.info'] });
+    useMessage({ message: '修改成功', type: 'success' });
+    edited.value = true;
+  },
+  onError: err => useErrorHandler(err),
+});
+
+function moveAction() {
+  if (!user.value)
+    return;
+
+  if (props.groupId) {
+    changeGroup({
+      userId: user.value.id,
+      oldGroupId: props.groupId,
+      newGroupId: newGroupId.value,
+    });
+  } else {
+    joinGroup({
+      userId: user.value.id,
+      groupId: newGroupId.value,
+    });
+  }
+  newGroupId.value = undefined;
+}
 </script>
