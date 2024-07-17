@@ -74,9 +74,13 @@
         <el-table
           :data="info?.members"
           class="cursor-pointer"
-          @row-click="row => navigateTo(`/admin/user/${row.id}`)"
           @row-contextmenu="row => changeGroupUser = row"
           @contextmenu.prevent
+          @cell-click="(row, col) => {
+            if (col.getColumnIndex() < 2) {
+              navigateTo(`/admin/user/${row.id}`)
+            }
+          }"
         >
           <el-table-column prop="username" label="姓名">
             <template #default="scope">
@@ -86,6 +90,13 @@
             </template>
           </el-table-column>
           <el-table-column prop="schoolId" label="学号" />
+          <el-table-column width="100" align="right">
+            <template #default="scope">
+              <div @click="() => changeGroupUser = scope.row">
+                <el-icon class="i-tabler:settings-2" />
+              </div>
+            </template>
+          </el-table-column>
         </el-table>
       </el-descriptions-item>
       <el-descriptions-item v-if="info?.notes?.length">
