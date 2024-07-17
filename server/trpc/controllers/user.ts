@@ -89,6 +89,10 @@ export class UserController {
       throw new TRPCError({ code: 'BAD_REQUEST', message: '旧密码不正确' });
 
     await db.update(users).set({ password: await bcrypt.hash(newPassword, 8) }).where(eq(users.id, id));
+
+    if (user.initialPassword)
+      await db.update(users).set({ initialPassword: false }).where(eq(users.id, user.id));
+
     return '修改成功';
   }
 
@@ -146,8 +150,6 @@ export class UserController {
       ...info
     } = user;
 
-    if (user.firstTimeLogin)
-      await db.update(users).set({ firstTimeLogin: false }).where(eq(users.id, user.id));
     return {
       ...info,
       activeGroupIds: user.usersToGroups.filter(x => !x.group.archived).map(x => x.group.id),

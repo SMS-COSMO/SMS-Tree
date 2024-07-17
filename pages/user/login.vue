@@ -63,7 +63,7 @@ const { mutate: loginMutation, isPending } = useMutation({
   },
   onSuccess: (res) => {
     userStore.login(res);
-    if (res.firstTimeLogin) {
+    if (res.initialPassword) {
       navigateTo({
         path: `/user/${res.id}`,
         query: {

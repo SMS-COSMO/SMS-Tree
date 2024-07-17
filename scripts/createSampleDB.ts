@@ -20,7 +20,7 @@ await ctl.uc.register({
   username: 'admin',
   password: pwd,
   role: 'admin',
-  firstTimeLogin: false,
+  initialPassword: false,
 });
 
 const admin = await db.select().from(users).where(eq(users.schoolId, 'admin')).get();
@@ -47,7 +47,6 @@ await Promise.all(
         username: `教师 ${cnLorem.name()}`,
         password: pwd,
         role: 'teacher',
-        firstTimeLogin: false,
       });
     }),
   ),
