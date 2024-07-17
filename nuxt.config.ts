@@ -35,6 +35,13 @@ export default defineNuxtConfig({
         target: 'esnext',
       },
     },
+    experimental: {
+      tasks: true,
+    },
+    scheduledTasks: {
+      // daily
+      '0 0 * * *': ['cleanFiles'],
+    },
   },
   compatibilityDate: '2024-07-10',
 });

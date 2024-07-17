@@ -317,11 +317,11 @@ export class AttachmentController {
     }
 
     if (!attachmentsDeleted.length)
-      return false;
+      return [];
 
     for (const attachment of attachmentsDeleted)
       await ctl.s3.deleteFile(attachment.S3FileId);
 
-    return attachmentsDeleted;
+    return attachmentsDeleted.map(x => x.S3FileId);
   }
 }
