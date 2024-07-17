@@ -1,7 +1,6 @@
 import { and, count, eq, inArray } from 'drizzle-orm';
 import { protectedProcedure, requireRoles, router } from '../trpc';
 import { db } from '~/server/db/db';
-import { users } from '~/server/db/schema/user';
 import { papers } from '~/server/db/schema/paper';
 import { classes } from '~/server/db/schema/class';
 import { groups } from '~/server/db/schema/group';
