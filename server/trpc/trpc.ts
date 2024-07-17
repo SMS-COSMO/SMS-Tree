@@ -84,7 +84,7 @@ export const loggedProcedure = t.procedure.use(async (opts) => {
   try {
     const user = opts.ctx.user === 'ERR_JWT_EXPIRED' ? undefined : opts.ctx.user;
     let input = JSON.stringify(opts.rawInput);
-    if (input?.includes('password'))
+    if (input?.includes('password') || input?.includes('Password'))
       input = '***';
 
     consola.log(
