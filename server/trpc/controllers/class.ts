@@ -139,7 +139,6 @@ export class ClassController {
                 category: true,
                 createdAt: true,
                 isFeatured: true,
-                score: true,
                 title: true,
               },
             },

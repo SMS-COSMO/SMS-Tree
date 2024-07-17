@@ -20,10 +20,6 @@
       <el-tag type="warning" disable-transitions>
         {{ getCategoryName(paper?.category) }}
       </el-tag>
-      <el-tag v-if="paper?.score" :type="useScoreColor(paper.score)" disable-transitions>
-        <el-icon class="i-tabler:chart-bar" />
-        分数：{{ paper.score }}
-      </el-tag>
       <el-tag type="info" disable-transitions>
         <el-icon class="i-tabler:calendar-time" />
         {{ paper?.createdAt?.toLocaleDateString('zh-CN') }}

@@ -5,7 +5,6 @@ import type { TNewPaper, TRawUser } from '../../db/db';
 import { papers } from '../../db/schema/paper';
 import { TRPCForbidden } from '../utils/shared';
 import { usersToGroups } from '~/server/db/schema/userToGroup';
-import type { TPaperScore } from '~/types';
 import { useClassName } from '~/composables/className';
 
 export class PaperController {
@@ -14,7 +13,7 @@ export class PaperController {
   }
 
   async createSafe(
-    newPaper: Omit<TNewPaper, 'id' | 'isFeatured' | 'isPublic' | 'score' | 'comment' | 'groupId'>,
+    newPaper: Omit<TNewPaper, 'id' | 'isFeatured' | 'isPublic' | 'comment' | 'groupId'>,
     user: TRawUser,
   ) {
     const group = (await db.query.usersToGroups.findMany({
@@ -85,7 +84,6 @@ export class PaperController {
     const isAdmin = ['teacher', 'admin'].includes(user.role);
 
     if (!isAdmin && !isOwned) {
-      rawPaper.score = null;
       rawPaper.comment = null;
       if (!rawPaper.isPublic)
         throw TRPCForbidden;
@@ -169,7 +167,6 @@ export class PaperController {
         isFeatured: true,
         isPublic: true,
         keywords: true,
-        score: true,
         title: true,
       },
       with: {
@@ -190,10 +187,6 @@ export class PaperController {
     });
 
     return rawPaper.map((x) => {
-      const isAdmin = ['teacher', 'admin'].includes(user.role);
-      const isOwned = x.group.usersToGroups.some(u => u.user.id === user.id);
-      if (!isOwned && !isAdmin)
-        x.score = null;
       const { group, ...info } = x;
       return {
         authors: group.usersToGroups.map(u => ({ username: u.user.username })),
@@ -260,7 +253,6 @@ export class PaperController {
     id: string,
     newPaper: {
       isFeatured?: boolean;
-      score?: TPaperScore;
       comment?: string;
     },
   ) {

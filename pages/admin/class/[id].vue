@@ -71,11 +71,6 @@
                       <el-table-column type="index" width="50" />
                       <el-table-column prop="username" label="姓名" />
                       <el-table-column prop="schoolId" label="学号" />
-                      <el-table-column label="分数">
-                        <template #default="scope">
-                          {{ classInfo.groups.find(x => x.members.some(e => e.id === scope.row.id))?.paper?.score }}
-                        </template>
-                      </el-table-column>
                     </el-table>
                   </el-scrollbar>
                 </el-drawer>

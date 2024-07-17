@@ -123,11 +123,6 @@ for (const i in classList) {
   );
 }
 
-function getScore() {
-  const possible: TPaperScore[] = ['A', 'B', 'C', 'D'];
-  return possible[Math.round((Math.random() * 100)) % 4];
-}
-
 const groupList = await ctl.gc.list(admin);
 const paperCountInput = Number(await rl.question('? Number of papers to create(default 20): '));
 const paperCount = paperCountInput <= 0 ? 20 : paperCountInput;
@@ -141,7 +136,6 @@ await Promise.all(
       canDownload: Math.random() < 0.5,
       isFeatured: Math.random() < 0.3,
       isPublic: true,
-      score: getScore(),
       groupId: groupList[Math.abs(Math.round(Math.random() * groupList.length) - 1)].id,
     });
   }),

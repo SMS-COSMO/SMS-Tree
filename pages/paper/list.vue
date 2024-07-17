@@ -85,7 +85,7 @@ const searchOptions = reactive<TSearchOption>({
   },
   isAsc: 1,
   searchSelectValue: ['title', 'keywords'],
-  sortOption: searchContent.value.length ? 'default' : 'time',
+  sortOption: 'default',
 });
 receiveQuery();
 
@@ -126,10 +126,9 @@ const { processedListData } = await useSearch<TPaperListSafeItem>(
     return true;
   },
   (a: TPaperListSafeItem, b: TPaperListSafeItem) => {
+    // TODO: improve default behavior
     if (searchOptions.sortOption === 'default')
       return 0;
-    if (searchOptions.sortOption === 'score')
-      return ((a.score?.charCodeAt(0) ?? 68) - (b.score?.charCodeAt(0) ?? 68)) * searchOptions.isAsc; // Greater
     if (searchOptions.sortOption === 'time')
       return (a.createdAt > b.createdAt ? -1 : 1) * searchOptions.isAsc; // Newest
     return 0;

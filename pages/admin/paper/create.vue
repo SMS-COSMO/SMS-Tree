@@ -38,14 +38,6 @@
           style="--el-switch-on-color: #15803d; --el-switch-off-color: #db3131;"
         />
       </el-form-item>
-      <el-form-item prop="score" label="分数">
-        <el-radio-group v-model="form.score" size="large">
-          <el-radio-button label="A" value="A" />
-          <el-radio-button label="B" value="B" />
-          <el-radio-button label="C" value="C" />
-          <el-radio-button label="D" value="D" />
-        </el-radio-group>
-      </el-form-item>
       <el-form-item prop="groupId" label="小组">
         <SelectGroup v-model="form.groupId" />
       </el-form-item>
@@ -95,7 +87,6 @@ const form = reactive<TPaperCreateForm>({
   canDownload: false,
   groupId: '',
   comment: undefined,
-  score: undefined,
   isFeatured: false,
   isPublic: false,
   paperFile: [],

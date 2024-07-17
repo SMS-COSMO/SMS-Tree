@@ -219,7 +219,6 @@ export class UserController {
                     createdAt: true,
                     isFeatured: true,
                     isPublic: true,
-                    score: true,
                     title: true,
                     abstract: true,
                   },

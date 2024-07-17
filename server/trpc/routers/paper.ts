@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { protectedProcedure, requireRoles, router } from '../trpc';
 
 const paperIdSchema = z.string().min(1, '论文 ID 不存在');
-const scoreEnumSchema = z.enum(['A', 'B', 'C', 'D'], { errorMap: () => ({ message: '请输入正确的等级' }) }).optional();
 
 const createSchema = z.object({
   title: z
@@ -16,7 +15,6 @@ const createSchema = z.object({
   abstract: z.string().max(5000, '摘要最长为 5000 字符'),
   groupId: z.string(),
   canDownload: z.boolean(),
-  score: scoreEnumSchema,
   comment: z.string().optional(),
   isFeatured: z.boolean().optional().default(false),
   isPublic: z.boolean().optional().default(false),
@@ -99,7 +97,6 @@ export const paperRouter = router({
       newPaper: z.object({
         comment: z.string().min(1, '评语不能为空').max(500, '评语最长为 500 字符').optional(),
         isFeatured: z.boolean().optional(),
-        score: scoreEnumSchema,
       }),
     }))
     .mutation(async ({ ctx, input }) => {

@@ -18,7 +18,6 @@ export type TPaperCreate = RouterInput['paper']['create'];
 export type TPaperCreateSafe = RouterInput['paper']['createSafe'];
 export type TPaperCreateForm = RouterInput['paper']['create'] & { paperFile: string[]; attachments: string[] };
 export type TPaperCreateSafeForm = RouterInput['paper']['createSafe'] & { paperFile: string[]; attachments: string[] };
-export type TPaperScore = 'A' | 'B' | 'C' | 'D' | null | undefined;
 export type TPaperScoringItem = RouterOutput['paper']['scoringList'][0];
 
 export type TClass = RouterOutput['class']['info'];
@@ -59,7 +58,7 @@ export interface TSearchOption {
   };
   isAsc: -1 | 1;
   searchSelectValue: string[];
-  sortOption: 'time' | 'score' | 'default';
+  sortOption: 'time' | 'default';
 }
 
 export interface TMinimalUser {

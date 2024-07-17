@@ -10,14 +10,6 @@
             style="--el-switch-on-color: #15803d; --el-switch-off-color: #409EFF;"
           />
         </el-tooltip>
-        <el-tooltip content="等级" placement="top" :show-after="800">
-          <el-radio-group v-model="form.score">
-            <el-radio-button label="A" value="A" />
-            <el-radio-button label="B" value="B" />
-            <el-radio-button label="C" value="C" />
-            <el-radio-button label="D" value="D" />
-          </el-radio-group>
-        </el-tooltip>
         <el-popover
           title="添加评语（可留空）"
           :width="600"
@@ -37,7 +29,6 @@
         <el-tooltip content="完成批改" placement="top" :show-after="800">
           <el-button
             :loading="isPending"
-            :disabled="!form.score"
             icon="i-tabler:check"
             size="small"
             class="ml-0!"
@@ -55,10 +46,6 @@
         <el-tag v-if="info?.isFeatured" type="success" size="large">
           <el-icon class="i-tabler:star" />
           优秀
-        </el-tag>
-        <el-tag v-if="info?.score" size="large" :type="useScoreColor(info.score)">
-          <el-icon class="i-tabler:chart-bar" />
-          分数：{{ info.score }}
         </el-tag>
         <el-tag v-if="info?.isPublic !== undefined && !info.isPublic" size="large" type="danger">
           <el-icon class="i-tabler:pencil" />
@@ -200,7 +187,6 @@ function searchCategory(code: number | undefined) {
 
 const form = reactive({
   comment: undefined,
-  score: undefined,
   isFeatured: false,
 });
 

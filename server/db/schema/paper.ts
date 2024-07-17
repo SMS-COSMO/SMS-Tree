@@ -12,7 +12,6 @@ export const papers = sqliteTable('papers', {
   abstract: text('abstract').notNull(),
   groupId: text('group_id').references(() => groups.id, { onDelete: 'cascade', onUpdate: 'cascade' }).notNull(),
   isPublic: integer('is_public', { mode: 'boolean' }).notNull().default(false),
-  score: text('score', { enum: ['A', 'B', 'C', 'D'] }),
   canDownload: integer('can_download', { mode: 'boolean' }).notNull().default(false),
   isFeatured: integer('is_featured', { mode: 'boolean' }).notNull().default(false),
   comment: text('comment'),
