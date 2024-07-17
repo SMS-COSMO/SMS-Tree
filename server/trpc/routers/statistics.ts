@@ -10,18 +10,29 @@ export const statisticsRouter = router({
   admin: protectedProcedure
     .use(requireRoles(['admin', 'teacher']))
     .query(async ({ ctx }) => {
+      const managedClassesRaw = (await db.query.classes.findMany({
+        where: ctx.user.role === 'admin' ? undefined : eq(classes.teacherId, ctx.user.id),
+        columns: { id: true },
+        with: {
+          classesToStudents: {
+            columns: {
+              userId: true,
+            },
+          },
+        },
+      }));
+      const managedClasses = managedClassesRaw.map(x => x.id);
+
       // Student Count
-      // TODO: maybe exclude archived students?
-      async function getStudentCount() {
-        return (await db.select({ count: count() }).from(users).where(eq(users.role, 'student')).get())?.count;
+      function getStudentCount() {
+        let sum = 0;
+        for (const x of managedClassesRaw)
+          sum += x.classesToStudents.length;
+        return sum;
       };
 
       // Scoring Count
       async function getScorePaperCount() {
-        const managedClasses = (await db.query.classes.findMany({
-          where: ctx.user.role === 'admin' ? undefined : eq(classes.teacherId, ctx.user.id),
-          columns: { id: true },
-        })).map(x => x.id);
         if (!managedClasses.length)
           return 0;
 
@@ -56,28 +67,19 @@ export const statisticsRouter = router({
         return (await db.select({ count: count() }).from(papers).where(eq(papers.isPublic, true)).get())?.count;
       };
 
-      // Class Count
-      async function getClassCount() {
-        return (await db.select({ count: count() }).from(classes).get())?.count;
-      };
-
       const [
-        studentCount,
         scorePaperCount,
         publicPaperCount,
-        classCount,
       ] = await Promise.all([
-        getStudentCount(),
         getScorePaperCount(),
         getPublicPaperCount(),
-        getClassCount(),
       ]);
 
       return {
-        studentCount,
+        studentCount: getStudentCount(),
         scorePaperCount,
         publicPaperCount,
-        classCount,
+        classCount: managedClasses.length,
       };
     }),
 });

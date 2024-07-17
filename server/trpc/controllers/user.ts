@@ -32,7 +32,11 @@ export class UserController {
   async register(newUser: TNewUser & { groupId?: string; classId?: string }) {
     const { groupId, classId, ...rest } = newUser;
     const hash = await bcrypt.hash(newUser.password, 8);
-    const user = { ...rest, password: hash };
+    const user = {
+      ...rest,
+      password: hash,
+      initialPassword: false,
+    };
     try {
       // TODO: use transaction
       const insertedId = (await db.insert(users).values(user).returning({ id: users.id }).get()).id;
