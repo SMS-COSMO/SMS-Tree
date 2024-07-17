@@ -77,7 +77,6 @@ const rules = reactive<FormRules<TUserRegister>>({
   password: [
     { required: true, message: '密码不能为空', trigger: 'blur' },
     { min: 8, message: '密码至少 8 位' },
-    { pattern: passwordRegex, message: '密码必须包含大小写字母、数字与特殊符号' },
   ],
   role: [{ required: true }],
 });

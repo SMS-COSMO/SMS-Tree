@@ -19,7 +19,7 @@
           {{ userInfo?.username }}
         </span>
       </el-descriptions-item>
-      <el-descriptions-item v-if="type === 'admin' && userInfo?.schoolId">
+      <el-descriptions-item v-if="(type === 'admin' || userId === userStore.userId) && userInfo?.schoolId">
         <template #label>
           <div class="text-[16px]!">
             <el-icon class="i-tabler:number" />
@@ -30,7 +30,7 @@
           {{ userInfo?.schoolId }}
         </span>
       </el-descriptions-item>
-      <el-descriptions-item v-if="userInfo?.role === 'student'">
+      <el-descriptions-item v-if="(type === 'admin' || userId === userStore.userId) && userInfo?.className">
         <template #label>
           <div class="text-[16px]!">
             <el-icon class="i-tabler:school" />
@@ -94,6 +94,7 @@ const props = defineProps<{
 
 const { $api } = useNuxtApp();
 const device = useDevice();
+const userStore = useUserStore();
 
 const roleName = {
   student: '学生',

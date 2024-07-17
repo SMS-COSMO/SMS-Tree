@@ -240,12 +240,13 @@ export class UserController {
       usersToGroups: _usersToGroups,
       classesToStudents: _classesToStudents,
       schoolId,
+      initialPassword,
       ...info
     } = res;
 
     return {
       ...info,
-      className: useClassName(res.classesToStudents[0]?.classes),
+      className: accessible ? useClassName(res.classesToStudents[0]?.classes) : undefined,
       groups: res.usersToGroups.map((x) => {
         const g = x.group;
         if (!accessible && !g.paper?.isPublic)
@@ -254,6 +255,7 @@ export class UserController {
       }),
       classId: res.classesToStudents[0]?.classes.id ?? '',
       schoolId: accessible ? schoolId : undefined,
+      initialPassword: accessible ? initialPassword : undefined,
     };
   }
 

@@ -1,43 +1,54 @@
 <template>
-  <el-card>
-    <el-form
-      ref="formRef"
-      :rules="rules"
-      :model="form"
-      class="mx-auto max-w-[500px]"
-      :label-position="device.isMobileOrTablet ? 'top' : 'right'"
-    >
-      <el-form-item v-if="userStore.role === 'student'" prop="oldPassword">
-        <div>
-          <el-icon class="i-tabler:lock" />
-          原密码
-        </div>
-        <el-input v-model="form.oldPassword" type="password" show-password />
-      </el-form-item>
-      <el-form-item prop="newPassword">
-        <div>
-          <el-icon class="i-tabler:lock-plus" />
-          新密码
-        </div>
-        <el-input v-model="form.newPassword" type="password" show-password />
-      </el-form-item>
-      <el-form-item prop="repeatPassword">
-        <div>
-          <el-icon class="i-tabler:lock-check" />
-          确认新密码
-        </div>
-        <el-input
-          v-model="form.repeatPassword" type="password" show-password
-          @keyup.enter="form.oldPassword && form.newPassword ? modify(formRef) : () => { }"
-        />
-      </el-form-item>
-      <el-form-item class="m-0">
-        <el-button color="#15803d" :loading="isPending" @click="modify(formRef)">
-          修改
-        </el-button>
-      </el-form-item>
-    </el-form>
-  </el-card>
+  <div class="flex flex-col gap-4">
+    <el-alert
+      type="success"
+      title="修改此密码不会修改希悦系统密码，且不会影响使用希悦账号登录"
+      show-icon
+      :closable="false"
+    />
+    <el-card>
+      <template #header>
+        修改深中树账号密码
+      </template>
+      <el-form
+        ref="formRef"
+        :rules="rules"
+        :model="form"
+        class="mx-auto max-w-[500px]"
+        :label-position="device.isMobileOrTablet ? 'top' : 'right'"
+      >
+        <el-form-item v-if="userStore.role === 'student'" prop="oldPassword">
+          <div>
+            <el-icon class="i-tabler:lock" />
+            原密码
+          </div>
+          <el-input v-model="form.oldPassword" type="password" show-password />
+        </el-form-item>
+        <el-form-item prop="newPassword">
+          <div>
+            <el-icon class="i-tabler:lock-plus" />
+            新密码
+          </div>
+          <el-input v-model="form.newPassword" type="password" show-password />
+        </el-form-item>
+        <el-form-item prop="repeatPassword">
+          <div>
+            <el-icon class="i-tabler:lock-check" />
+            确认新密码
+          </div>
+          <el-input
+            v-model="form.repeatPassword" type="password" show-password
+            @keyup.enter="form.oldPassword && form.newPassword ? modify(formRef) : () => { }"
+          />
+        </el-form-item>
+        <el-form-item class="m-0">
+          <el-button color="#15803d" :loading="isPending" @click="modify(formRef)">
+            修改
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -46,6 +57,7 @@ import type { FormInstance, FormRules } from 'element-plus';
 const props = defineProps<{
   userId: string;
 }>();
+
 const { $api } = useNuxtApp();
 const device = useDevice();
 const userStore = useUserStore();
@@ -63,7 +75,6 @@ const rules = reactive<FormRules<typeof form>>({
   ],
   newPassword: [
     { required: true, message: '密码不能为空', trigger: 'blur' },
-    { pattern: passwordRegex, message: '密码必须包含大小写字母、数字与特殊符号' },
     { min: 8, message: '密码至少 8 位', trigger: 'change' },
     { validator: (_, value: any, callback: any) => {
       if (value === form.oldPassword)

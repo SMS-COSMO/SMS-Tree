@@ -64,6 +64,8 @@ const { mutate: loginMutation, isPending } = useMutation({
   onSuccess: (res) => {
     userStore.login(res);
     if (res.initialPassword) {
+      ElMessageBox.alert('请尽快修改初始密码', '安全警告', { type: 'warning' });
+
       navigateTo({
         path: `/user/${res.id}`,
         query: {
