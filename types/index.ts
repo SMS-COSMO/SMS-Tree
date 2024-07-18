@@ -58,7 +58,7 @@ export interface TSearchOption {
   };
   isAsc: -1 | 1;
   searchSelectValue: string[];
-  sortOption: 'time' | 'default';
+  sortOption: 'time' | 'default' | 'featured';
 }
 
 export interface TMinimalUser {

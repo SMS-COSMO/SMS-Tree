@@ -50,6 +50,10 @@
       <el-icon class="i-tabler:adjustments-horizontal" />
       默认
     </el-radio-button>
+    <el-radio-button value="featured">
+      <el-icon class="i-tabler:star" />
+      优秀
+    </el-radio-button>
     <el-radio-button value="time">
       <el-icon class="i-tabler:calendar-time" />
       时间

@@ -85,7 +85,7 @@ const searchOptions = reactive<TSearchOption>({
   },
   isAsc: 1,
   searchSelectValue: ['title', 'keywords'],
-  sortOption: 'default',
+  sortOption: 'featured',
 });
 receiveQuery();
 
@@ -105,7 +105,7 @@ watch(searchContent, () => {
   if (searchContent.value.length)
     searchOptions.sortOption = 'default';
   else
-    searchOptions.sortOption = 'time';
+    searchOptions.sortOption = 'featured';
 });
 
 const { processedListData } = await useSearch<TPaperListSafeItem>(
@@ -126,9 +126,15 @@ const { processedListData } = await useSearch<TPaperListSafeItem>(
     return true;
   },
   (a: TPaperListSafeItem, b: TPaperListSafeItem) => {
-    // TODO: improve default behavior
     if (searchOptions.sortOption === 'default')
       return 0;
+    if (searchOptions.sortOption === 'featured') {
+      if (a.isFeatured && b.isFeatured)
+        return a.createdAt > b.createdAt ? -1 : 1; // Newest
+      if (a.isFeatured)
+        return -1;
+      return 1;
+    }
     if (searchOptions.sortOption === 'time')
       return (a.createdAt > b.createdAt ? -1 : 1) * searchOptions.isAsc; // Newest
     return 0;
