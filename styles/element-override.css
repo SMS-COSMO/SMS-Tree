@@ -194,6 +194,7 @@
 }
 
 .h-content>.el-card__body,
+.h-full>.el-card__body,
 .h-admin-content>.el-card__body {
   box-sizing: border-box;
   height: 100%;

@@ -80,7 +80,14 @@ const quickSearchContent = ref('');
 const userStore = useUserStore();
 const { $api } = useNuxtApp();
 
-const enabled = computed(() => userStore.classId !== undefined && userStore.classId.length > 0 && userStore.loggedIn && userStore.role === 'student');
+const enabled = computed(
+  () =>
+    userStore.classId !== undefined
+    && userStore.classId.length > 0
+    && userStore.loggedIn
+    && userStore.role === 'student',
+);
+
 const { data: classInfo } = useQuery({
   queryKey: ['class.info', { id: userStore.classId }],
   queryFn: () => $api.class.info.query({ id: userStore.classId }),
