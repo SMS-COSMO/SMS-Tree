@@ -32,6 +32,7 @@ export class AttachmentController {
         where: eq(papers.id, id.paperId),
         columns: {
           canDownload: true,
+          isPublic: true,
         },
         with: {
           group: {
@@ -51,13 +52,18 @@ export class AttachmentController {
       });
       if (!paper)
         return false;
+      // No modify when paper is scored
+      if (paper.isPublic)
+        return false;
       return (allowPublic && paper.canDownload) || paper.group.usersToGroups.some(x => x.user.id === user.id);
     }
 
     if (id.reportId) {
       const report = await db.query.reports.findFirst({
         where: eq(reports.id, id.reportId),
-        columns: {},
+        columns: {
+          read: true,
+        },
         with: {
           group: {
             columns: {},
@@ -75,6 +81,9 @@ export class AttachmentController {
         },
       });
       if (!report)
+        return false;
+      // No modify when report is read
+      if (report.read)
         return false;
       return allowPublic || report.group.usersToGroups.some(x => x.user.id === user.id);
     }

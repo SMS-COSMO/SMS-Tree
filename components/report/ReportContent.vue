@@ -30,19 +30,21 @@
   </template>
 
   <div class="mt-2">
-    <el-button v-if="!isAdmin" color="#15803d" @click="modifyDialogVisible = true">
+    <el-button v-if="!isAdmin && !report.read" color="#15803d" @click="modifyDialogVisible = true">
       修改
     </el-button>
-    <el-button
-      v-else-if="!report.read"
-      color="#15803d"
-      @click="commentMutate({ id: report.id, comment, read: true })"
-    >
-      完成批阅
-    </el-button>
-    <el-button v-else color="#15803d" @click="modifyCommentVisible = true">
-      修改批注
-    </el-button>
+    <template v-if="isAdmin">
+      <el-button
+        v-if="!report.read"
+        color="#15803d"
+        @click="commentMutate({ id: report.id, comment, read: true })"
+      >
+        完成批阅
+      </el-button>
+      <el-button v-else color="#15803d" @click="modifyCommentVisible = true">
+        修改批注
+      </el-button>
+    </template>
   </div>
 
   <client-only>

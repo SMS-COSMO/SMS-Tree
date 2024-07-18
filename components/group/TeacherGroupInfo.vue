@@ -84,7 +84,7 @@
         >
           <el-table-column prop="username" label="姓名">
             <template #default="scope">
-              <span :class="info?.leader?.id === scope.row.id ? 'font-bold' : ''">
+              <span :class="[info?.leader?.id === scope.row.id && 'font-bold']">
                 {{ scope.row.username }}
               </span>
             </template>
@@ -106,7 +106,7 @@
             活动记录
           </div>
         </template>
-        <div :class="(info?.notes?.length ?? 0) > 1 ? 'grid grid-cols-2 gap-2' : ''">
+        <div :class="[(info?.notes?.length ?? 0) > 1 && 'grid grid-cols-2 gap-2']">
           <template v-for="note in info?.notes" :key="note.id">
             <NoteCard :note="note" />
           </template>
@@ -119,7 +119,7 @@
             报告
           </div>
         </template>
-        <div :class="(info?.reports?.length ?? 0) > 1 ? 'grid grid-cols-2 gap-2' : ''">
+        <div class="grid grid-cols-2 gap-2">
           <template v-for="report in info?.reports" :key="report.id">
             <ReportCard :report="report" is-admin />
           </template>
