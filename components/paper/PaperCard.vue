@@ -5,7 +5,7 @@
     @click="navigateTo(`${isAdmin ? '/admin' : ''}/paper/${paper.id}`)"
   >
     <div class="flex flex-wrap gap-1.5">
-      <el-tag v-if="paper?.isPublic !== undefined && !paper.isPublic" type="danger" disable-transitions>
+      <el-tag v-if="isAdmin && paper?.isPublic !== undefined && !paper.isPublic" type="danger" disable-transitions>
         <el-icon class="i-tabler:pencil" />
         待批改
       </el-tag>

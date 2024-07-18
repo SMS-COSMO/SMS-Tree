@@ -64,6 +64,22 @@ export const attachmentRouter = router({
       );
     }),
 
+  batchReplacePaper: protectedProcedure
+    .meta({ description: '批量将附件关联到论文并覆盖。' })
+    .input(z.object({
+      ids: z.array(z.string()),
+      paperId: z.string(),
+      category: categorySchema.optional(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.attachmentController.batchMove(
+        input.ids,
+        ctx.user,
+        { paperId: input.paperId },
+        { replace: true, category: input.category },
+      );
+    }),
+
   // TODO: this seems unsafe
   fileUrl: protectedProcedure
     .meta({ description: '查询附件的 URL。' })

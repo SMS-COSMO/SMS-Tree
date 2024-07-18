@@ -110,10 +110,10 @@
       </template>
     </el-tab-pane>
     <el-tab-pane v-if="reachedState('submitPaper')" label="论文" name="submitPaper">
-      <SubmitPaper v-if="!groupInfo?.paper" />
+      <PaperForm v-if="!groupInfo?.paper" type="create" />
       <template v-else>
         <ReuseTemplate name="论文" />
-        <PaperContent :id="groupInfo?.paper.id" />
+        <PaperContent :id="groupInfo?.paper.id" :allow-modify="!groupInfo.paper.isPublic" />
       </template>
     </el-tab-pane>
   </el-tabs>
@@ -144,7 +144,7 @@ const { mutate: modifyProjectName, isPending } = useMutation({
 
 const userStore = useUserStore();
 const { data: groupInfo, suspense: groupInfoSuspense } = useQuery({
-  queryKey: ['group.info', { id: userStore.activeGroupIds[0] }],
+  queryKey: ['group.info'],
   queryFn: () => $api.group.info.query({ id: userStore.activeGroupIds[0] }),
 });
 await groupInfoSuspense();

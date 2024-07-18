@@ -202,9 +202,3 @@ const { mutate: scoreMutation, isPending } = useMutation({
   onError: err => useErrorHandler(err),
 });
 </script>
-
-<style scoped>
-.floating {
-  box-shadow: var(--el-box-shadow-light) !important;
-}
-</style>

@@ -128,6 +128,7 @@ export class AttachmentController {
             paper: {
               columns: {
                 canDownload: true,
+                isPublic: true,
               },
               with: {
                 group: {
@@ -146,7 +147,7 @@ export class AttachmentController {
               },
             },
             report: {
-              columns: {},
+              columns: { read: true },
               with: {
                 group: {
                   columns: {},
@@ -169,9 +170,13 @@ export class AttachmentController {
           throw new TRPCError({ code: 'NOT_FOUND', message: '附件不存在' });
 
         if (info.paperId && info.paper) {
+          if (info.paper.isPublic)
+            throw new TRPCError({ code: 'NOT_FOUND', message: '提交已截止，不能再修改' });
           if (!info.paper.canDownload && !info.paper.group.usersToGroups.some(x => x.user.id === user.id))
             throw TRPCForbidden;
         } else if (info.reportId && info.report) {
+          if (info.report.read)
+            throw new TRPCError({ code: 'NOT_FOUND', message: '提交已截止，不能再修改' });
           if (!info.report.group.usersToGroups.some(x => x.user.id === user.id))
             throw TRPCForbidden;
         }

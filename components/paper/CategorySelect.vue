@@ -14,9 +14,11 @@
 <script setup lang="ts">
 import SelectPlaceholder from '../utils/SelectPlaceholder.vue';
 
-const model = defineModel<number>();
+const model = defineModel<number>({ required: true });
 
 const cascaderValue = ref(-1);
+// Set initial value to model value
+cascaderValue.value = model.value;
 watch(cascaderValue, (v: any) => {
   if (v)
     model.value = v[1] ?? 0;

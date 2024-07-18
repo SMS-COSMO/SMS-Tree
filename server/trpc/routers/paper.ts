@@ -3,7 +3,7 @@ import { protectedProcedure, requireRoles, router } from '../trpc';
 
 const paperIdSchema = z.string().min(1, '论文 ID 不存在');
 
-const createSchema = z.object({
+const createSafeSchema = z.object({
   title: z
     .string()
     .min(1, { message: '论文标题不能为空' })
@@ -13,8 +13,11 @@ const createSchema = z.object({
     .array(z.string().max(8, { message: '关键词最长为 8 字符' }))
     .max(8, { message: '最多设置 8 个关键词' }),
   abstract: z.string().max(5000, '摘要最长为 5000 字符'),
-  groupId: z.string(),
   canDownload: z.boolean(),
+});
+
+const createSchema = createSafeSchema.extend({
+  groupId: z.string(),
   comment: z.string().optional(),
   isFeatured: z.boolean().optional().default(false),
   isPublic: z.boolean().optional().default(false),
@@ -30,18 +33,7 @@ export const paperRouter = router({
     }),
 
   createSafe: protectedProcedure
-    .input(z.object({
-      title: z
-        .string()
-        .min(1, { message: '论文标题不能为空' })
-        .max(256, { message: '论文标题最长为 256 字符' }),
-      category: z.number().int(),
-      keywords: z
-        .array(z.string().max(8, { message: '关键词最长为 8 字符' }))
-        .max(8, { message: '最多设置 8 个关键词' }),
-      abstract: z.string().max(5000, '摘要最长为 5000 字符'),
-      canDownload: z.boolean(),
-    }))
+    .input(createSafeSchema)
     .mutation(async ({ ctx, input }) => {
       return await ctx.paperController.createSafe(input, ctx.user);
     }),
@@ -78,6 +70,14 @@ export const paperRouter = router({
       return await ctx.paperController.modify(id, data);
     }),
 
+  modifySafe: protectedProcedure
+    .meta({ description: '修改论文信息。' })
+    .input(createSafeSchema.extend({ id: paperIdSchema }))
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...data } = input;
+      return await ctx.paperController.modifySafe(id, data, ctx.user);
+    }),
+
   list: protectedProcedure
     .query(async ({ ctx }) => {
       return await ctx.paperController.list(ctx.user);
@@ -104,17 +104,13 @@ export const paperRouter = router({
     }),
 
   random: protectedProcedure
-    .input(z.object({
-      count: z.number().int(),
-    }))
+    .input(z.object({ count: z.number().int() }))
     .query(async ({ ctx, input }) => {
       return await ctx.paperController.random(input.count);
     }),
 
   toggleBookmark: protectedProcedure
-    .input(z.object({
-      id: paperIdSchema,
-    }))
+    .input(z.object({ id: paperIdSchema }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.paperController.toggleBookmark(input.id, ctx.user);
     }),

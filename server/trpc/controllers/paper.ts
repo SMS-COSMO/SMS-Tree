@@ -262,6 +262,39 @@ export class PaperController {
     return '修改成功';
   }
 
+  async modifySafe(id: string, newPaper: Partial<TNewPaper>, user: TRawUser) {
+    const group = (await db.query.usersToGroups.findMany({
+      where: eq(usersToGroups.userId, user.id),
+      columns: { groupId: true },
+      with: {
+        group: {
+          columns: { archived: true },
+          with: {
+            paper: {
+              columns: {
+                isPublic: true,
+              },
+            },
+          },
+        },
+      },
+    })).filter(g => !g.group.archived)[0];
+    if (!group)
+      throw new TRPCError({ code: 'NOT_FOUND', message: '用户无小组' });
+    if (!['teacher', 'admin'].includes(user.role) && group.group.paper?.isPublic)
+      throw new TRPCError({ code: 'NOT_FOUND', message: '提交已截止，不能再修改论文' });
+
+    await db
+      .update(papers)
+      .set(newPaper)
+      .where(
+        and(
+          eq(papers.groupId, group.groupId),
+          eq(papers.id, id),
+        ),
+      );
+  }
+
   async score(
     id: string,
     newPaper: {

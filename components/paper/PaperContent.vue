@@ -65,20 +65,61 @@
       <Preview :attachment="info?.attachments?.filter(a => a.category === 'paperDocument')[0]" full-height />
     </template>
 
+    <el-card v-if="attachmentDocuments?.length">
+      <template #header>
+        <el-icon class="i-tabler:paperclip" />
+        附件
+      </template>
+      <el-collapse>
+        <el-collapse-item
+          v-for="attachment in attachmentDocuments"
+          :key="attachment.id"
+        >
+          <template #title>
+            <div class="space-x-2">
+              <span class="text-[15px]">
+                {{ attachment.name }}
+              </span>
+            </div>
+          </template>
+          <Preview :attachment="attachment" />
+        </el-collapse-item>
+      </el-collapse>
+    </el-card>
+
     <el-card v-if="info?.comment">
       <template #header>
         <el-icon class="i-tabler:message" />
-        教师评语
+        评语
       </template>
       <TiptapViewer :content="info?.comment" />
     </el-card>
+
+    <el-button v-if="allowModify" color="#15803d" @click="modifyDialogVisible = true">
+      修改
+    </el-button>
   </div>
+
+  <client-only>
+    <el-dialog
+      v-if="allowModify"
+      v-model="modifyDialogVisible"
+      draggable
+      align-center
+      title="修改论文"
+    >
+      <PaperForm type="modify" :old-paper="oldPaper" :paper-id="id" @reset="modifyDialogVisible = false" />
+    </el-dialog>
+  </client-only>
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   id: string;
-}>();
+  allowModify?: boolean;
+}>(), {
+  allowModify: false,
+});
 
 const { $api } = useNuxtApp();
 
@@ -88,21 +129,30 @@ const { data: info, suspense: infoSuspense } = useQuery({
 });
 await infoSuspense();
 
+const attachmentDocuments = info.value?.attachments?.filter(a => a.category !== 'paperDocument');
+const oldPaper = computed<TPaperCreateSafeForm>(() => ({
+  title: info.value?.title ?? '',
+  abstract: info.value?.abstract ?? '',
+  category: info.value?.category ?? -1,
+  keywords: Array.from(info.value?.keywords ?? []), // Make keywords array not readonly
+  canDownload: info.value?.canDownload ?? false,
+  paperFile: [],
+  attachments: [],
+}));
+
 function searchTag(keyword: string) {
   navigateTo({
     path: '/paper/list',
-    query: {
-      search: keyword,
-    },
+    query: { search: keyword },
   });
 }
 
 function searchCategory(code: number | undefined) {
   navigateTo({
     path: '/paper/list',
-    query: {
-      category: code,
-    },
+    query: { category: code },
   });
 }
+
+const modifyDialogVisible = ref(false);
 </script>

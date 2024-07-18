@@ -1,7 +1,7 @@
 <template>
-  <div style="width: 100%;">
+  <div class="w-full">
     <el-tag
-      v-for="tag in modelValue" :key="tag" size="large" effect="plain" class="mx-1" closable type="info"
+      v-for="tag in dynamicTags" :key="tag" size="large" effect="plain" class="mx-1" closable type="info"
       :disable-transitions="false" @close="handleClose(tag)"
     >
       {{ tag }}
@@ -13,8 +13,8 @@
     />
     <el-tooltip v-else :visible="tooltipVisible" placement="top-start" content="最多添加 8 个关键词">
       <el-button
-        class="same-size mx-1" size="small" color="#15803d" plain :disabled="modelValue.length >= 8"
-        @click="showInput" @mouseenter="tooltipVisible = modelValue.length >= 8"
+        class="same-size mx-1" size="small" color="#15803d" plain :disabled="dynamicTags.length >= 8"
+        @click="showInput" @mouseenter="tooltipVisible = dynamicTags.length >= 8"
         @mouseleave="tooltipVisible = false"
       >
         + 添加关键词
@@ -26,18 +26,16 @@
 <script lang="ts" setup>
 import { ElInput } from 'element-plus';
 
-const props = withDefaults(defineProps<{
-  modelValue: string[];
+withDefaults(defineProps<{
   contentMaxLength?: number;
   maxLength?: number;
 }>(), {
   contentMaxLength: 8,
   maxLength: 8,
 });
-const emit = defineEmits(['update:modelValue']);
 
 const inputValue = ref('');
-const dynamicTags = ref(props.modelValue);
+const dynamicTags = defineModel<string[]>({ required: true });
 const inputVisible = ref(false);
 const InputRef = ref<InstanceType<typeof ElInput>>();
 
@@ -60,7 +58,6 @@ function handleInputConfirm() {
 
   inputVisible.value = false;
   inputValue.value = '';
-  emit('update:modelValue', dynamicTags.value);
 }
 </script>
 

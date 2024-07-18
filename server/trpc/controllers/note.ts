@@ -62,7 +62,7 @@ export class NoteController {
           eq(notes.id, newNote.id),
         ),
       );
-    return '创建成功';
+    return '修改成功';
   }
 
   async remove(id: string, user: TRawUser) {

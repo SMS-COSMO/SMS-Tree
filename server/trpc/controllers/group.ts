@@ -81,6 +81,7 @@ export class GroupController {
             createdAt: true,
             isFeatured: true,
             title: true,
+            isPublic: true,
           },
         },
         usersToGroups: {
