@@ -58,8 +58,11 @@
       <div class="md:basis-1/4">
         <el-card class="box-border h-full">
           <template #header>
-            <el-icon class="i-tabler:info-circle" />
-            论文信息
+            <div class="flex items-center gap-2">
+              <el-icon class="i-tabler:info-circle" />
+              论文信息
+              <BookmarkButton :paper-id="id" :bookmarked="info?.bookmarked" />
+            </div>
           </template>
           <el-descriptions :column="1" direction="vertical">
             <el-descriptions-item label="班级">

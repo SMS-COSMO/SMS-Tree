@@ -3,6 +3,7 @@ import { relations } from 'drizzle-orm';
 import { makeId } from '../../trpc/utils/shared';
 import { groups } from './group';
 import { attachments } from './attachment';
+import { bookmarks } from './bookmark';
 
 export const papers = sqliteTable('papers', {
   id: text('id').primaryKey().$defaultFn(() => makeId(12)),
@@ -24,4 +25,5 @@ export const papersRelations = relations(papers, ({ one, many }) => ({
     references: [groups.id],
   }),
   attachments: many(attachments),
+  bookmarks: many(bookmarks),
 }));

@@ -39,7 +39,7 @@
                 <div class="flex flex-col lg:flex-row lg:gap-4">
                   <div class="lg:basis-1/4" />
                   <div class="mb-2 lg:basis-3/4">
-                    <PaperCard :paper="paper" />
+                    <PaperCard :paper="paper" :bookmarked="bookmarks?.includes(paper.id)" />
                   </div>
                 </div>
               </div>
@@ -79,6 +79,7 @@ const searchOptions = reactive<TSearchOption>({
   filter: {
     onlyCanDownload: false,
     onlyFeatured: false,
+    onlyBookmarked: false,
     category: [],
     restrictEnterYear: false,
     enterYear: new Date().getFullYear(),
@@ -108,6 +109,12 @@ watch(searchContent, () => {
     searchOptions.sortOption = 'featured';
 });
 
+const { data: bookmarks, suspense: bookmarksSuspense } = useQuery({
+  queryKey: ['paper.bookmarks'],
+  queryFn: () => $api.paper.bookmarks.query(),
+});
+await bookmarksSuspense();
+
 const { processedListData } = await useSearch<TPaperListSafeItem>(
   searchContent,
   fuseOptions,
@@ -118,6 +125,8 @@ const { processedListData } = await useSearch<TPaperListSafeItem>(
     if (searchOptions.filter.onlyCanDownload && !o.canDownload)
       return false;
     if (searchOptions.filter.onlyFeatured && !o.isFeatured)
+      return false;
+    if (searchOptions.filter.onlyBookmarked && !bookmarks.value?.includes(o.id))
       return false;
     if (searchOptions.filter.restrictEnterYear && o.enterYear !== searchOptions.filter.enterYear)
       return false;

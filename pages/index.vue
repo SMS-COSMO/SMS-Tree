@@ -66,7 +66,7 @@
           </el-card>
         </div>
       </div>
-      <RandomPaper />
+      <QuickPaper />
     </template>
   </div>
 </template>

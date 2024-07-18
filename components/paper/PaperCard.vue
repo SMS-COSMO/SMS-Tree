@@ -9,6 +9,9 @@
         <el-icon class="i-tabler:pencil" />
         待批改
       </el-tag>
+      <el-tag v-if="bookmarked" type="danger" disable-transitions>
+        <el-icon class="i-tabler:bookmark" />
+      </el-tag>
       <el-tag v-if="paper?.isFeatured" type="success" disable-transitions>
         <el-icon class="i-tabler:star" />
         优秀
@@ -50,6 +53,7 @@ withDefaults(defineProps<{
   lineClamp?: number;
   showAuthors?: boolean;
   isAdmin?: boolean;
+  bookmarked?: boolean;
 }>(), {
   showAbstract: false,
   lineClamp: 3,

@@ -1,5 +1,5 @@
 <template>
-  <el-card class="h-content">
+  <el-card>
     <div class="flex flex-col gap-4">
       <div class="flex flex-col gap-4 text-center md:flex-row">
         <el-card class="basis-1/4 card-button" @click="navigateTo('/admin/scoring')">
@@ -88,7 +88,12 @@
           </el-table>
         </el-card>
         <el-card class="lg:basis-2/5">
-          placeholder
+          <template #header>
+            收藏的论文
+          </template>
+          <div class="flex flex-col gap-3">
+            <PaperCard v-for="paper in bookmarks" :key="paper.id" bookmarked :paper="paper" />
+          </div>
         </el-card>
       </div>
     </div>
@@ -122,6 +127,13 @@ const { data: classList, suspense: classListSuspense } = useQuery({
   queryFn: () => $api.class.list.query(userStore.role === 'admin' ? undefined : userStore.userId),
 });
 await classListSuspense();
+
+const { data: bookmarks, suspense: bookmarksSuspense } = useQuery({
+  queryKey: ['paper.bookmarksWithInfo'],
+  queryFn: () => $api.paper.bookmarksWithInfo.query(),
+  refetchOnWindowFocus: false,
+});
+await bookmarksSuspense();
 </script>
 
 <style>

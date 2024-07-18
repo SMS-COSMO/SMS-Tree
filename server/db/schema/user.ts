@@ -4,6 +4,7 @@ import { makeId } from '../../trpc/utils/shared';
 import { usersToGroups } from './userToGroup';
 import { classesToStudents } from './classToStudents';
 import { classes } from './class';
+import { bookmarks } from './bookmark';
 
 export const users = sqliteTable('users', {
   id: text('id').$defaultFn(() => makeId(12)).primaryKey(),
@@ -18,6 +19,7 @@ export const users = sqliteTable('users', {
 export const usersRelations = relations(users, ({ many }) => ({
   usersToGroups: many(usersToGroups),
   classesToStudents: many(classesToStudents),
+  bookmarks: many(bookmarks),
   teacherClasses: many(classes), // This is only for teachers
 }));
 

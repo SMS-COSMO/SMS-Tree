@@ -30,7 +30,7 @@
           {{ userInfo?.schoolId }}
         </span>
       </el-descriptions-item>
-      <el-descriptions-item v-if="(type === 'admin' || userId === userStore.userId) && userInfo?.className">
+      <el-descriptions-item v-if="(type === 'admin' || userId === userStore.userId) && userInfo?.role === 'student' && userInfo?.className">
         <template #label>
           <div class="text-[16px]!">
             <el-icon class="i-tabler:school" />

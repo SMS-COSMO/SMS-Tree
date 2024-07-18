@@ -12,6 +12,12 @@
         优秀
       </el-checkbox>
     </div>
+    <div>
+      <el-checkbox v-model="modelValue.filter.onlyBookmarked" border @change="updateValue">
+        <el-icon class="i-tabler:bookmark" />
+        收藏
+      </el-checkbox>
+    </div>
   </div>
 
   <el-divider content-position="left">

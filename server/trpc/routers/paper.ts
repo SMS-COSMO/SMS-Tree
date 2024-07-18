@@ -58,7 +58,7 @@ export const paperRouter = router({
     .use(requireRoles(['admin', 'teacher']))
     .input(z.object({ id: paperIdSchema }))
     .query(async ({ ctx, input }) => {
-      return await ctx.paperController.infoWithClass(input.id);
+      return await ctx.paperController.infoWithClass(input.id, ctx.user);
     }),
 
   remove: protectedProcedure
@@ -109,5 +109,23 @@ export const paperRouter = router({
     }))
     .query(async ({ ctx, input }) => {
       return await ctx.paperController.random(input.count);
+    }),
+
+  toggleBookmark: protectedProcedure
+    .input(z.object({
+      id: paperIdSchema,
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.paperController.toggleBookmark(input.id, ctx.user);
+    }),
+
+  bookmarks: protectedProcedure
+    .query(async ({ ctx }) => {
+      return await ctx.paperController.bookmarks(ctx.user.id);
+    }),
+
+  bookmarksWithInfo: protectedProcedure
+    .query(async ({ ctx }) => {
+      return await ctx.paperController.bookmarksWithInfo(ctx.user.id);
     }),
 });

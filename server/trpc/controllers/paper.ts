@@ -6,6 +6,7 @@ import { papers } from '../../db/schema/paper';
 import { TRPCForbidden } from '../utils/shared';
 import { usersToGroups } from '~/server/db/schema/userToGroup';
 import { useClassName } from '~/composables/className';
+import { bookmarks } from '~/server/db/schema/bookmark';
 
 export class PaperController {
   async create(newPaper: TNewPaper) {
@@ -73,6 +74,11 @@ export class PaperController {
             S3FileId: true,
           },
         },
+        bookmarks: {
+          columns: {
+            userId: true,
+          },
+        },
       },
     });
 
@@ -93,15 +99,16 @@ export class PaperController {
         rawPaper.attachments = rawPaper.attachments.filter(x => x.category === 'paperDocument');
     }
 
-    const { group, ...info } = rawPaper;
+    const { group, bookmarks, ...info } = rawPaper;
     return {
       authors,
       ...info,
       leader: authors.find(x => x.id === group.leader),
+      bookmarked: bookmarks.some(x => x.userId === user.id),
     };
   }
 
-  async infoWithClass(id: string) {
+  async infoWithClass(id: string, user: TRawUser) {
     const rawPaper = await db.query.papers.findFirst({
       where: eq(papers.id, id),
       with: {
@@ -138,13 +145,18 @@ export class PaperController {
             S3FileId: true,
           },
         },
+        bookmarks: {
+          columns: {
+            userId: true,
+          },
+        },
       },
     });
     if (!rawPaper)
       throw new TRPCError({ code: 'NOT_FOUND', message: '论文不存在' });
 
     const authors = rawPaper.group.usersToGroups.map(u => ({ id: u.user.id, username: u.user.username }));
-    const { group, ...info } = rawPaper;
+    const { group, bookmarks, ...info } = rawPaper;
     return {
       authors,
       ...info,
@@ -153,6 +165,7 @@ export class PaperController {
         ...group.class,
         className: useClassName(group.class),
       },
+      bookmarked: bookmarks.some(x => x.userId === user.id),
     };
   }
 
@@ -293,6 +306,88 @@ export class PaperController {
       orderBy: sql`RANDOM()`,
       limit: count,
     });
+
+    return rawList.map((x) => {
+      const { group, ...info } = x;
+      return {
+        authors: group.usersToGroups.map(u => ({ username: u.user.username })),
+        enterYear: group.enterYear,
+        ...info,
+      };
+    });
+  }
+
+  async toggleBookmark(paperId: string, user: TRawUser) {
+    const isBookmarked = (await db.query.bookmarks.findFirst({
+      where: and(
+        eq(bookmarks.paperId, paperId),
+        eq(bookmarks.userId, user.id),
+      ),
+    })) !== undefined;
+
+    if (isBookmarked) { // un-bookmark
+      await db.delete(bookmarks).where(
+        and(
+          eq(bookmarks.paperId, paperId),
+          eq(bookmarks.userId, user.id),
+        ),
+      );
+    } else { // bookmark
+      await db.insert(bookmarks).values({ userId: user.id, paperId });
+    }
+  }
+
+  async bookmarks(id: string) {
+    return (
+      await db.query.bookmarks.findMany({
+        where: eq(bookmarks.userId, id),
+        columns: {},
+        with: {
+          papers: {
+            columns: {
+              id: true,
+            },
+          },
+        },
+      })
+    ).map(x => x.papers.id);
+  }
+
+  async bookmarksWithInfo(id: string) {
+    const rawList = (
+      await db.query.bookmarks.findMany({
+        where: eq(bookmarks.userId, id),
+        columns: {},
+        with: {
+          papers: {
+            columns: {
+              id: true,
+              canDownload: true,
+              category: true,
+              createdAt: true,
+              isFeatured: true,
+              keywords: true,
+              title: true,
+            },
+            with: {
+              group: {
+                columns: { enterYear: true },
+                with: {
+                  usersToGroups: {
+                    columns: {},
+                    with: {
+                      user: {
+                        columns: { username: true, id: true },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      })
+    ).map(x => x.papers);
 
     return rawList.map((x) => {
       const { group, ...info } = x;

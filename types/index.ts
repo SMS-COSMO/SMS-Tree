@@ -52,6 +52,7 @@ export interface TSearchOption {
   filter: {
     onlyCanDownload: boolean;
     onlyFeatured: boolean;
+    onlyBookmarked: boolean;
     category: number[];
     enterYear: number;
     restrictEnterYear: boolean;
