@@ -8,13 +8,25 @@
     </el-tag>
 
     <ElInput
-      v-if="inputVisible" ref="InputRef" v-model="inputValue" :maxlength="contentMaxLength" show-word-limit
-      class="same-size tag-input mx-1" size="small" @keyup.enter="handleInputConfirm" @blur="handleInputConfirm"
+      v-if="inputVisible"
+      ref="InputRef"
+      v-model="inputValue"
+      :maxlength="contentMaxLength"
+      show-word-limit
+      class="same-size tag-input mx-1"
+      size="small"
+      @keyup.enter="handleInputConfirm"
+      @blur="handleInputConfirm"
     />
-    <el-tooltip v-else :visible="tooltipVisible" placement="top-start" content="最多添加 8 个关键词">
+    <el-tooltip :visible="tooltipVisible" placement="top-start" content="最多添加 8 个关键词">
       <el-button
-        class="same-size mx-1" size="small" color="#15803d" plain :disabled="dynamicTags.length >= 8"
-        @click="showInput" @mouseenter="tooltipVisible = dynamicTags.length >= 8"
+        class="same-size mx-1"
+        size="small"
+        color="#15803d"
+        plain
+        :disabled="dynamicTags.length >= 8"
+        @click="showInput"
+        @mouseenter="tooltipVisible = dynamicTags.length >= 8"
         @mouseleave="tooltipVisible = false"
       >
         + 添加关键词

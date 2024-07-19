@@ -63,6 +63,10 @@
       </div>
       <div class="flex flex-col gap-4 lg:flex-row">
         <el-card class="lg:basis-3/5">
+          <template #header>
+            <el-icon class="i-tabler:list-details" />
+            班级列表
+          </template>
           <el-table
             :data="classList"
             class="cursor-pointer"
@@ -89,6 +93,7 @@
         </el-card>
         <el-card class="lg:basis-2/5">
           <template #header>
+            <el-icon class="i-tabler:bookmark" />
             收藏的论文
           </template>
           <div class="flex flex-col gap-3">
