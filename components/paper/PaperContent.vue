@@ -104,8 +104,8 @@
     <el-dialog
       v-if="allowModify"
       v-model="modifyDialogVisible"
-      draggable
-      align-center
+
+      align-center draggable
       title="修改论文"
     >
       <PaperForm type="modify" :old-paper="oldPaper" :paper-id="id" @reset="modifyDialogVisible = false" />

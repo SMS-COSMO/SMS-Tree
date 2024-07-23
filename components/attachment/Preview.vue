@@ -1,26 +1,38 @@
 <template>
-  <div v-if="props.attachment" class="relative">
-    <el-button
-      class="top-[1px] z-10 absolute!"
-      size="small"
-      :class="[
-        !pdfFileTypes.includes(props.attachment.fileType)
-          && !docxFileTypes.includes(props.attachment.fileType)
-          && !/^image*/.test(props.attachment.fileType)
-          && !/^video*/.test(props.attachment.fileType)
-          && !/^audio*/.test(props.attachment.fileType)
-          ? 'w-full' : 'right-[1px]',
-      ]"
-      icon="i-tabler:download"
-      :loading="downloading"
-      @click="download"
+  <div
+    v-if="props.attachment"
+    class="select-none"
+    :class="[fullscreen ? 'fixed left-0 top-0 z-100 h-svh w-screen p-9 box-border mt-0! backdrop-blur-lg bg-black/50' : 'relative']"
+  >
+    <el-icon v-if="fullscreen" class="i-tabler:x right-2 top-2 cursor-pointer fixed!" color="white" @click="fullscreen = false" />
+    <div
+      class="z-10 mb-2"
+      :class="[fullscreen && 'hidden']"
     >
-      下载
-    </el-button>
+      <el-button
+        v-if="pdfFileTypes.includes(props.attachment.fileType)"
+        size="small"
+        :icon="`${fullscreen ? 'i-tabler:arrows-minimize' : 'i-tabler:maximize'}`"
+        @click="fullscreen = !fullscreen"
+      >
+        {{ fullscreen ? '退出' : '全屏' }}
+      </el-button>
+      <el-button
+        size="small"
+        icon="i-tabler:download"
+        :loading="downloading"
+        @click="download"
+      >
+        下载
+      </el-button>
+    </div>
+
     <iframe
       v-if="pdfFileTypes.includes(props.attachment.fileType)"
+      ref="target"
       :src="`/pdfjs-dist/web/viewer.html?file=${fileUrl}`" frameborder="0"
-      :class="`w-full ${fullHeight ? 'h-[calc(100vh-200px)]' : 'h-150'} border-normal rounded box-border`"
+      class="box-border w-full rounded border-normal"
+      :class="[fullscreen ? 'h-full' : (fullHeight ? 'h-[calc(100vh-200px)]' : 'h-150')]"
     />
     <iframe
       v-else-if="docxFileTypes.includes(props.attachment.fileType)"
@@ -84,4 +96,13 @@ async function download() {
   downloading.value = false;
   saveAs(res.data, props.attachment?.name ?? 'untitled.pdf');
 }
+
+const fullscreen = ref(false);
+const target = ref(null);
+onClickOutside(target, () => fullscreen.value = false);
+
+const { escape } = useMagicKeys();
+watch(escape, () => {
+  fullscreen.value = false;
+});
 </script>
