@@ -13,7 +13,7 @@
       <el-table
         ref="tableRef"
         :data="filteredList"
-        class="cursor-pointer"
+        class="cursor-pointer select-none"
         row-key="id"
         @selection-change="handleSelectionChange"
         @row-click="row => tableRef?.toggleRowSelection(row, !selected.includes(row))"
