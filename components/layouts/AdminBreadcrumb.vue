@@ -25,9 +25,9 @@
 
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
-  autoDetect: boolean;
-  parentPath: string;
-  currentName: string;
+  autoDetect?: boolean;
+  parentPath?: string;
+  currentName?: string;
 }>(), {
   autoDetect: true,
   parentPath: '',

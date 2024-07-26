@@ -1,4 +1,5 @@
 <template>
+  <AdminBreadcrumb :auto-detect="false" parent-path="/admin/user/list" :current-name="userInfo?.username" />
   <el-tabs
     v-model="selectedTab"
     tab-position="top"
@@ -22,7 +23,14 @@ useHeadSafe({
   title: '学生管理',
 });
 
+const { $api } = useNuxtApp();
 const route = useRoute();
 const selectedTab = ref(route.query.action?.toString() ?? 'info');
 const id = route.params.id.toString();
+
+const { data: userInfo, suspense } = useQuery({
+  queryKey: ['user.profile', { id }],
+  queryFn: () => $api.user.profile.query({ id }),
+});
+await suspense();
 </script>

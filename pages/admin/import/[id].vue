@@ -1,4 +1,5 @@
 <template>
+  <AdminBreadcrumb :auto-detect="false" parent-path="/admin/import/history" :current-name="id" />
   <ImportResult :id="id" :data="data" show-remove :show-header="false" />
 </template>
 
