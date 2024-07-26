@@ -70,7 +70,6 @@
 
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus';
-import CategorySelect from '~/components/paper/CategorySelect.vue';
 
 const { $api } = useNuxtApp();
 const device = useDevice();
@@ -82,7 +81,7 @@ const formRef = ref<FormInstance>();
 const form = reactive<TPaperCreateForm>({
   title: '',
   abstract: '',
-  category: -1,
+  category: 0,
   keywords: [],
   canDownload: false,
   groupId: '',

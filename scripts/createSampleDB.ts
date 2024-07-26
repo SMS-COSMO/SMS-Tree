@@ -131,7 +131,7 @@ await Promise.all(
     return ctl.pc.create({
       abstract: cnLorem.article({ len: 600 }),
       title: cnLorem.phrase({ min: 15, max: 30 }),
-      category: Math.round(Math.random() * 100),
+      category: Math.round(Math.random() * 20),
       keywords: [...Array(5)].map(_ => cnLorem.phrase({ min: 3, max: 8 })),
       canDownload: Math.random() < 0.5,
       isFeatured: Math.random() < 0.3,

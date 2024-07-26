@@ -72,7 +72,7 @@ const formRef = ref<FormInstance>();
 const form = ref<TPaperCreateSafeForm>(props.oldPaper ?? {
   title: '',
   abstract: '',
-  category: -1,
+  category: 0,
   keywords: [],
   canDownload: false,
   paperFile: [],
