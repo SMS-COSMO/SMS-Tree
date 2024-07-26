@@ -1,4 +1,5 @@
 <template>
+  <AdminBreadcrumb />
   <el-card v-if="seiueStore.loggedIn" class="h-full w-full">
     <el-container class="mx-auto my-4 h-full max-w-5xl">
       <el-header>

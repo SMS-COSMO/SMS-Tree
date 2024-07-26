@@ -1,4 +1,5 @@
 <template>
+  <AdminBreadcrumb />
   <el-card class="mb-5">
     <el-form
       ref="formRef"

@@ -1,4 +1,5 @@
 <template>
+  <AdminBreadcrumb />
   <el-card>
     <div class="flex flex-col gap-4">
       <div class="flex flex-col gap-4 text-center md:flex-row">

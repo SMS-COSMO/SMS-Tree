@@ -1,4 +1,5 @@
 <template>
+  <AdminBreadcrumb />
   <el-card>
     <el-checkbox v-model="showMine" label="仅展示我的记录" border class="mb-2" />
     <el-table

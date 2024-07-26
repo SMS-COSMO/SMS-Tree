@@ -1,4 +1,5 @@
 <template>
+  <AdminBreadcrumb />
   <el-card class="h-admin-content">
     <el-input
       v-model="searchContent"
