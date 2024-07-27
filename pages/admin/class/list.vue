@@ -12,24 +12,32 @@
     <el-scrollbar>
       <div class="pb-20 pt-4">
         <el-table
-          :data="processedListData"
           class="cursor-pointer"
+          empty-text="没有查询到数据，请检查您的筛选条件"
+          :data="processedListData"
           :default-sort="{ prop: 'className', order: 'ascending' }"
           @row-click="(row) => navigateTo(`/admin/class/${row.id}`)"
         >
           <el-table-column
-            prop="className"
-            label="班级"
+            prop="className" label="班级"
             sortable show-overflow-tooltip
             :min-width="200"
           />
-          <el-table-column :width="200" prop="teacher.username" label="教师" />
+          <el-table-column
+            :width="200" prop="teacher.username" label="教师"
+            :filters="getOptions((x => x.teacher.username), (x => x.toString()))"
+            :filter-method="getFilterMethod(x => x.teacher.username)"
+          />
           <el-table-column
             :width="200" prop="enterYear" label="入学年份"
-            :filters="enterYearOptions"
-            :filter-method="enterYearFilterHandler"
+            :filters="getOptions((x => x.enterYear), (x => x.toString()))"
+            :filter-method="getFilterMethod(x => x.enterYear)"
           />
-          <el-table-column :width="200" show-overflow-tooltip label="状态">
+          <el-table-column
+            :width="200" show-overflow-tooltip label="状态"
+            :filters="getOptions((x => x.state), (x => useClassState(x.toString()).label))"
+            :filter-method="getFilterMethod(x => x.state)"
+          >
             <template #default="scope">
               <StateBadge
                 :state="useClassState(scope.row.state)"
@@ -70,14 +78,18 @@ const { processedListData, listData } = await useSearch<TClassListItem>(
   },
 );
 
-const enterYearOptions = Array.from(
-  new Set(listData.value?.map(x => x.enterYear)),
-).map(x => ({
-  text: useClassGrade(x),
-  value: x.toString(),
-}));
-
-function enterYearFilterHandler(value: string, row: TClassListItem) {
-  return row?.enterYear.toString() === value;
+function getOptions(
+  propConvertor: (val: TClassListItem, idx: number, arr: TClassListItem[]) => string | number,
+  textConvertor: (prop: string | number) => string,
+) {
+  return Array.from(
+    new Set(listData.value?.map(propConvertor)),
+  ).map(x => ({ text: textConvertor(x), value: x.toString() }));
 }
+
+function getFilterMethod(
+  propConvertor: (val: TClassListItem) => string | number,
+) {
+  return (match: string, row: TClassListItem) => propConvertor(row).toString() === match;
+};
 </script>
