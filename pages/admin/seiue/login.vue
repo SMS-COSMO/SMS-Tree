@@ -1,5 +1,6 @@
 <template>
   <el-card class="h-admin-content">
+    <AdminBreadcrumb />
     <SeiueLogin router-back />
   </el-card>
 </template>

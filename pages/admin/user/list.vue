@@ -1,5 +1,6 @@
 <template>
   <el-card class="h-admin-content">
+    <AdminBreadcrumb />
     <el-input
       v-model="searchContent"
       placeholder="搜索学生"
