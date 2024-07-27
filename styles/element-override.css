@@ -385,8 +385,7 @@
 
 .el-notification {
   border: var(--el-border);
-  backdrop-filter: blur(16px);
-  background-color: #FFFFFFA0;
+  z-index: 10000 !important;
 }
 
 /* Date Picker */
