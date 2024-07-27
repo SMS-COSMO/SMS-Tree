@@ -4,4 +4,6 @@
 
 ## SMS-Tree 深中知网
 
-SMS-Tree，又名深中知网，是由 COSMO 开发的研究性学习一体化平台。请访问[帮助文档](https://sms-tree-docs.the1068.me/)获取更多信息。
+SMS-Tree，又名深中知网，是由 COSMO 开发的研究性学习一体化平台。
+
+[用户文档](https://sms-tree-docs-user.netlify.app/) | [开发者文档](https://sms-tree-docs-dev.netlify.app/)
