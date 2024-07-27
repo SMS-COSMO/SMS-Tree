@@ -33,8 +33,21 @@
       <el-form-item prop="reflections" label="反思">
         <TiptapEditor v-model="form.reflections" />
       </el-form-item>
+      <el-form-item prop="attachments" label="附件">
+        <UploadFile
+          v-model="form.attachments"
+          v-model:uploading="uploading"
+          multiple
+          category="noteAttachment"
+        />
+      </el-form-item>
       <el-form-item>
-        <el-button color="#15803d" :loading="isSubmitPending || isModifyPending" @click="submit(formRef)">
+        <el-button
+          color="#15803d"
+          :loading="buttonLoading"
+          :disabled="uploading"
+          @click="submit(formRef)"
+        >
           {{ type === 'create' ? '创建' : '修改' }}
         </el-button>
       </el-form-item>
@@ -47,7 +60,9 @@ import type { FormInstance, FormRules } from 'element-plus';
 
 const props = defineProps<{
   type: 'create' | 'modify';
-  oldNote?: TNote;
+  oldNote?: TNoteCreateSafeForm;
+  noteId?: string;
+  admin?: boolean;
 }>();
 
 const emit = defineEmits(['reset']);
@@ -55,7 +70,7 @@ const emit = defineEmits(['reset']);
 const { $api } = useNuxtApp();
 const device = useDevice();
 const formRef = ref<FormInstance>();
-const form = ref<TNoteCreateSafe>(props.oldNote ?? {
+const form = ref<TNoteCreateSafeForm>(props.oldNote ?? {
   title: '',
   content: '',
   followUp: '',
@@ -63,10 +78,11 @@ const form = ref<TNoteCreateSafe>(props.oldNote ?? {
   plans: '',
   reflections: '',
   time: new Date(),
+  attachments: [],
 });
 const { reset } = usePreventLeave(form);
 
-const rules = reactive<FormRules<TNoteCreateSafe>>({
+const rules = reactive<FormRules<TNoteCreateSafeForm>>({
   title: [
     { required: true, message: '活动记录主题不能为空', trigger: 'blur' },
     { min: 1, max: 256, message: '活动记录主题长度不应超过 256', trigger: 'blur' },
@@ -97,50 +113,50 @@ const rules = reactive<FormRules<TNoteCreateSafe>>({
 });
 
 const queryClient = useQueryClient();
-const { mutate: submitNote, isPending: isSubmitPending } = useMutation({
-  mutationFn: $api.note.createSafe.mutate,
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['group.info'] });
-    useMessage({ message: '创建成功', type: 'success' });
-    resetForm(formRef.value);
-  },
-  onError: err => useErrorHandler(err),
-});
 
-const { mutate: modifyNote, isPending: isModifyPending } = useMutation({
-  mutationFn: $api.note.modifySafe.mutate,
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['group.info'] });
-    useMessage({ message: '修改成功', type: 'success' });
-    resetForm(formRef.value);
-  },
-  onError: err => useErrorHandler(err),
-});
-
-watch(() => props.oldNote, (v) => {
-  if (v) {
-    const { id: _, ...rest } = v;
-    form.value = rest;
-  }
-});
-
-onMounted(() => {
-  if (props.oldNote) {
-    const { id: _, ...rest } = props.oldNote;
-    form.value = rest;
-  }
-});
-
+const buttonLoading = ref(false);
 async function submit(submittedForm: FormInstance | undefined) {
   if (!submittedForm)
     return;
 
   await submittedForm.validate(async (valid) => {
     if (valid) {
-      if (props.type === 'create')
-        submitNote(form.value);
-      else if (props.oldNote?.id)
-        modifyNote({ id: props.oldNote.id, ...form.value });
+      buttonLoading.value = true;
+      if (props.type === 'create') {
+        try {
+          const noteId = await $api.note.createSafe.mutate(form.value);
+          await $api.attachment.batchMoveToNote.mutate({
+            ids: form.value.attachments,
+            noteId,
+          });
+          queryClient.invalidateQueries({ queryKey: ['group.info'] });
+          useMessage({ message: '创建成功', type: 'success' });
+          resetForm(submittedForm);
+        } catch (err) {
+          useErrorHandler(err);
+        }
+      } else if (props.noteId) {
+        try {
+          if (props.admin)
+            await $api.note.modify.mutate({ id: props.noteId, ...form.value });
+          else
+            await $api.note.modifySafe.mutate({ id: props.noteId, ...form.value });
+          if (form.value.attachments.length) {
+            await $api.attachment.batchReplaceNote.mutate({
+              ids: form.value.attachments,
+              noteId: props.noteId,
+              category: 'noteAttachment',
+            });
+          }
+          queryClient.invalidateQueries({ queryKey: ['group.info'] });
+          queryClient.invalidateQueries({ queryKey: ['class.info'] });
+          useMessage({ message: '修改成功', type: 'success' });
+          resetForm(formRef.value);
+        } catch (err) {
+          useErrorHandler(err);
+        }
+      }
+      buttonLoading.value = false;
     } else {
       useMessage({ message: '表单内有错误，请修改后再提交', type: 'error' });
     }
@@ -154,4 +170,6 @@ function resetForm(formEl: FormInstance | undefined) {
   reset();
   emit('reset');
 }
+
+const uploading = ref(false);
 </script>

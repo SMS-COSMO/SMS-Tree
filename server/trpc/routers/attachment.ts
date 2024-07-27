@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { protectedProcedure, router } from '../trpc';
 
-const categorySchema = z.enum(['paperDocument', 'paperAttachment', 'reportDocument', 'reportPresentation']);
+const categorySchema = z.enum(['paperDocument', 'paperAttachment', 'reportDocument', 'reportPresentation', 'noteAttachment']);
 const attachmentIdSchema = z.string().min(1, '附件不存在');
 
 export const attachmentRouter = router({
@@ -48,6 +48,21 @@ export const attachmentRouter = router({
       );
     }),
 
+  batchMoveToNote: protectedProcedure
+    .meta({ description: '批量将附件关联到活动记录。' })
+    .input(z.object({
+      ids: z.array(z.string()),
+      noteId: z.string(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.attachmentController.batchMove(
+        input.ids,
+        ctx.user,
+        { noteId: input.noteId },
+        { replace: false },
+      );
+    }),
+
   batchReplaceReport: protectedProcedure
     .meta({ description: '批量将附件关联到报告并覆盖。' })
     .input(z.object({
@@ -60,6 +75,22 @@ export const attachmentRouter = router({
         input.ids,
         ctx.user,
         { reportId: input.reportId },
+        { replace: true, category: input.category },
+      );
+    }),
+
+  batchReplaceNote: protectedProcedure
+    .meta({ description: '批量将附件关联到活动记录并覆盖。' })
+    .input(z.object({
+      ids: z.array(z.string()),
+      noteId: z.string(),
+      category: categorySchema.optional(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.attachmentController.batchMove(
+        input.ids,
+        ctx.user,
+        { noteId: input.noteId },
         { replace: true, category: input.category },
       );
     }),

@@ -80,6 +80,28 @@
           </template>
           <TiptapViewer :content="note.reflections" />
         </el-descriptions-item>
+        <el-descriptions-item v-if="note.attachments?.length">
+          <template #label>
+            <div class="font-bold">
+              附件
+            </div>
+          </template>
+          <el-collapse>
+            <el-collapse-item
+              v-for="attachment in note.attachments"
+              :key="attachment.id"
+            >
+              <template #title>
+                <div class="space-x-2">
+                  <span class="text-[15px]">
+                    {{ attachment.name }}
+                  </span>
+                </div>
+              </template>
+              <Preview :admin="admin" :attachment="attachment" />
+            </el-collapse-item>
+          </el-collapse>
+        </el-descriptions-item>
       </el-descriptions>
       <template #footer>
         <el-button color="#15803d" @click="modifyDialogVisible = true">
@@ -99,13 +121,16 @@
       draggable align-center
       title="修改活动记录"
     >
-      <NoteForm type="modify" :old-note="note" @reset="modifyDialogVisible = false" />
+      <NoteForm type="modify" :old-note="oldNote" :note-id="note.id" admin @reset="modifyDialogVisible = false" />
     </el-dialog>
   </client-only>
 </template>
 
 <script setup lang="ts">
-defineProps<{ note: TNote }>();
+const props = defineProps<{
+  note: TNote;
+  admin?: boolean;
+}>();
 const { $api } = useNuxtApp();
 const breakpoint = useScreen();
 
@@ -117,9 +142,21 @@ const { mutate: removeNote, isPending } = useMutation({
   mutationFn: $api.note.remove.mutate,
   onSuccess: (message) => {
     queryClient.invalidateQueries({ queryKey: ['group.info'] });
+    queryClient.invalidateQueries({ queryKey: ['class.info'] });
     useMessage({ message, type: 'success' });
   },
   onError: err => useErrorHandler(err),
+});
+
+const oldNote = computed<TNoteCreateSafeForm>(() => {
+  const {
+    id: _id,
+    createdAt: _createdAt,
+    groupId: _groupId,
+    attachments: _attachments,
+    ...rest
+  } = props.note;
+  return { ...rest, attachments: [] };
 });
 </script>
 

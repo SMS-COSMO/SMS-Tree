@@ -117,7 +117,20 @@ export class ClassController {
         },
         groups: {
           with: {
-            notes: true,
+            notes: {
+              with: {
+                attachments: {
+                  columns: {
+                    category: true,
+                    createdAt: true,
+                    fileType: true,
+                    id: true,
+                    name: true,
+                    S3FileId: true,
+                  },
+                },
+              },
+            },
             reports: {
               with: {
                 attachments: {

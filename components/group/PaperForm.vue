@@ -106,8 +106,8 @@ async function create(submittedForm: FormInstance | undefined) {
 
   await submittedForm.validate(async (valid) => {
     if (valid && form.value.category >= 0) {
+      buttonLoading.value = true;
       if (props.type === 'create') {
-        buttonLoading.value = true;
         try {
           const paperId = await $api.paper.createSafe.mutate(form.value);
           await $api.attachment.batchMoveToPaper.mutate({

@@ -35,6 +35,13 @@ export const noteRouter = router({
       return await ctx.noteController.modifySafe(input, ctx.user);
     }),
 
+  modify: protectedProcedure
+    .input(createSafeSchema.extend({ id: noteIdSchema }))
+    .use(requireRoles(['admin', 'teacher']))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.noteController.modify(input);
+    }),
+
   remove: protectedProcedure
     .input(z.object({ id: noteIdSchema }))
     .mutation(async ({ ctx, input }) => {

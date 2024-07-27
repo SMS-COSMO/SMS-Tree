@@ -58,7 +58,20 @@ export class GroupController {
     const res = await db.query.groups.findFirst({
       where: eq(groups.id, id),
       with: {
-        notes: true,
+        notes: {
+          with: {
+            attachments: {
+              columns: {
+                category: true,
+                createdAt: true,
+                fileType: true,
+                id: true,
+                name: true,
+                S3FileId: true,
+              },
+            },
+          },
+        },
         reports: {
           with: {
             attachments: {
@@ -115,61 +128,6 @@ export class GroupController {
       leader: members.find(x => x.id === res.leader),
       ...info,
     };
-  }
-
-  async listFull(classId?: string) {
-    const res = await db.query.groups.findMany({
-      where: classId ? eq(groups.classId, classId) : undefined,
-      with: {
-        notes: true,
-        reports: {
-          with: {
-            attachments: {
-              columns: {
-                category: true,
-                createdAt: true,
-                fileType: true,
-                id: true,
-                name: true,
-                S3FileId: true,
-              },
-            },
-          },
-        },
-        paper: {
-          columns: {
-            id: true,
-            canDownload: true,
-            category: true,
-            createdAt: true,
-            isFeatured: true,
-            title: true,
-          },
-        },
-        usersToGroups: {
-          columns: {},
-          with: {
-            user: {
-              columns: {
-                id: true,
-                username: true,
-                schoolId: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
-    return res.map((group) => {
-      const { usersToGroups, leader: _, ...info } = group;
-      const members = usersToGroups.map(u => u.user);
-      return {
-        members,
-        leader: members.find(x => x.id === group.leader),
-        ...info,
-      };
-    });
   }
 
   async list(user: TRawUser, classId?: string) {

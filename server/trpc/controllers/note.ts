@@ -65,6 +65,16 @@ export class NoteController {
     return '修改成功';
   }
 
+  async modify(
+    newNote: Omit<TRawNote, 'groupId' | 'createdAt'>,
+  ) {
+    await db
+      .update(notes)
+      .set(newNote)
+      .where(eq(notes.id, newNote.id));
+    return '修改成功';
+  }
+
   async remove(id: string, user: TRawUser) {
     if (!['admin', 'teacher'].includes(user.role)) {
       const note = await db.query.notes.findFirst({

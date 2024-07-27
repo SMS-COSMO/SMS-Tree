@@ -9,6 +9,7 @@ import { allowFileType } from '~/constants/attachment';
 import { papers } from '~/server/db/schema/paper';
 import { reports } from '~/server/db/schema/report';
 import type { TAttachmentCategory } from '~/types';
+import { notes } from '~/server/db/schema/note';
 
 export class AttachmentController {
   async hasPerm(
@@ -16,6 +17,7 @@ export class AttachmentController {
     id: {
       paperId?: string | undefined | null;
       reportId?: string | undefined | null;
+      noteId?: string | undefined | null;
     },
     allowPublic: boolean = false,
   ) {
@@ -24,7 +26,7 @@ export class AttachmentController {
       return true;
 
     // Allowed when attachment is not attached to any paper (needed for paper/report creation)
-    if (!id.paperId && !id.reportId)
+    if (!id.paperId && !id.reportId && !id.noteId)
       return true;
 
     if (id.paperId) {
@@ -87,14 +89,44 @@ export class AttachmentController {
         return false;
       return allowPublic || report.group.usersToGroups.some(x => x.user.id === user.id);
     }
+
+    if (id.noteId) {
+      const note = await db.query.notes.findFirst({
+        where: eq(notes.id, id.noteId),
+        with: {
+          group: {
+            columns: {},
+            with: {
+              usersToGroups: {
+                columns: {},
+                with: {
+                  user: {
+                    columns: { id: true },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!note)
+        return false;
+      return allowPublic || note.group.usersToGroups.some(x => x.user.id === user.id);
+    }
   };
 
   async create(newAttachment: Omit<TNewAttachment, 'S3FileId'>, user: TRawUser) {
     if (!allowFileType[newAttachment.category].includes(newAttachment.fileType))
       throw new TRPCError({ code: 'BAD_REQUEST', message: '不允许的文件类型' });
 
-    if (!await this.hasPerm(user, { paperId: newAttachment.paperId, reportId: newAttachment.reportId }))
+    if (!await this.hasPerm(user, {
+      paperId: newAttachment.paperId,
+      reportId: newAttachment.reportId,
+      noteId: newAttachment.noteId,
+    })) {
       throw TRPCForbidden;
+    }
 
     const S3FileId = makeId(12);
     const id = (
@@ -113,7 +145,7 @@ export class AttachmentController {
   async batchMove(
     ids: string[],
     user: TRawUser,
-    target: { paperId?: string; reportId?: string },
+    target: { paperId?: string; reportId?: string; noteId?: string },
     replaceOption: { replace: boolean; category?: TAttachmentCategory },
   ) {
     if (!['admin', 'teacher'].includes(user.role)) {
@@ -123,6 +155,7 @@ export class AttachmentController {
           columns: {
             paperId: true,
             reportId: true,
+            noteId: true,
           },
           with: {
             paper: {
@@ -164,6 +197,24 @@ export class AttachmentController {
                 },
               },
             },
+            note: {
+              columns: {},
+              with: {
+                group: {
+                  columns: {},
+                  with: {
+                    usersToGroups: {
+                      columns: {},
+                      with: {
+                        user: {
+                          columns: { id: true },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         });
         if (!info)
@@ -179,6 +230,9 @@ export class AttachmentController {
             throw new TRPCError({ code: 'NOT_FOUND', message: '提交已截止，不能再修改' });
           if (!info.report.group.usersToGroups.some(x => x.user.id === user.id))
             throw TRPCForbidden;
+        } else if (info.noteId && info.note) {
+          if (!info.note.group.usersToGroups.some(x => x.user.id === user.id))
+            throw TRPCForbidden;
         }
       }
     }
@@ -193,11 +247,15 @@ export class AttachmentController {
           await db.delete(attachments).where(and(eq(attachments.paperId, target.paperId), eq(attachments.category, replaceOption.category)));
         if (target.reportId)
           await db.delete(attachments).where(and(eq(attachments.reportId, target.reportId), eq(attachments.category, replaceOption.category)));
+        if (target.noteId)
+          await db.delete(attachments).where(and(eq(attachments.noteId, target.noteId), eq(attachments.category, replaceOption.category)));
       } else {
         if (target.paperId)
           await db.delete(attachments).where(eq(attachments.paperId, target.paperId));
         if (target.reportId)
           await db.delete(attachments).where(eq(attachments.reportId, target.reportId));
+        if (target.noteId)
+          await db.delete(attachments).where(eq(attachments.noteId, target.noteId));
       }
     }
     await db.update(attachments).set(target).where(inArray(attachments.id, ids));
@@ -241,6 +299,7 @@ export class AttachmentController {
         S3FileId: true,
         paperId: true,
         reportId: true,
+        noteId: true,
       },
       with: {
         paper: {
@@ -281,6 +340,24 @@ export class AttachmentController {
             },
           },
         },
+        note: {
+          columns: {},
+          with: {
+            group: {
+              columns: {},
+              with: {
+                usersToGroups: {
+                  columns: {},
+                  with: {
+                    user: {
+                      columns: { id: true },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
     if (!attachment)
@@ -292,6 +369,9 @@ export class AttachmentController {
           throw new TRPCError({ code: 'FORBIDDEN', message: '无下载权限' });
       } else if (attachment.reportId && attachment.report) {
         if (!attachment.report.group.usersToGroups.some(x => x.user.id === user.id))
+          throw new TRPCError({ code: 'FORBIDDEN', message: '无下载权限' });
+      } else if (attachment.noteId && attachment.note) {
+        if (!attachment.note.group.usersToGroups.some(x => x.user.id === user.id))
           throw new TRPCError({ code: 'FORBIDDEN', message: '无下载权限' });
       } else {
         throw new TRPCError({ code: 'NOT_FOUND', message: '附件不存在' });
@@ -316,7 +396,7 @@ export class AttachmentController {
     if (pendingTimeout <= 0) {
       attachmentsDeleted = await db
         .delete(attachments)
-        .where(and(isNull(attachments.paperId), isNull(attachments.reportId)))
+        .where(and(isNull(attachments.paperId), isNull(attachments.reportId), isNull(attachments.noteId)))
         .returning({ S3FileId: attachments.S3FileId });
     } else {
       attachmentsDeleted = await db
@@ -325,6 +405,7 @@ export class AttachmentController {
           and(
             isNull(attachments.paperId),
             isNull(attachments.reportId),
+            isNull(attachments.noteId),
             lte(attachments.createdAt, new Date(Date.now() - pendingTimeout)),
           ),
         ).returning({ S3FileId: attachments.S3FileId });

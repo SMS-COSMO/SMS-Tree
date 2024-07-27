@@ -108,7 +108,7 @@
         </template>
         <div :class="[(info?.notes?.length ?? 0) > 1 && 'grid grid-cols-2 gap-2']">
           <template v-for="note in info?.notes" :key="note.id">
-            <NoteCard :note="note" />
+            <NoteCard admin :note="note" />
           </template>
         </div>
       </el-descriptions-item>

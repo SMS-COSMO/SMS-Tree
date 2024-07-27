@@ -2,6 +2,7 @@ import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { relations } from 'drizzle-orm';
 import { makeId } from '../../trpc/utils/shared';
 import { groups } from './group';
+import { attachments } from './attachment';
 
 export const notes = sqliteTable('notes', {
   id: text('id').primaryKey().$defaultFn(() => makeId(12)),
@@ -16,9 +17,10 @@ export const notes = sqliteTable('notes', {
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });
 
-export const notesRelations = relations(notes, ({ one }) => ({
+export const notesRelations = relations(notes, ({ one, many }) => ({
   group: one(groups, {
     fields: [notes.groupId],
     references: [groups.id],
   }),
+  attachments: many(attachments),
 }));

@@ -37,13 +37,15 @@ export type TAttachmentCategory =
   'paperDocument' |
   'paperAttachment' |
   'reportDocument' |
-  'reportPresentation';
+  'reportPresentation' |
+  'noteAttachment';
 
 export type TReport = RouterOutput['group']['info']['reports'][0];
 export type TReportCategory = 'thesisProposal' | 'concludingReport';
 
 export type TNote = RouterOutput['group']['info']['notes'][0];
 export type TNoteCreateSafe = RouterInput['note']['createSafe'];
+export type TNoteCreateSafeForm = RouterInput['note']['createSafe'] & { attachments: string[] };
 
 export type TGroup = RouterOutput['group']['info'];
 export type TGroupList = RouterOutput['group']['list'];
