@@ -13,12 +13,12 @@
     <div class="mb-2 mt-4 text-lg font-bold">
       报告文档
     </div>
-    <Preview :attachment="reportDocument" />
+    <Preview :attachment="reportDocument" :admin="isAdmin" />
   </template>
   <div class="mb-2 mt-4 text-lg font-bold">
     报告PPT
   </div>
-  <Preview :attachment="reportPresentation" />
+  <Preview :attachment="reportPresentation" :admin="isAdmin" />
   <template v-if="isAdmin">
     <div class="mb-2 mt-4 text-lg font-bold">
       批注

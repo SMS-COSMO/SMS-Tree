@@ -5,7 +5,7 @@ export function useIsTRPCClientError(cause: unknown): cause is TRPCClientError<A
   return cause instanceof TRPCClientError;
 }
 
-export async function useErrorHandler(err: unknown): Promise<void> {
+export async function useErrorHandler(err: any): Promise<void> {
   if (useIsTRPCClientError(err)) {
     if (err.data?.zodError) {
       for (const issue of err.data.zodError)
@@ -23,6 +23,9 @@ export async function useErrorHandler(err: unknown): Promise<void> {
       }
     }
   } else {
-    useMessage({ message: '未知错误', type: 'error' });
+    if (err.statusCode === 429)
+      useMessage({ message: '接口调用过于频繁', type: 'error' });
+    else
+      useMessage({ message: '未知错误', type: 'error' });
   }
 }

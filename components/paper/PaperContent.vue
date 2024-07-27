@@ -105,7 +105,7 @@
       v-if="allowModify"
       v-model="modifyDialogVisible"
 
-      align-center draggable
+      draggable align-center
       title="修改论文"
     >
       <PaperForm type="modify" :old-paper="oldPaper" :paper-id="id" @reset="modifyDialogVisible = false" />

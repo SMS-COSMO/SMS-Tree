@@ -1,4 +1,5 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import process from 'node:process';
+
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
@@ -25,6 +26,11 @@ export default defineNuxtConfig({
         imports: ['useMutation', 'useQuery', 'useQueryClient', 'skipToken'],
       },
     ],
+  },
+  runtimeConfig: {
+    public: {
+      CHATGPT_DETECTOR_API: process.env.CHATGPT_DETECTOR_API,
+    },
   },
   build: {
     transpile: ['trpc-nuxt'],

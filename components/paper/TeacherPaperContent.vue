@@ -124,6 +124,7 @@
       :key="attachment.id"
       :attachment="attachment"
       full-height
+      admin
     />
     <template v-if="attachmentDocuments?.length">
       <h3>附件</h3>
@@ -139,7 +140,7 @@
               </span>
             </div>
           </template>
-          <Preview :attachment="attachment" />
+          <Preview :attachment="attachment" admin />
         </el-collapse-item>
       </el-collapse>
     </template>

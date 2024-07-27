@@ -25,6 +25,7 @@
       >
         下载
       </el-button>
+      <chatgpt-detector v-if="admin && rawFileUrl" :url="rawFileUrl" />
     </div>
 
     <iframe
@@ -65,8 +66,10 @@ import { saveAs } from 'file-saver';
 const props = withDefaults(defineProps<{
   attachment?: TAttachment;
   fullHeight?: boolean;
+  admin?: boolean;
 }>(), {
   fullHeight: false,
+  admin: false,
 });
 
 const { $api } = useNuxtApp();
