@@ -1,5 +1,7 @@
 <template>
-  <AdminBreadcrumb :auto-detect="false" parent-path="/admin/user/list" :current-name="userInfo?.username" />
+  <el-card>
+    <AdminBreadcrumb :auto-detect="false" parent-path="/admin/user/list" :current-name="userInfo?.username" />
+  </el-card>
   <el-tabs
     v-model="selectedTab"
     tab-position="top"

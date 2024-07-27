@@ -1,6 +1,6 @@
 <template>
-  <AdminBreadcrumb />
   <el-card>
+    <AdminBreadcrumb />
     <el-form
       ref="formRef"
       :label-position="device.isMobileOrTablet ? 'top' : 'right'"

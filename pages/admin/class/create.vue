@@ -1,6 +1,6 @@
 <template>
-  <AdminBreadcrumb />
   <el-card>
+    <AdminBreadcrumb />
     <el-form
       ref="formRef"
       class="mx-auto max-w-[1300px] py-5"

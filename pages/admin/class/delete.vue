@@ -1,6 +1,6 @@
 <template>
-  <AdminBreadcrumb />
   <el-card>
+    <AdminBreadcrumb />
     <div class="space-y-4">
       <el-alert
         title="危险"

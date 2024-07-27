@@ -1,5 +1,7 @@
 <template>
-  <AdminBreadcrumb />
+  <el-card class="mb-3">
+    <AdminBreadcrumb />
+  </el-card>
   <div class="flex flex-col gap-4 lg:flex-row">
     <div class="lg:basis-1/4">
       <el-card class="flow h-auto h-admin-content lg:h-admin-content!">

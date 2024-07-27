@@ -1,7 +1,9 @@
 <template>
-  <AdminBreadcrumb />
   <el-card>
-    <el-checkbox v-model="showMine" label="仅展示我的记录" border class="mb-2" />
+    <AdminBreadcrumb />
+    <div>
+      <el-checkbox v-model="showMine" label="仅展示我的记录" border class="mb-2" />
+    </div>
     <el-table
       ref="tableRef"
       :data="filteredList"
