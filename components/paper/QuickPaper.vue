@@ -1,5 +1,5 @@
 <template>
-  <div class="grid gap-4" :class="[bookmarkedPaper?.length ? 'grid-cols-2' : 'grid-cols-1']">
+  <div class="grid gap-4" :class="[bookmarkedPaper?.length ? 'md:grid-cols-2' : 'grid-cols-1']">
     <el-card class="basis-1/2">
       <template #header>
         <div class="flex gap-1">
