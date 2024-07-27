@@ -1,6 +1,5 @@
 <template>
-  <el-icon class="i-tabler:map-pin ml-0.5 pb-0.5 contrast-1" />
-  <el-breadcrumb v-if="chainList" class="mb-2.5 ml-1.5 mt-2.5" separator-icon="i-tabler:chevron-right">
+  <el-breadcrumb v-if="chainList" class="mb-3" separator="/">
     <template v-for="node in chainList" :key="node">
       <el-breadcrumb-item
         v-if="node.getName() && chainList.indexOf(node) === chainList.length - 1"

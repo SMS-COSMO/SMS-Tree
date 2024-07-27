@@ -2,7 +2,19 @@
   <el-card>
     <template #header>
       <el-icon class="i-tabler:id" />
-      用户信息
+      <span v-if="type === 'normal'">
+        用户信息
+      </span>
+      <el-breadcrumb v-else separator="/" class="ml-2">
+        <el-breadcrumb-item
+          :to="{ path: '/admin/user/list' }"
+        >
+          学生管理
+        </el-breadcrumb-item>
+        <el-breadcrumb-item>
+          {{ userInfo?.username }}
+        </el-breadcrumb-item>
+      </el-breadcrumb>
     </template>
     <el-descriptions
       :column="device.isMobileOrTablet ? 2 : 4"

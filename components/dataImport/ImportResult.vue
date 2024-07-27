@@ -1,5 +1,6 @@
 <template>
   <el-card>
+    <AdminBreadcrumb :auto-detect="false" parent-path="/admin/import/history" :current-name="id" />
     <template v-if="showHeader" #header>
       <el-icon class="i-tabler:package-import" />
       导入结果

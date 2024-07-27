@@ -1,7 +1,4 @@
 <template>
-  <el-card class="mb-3">
-    <AdminBreadcrumb :auto-detect="false" parent-path="/admin/class/list" :current-name="classInfo?.className" />
-  </el-card>
   <div class="space-y-4">
     <template v-if="classInfo">
       <div class="flex flex-col gap-4 md:flex-row">
@@ -9,7 +6,16 @@
           <el-card class="h-full">
             <template #header>
               <el-icon class="i-tabler:school" />
-              {{ classInfo.className }}
+              <el-breadcrumb separator="/" class="ml-2">
+                <el-breadcrumb-item
+                  :to="{ path: '/admin/class/list' }"
+                >
+                  班级管理
+                </el-breadcrumb-item>
+                <el-breadcrumb-item>
+                  {{ classInfo.className }}
+                </el-breadcrumb-item>
+              </el-breadcrumb>
             </template>
             <el-descriptions size="large" :column="2">
               <el-descriptions-item>

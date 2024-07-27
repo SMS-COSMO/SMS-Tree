@@ -1,6 +1,5 @@
 <template>
   <el-card class="h-admin-content">
-    <AdminBreadcrumb />
     <div class="flex flex-col gap-3 md:flex-row">
       <el-checkbox v-model="showMine" size="large" label="仅展示我的班级" border />
       <el-input
