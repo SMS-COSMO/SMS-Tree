@@ -37,6 +37,7 @@
             />
           </transition>
         </el-scrollbar>
+        <el-empty v-else description="请先选中待批改的论文" />
       </el-card>
     </div>
   </div>

@@ -70,7 +70,7 @@ await suspense();
 
 const { processedListData, listData } = await useSearch<TClassListItem>(
   searchContent,
-  templateSearchOption(['enterYear', 'teacher']),
+  templateSearchOption(['enterYear', 'teacher.username', 'index']),
   () => $api.class.list.query(),
   ['class.list'],
   e => e.item,

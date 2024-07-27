@@ -69,8 +69,9 @@
             班级列表
           </template>
           <el-table
-            :data="classList"
             class="cursor-pointer"
+            empty-text="暂无班级"
+            :data="classList"
             :default-sort="{ prop: 'className', order: 'ascending' }"
             @row-click="(row) => navigateTo(`/admin/class/${row.id}`)"
           >
@@ -100,6 +101,7 @@
           <div class="flex flex-col gap-3">
             <PaperCard v-for="paper in bookmarks" :key="paper.id" bookmarked :paper="paper" />
           </div>
+          <el-empty v-if="!bookmarks?.length" description="暂无收藏" />
         </el-card>
       </div>
     </div>

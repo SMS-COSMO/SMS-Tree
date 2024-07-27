@@ -8,7 +8,7 @@
       @input="currentPage = 1"
     />
     <el-scrollbar>
-      <div class="pb-10 pt-4">
+      <div class="pb-16 pt-4">
         <el-table :data="processedListData">
           <el-table-column prop="schoolId" label="学号" width="160">
             <template #default="scope">
