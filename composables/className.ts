@@ -16,3 +16,7 @@ export function useClassName(classInfo: Partial<TRawClass> | undefined | null) {
 
   return `${year < 4 ? ['新高一', '高一', '高二', '高三'][year] : `${classInfo.enterYear}届`}（${classInfo.index}）`;
 }
+
+export function useClassState(value: string) {
+  return classStateTable.find(s => s.value === value) ?? { label: '未知', type: 'info', value: '' };
+}
