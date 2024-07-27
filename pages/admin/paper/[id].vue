@@ -1,5 +1,6 @@
 <template>
   <el-card class="h-admin-content">
+    <AdminBreadcrumb />
     <el-scrollbar>
       <div class="overflow-x-hidden!">
         <TeacherPaperContent :id="id" class="relative" :is-scoring="false" />

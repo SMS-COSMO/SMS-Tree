@@ -1,4 +1,7 @@
 <template>
+  <el-card class="mb-3">
+    <AdminBreadcrumb :auto-detect="false" parent-path="/admin/class/list" :current-name="classInfo?.className" />
+  </el-card>
   <div class="space-y-4">
     <template v-if="classInfo">
       <div class="flex flex-col gap-4 md:flex-row">
