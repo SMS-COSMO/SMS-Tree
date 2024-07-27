@@ -21,24 +21,25 @@
       >
         <el-table-column type="selection" width="55" />
         <el-table-column
+          prop="enterYear" label="年级" column-key="enterYear"
           :width="200"
-          prop="enterYear"
-          label="年级"
-          column-key="enterYear"
-          :filters="enterYearOptions"
-          :filter-method="enterYearFilterHandler"
+          :filters="getOptions((x => x.enterYear), (x => x.toString()))"
+          :filter-method="getFilterMethod(x => x.enterYear)"
         >
           <template #default="scope">
             {{ useClassGrade(scope.row.enterYear) }}
           </template>
         </el-table-column>
-        <el-table-column sortable prop="index" label="班级" :width="200" />
         <el-table-column
-          :min-width="200"
-          prop="teacher.username"
-          label="教师"
-          :filters="teacherOptions"
-          :filter-method="teacherFilterHandler"
+          prop="index" label="班级"
+          :width="200"
+          sortable show-overflow-tooltip
+        />
+        <el-table-column
+          prop="teacher.username" label="教师"
+          :width="200"
+          :filters="getOptions((x => x.teacher.username), (x => x.toString()))"
+          :filter-method="getFilterMethod((x => x.teacher.username))"
         />
       </el-table>
 
@@ -115,27 +116,22 @@ const filteredList = computed(() =>
   listData?.value?.filter(x => !showMine.value || teacherClasses?.value?.some(e => e.id === x.id)),
 );
 
-const enterYearOptions = Array.from(
-  new Set(listData.value?.map(x => x.enterYear)),
-).map(x => ({
-  text: useClassGrade(x),
-  value: x.toString(),
-}));
-
-const teacherOptions = Array.from(
-  new Set(listData.value?.map(x => x.teacher.username)),
-).map(x => ({
-  text: x,
-  value: x,
-}));
-
 type TClassRow = (Exclude<typeof listData.value, undefined>)[0];
-function enterYearFilterHandler(value: string, row: TClassRow) {
-  return row?.enterYear.toString() === value;
+
+function getOptions(
+  propConvertor: (val: TClassRow, idx: number, arr: TClassRow[]) => string | number,
+  textConvertor: (prop: string | number) => string,
+) {
+  return Array.from(
+    new Set(listData.value?.map(propConvertor)),
+  ).map(x => ({ text: textConvertor(x), value: x.toString() }));
 }
-function teacherFilterHandler(value: string, row: TClassRow) {
-  return row?.teacher.username === value;
-}
+
+function getFilterMethod(
+  propConvertor: (val: TClassRow) => string | number,
+) {
+  return (match: string, row: TClassRow) => propConvertor(row).toString() === match;
+};
 
 const tableRef = ref<InstanceType<typeof ElTable>>();
 const selected = ref<TClassRow[]>([]);
