@@ -67,10 +67,10 @@
   </el-radio-group>
   <el-radio-group v-if="modelValue.sortOption === 'time'" v-model="modelValue.isAsc" class="ml-4">
     <el-radio :value="1" size="large">
-      顺序
+      最新
     </el-radio>
     <el-radio :value="-1" size="large">
-      逆序
+      最早
     </el-radio>
   </el-radio-group>
 </template>

@@ -16,7 +16,10 @@
       <div class="el-upload__tip">
         最多上传 {{ multiple ? 10 : 1 }} 个文件，大小不超过
         {{ category === 'paperAttachment' ? '50MB' : '30MB' }}
-        {{ (category === 'paperAttachment' || category === 'noteAttachment') ? '' : '，仅允许上传 PDF' }}
+        <template v-if="category !== 'paperAttachment' && category !== 'noteAttachment'">
+          ，仅允许上传 PDF
+          <ConvertToPDF class="ml-1" />
+        </template>
       </div>
     </template>
   </el-upload>
