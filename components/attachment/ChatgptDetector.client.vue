@@ -38,6 +38,7 @@
       :indeterminate="true"
       :show-text="false"
     />
+    <el-alert v-else-if="isError" title="检测失败" type="error" :show-icon="false" />
     <template v-else>
       <div class="mb-1 text-lg font-bold">
         {{ Math.abs(score * 100).toFixed(2) }}% {{ score > 0 ? '人类' : 'ChatGPT' }}
@@ -59,7 +60,7 @@
             />
           </template>
           <div class="text-lg font-bold">
-            {{ Math.abs(score * 100).toFixed(2) }}% {{ score > 0 ? '人类' : 'ChatGPT' }}
+            {{ Math.abs(item[0].score * 100).toFixed(2) }}% {{ item[0].label === 'Human' ? '人类' : 'ChatGPT' }}
           </div>
           <div class="text-xs">
             {{ splitText[i] }}
@@ -95,7 +96,7 @@ for (let i = 1; i <= pdf.numPages; i++) {
 
 const splitText = text.value.match(/.{1,500}/g) ?? [];
 
-const { data, isPending } = useQuery({
+const { data, isPending, isError } = useQuery({
   queryKey: ['chatgpt-detector', props.url],
   queryFn: () => $fetch<[{ label: 'ChatGPT' | 'Human'; score: number }][]>(useRuntimeConfig().public.CHATGPT_DETECTOR_API, {
     method: 'POST',
@@ -105,6 +106,7 @@ const { data, isPending } = useQuery({
   }),
   enabled: dialogVisible,
   refetchOnWindowFocus: false,
+  retry: 2,
 });
 
 // 1: 100% Human
