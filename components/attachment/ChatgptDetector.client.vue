@@ -10,7 +10,7 @@
   <el-dialog
     v-model="dialogVisible"
     width="500"
-    top="30vh"
+    align-center
   >
     <template #title>
       <el-icon class="i-tabler:brand-openai" />
@@ -38,7 +38,7 @@
       :indeterminate="true"
       :show-text="false"
     />
-    <el-alert v-else-if="isError" title="检测失败" type="error" :show-icon="false" />
+    <el-alert v-else-if="isError" type="error" show-icon title="检测失败" class="w-full flex" close-text="重试" @close="() => refetch()" />
     <template v-else>
       <div class="mb-1 text-lg font-bold">
         {{ Math.abs(score * 100).toFixed(2) }}% {{ score > 0 ? '人类' : 'ChatGPT' }}
@@ -96,7 +96,7 @@ for (let i = 1; i <= pdf.numPages; i++) {
 
 const splitText = text.value.match(/.{1,500}/g) ?? [];
 
-const { data, isPending, isError } = useQuery({
+const { data, isPending, isError, refetch } = useQuery({
   queryKey: ['chatgpt-detector', props.url],
   queryFn: () => $fetch<[{ label: 'ChatGPT' | 'Human'; score: number }][]>(useRuntimeConfig().public.CHATGPT_DETECTOR_API, {
     method: 'POST',

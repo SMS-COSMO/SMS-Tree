@@ -15,7 +15,8 @@
     <template #tip>
       <div class="el-upload__tip">
         最多上传 {{ multiple ? 10 : 1 }} 个文件，大小不超过
-        {{ category === 'paperAttachment' ? '50MB' : '30MB' }}{{ category === 'paperAttachment' ? '' : '，仅允许上传 PDF' }}
+        {{ category === 'paperAttachment' ? '50MB' : '30MB' }}
+        {{ (category === 'paperAttachment' || category === 'noteAttachment') ? '' : '，仅允许上传 PDF' }}
       </div>
     </template>
   </el-upload>
