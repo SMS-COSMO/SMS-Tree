@@ -2,7 +2,7 @@
   <div
     v-if="props.attachment"
     class="select-none"
-    :class="[fullscreen ? 'fixed left-0 top-0 z-100 h-svh w-screen p-9 box-border mt-0! backdrop-blur-lg bg-black/50' : 'relative']"
+    :class="[fullscreen ? 'fixed left-0 top-0 z-100 h-svh w-screen p-4 lg:p-9 box-border mt-0! backdrop-blur-lg bg-black/50' : 'relative']"
   >
     <el-icon v-if="fullscreen" class="i-tabler:x right-2 top-2 cursor-pointer fixed!" color="white" @click="fullscreen = false" />
     <div

@@ -8,19 +8,20 @@
       :router="true" :default-active="$route.path"
     >
       <el-menu-item disabled class="cursor-default! opacity-100!">
-        <NuxtImg preload src="/logo.png" class="h-[30px]" />
+        <NuxtImg preload src="/logo.svg" class="h-[25px]" />
       </el-menu-item>
-      <el-menu-item index="/">
+      <el-menu-item index="/" @click.middle="blankNav('/')">
         <el-icon size="14" class="i-tabler:home" />
         首页
       </el-menu-item>
-      <el-menu-item index="/paper/list">
+      <el-menu-item index="/paper/list" @click.middle="blankNav('/paper/list')">
         <el-icon size="14" class="i-tabler:list-details" />
         论文列表
       </el-menu-item>
       <el-menu-item
         v-if="userStore.loggedIn && userStore.role === 'student'"
         index="/group"
+        @click.middle="blankNav('/group')"
       >
         <el-icon size="14" class="i-tabler:book" />
         我的小组
@@ -28,6 +29,7 @@
       <el-menu-item
         v-if="userStore.role === 'admin' || userStore.role === 'teacher'"
         index="/admin"
+        @click.middle="blankNav('/admin')"
       >
         <el-icon size="14" class="i-tabler:puzzle" />
         管理
@@ -117,6 +119,10 @@ watch(() => route.matched[0].path, (value) => {
   isAdmin.value = value === '/admin';
 });
 isAdmin.value = route.matched[0].path === '/admin';
+
+function blankNav(path: string) {
+  navigateTo(path, { open: { target: '_blank' } });
+}
 </script>
 
 <style>

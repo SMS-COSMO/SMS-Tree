@@ -109,7 +109,7 @@
 
 <script setup lang="ts">
 useHeadSafe({
-  title: '管理',
+  title: '管理中心',
 });
 
 const seiueStore = useSeiueStore();
