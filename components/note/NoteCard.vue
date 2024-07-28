@@ -119,7 +119,7 @@
     </el-dialog>
     <el-dialog
       v-model="modifyDialogVisible"
-      draggable align-center
+      align-center draggable
       title="修改活动记录"
     >
       <NoteForm type="modify" :old-note="oldNote" :note-id="note.id" admin @reset="modifyDialogVisible = false" />
