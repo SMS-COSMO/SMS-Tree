@@ -8,24 +8,59 @@
   >
     <el-tabs v-model="activeName">
       <el-tab-pane label="Word 文档" name="docx">
-        TODO
+        <h2>WPS</h2>
+        <el-steps direction="vertical" :active="-1">
+          <el-step>
+            <template #description>
+              <NuxtImg src="/convertToPDF/wps-to-pdf1.png" class="max-w-full" />
+            </template>
+          </el-step>
+          <el-step>
+            <template #description>
+              <NuxtImg src="/convertToPDF/wps-to-pdf2.png" class="max-w-full" />
+            </template>
+          </el-step>
+          <el-step>
+            <template #description>
+              <NuxtImg src="/convertToPDF/wps-to-pdf3.png" class="max-w-full" />
+            </template>
+          </el-step>
+        </el-steps>
       </el-tab-pane>
       <el-tab-pane label="PPT" name="ppt">
         <h2>PowerPoint</h2>
         <el-steps direction="vertical" :active="-1">
           <el-step>
             <template #description>
-              <NuxtImg src="/convertToPDF/ppt-to-pdf1.png" class="w-full" />
+              <NuxtImg src="/convertToPDF/ppt-to-pdf1.png" class="max-w-full" />
             </template>
           </el-step>
           <el-step>
             <template #description>
-              <NuxtImg src="/convertToPDF/ppt-to-pdf2.png" />
+              <NuxtImg src="/convertToPDF/ppt-to-pdf2.png" class="max-w-full" />
             </template>
           </el-step>
           <el-step>
             <template #description>
-              <NuxtImg src="/convertToPDF/ppt-to-pdf3.png" />
+              <NuxtImg src="/convertToPDF/ppt-to-pdf3.png" class="max-w-full" />
+            </template>
+          </el-step>
+        </el-steps>
+        <h2>WPS</h2>
+        <el-steps direction="vertical" :active="-1">
+          <el-step>
+            <template #description>
+              <NuxtImg src="/convertToPDF/wps-ppt-to-pdf1.png" class="max-w-full" />
+            </template>
+          </el-step>
+          <el-step>
+            <template #description>
+              <NuxtImg src="/convertToPDF/wps-ppt-to-pdf2.png" class="max-w-full" />
+            </template>
+          </el-step>
+          <el-step>
+            <template #description>
+              <NuxtImg src="/convertToPDF/wps-ppt-to-pdf3.png" class="max-w-full" />
             </template>
           </el-step>
         </el-steps>
