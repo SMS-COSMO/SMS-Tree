@@ -38,7 +38,8 @@ export type TAttachmentCategory =
   'paperAttachment' |
   'reportDocument' |
   'reportPresentation' |
-  'noteAttachment';
+  'noteAttachment' |
+  'carousel';
 
 export type TReport = RouterOutput['group']['info']['reports'][0];
 export type TReportCategory = 'thesisProposal' | 'concludingReport';

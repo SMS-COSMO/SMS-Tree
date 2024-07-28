@@ -1,5 +1,5 @@
 <template>
-  <el-card v-if="seiueStore.loggedIn" class="h-full w-full">
+  <el-card v-if="seiueStore.loggedIn" class="w-full min-h-admin-content">
     <AdminBreadcrumb />
     <el-container class="mx-auto my-4 h-full max-w-5xl">
       <el-header>

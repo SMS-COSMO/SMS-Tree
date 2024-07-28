@@ -1,6 +1,6 @@
 <template>
   <el-menu
-    class="admin-nav h-full select-none overflow-x-auto rounded h-[69px]! md:min-w-[200px] border-normal md:h-auto!"
+    class="admin-nav select-none overflow-x-auto rounded h-[69px]! md:min-w-[200px] min-h-admin-content border-normal md:h-auto!"
     :ellipsis="false"
     :mode="mode"
     :default-active="$route.path"
@@ -23,6 +23,10 @@
     <el-menu-item index="/admin/user/list" @click.middle="blankNav('/admin/user/list')">
       <el-icon class="i-tabler:users" />
       学生管理
+    </el-menu-item>
+    <el-menu-item index="/admin/carousel" @click.middle="blankNav('/admin/carousel')">
+      <el-icon class="i-tabler:device-desktop" />
+      首页走马灯
     </el-menu-item>
 
     <el-sub-menu index="0">

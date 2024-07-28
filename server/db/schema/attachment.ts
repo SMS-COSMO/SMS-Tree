@@ -17,6 +17,7 @@ export const attachments = sqliteTable('attachments', {
     'reportDocument',
     'reportPresentation',
     'noteAttachment',
+    'carousel',
   ] }).notNull(),
   fileType: text('file_type').notNull(),
   S3FileId: text('s3_file_id').notNull(),

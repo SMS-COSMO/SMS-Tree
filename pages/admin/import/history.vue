@@ -1,5 +1,5 @@
 <template>
-  <el-card>
+  <el-card class="min-h-admin-content">
     <AdminBreadcrumb />
     <div>
       <el-checkbox v-model="showMine" label="仅展示我的记录" border class="mb-2" />

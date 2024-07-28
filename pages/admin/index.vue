@@ -1,5 +1,5 @@
 <template>
-  <el-card>
+  <el-card class="min-h-admin-content">
     <div class="flex flex-col gap-4">
       <div class="flex flex-col gap-4 text-center md:flex-row">
         <el-card class="basis-1/4 card-button" @click="navigateTo('/admin/scoring')">

@@ -1,7 +1,8 @@
 import { z } from 'zod';
-import { protectedProcedure, router } from '../trpc';
+import { protectedProcedure, requireRoles, router } from '../trpc';
 
-const categorySchema = z.enum(['paperDocument', 'paperAttachment', 'reportDocument', 'reportPresentation', 'noteAttachment']);
+const categorySchema = z.enum(['paperDocument', 'paperAttachment', 'reportDocument', 'reportPresentation', 'noteAttachment', 'carousel']);
+const categorySafeSchema = z.enum(['paperDocument', 'paperAttachment', 'reportDocument', 'reportPresentation', 'noteAttachment']);
 const attachmentIdSchema = z.string().min(1, '附件不存在');
 
 export const attachmentRouter = router({
@@ -16,6 +17,20 @@ export const attachmentRouter = router({
     }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.attachmentController.create(input, ctx.user);
+    }),
+
+  carousel: protectedProcedure
+    .query(async ({ ctx }) => {
+      return await ctx.attachmentController.carousel();
+    }),
+
+  remove: protectedProcedure
+    .input(z.object({
+      id: z.string(),
+    }))
+    .use(requireRoles(['admin', 'teacher']))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.attachmentController.remove(input.id);
     }),
 
   batchMoveToPaper: protectedProcedure
@@ -68,7 +83,7 @@ export const attachmentRouter = router({
     .input(z.object({
       ids: z.array(z.string()),
       reportId: z.string(),
-      category: categorySchema.optional(),
+      category: categorySafeSchema.optional(),
     }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.attachmentController.batchMove(
@@ -84,7 +99,7 @@ export const attachmentRouter = router({
     .input(z.object({
       ids: z.array(z.string()),
       noteId: z.string(),
-      category: categorySchema.optional(),
+      category: categorySafeSchema.optional(),
     }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.attachmentController.batchMove(
@@ -100,7 +115,7 @@ export const attachmentRouter = router({
     .input(z.object({
       ids: z.array(z.string()),
       paperId: z.string(),
-      category: categorySchema.optional(),
+      category: categorySafeSchema.optional(),
     }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.attachmentController.batchMove(

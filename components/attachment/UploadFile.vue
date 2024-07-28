@@ -1,7 +1,8 @@
 <template>
   <el-upload
     v-model:file-list="fileList"
-    action="" drag
+    action=""
+    drag
     :multiple="multiple"
     :limit="multiple ? 10 : 1"
     :http-request="handleUpload"
@@ -16,7 +17,7 @@
       <div class="el-upload__tip">
         最多上传 {{ multiple ? 10 : 1 }} 个文件，大小不超过
         {{ category === 'paperAttachment' ? '50MB' : '30MB' }}
-        <template v-if="category !== 'paperAttachment' && category !== 'noteAttachment'">
+        <template v-if="category !== 'paperAttachment' && category !== 'noteAttachment' && category !== 'carousel'">
           ，仅允许上传 PDF
           <ConvertToPDF class="ml-1" />
         </template>

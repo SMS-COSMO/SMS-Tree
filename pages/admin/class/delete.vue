@@ -1,5 +1,5 @@
 <template>
-  <el-card>
+  <el-card class="min-h-admin-content">
     <AdminBreadcrumb />
     <div class="space-y-4">
       <el-alert

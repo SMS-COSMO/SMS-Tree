@@ -1,5 +1,5 @@
 <template>
-  <el-card>
+  <el-card class="min-h-admin-content">
     <AdminBreadcrumb />
     <el-form
       ref="formRef"

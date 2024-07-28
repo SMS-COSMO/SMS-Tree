@@ -2,10 +2,8 @@
   <div class="w-full flex flex-col gap-6">
     <div class="w-full">
       <el-carousel trigger="click" height="250px">
-        <el-carousel-item v-for="item in 4" :key="item">
-          <h3 class="justify-center" text="2xl">
-            {{ item }}
-          </h3>
+        <el-carousel-item v-for="item in carousel" :key="item.id">
+          <el-image class="h-full w-full" :src="item.fileUrl" fit="cover" />
         </el-carousel-item>
       </el-carousel>
     </div>
@@ -88,10 +86,21 @@ const enabled = computed(
     && userStore.role === 'student',
 );
 
+const carouselEnabled = computed(
+  () => userStore.loggedIn,
+);
+
 const { data: classInfo } = useQuery({
   queryKey: ['class.info', { id: userStore.classId }],
   queryFn: () => $api.class.info.query({ id: userStore.classId }),
   enabled,
+});
+
+const { data: carousel } = useQuery({
+  queryKey: ['attachment.carousel'],
+  queryFn: () => $api.attachment.carousel.query(),
+  enabled: carouselEnabled,
+  refetchOnWindowFocus: false,
 });
 
 function quickSearch() {

@@ -1,4 +1,4 @@
-import { and, eq, inArray, isNull, lte } from 'drizzle-orm';
+import { and, eq, inArray, isNull, lte, ne } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import type { TNewAttachment, TRawUser } from '../../db/db';
 import { db } from '../../db/db';
@@ -120,6 +120,10 @@ export class AttachmentController {
     if (!allowFileType[newAttachment.category].includes(newAttachment.fileType))
       throw new TRPCError({ code: 'BAD_REQUEST', message: '不允许的文件类型' });
 
+    // Students are not allowed to create carousel files
+    if (newAttachment.category === 'carousel' && !['teacher', 'admin'].includes(user.role))
+      throw TRPCForbidden;
+
     if (!await this.hasPerm(user, {
       paperId: newAttachment.paperId,
       reportId: newAttachment.reportId,
@@ -156,6 +160,7 @@ export class AttachmentController {
             paperId: true,
             reportId: true,
             noteId: true,
+            category: true,
           },
           with: {
             paper: {
@@ -219,6 +224,10 @@ export class AttachmentController {
         });
         if (!info)
           throw new TRPCError({ code: 'NOT_FOUND', message: '附件不存在' });
+
+        // Students are not allowed to move to carousel files
+        if (info.category === 'carousel' && !['teacher', 'admin'].includes(user.role))
+          throw TRPCForbidden;
 
         if (info.paperId && info.paper) {
           if (info.paper.isPublic)
@@ -396,7 +405,12 @@ export class AttachmentController {
     if (pendingTimeout <= 0) {
       attachmentsDeleted = await db
         .delete(attachments)
-        .where(and(isNull(attachments.paperId), isNull(attachments.reportId), isNull(attachments.noteId)))
+        .where(and(
+          isNull(attachments.paperId),
+          isNull(attachments.reportId),
+          isNull(attachments.noteId),
+          ne(attachments.category, 'carousel'),
+        ))
         .returning({ S3FileId: attachments.S3FileId });
     } else {
       attachmentsDeleted = await db
@@ -406,6 +420,7 @@ export class AttachmentController {
             isNull(attachments.paperId),
             isNull(attachments.reportId),
             isNull(attachments.noteId),
+            ne(attachments.category, 'carousel'),
             lte(attachments.createdAt, new Date(Date.now() - pendingTimeout)),
           ),
         ).returning({ S3FileId: attachments.S3FileId });
@@ -418,5 +433,29 @@ export class AttachmentController {
       await ctl.s3.deleteFile(attachment.S3FileId);
 
     return attachmentsDeleted.map(x => x.S3FileId);
+  }
+
+  async carousel() {
+    const list = await db.query.attachments.findMany({
+      where: eq(attachments.category, 'carousel'),
+      columns: {
+        id: true,
+        S3FileId: true,
+      },
+    });
+
+    return (await Promise.all(list.map(async (x) => {
+      const fileUrl = await ctl.s3.getFileUrl(x.S3FileId);
+      if (!fileUrl)
+        return undefined;
+      return {
+        id: x.id,
+        fileUrl,
+      };
+    }))).filter(x => x !== undefined);
+  }
+
+  async remove(id: string) {
+    await db.delete(attachments).where(eq(attachments.id, id));
   }
 }
