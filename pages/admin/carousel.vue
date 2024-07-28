@@ -1,7 +1,7 @@
 <template>
   <el-card class="min-h-admin-content">
     <div class="mx-auto max-w-[1300px]">
-      <el-carousel trigger="click" height="250px" class="mb-8">
+      <el-carousel trigger="click" height="250px" :interval="10000" class="mb-8">
         <el-carousel-item v-for="item in carousel" :key="item.id">
           <el-image class="h-full w-full" :src="item.fileUrl" fit="cover" />
         </el-carousel-item>
