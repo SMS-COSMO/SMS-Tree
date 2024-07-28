@@ -19,7 +19,20 @@
     <el-form-item prop="keywords" label="关键词">
       <KeywordEditor v-model="form.keywords" />
     </el-form-item>
-    <el-form-item prop="canDownload" label="允许下载">
+    <el-form-item prop="canDownload">
+      <template #label>
+        允许下载
+        <el-popover
+          placement="top"
+          :width="200"
+          trigger="hover"
+          content="是否允许所有同学下载论文文件。选择“否”后老师和同组同学仍能查看。"
+        >
+          <template #reference>
+            <el-icon class="i-tabler:info-circle ml-1 self-center" />
+          </template>
+        </el-popover>
+      </template>
       <el-switch
         v-model="form.canDownload"
         size="large"
@@ -41,6 +54,9 @@
         multiple
         category="paperAttachment"
       />
+      <el-alert v-if="type === 'modify'" type="info" show-icon :closable="false">
+        论文文件/附件无需修改可留空，若要修改请重新上传所有附件。
+      </el-alert>
     </el-form-item>
     <el-form-item>
       <el-button

@@ -7,6 +7,11 @@
     :rules="type === 'create' ? rules : {}"
     label-width="120px"
   >
+    <el-form-item v-if="type === 'modify'">
+      <el-alert type="info" show-icon :closable="false">
+        无需修改的文件可留空。
+      </el-alert>
+    </el-form-item>
     <el-form-item v-if="category !== 'concludingReport'" prop="documentFile" label="报告文档">
       <UploadFile
         v-model="form.documentFile"

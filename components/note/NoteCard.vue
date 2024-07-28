@@ -15,6 +15,7 @@
     <el-dialog
       v-model="dialogVisible"
       title="活动记录"
+      width="60%"
     >
       <el-descriptions
         :column="1"

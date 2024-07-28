@@ -81,13 +81,23 @@
     />
   </DefineTemplate>
   <el-tabs v-model="tabState" type="border-card">
-    <el-tab-pane label="活动记录" name="">
+    <el-tab-pane name="">
+      <template #label>
+        <el-tag v-if="groupInfo?.notes.length" type="info" size="small" class="mr-2 mt-0.5">
+          {{ groupInfo?.notes.length }}
+        </el-tag>
+        活动记录
+      </template>
       <template v-for="note in groupInfo?.notes" :key="note.id">
         <NoteCard :note="note" />
       </template>
       <NewNote />
     </el-tab-pane>
-    <el-tab-pane v-if="reachedState('thesisProposal')" label="开题报告" name="thesisProposal">
+    <el-tab-pane v-if="reachedState('thesisProposal')" name="thesisProposal">
+      <template #label>
+        <GroupInfoTabTag :show="groupInfo?.reports?.some(x => x.category === 'thesisProposal')" />
+        开题报告
+      </template>
       <ReportForm
         v-if="!groupInfo?.reports?.some(x => x.category === 'thesisProposal')"
         category="thesisProposal"
@@ -98,7 +108,11 @@
         <ReportContent :report="groupInfo?.reports?.find(x => x.category === 'thesisProposal')!" />
       </template>
     </el-tab-pane>
-    <el-tab-pane v-if="reachedState('concludingReport')" label="结题报告" name="concludingReport">
+    <el-tab-pane v-if="reachedState('concludingReport')" name="concludingReport">
+      <template #label>
+        <GroupInfoTabTag :show="groupInfo?.reports?.some(x => x.category === 'concludingReport')" />
+        结题报告
+      </template>
       <ReportForm
         v-if="!groupInfo?.reports?.some(x => x.category === 'concludingReport')"
         category="concludingReport"
@@ -109,7 +123,11 @@
         <ReportContent :report="groupInfo?.reports?.find(x => x.category === 'concludingReport')!" />
       </template>
     </el-tab-pane>
-    <el-tab-pane v-if="reachedState('submitPaper')" label="论文" name="submitPaper">
+    <el-tab-pane v-if="reachedState('submitPaper')" name="submitPaper">
+      <template #label>
+        <GroupInfoTabTag :show="groupInfo?.paper !== undefined" />
+        论文
+      </template>
       <PaperForm v-if="!groupInfo?.paper" type="create" />
       <template v-else>
         <ReuseTemplate name="论文" />

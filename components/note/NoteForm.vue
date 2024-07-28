@@ -40,6 +40,9 @@
           multiple
           category="noteAttachment"
         />
+        <el-alert v-if="type === 'modify'" type="info" show-icon :closable="false">
+          附件无需修改可留空，若要修改请重新上传所有附件。
+        </el-alert>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -125,10 +128,12 @@ async function submit(submittedForm: FormInstance | undefined) {
       if (props.type === 'create') {
         try {
           const noteId = await $api.note.createSafe.mutate(form.value);
-          await $api.attachment.batchMoveToNote.mutate({
-            ids: form.value.attachments,
-            noteId,
-          });
+          if (form.value.attachments.length) {
+            await $api.attachment.batchMoveToNote.mutate({
+              ids: form.value.attachments,
+              noteId,
+            });
+          }
           queryClient.invalidateQueries({ queryKey: ['group.info'] });
           useMessage({ message: '创建成功', type: 'success' });
           resetForm(submittedForm);
