@@ -132,7 +132,7 @@ export class AttachmentController {
       throw TRPCForbidden;
     }
 
-    const S3FileId = makeId(12);
+    const S3FileId = makeId(20);
     const id = (
       await db
         .insert(attachments)
