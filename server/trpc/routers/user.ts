@@ -86,6 +86,7 @@ export const userRouter = router({
       schoolId: schoolIdSchema,
       username: usernameSchema,
       role: roleEnumSchema,
+      classId: z.string(),
     }))
     .mutation(async ({ ctx, input }) => {
       const { id, ...newUser } = input;

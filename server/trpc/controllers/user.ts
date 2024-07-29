@@ -192,8 +192,10 @@ export class UserController {
     }));
   }
 
-  async modify(id: string, newUser: Partial<Omit<TRawUser, 'password' | 'createdAt'>>) {
-    await db.update(users).set(newUser).where(eq(users.id, id));
+  async modify(id: string, newUser: Partial<Omit<TRawUser, 'password' | 'createdAt' | 'id'>> & { classId?: string }) {
+    const { classId, ...rest } = newUser;
+    await db.update(users).set(rest).where(eq(users.id, id));
+    await db.update(classesToStudents).set({ classId }).where(eq(classesToStudents.userId, id));
     return '修改成功';
   }
 

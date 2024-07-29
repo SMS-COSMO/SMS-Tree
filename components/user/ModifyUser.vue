@@ -13,6 +13,9 @@
       <el-form-item prop="schoolId" label="学工号">
         <el-input v-model="form.schoolId" />
       </el-form-item>
+      <el-form-item prop="classId" label="班级">
+        <SelectClass v-model="form.classId" />
+      </el-form-item>
       <el-form-item prop="role" label="用户权限">
         <client-only>
           <el-select v-model="form.role" placeholder="请选择" class="w-full">
