@@ -17,7 +17,9 @@ export async function useSearch<T>(
   });
   await suspense();
 
-  const fuse = useFuse(searchContent, ref(listData.value ?? []), fuseOptions);
+  const fuse = listData.value === undefined
+    ? useFuse(searchContent, [], fuseOptions)
+    : useFuse(searchContent, listData, fuseOptions);
   const processedListData = computed<T[]>(
     () => fuse.results.value
       .map(map)

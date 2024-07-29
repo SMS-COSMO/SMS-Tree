@@ -116,7 +116,6 @@ const { mutate: deleteUser } = useMutation({
   mutationFn: $api.user.remove.mutate,
   onSuccess: () => {
     useMessage({ message: '删除成功', type: 'success' });
-    // TODO: reactivity lost
     queryClient.invalidateQueries({ queryKey: ['user.list', { role: 'student' }] });
   },
   onError: err => useErrorHandler(err),
