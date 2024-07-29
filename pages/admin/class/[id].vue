@@ -184,7 +184,7 @@
       </div>
     </template>
     <el-button
-      v-if="classInfo"
+      v-if="classInfo && classInfo.state !== 'initialized'"
       size="large"
       @click="createEmptyGroups({ id: classInfo.id, amount: 1 })"
     >

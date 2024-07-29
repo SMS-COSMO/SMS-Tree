@@ -1,13 +1,23 @@
 <template>
   <el-card class="h-admin-content">
-    <el-input
-      v-model="searchContent"
-      placeholder="搜索学生"
-      prefix-icon="i-tabler:search"
-      @input="currentPage = 1"
-    />
+    <div class="flex flex-col gap-2 lg:flex-row">
+      <el-select-v2
+        v-model="classFilter"
+        :options="classFilterOptions"
+        placeholder="筛选班级"
+        multiple
+        class="lg:basis-1/6"
+      />
+      <el-input
+        v-model="searchContent"
+        placeholder="搜索学生（可搜索 学号/姓名/班级/课题名）"
+        prefix-icon="i-tabler:search"
+        class="lg:basis-5/6"
+        @input="currentPage = 1"
+      />
+    </div>
     <el-scrollbar>
-      <div class="pb-16 pt-4">
+      <div class="pb-24 pt-4 lg:pb-16">
         <el-table :data="processedListData">
           <el-table-column prop="schoolId" label="学号" width="160">
             <template #default="scope">
@@ -81,10 +91,26 @@ const { processedListData: searchListData } = await useUserSearch(searchContent,
 const currentPage = ref(1);
 const pageSize = ref(20);
 
-const processedListData = computed(() => searchListData.value.slice(
-  (currentPage.value - 1) * pageSize.value,
-  currentPage.value * pageSize.value,
-));
+const classFilterOptions = computed(
+  () => searchListData.value.map(
+    x => ({
+      value: x.classId,
+      label: x.className,
+    }),
+  ).filter((a, i, arr) =>
+    arr.findIndex(b => (b.value === a.value)) === i,
+  ),
+);
+const classFilter = ref<string[]>([]);
+
+const processedListData = computed(
+  () => searchListData.value
+    .filter(x => classFilter.value.length ? classFilter.value.includes(x.classId) : true)
+    .slice(
+      (currentPage.value - 1) * pageSize.value,
+      currentPage.value * pageSize.value,
+    ),
+);
 
 const { mutate: deleteUser } = useMutation({
   mutationFn: $api.user.remove.mutate,
