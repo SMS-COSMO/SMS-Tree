@@ -1,14 +1,14 @@
 <template>
   <div class="w-full flex flex-col gap-6">
-    <div class="w-full">
-      <el-carousel trigger="click" height="250px" :interval="10000">
-        <el-carousel-item v-for="item in carousel" :key="item.id">
-          <el-image class="h-full w-full" :src="item.fileUrl" fit="cover" />
-        </el-carousel-item>
-      </el-carousel>
-    </div>
-
     <template v-if="userStore.loggedIn">
+      <div class="w-full">
+        <el-carousel trigger="click" height="250px" :interval="10000">
+          <el-carousel-item v-for="item in carousel" :key="item.id">
+            <el-image class="h-full w-full" :src="item.fileUrl" fit="cover" />
+          </el-carousel-item>
+        </el-carousel>
+      </div>
+
       <div class="flex flex-col gap-4 lg:flex-row">
         <div class="lg:basis-1/4">
           <el-card class="h-full">
@@ -111,6 +111,9 @@ function quickSearch() {
     },
   });
 }
+
+if (!userStore.loggedIn)
+  navigateTo('/user/login');
 </script>
 
 <style scoped>
