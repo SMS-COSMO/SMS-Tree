@@ -61,7 +61,7 @@
 
 <script setup lang="ts">
 import axios from 'axios';
-import { saveAs } from 'file-saver';
+import pkg from 'file-saver';
 
 const props = withDefaults(defineProps<{
   attachment?: TAttachment;
@@ -72,6 +72,7 @@ const props = withDefaults(defineProps<{
   admin: false,
 });
 
+const { saveAs } = pkg;
 const { $api } = useNuxtApp();
 
 const { data: rawFileUrl, suspense } = useQuery({
