@@ -1,4 +1,5 @@
 {
+  "name": "chatgpt-detector-relay",
   "private": true,
   "scripts": {
     "build": "nitro build",
