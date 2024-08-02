@@ -3,7 +3,7 @@
     class="admin-nav select-none overflow-x-auto rounded h-[69px]! md:min-w-[200px] min-h-admin-content border-normal md:h-auto!"
     :ellipsis="false"
     :mode="mode"
-    :default-active="$route.path"
+    :default-active="route.path"
     :router="true"
     :show-timeout="0"
     :default-openeds="mode === 'vertical' ? ['0', '2'] : []"
@@ -95,6 +95,8 @@
 defineProps<{
   mode: 'vertical' | 'horizontal';
 }>();
+
+const route = useRoute();
 
 const seiueStore = useSeiueStore();
 const { $api } = useNuxtApp();

@@ -5,7 +5,7 @@
       v-model="selectedTab"
       class="box-border w-full"
       :tab-position="device.isMobileOrTablet ? 'top' : 'left'"
-      @tab-change="$router.replace({ query: { action: selectedTab } })"
+      @tab-change="router.replace({ query: { action: selectedTab } })"
     >
       <el-tab-pane name="info" label="用户信息" class="md:ml-3">
         <UserProfile type="normal" :user-id="id" />
@@ -30,6 +30,7 @@ useHeadSafe({
 const device = useDevice();
 
 const route = useRoute();
+const router = useRouter();
 const selectedTab = ref(route.query.action?.toString() ?? 'info');
 const id = route.params.id.toString();
 const userStore = useUserStore();

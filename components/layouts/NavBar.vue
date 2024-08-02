@@ -5,7 +5,7 @@
       :class="[!isAdmin && 'max-w-[1300px]']"
       :ellipsis="false" mode="horizontal"
       background-color="#15803d" text-color="#FFFFFF" active-text-color="#FFFFFF"
-      :router="true" :default-active="$route.path"
+      :router="true" :default-active="route.path"
     >
       <el-menu-item disabled class="cursor-default! opacity-100!">
         <NuxtImg preload src="/logo.svg" class="h-[25px]" />

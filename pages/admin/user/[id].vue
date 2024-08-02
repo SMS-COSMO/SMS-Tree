@@ -3,7 +3,7 @@
     v-model="selectedTab"
     tab-position="top"
     class="md:px-2"
-    @tab-change="$router.replace({ query: { action: selectedTab } })"
+    @tab-change="router.replace({ query: { action: selectedTab } })"
   >
     <el-tab-pane name="info" label="用户信息">
       <UserProfile :user-id="id" type="admin" />
@@ -23,6 +23,7 @@ useHeadSafe({
 });
 
 const route = useRoute();
+const router = useRouter();
 const selectedTab = ref(route.query.action?.toString() ?? 'info');
 const id = route.params.id.toString();
 </script>

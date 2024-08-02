@@ -11,7 +11,7 @@
         placeholder="搜索论文"
         clearable
         class="list-search mb-2.5"
-        @change="$router.replace({ query: { search: searchInput } });"
+        @change="router.replace({ query: { search: searchInput } });"
       >
         <template #prepend>
           <el-icon class="i-tabler:search hidden! lg:block!" />
@@ -68,7 +68,7 @@ useHeadSafe({
 const { $api } = useNuxtApp();
 
 const route = useRoute();
-
+const router = useRouter();
 const count = ref(10);
 
 const searchInput = ref(route.query.search?.toString() ?? '');

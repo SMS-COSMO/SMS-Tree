@@ -19,7 +19,11 @@ export default defineEventHandler(async (event) => {
 
   const res = [];
   for (const seg of splitText) {
-    const response = await $fetch(
+    const response = await $fetch<[{
+      label: 'Human' | 'ChatGPT';
+      score: number;
+    },
+    ][]>(
       'https://api-inference.huggingface.co/models/Hello-SimpleAI/chatgpt-detector-roberta-chinese',
       {
         headers: {
