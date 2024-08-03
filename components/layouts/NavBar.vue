@@ -7,14 +7,20 @@
       background-color="#15803d" text-color="#FFFFFF" active-text-color="#FFFFFF"
       :router="true" :default-active="route.path"
     >
+      <!-- Brand -->
       <el-menu-item disabled class="cursor-default! opacity-100!">
         <NuxtImg preload src="/logo.png" class="h-[100%]" @click.left="navigateTo('/')" @click.middle="blankNav('/')" />
       </el-menu-item>
+
+      <!-- Left Nav -->
       <el-menu-item v-if="userStore.loggedIn" index="/" @click.middle="blankNav('/')">
         <el-icon size="14" class="i-tabler:home" />
         首页
       </el-menu-item>
-      <el-menu-item v-if="userStore.loggedIn" index="/paper/list" @click.middle="blankNav('/paper/list')">
+      <el-menu-item
+        v-if="userStore.loggedIn" index="/paper/list"
+        @click.middle="blankNav('/paper/list')"
+      >
         <el-icon size="14" class="i-tabler:list-details" />
         论文列表
       </el-menu-item>
@@ -35,6 +41,8 @@
         管理
       </el-menu-item>
       <div class="flex-grow" />
+
+      <!-- Right Nav -->
       <el-sub-menu v-if="userStore.loggedIn" index="4">
         <template #title>
           <el-icon size="14" class="i-tabler:user-check" />
@@ -56,6 +64,7 @@
     </el-menu>
   </div>
 
+  <!-- Mobile Nav -->
   <div class="nav bottom-0 border-t-1 border-t-border-light border-t-solid bg-white md:hidden!">
     <div class="grid grid-cols-4 px-2">
       <MobileNavButton label="首页" href="/">
@@ -124,10 +133,3 @@ function blankNav(path: string) {
   navigateTo(path, { open: { target: '_blank' } });
 }
 </script>
-
-<style>
-.main-nav {
-  --el-menu-bg-color: #15803d !important;
-  --el-menu-hover-bg-color: #136d34 !important;
-}
-</style>
