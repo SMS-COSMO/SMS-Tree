@@ -67,17 +67,6 @@ export const userRouter = router({
       return await ctx.userController.refreshAccessToken(input.refreshToken, input.username);
     }),
 
-  bulkRegister: protectedProcedure
-    .meta({ description: '批量注册用户。要求教师及以上权限。' })
-    .use(requireRoles(['teacher', 'admin']))
-    .input(z.object({
-      users: z.object({ schoolId: z.string().min(1).max(24), username: z.string().min(1) }).array().nonempty(),
-      randomPassword: z.boolean().optional(),
-    }))
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.userController.bulkRegister(input.users, input.randomPassword);
-    }),
-
   modify: protectedProcedure
     .meta({ description: '修改用户信息。要求教师及以上权限。' })
     .use(requireRoles(['teacher', 'admin']))

@@ -91,7 +91,7 @@ const queryClient = useQueryClient();
 const { processedListData: searchListData } = await useUserSearch(searchContent, 'student');
 
 const currentPage = ref(1);
-const pageSize = ref(20);
+const pageSize = ref(50);
 
 const classFilterOptions = computed(
   () => searchListData.value.map(

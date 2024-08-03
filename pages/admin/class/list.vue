@@ -35,12 +35,12 @@
           />
           <el-table-column
             :width="200" show-overflow-tooltip label="状态"
-            :filters="getOptions((x => x.state), (x => useClassState(x.toString()).label))"
+            :filters="getOptions((x => x.state), (x => classStateName(x.toString()).label))"
             :filter-method="getFilterMethod(x => x.state)"
           >
             <template #default="scope">
               <StateBadge
-                :state="useClassState(scope.row.state)"
+                :state="classStateName(scope.row.state)"
                 size="large"
               />
             </template>

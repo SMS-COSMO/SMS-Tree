@@ -8,11 +8,11 @@ import { refreshTokens, users } from '../../db/schema/user';
 import { usersToGroups } from '../../db/schema/userToGroup';
 import { classesToStudents } from '../../db/schema/classToStudents';
 import { Auth } from '../utils/auth';
-import { TRPCForbidden, makeId } from '../../trpc/utils/shared';
+import { TRPCForbidden } from '../../trpc/utils/shared';
 import { Seiue } from '../utils/seiue';
-import { useClassName } from '~/composables/className';
 import { classes } from '~/server/db/schema/class';
 import { env } from '~/server/env';
+import { className } from '~/utils/class';
 
 export class UserController {
   private auth: Auth;
@@ -52,29 +52,6 @@ export class UserController {
       else
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '注册失败' });
     }
-  }
-
-  async bulkRegister(inputUsers: { schoolId: string; username: string }[], randomPassword?: boolean) {
-    if ((new Set(inputUsers.map(user => user.schoolId))).size !== inputUsers.length)
-      throw new TRPCError({ code: 'BAD_REQUEST', message: '学工号出现重复' });
-
-    for (const user of inputUsers) {
-      if ((await db.select().from(users).where(eq(users.schoolId, user.schoolId))).length > 0)
-        throw new TRPCError({ code: 'BAD_REQUEST', message: '学工号出现重复' });
-    }
-
-    const newUsers = await Promise.all(inputUsers.map(async ({ schoolId, username }) => {
-      const password = randomPassword ? await bcrypt.hash(makeId(12), 8) : await bcrypt.hash(schoolId, 8);
-      return {
-        schoolId,
-        role: 'student',
-        password,
-        username,
-        groupIds: [],
-      } as TNewUser & { groupIds: string[] };
-    }));
-    await db.insert(users).values(newUsers);
-    return '创建成功';
   }
 
   async modifyPassword(user: TRawUser, id: string, oldPassword: string, newPassword: string) {
@@ -149,15 +126,15 @@ export class UserController {
 
     const {
       password: _password,
-      usersToGroups: _usersToGroups,
-      classesToStudents: _classesToStudents,
+      usersToGroups,
+      classesToStudents,
       ...info
     } = user;
 
     return {
       ...info,
-      activeGroupIds: user.usersToGroups.filter(x => !x.group.archived).map(x => x.group.id),
-      classId: user.classesToStudents[0]?.classes.id ?? '',
+      activeGroupIds: usersToGroups.filter(x => !x.group.archived).map(x => x.group.id),
+      classId: classesToStudents[0]?.classes.id ?? '',
       accessToken,
       refreshToken,
     };
@@ -188,7 +165,7 @@ export class UserController {
     });
     return res.map(x => ({
       ...x,
-      className: useClassName(x),
+      className: className(x),
     }));
   }
 
@@ -203,6 +180,12 @@ export class UserController {
     const accessible = ['teacher', 'admin'].includes(user.role) || user.id === id;
     const res = await db.query.users.findFirst({
       where: eq(users.id, id),
+      columns: {
+        id: true,
+        role: true,
+        schoolId: true,
+        username: true,
+      },
       with: {
         usersToGroups: {
           columns: {},
@@ -241,39 +224,40 @@ export class UserController {
       throw new TRPCError({ code: 'NOT_FOUND', message: '用户不存在' });
 
     const {
-      password: _password,
-      usersToGroups: _usersToGroups,
-      classesToStudents: _classesToStudents,
+      usersToGroups,
+      classesToStudents,
       schoolId,
-      initialPassword,
       ...info
     } = res;
 
     return {
       ...info,
-      className: accessible ? useClassName(res.classesToStudents[0]?.classes) : undefined,
-      groups: res.usersToGroups.map((x) => {
+      className: accessible ? className(classesToStudents[0]?.classes) : undefined,
+      groups: usersToGroups.map((x) => {
         const g = x.group;
         if (!accessible && !g.paper?.isPublic)
           g.paper = null;
         return g;
       }),
-      classId: res.classesToStudents[0]?.classes.id ?? '',
+      classId: classesToStudents[0]?.classes.id ?? '',
       schoolId: accessible ? schoolId : undefined,
-      initialPassword: accessible ? initialPassword : undefined,
     };
   }
 
   async list(role: 'student' | 'teacher' | 'admin' | 'all') {
     const res = await db.query.users.findMany({
       where: role === 'all' ? undefined : eq(users.role, role as 'student' | 'teacher' | 'admin'),
+      columns: {
+        id: true,
+        schoolId: true,
+        username: true,
+      },
       with: {
         usersToGroups: {
           columns: {},
           with: {
             group: {
               columns: {
-                id: true,
                 projectName: true,
               },
             },
@@ -282,7 +266,13 @@ export class UserController {
         classesToStudents: {
           columns: {},
           with: {
-            classes: true,
+            classes: {
+              columns: {
+                id: true,
+                enterYear: true,
+                index: true,
+              },
+            },
           },
         },
       },
@@ -290,17 +280,16 @@ export class UserController {
 
     return res.map((user) => {
       const {
-        password: _password,
-        usersToGroups: _usersToGroups,
-        classesToStudents: _classesToStudents,
+        usersToGroups,
+        classesToStudents,
         ...info
       } = user;
 
       return {
         ...info,
-        projectName: user.usersToGroups[0]?.group.projectName,
-        className: useClassName(user.classesToStudents[0]?.classes),
-        classId: user.classesToStudents[0]?.classes.id ?? '',
+        projectName: usersToGroups[0]?.group.projectName,
+        className: className(classesToStudents[0]?.classes),
+        classId: classesToStudents[0]?.classes.id ?? '',
       };
     });
   }

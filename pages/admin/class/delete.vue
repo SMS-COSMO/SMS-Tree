@@ -27,7 +27,7 @@
           :filter-method="getFilterMethod(x => x.enterYear)"
         >
           <template #default="scope">
-            {{ useClassGrade(scope.row.enterYear) }}
+            {{ classGrade(scope.row.enterYear) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -62,7 +62,7 @@
             确定要删除以下班级吗？
           </div>
           <el-tag v-for="c in selected" :key="c?.id" type="info" effect="plain" class="m-1 font-bold">
-            {{ useClassName(c) }}
+            {{ className(c) }}
           </el-tag>
         </div>
         <br>

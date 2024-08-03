@@ -85,7 +85,7 @@
             <el-table-column :width="200" show-overflow-tooltip label="状态">
               <template #default="scope">
                 <StateBadge
-                  :state="useClassState(scope.row.state)"
+                  :state="classStateName(scope.row.state)"
                   size="large"
                 />
               </template>

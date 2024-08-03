@@ -5,8 +5,8 @@ import type { TNewPaper, TRawUser } from '../../db/db';
 import { papers } from '../../db/schema/paper';
 import { TRPCForbidden } from '../utils/shared';
 import { usersToGroups } from '~/server/db/schema/userToGroup';
-import { useClassName } from '~/composables/className';
 import { bookmarks } from '~/server/db/schema/bookmark';
+import { className } from '~/utils/class';
 
 export class PaperController {
   async create(newPaper: TNewPaper) {
@@ -163,7 +163,7 @@ export class PaperController {
       leader: authors.find(x => x.id === group.leader),
       class: {
         ...group.class,
-        className: useClassName(group.class),
+        className: className(group.class),
       },
       bookmarked: bookmarks.some(x => x.userId === user.id),
     };
@@ -250,7 +250,7 @@ export class PaperController {
         authors: group.usersToGroups.map(u => ({ username: u.user.username })),
         class: {
           ...group.class,
-          className: useClassName(group.class),
+          className: className(group.class),
         },
         ...info,
       };
