@@ -4,7 +4,7 @@
     class="card-button"
     @click="navigateTo(`${isAdmin ? '/admin' : ''}/paper/${paper.id}`)"
   >
-    <div class="flex flex-wrap gap-1.5">
+    <div class="flex flex-wrap gap-1 md:gap-1.5">
       <el-tag v-if="isAdmin && paper?.isPublic !== undefined && !paper.isPublic" type="danger" disable-transitions>
         <el-icon class="i-tabler:pencil" />
         待批改
@@ -29,7 +29,7 @@
       </el-tag>
     </div>
     <div class="mt-2 gap-2">
-      <el-text class="break-normal font-bold text-xl!">
+      <el-text class="break-normal font-bold text-base! md:text-xl!">
         {{ paper?.title }}
       </el-text>
     </div>
