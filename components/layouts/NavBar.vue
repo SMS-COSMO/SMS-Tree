@@ -8,7 +8,7 @@
       :router="true" :default-active="route.path"
     >
       <el-menu-item disabled class="cursor-default! opacity-100!">
-        <NuxtImg preload src="/logo.svg" class="h-[25px]" @click.left="navigateTo('/')" @click.middle="blankNav('/')" />
+        <NuxtImg preload src="/logo.png" class="h-[100%]" @click.left="navigateTo('/')" @click.middle="blankNav('/')" />
       </el-menu-item>
       <el-menu-item v-if="userStore.loggedIn" index="/" @click.middle="blankNav('/')">
         <el-icon size="14" class="i-tabler:home" />
