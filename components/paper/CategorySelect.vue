@@ -3,8 +3,7 @@
     <el-select-v2
       v-model="selected"
       :options="category ?? []"
-      filterable
-      placeholder="请选择（输入可搜索）"
+      placeholder="请选择"
     />
     <template #fallback>
       <SelectPlaceholder />

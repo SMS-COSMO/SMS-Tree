@@ -3,8 +3,9 @@
     <el-select-v2
       v-model="selected"
       :options="category ?? []"
-
-      filterable multiple clearable collapse-tags
+      multiple
+      clearable
+      collapse-tags
       placeholder="选择分类"
     />
     <template #fallback>
