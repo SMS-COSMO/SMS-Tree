@@ -78,6 +78,9 @@ const quickSearchContent = ref('');
 const userStore = useUserStore();
 const { $api } = useNuxtApp();
 
+if (!userStore.loggedIn)
+  navigateTo('/user/login');
+
 const enabled = computed(
   () =>
     userStore.classId !== undefined
@@ -111,9 +114,6 @@ function quickSearch() {
     },
   });
 }
-
-if (!userStore.loggedIn)
-  navigateTo('/user/login');
 </script>
 
 <style scoped>

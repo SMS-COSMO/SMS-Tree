@@ -1,14 +1,14 @@
 <template>
   <div class="space-y-3 md:space-y-4">
     <div class="md:flex">
-      <h1 class="hidden w-full self-center text-3xl md:block md:pr-[2em] md:text-4xl">
+      <h1 class="hidden w-full self-center text-4xl md:block md:pr-[2em]">
         {{ info?.title }}
       </h1>
       <el-tag v-if="info?.isFeatured" type="success" size="large" class="ml-auto self-center">
         <el-icon class="i-tabler:star" />
         优秀
       </el-tag>
-      <h1 class="w-full text-3xl md:hidden md:pr-[2em] md:text-4xl">
+      <h1 class="w-full text-2xl md:hidden md:pr-[2em]">
         {{ info?.title }}
       </h1>
     </div>
