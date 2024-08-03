@@ -113,6 +113,9 @@ importers:
       nanoid:
         specifier: ^5.0.7
         version: 5.0.7
+      notivue:
+        specifier: ^2.4.4
+        version: 2.4.4(@nuxt/kit@3.12.4(magicast@0.3.4)(rollup@4.19.2))(@nuxt/schema@3.12.4(rollup@4.19.2))(defu@6.1.4)
       pdfjs-dist:
         specifier: ^4.5.136
         version: 4.5.136(encoding@0.1.13)
@@ -5827,6 +5830,20 @@ packages:
 
   normalize-wheel-es@1.2.0:
     resolution: {integrity: sha512-Wj7+EJQ8mSuXr2iWfnujrimU35R2W4FAErEyTmJoJ7ucwTn2hOUSsRehMb5RSYkxXGTM7Y9QpvPmp++w5ftoJw==}
+
+  notivue@2.4.4:
+    resolution: {integrity: sha512-d9RaXMbSQD1DS0rrA5WCfql2xm5nXOq1U1nnf8bgQ1LRHu4UsLY57Bdc9O9SHTpR1gDmm/pSxq7gocitzDtMpw==}
+    peerDependencies:
+      '@nuxt/kit': '>=3.5.0'
+      '@nuxt/schema': '>=3.5.0'
+      defu: '>=6'
+    peerDependenciesMeta:
+      '@nuxt/kit':
+        optional: true
+      '@nuxt/schema':
+        optional: true
+      defu:
+        optional: true
 
   npm-run-path@4.0.1:
     resolution: {integrity: sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw==}
@@ -14761,6 +14778,12 @@ snapshots:
   normalize-range@0.1.2: {}
 
   normalize-wheel-es@1.2.0: {}
+
+  notivue@2.4.4(@nuxt/kit@3.12.4(magicast@0.3.4)(rollup@4.19.2))(@nuxt/schema@3.12.4(rollup@4.19.2))(defu@6.1.4):
+    optionalDependencies:
+      '@nuxt/kit': 3.12.4(magicast@0.3.4)(rollup@4.19.2)
+      '@nuxt/schema': 3.12.4(rollup@4.19.2)
+      defu: 6.1.4
 
   npm-run-path@4.0.1:
     dependencies:

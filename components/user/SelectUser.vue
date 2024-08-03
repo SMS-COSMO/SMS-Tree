@@ -7,7 +7,7 @@
       :max-collapse-tags="3"
       :props="selectProps"
 
-      clearable filterable collapse-tags collapse-tags-tooltip
+      clearable collapse-tags filterable collapse-tags-tooltip
       placeholder="请选择（输入可搜索）"
     >
       <template #default="{ item }">

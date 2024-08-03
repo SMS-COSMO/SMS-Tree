@@ -1,9 +1,15 @@
-<!-- Main App Page -->
-
 <template>
   <el-config-provider :locale="zhCn">
     <NuxtLoadingIndicator :height="5" color="#4AA06F" />
     <NuxtLayout>
+      <Notivue v-slot="item">
+        <NotivueSwipe :item="item">
+          <Notification :item="item" :theme="pastelTheme">
+            <NotificationProgress :item="item" />
+          </Notification>
+        </NotivueSwipe>
+      </Notivue>
+
       <NuxtPage />
     </NuxtLayout>
   </el-config-provider>

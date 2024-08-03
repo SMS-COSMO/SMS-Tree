@@ -11,6 +11,12 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxtjs/device',
     '@nuxt/test-utils/module',
+    'notivue/nuxt',
+  ],
+  css: [
+    'notivue/notification.css',
+    'notivue/animations.css',
+    'notivue/notification-progress.css',
   ],
   components: [
     {
@@ -34,6 +40,12 @@ export default defineNuxtConfig({
   },
   build: {
     transpile: ['trpc-nuxt'],
+  },
+  notivue: {
+    position: 'top-center',
+    pauseOnHover: true,
+    avoidDuplicates: true,
+    limit: 6,
   },
   nitro: {
     esbuild: {

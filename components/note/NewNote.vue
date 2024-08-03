@@ -12,7 +12,7 @@
   <client-only>
     <el-dialog
       v-model="dialogVisible"
-      align-center draggable
+      draggable align-center
       title="创建活动记录"
       class="my-4"
     >

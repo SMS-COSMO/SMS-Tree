@@ -1,12 +1,13 @@
-import type { NotificationOptions } from 'element-plus';
-
 export function useMessage(
-  opt: Partial<NotificationOptions>,
+  opt: {
+    message: string;
+    type: 'error' | 'success';
+  },
 ) {
-  onNuxtReady(() =>
-    ElNotification({
-      offset: useScreen().isSmaller('md') ? 0 : 60,
-      ...opt,
-    }),
-  );
+  onNuxtReady(() => {
+    if (opt.type === 'error')
+      push.error({ message: opt.message });
+    else if (opt.type === 'success')
+      push.success({ message: opt.message });
+  });
 }

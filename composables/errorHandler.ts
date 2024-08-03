@@ -13,6 +13,7 @@ export async function useErrorHandler(err: any): Promise<void> {
     } else {
       useMessage({ message: err.message, type: 'error' });
       if (err.message === '用户未登录') {
+        useUserStore().logout();
         onNuxtReady(() => navigateTo('/user/login'));
       } else if (err.message === '登录已过期') {
         onNuxtReady(() => {

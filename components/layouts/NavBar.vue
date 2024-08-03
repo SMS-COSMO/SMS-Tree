@@ -8,13 +8,13 @@
       :router="true" :default-active="route.path"
     >
       <el-menu-item disabled class="cursor-default! opacity-100!">
-        <NuxtImg preload src="/logo.svg" class="h-[25px]" />
+        <NuxtImg preload src="/logo.svg" class="h-[25px]" @click.left="navigateTo('/')" @click.middle="blankNav('/')" />
       </el-menu-item>
-      <el-menu-item index="/" @click.middle="blankNav('/')">
+      <el-menu-item v-if="userStore.loggedIn" index="/" @click.middle="blankNav('/')">
         <el-icon size="14" class="i-tabler:home" />
         首页
       </el-menu-item>
-      <el-menu-item index="/paper/list" @click.middle="blankNav('/paper/list')">
+      <el-menu-item v-if="userStore.loggedIn" index="/paper/list" @click.middle="blankNav('/paper/list')">
         <el-icon size="14" class="i-tabler:list-details" />
         论文列表
       </el-menu-item>
