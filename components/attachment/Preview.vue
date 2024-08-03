@@ -6,26 +6,32 @@
   >
     <el-icon v-if="fullscreen" class="i-tabler:x right-2 top-2 cursor-pointer fixed!" color="white" @click="fullscreen = false" />
     <div
-      class="z-10 mb-2"
-      :class="[fullscreen && 'hidden']"
+      class="z-10 mb-2 flex gap-2"
+      :class="[fullscreen && 'hidden!']"
     >
-      <el-button
-        v-if="pdfFileTypes.includes(props.attachment.fileType)"
-        size="small"
-        :icon="`${fullscreen ? 'i-tabler:arrows-minimize' : 'i-tabler:maximize'}`"
-        @click="fullscreen = !fullscreen"
-      >
-        {{ fullscreen ? '退出' : '全屏' }}
-      </el-button>
-      <el-button
-        size="small"
-        icon="i-tabler:download"
-        :loading="downloading"
-        @click="download"
-      >
-        下载
-      </el-button>
-      <chatgpt-detector v-if="admin && rawFileUrl" :url="rawFileUrl" />
+      <div class="hidden md:block">
+        <el-button
+          v-if="pdfFileTypes.includes(props.attachment.fileType)"
+          size="small"
+          :icon="`${fullscreen ? 'i-tabler:arrows-minimize' : 'i-tabler:maximize'}`"
+          @click="fullscreen = !fullscreen"
+        >
+          {{ fullscreen ? '退出' : '全屏' }}
+        </el-button>
+      </div>
+      <div>
+        <el-button
+          size="small"
+          icon="i-tabler:download"
+          :loading="downloading"
+          @click="download"
+        >
+          下载
+        </el-button>
+      </div>
+      <div>
+        <chatgpt-detector v-if="admin && rawFileUrl" :url="rawFileUrl" />
+      </div>
     </div>
 
     <iframe

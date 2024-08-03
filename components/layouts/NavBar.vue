@@ -57,7 +57,7 @@
   </div>
 
   <div class="nav bottom-0 border-t-1 border-t-border-light border-t-solid bg-white md:hidden!">
-    <div class="flex px-2">
+    <div class="grid grid-cols-4 px-2">
       <MobileNavButton label="首页" href="/">
         <template #icon>
           <div class="i-tabler:home" />
