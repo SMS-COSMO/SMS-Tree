@@ -6,6 +6,8 @@
         :options="classFilterOptions"
         placeholder="筛选班级"
         multiple
+        clearable
+        collapse-tags
         class="lg:basis-1/6"
       />
       <el-input
@@ -70,7 +72,7 @@
           v-model:page-size="pageSize"
           background
           layout="total, prev, pager, next, sizes, jumper"
-          :total="searchListData.length"
+          :total="filteredList.length"
           class="mt-4 justify-center"
         />
       </div>
@@ -103,9 +105,13 @@ const classFilterOptions = computed(
 );
 const classFilter = ref<string[]>([]);
 
-const processedListData = computed(
+const filteredList = computed(
   () => searchListData.value
-    .filter(x => classFilter.value.length ? classFilter.value.includes(x.classId) : true)
+    .filter(x => classFilter.value.length ? classFilter.value.includes(x.classId) : true),
+);
+
+const processedListData = computed(
+  () => filteredList.value
     .slice(
       (currentPage.value - 1) * pageSize.value,
       currentPage.value * pageSize.value,
