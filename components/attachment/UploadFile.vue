@@ -16,7 +16,7 @@
     <template #tip>
       <div class="el-upload__tip">
         最多上传 {{ multiple ? 10 : 1 }} 个文件，大小不超过
-        {{ category === 'paperAttachment' ? '50MB' : '30MB' }}
+        {{ (props.category === 'paperAttachment' || props.category === 'noteAttachment') ? '40MB' : '100MB' }}
         <template v-if="category !== 'paperAttachment' && category !== 'noteAttachment' && category !== 'carousel'">
           ，仅允许上传 PDF
           <ConvertToPDF class="ml-1" />
@@ -75,8 +75,8 @@ async function handleUpload(option: UploadRequestOptions) {
   }
 
   // f.size in bytes
-  const sizeLimit = props.category === 'paperAttachment'
-    ? 50000000 // 50mb
+  const sizeLimit = (props.category === 'paperAttachment' || props.category === 'noteAttachment')
+    ? 40000000 // 40mb
     : 100000000; // 100mb
   if (f?.size && f.size > sizeLimit) {
     removeFileFromList(f, `文件大小不应超过 ${Math.round(sizeLimit / 10 ** 6)}MB，当前文件大小：${Math.round(f.size / 10 ** 6)}MB`);
