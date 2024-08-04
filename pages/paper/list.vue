@@ -86,7 +86,7 @@ const searchOptions = reactive<TSearchOption>({
   },
   isAsc: 1,
   searchSelectValue: ['title', 'keywords'],
-  sortOption: 'featured',
+  sortOption: searchInput.value ? 'default' : 'featured',
 });
 receiveQuery();
 
@@ -102,8 +102,8 @@ const fuseOptions = computed(() => {
   };
 });
 
-watch(searchContent, () => {
-  if (searchContent.value.length)
+watch(searchInput, () => {
+  if (searchInput.value.length)
     searchOptions.sortOption = 'default';
   else
     searchOptions.sortOption = 'featured';
