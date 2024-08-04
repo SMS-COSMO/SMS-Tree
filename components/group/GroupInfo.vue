@@ -125,7 +125,7 @@
     </el-tab-pane>
     <el-tab-pane v-if="reachedState('submitPaper')" name="submitPaper">
       <template #label>
-        <GroupInfoTabTag :show="groupInfo?.paper !== undefined" />
+        <GroupInfoTabTag :show="groupInfo?.paper !== undefined && groupInfo?.paper !== null" />
         论文
       </template>
       <PaperForm v-if="!groupInfo?.paper" type="create" />
