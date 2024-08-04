@@ -88,7 +88,7 @@
         </el-tag>
         活动记录
       </template>
-      <template v-for="note in groupInfo?.notes" :key="note.id">
+      <template v-for="note in sortedNotes" :key="note.id">
         <NoteCard :note="note" />
       </template>
       <NewNote />
@@ -166,6 +166,10 @@ const { data: groupInfo, suspense: groupInfoSuspense } = useQuery({
   queryFn: () => $api.group.info.query({ id: userStore.activeGroupIds[0] }),
 });
 await groupInfoSuspense();
+
+const sortedNotes = computed(
+  () => groupInfo.value?.notes.toSorted((a, b) => a.createdAt < b.createdAt ? -1 : 1),
+);
 
 const tabState = ref(props.classState);
 
