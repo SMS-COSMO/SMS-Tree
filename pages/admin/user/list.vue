@@ -11,7 +11,7 @@
         class="lg:basis-1/6"
       />
       <el-input
-        v-model="searchContent"
+        v-model="searchInput"
         placeholder="搜索学生（可搜索 学号/姓名/班级/课题名）"
         prefix-icon="i-tabler:search"
         class="lg:basis-5/6"
@@ -87,7 +87,8 @@ useHeadSafe({
   title: '学生列表',
 });
 
-const searchContent = ref('');
+const searchInput = ref('');
+const searchContent = refDebounced(searchInput, 200);
 const queryClient = useQueryClient();
 const { processedListData: searchListData } = await useUserSearch(searchContent, 'student');
 
