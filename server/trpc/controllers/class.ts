@@ -27,8 +27,7 @@ export class ClassController {
         ...rest,
       })
       .returning({ id: classes.id })
-      .get()
-    ).id;
+    )[0].id;
 
     await db.insert(classesToStudents).values(
       newClass.students.map(

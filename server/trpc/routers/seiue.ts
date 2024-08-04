@@ -152,13 +152,15 @@ export const seiueRouter = router({
             const classIndex = Number.parseInt(classMembers[0].reflection.admin_classes[0].slice(0, -1));
 
             // 1. create new class
-            const newClass = await trx.insert(classes).values({
-              index: classIndex,
-              enterYear: classEnterYear,
-              teacherId: ctx.user.id,
-              state: 'initialized',
-              stateTimetable: [],
-            }).returning().get();
+            const newClass = (
+              await trx.insert(classes).values({
+                index: classIndex,
+                enterYear: classEnterYear,
+                teacherId: ctx.user.id,
+                state: 'initialized',
+                stateTimetable: [],
+              }).returning()
+            )[0];
 
             // store created password
             const passwords: {
@@ -181,12 +183,14 @@ export const seiueRouter = router({
                 const password = nanoid(12);
                 const hash = await bcrypt.hash(password, 8);
                 // create a new student
-                const newStudent = await trx.insert(users).values({
-                  username: member.reflection.name,
-                  schoolId: member.reflection.usin,
-                  password: hash,
-                  role: 'student',
-                }).returning().get();
+                const newStudent = (
+                  await trx.insert(users).values({
+                    username: member.reflection.name,
+                    schoolId: member.reflection.usin,
+                    password: hash,
+                    role: 'student',
+                  }).returning()
+                )[0];
 
                 passwords.push({
                   schoolId: member.reflection.usin,

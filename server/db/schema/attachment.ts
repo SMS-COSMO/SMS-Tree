@@ -1,11 +1,11 @@
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { pgTable, text, timestamp } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { makeId } from '../../trpc/utils/shared';
 import { papers } from './paper';
 import { reports } from './report';
 import { notes } from './note';
 
-export const attachments = sqliteTable('attachments', {
+export const attachments = pgTable('attachments', {
   id: text('id').primaryKey().$defaultFn(() => makeId(12)),
   name: text('name').notNull(),
   paperId: text('paper_id').references(() => papers.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
@@ -21,7 +21,7 @@ export const attachments = sqliteTable('attachments', {
   ] }).notNull(),
   fileType: text('file_type').notNull(),
   S3FileId: text('s3_file_id').notNull(),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 
 export const attachmentsRelations = relations(attachments, ({ one }) => ({

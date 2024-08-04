@@ -1,9 +1,9 @@
-import { primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { pgTable, primaryKey, text } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { classes } from './class';
 import { users } from './user';
 
-export const classesToStudents = sqliteTable('classes_to_students', {
+export const classesToStudents = pgTable('classes_to_students', {
   classId: text('class_id').notNull().references(() => classes.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
 }, t => ({

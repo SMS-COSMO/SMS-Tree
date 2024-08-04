@@ -1,4 +1,3 @@
-import { LibsqlError } from '@libsql/client';
 import bcrypt from 'bcrypt';
 import { and, eq, gt } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
@@ -39,7 +38,7 @@ export class UserController {
     };
     try {
       // TODO: use transaction
-      const insertedId = (await db.insert(users).values(user).returning({ id: users.id }).get()).id;
+      const insertedId = (await db.insert(users).values(user).returning({ id: users.id }))[0].id;
       if (groupId)
         await db.insert(usersToGroups).values({ userId: insertedId, groupId });
       if (classId)
@@ -47,7 +46,7 @@ export class UserController {
 
       return '注册成功';
     } catch (err) {
-      if (err instanceof LibsqlError && err.code === 'SQLITE_CONSTRAINT_PRIMARYKEY')
+      if ((err as any)?.message === 'duplicate key value violates unique constraint "users_school_id_unique"')
         throw new TRPCError({ code: 'BAD_REQUEST', message: '学工号出现重复' });
       else
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '注册失败' });

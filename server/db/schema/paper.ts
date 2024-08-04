@@ -1,22 +1,22 @@
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { boolean, integer, json, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { makeId } from '../../trpc/utils/shared';
 import { groups } from './group';
 import { attachments } from './attachment';
 import { bookmarks } from './bookmark';
 
-export const papers = sqliteTable('papers', {
+export const papers = pgTable('papers', {
   id: text('id').primaryKey().$defaultFn(() => makeId(12)),
   title: text('title').notNull(),
   category: integer('category').notNull().default(0),
-  keywords: text('keywords', { mode: 'json' }).notNull().$type<string[]>(),
+  keywords: json('keywords').notNull().$type<string[]>(),
   abstract: text('abstract').notNull(),
   groupId: text('group_id').references(() => groups.id, { onDelete: 'cascade', onUpdate: 'cascade' }).notNull(),
-  isPublic: integer('is_public', { mode: 'boolean' }).notNull().default(false),
-  canDownload: integer('can_download', { mode: 'boolean' }).notNull().default(false),
-  isFeatured: integer('is_featured', { mode: 'boolean' }).notNull().default(false),
+  isPublic: boolean('is_public').notNull().default(false),
+  canDownload: boolean('can_download').notNull().default(false),
+  isFeatured: boolean('is_featured').notNull().default(false),
   comment: text('comment'),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 
 export const papersRelations = relations(papers, ({ one, many }) => ({

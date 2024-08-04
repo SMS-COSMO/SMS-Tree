@@ -12,7 +12,7 @@ export class GroupController {
     const { members, ...group } = newGroup;
     group.archived = group.archived ?? false;
 
-    const insertedId = (await db.insert(groups).values(group).returning({ id: groups.id }).get()).id;
+    const insertedId = (await db.insert(groups).values(group).returning({ id: groups.id }))[0].id;
     if (members) {
       await db.insert(usersToGroups).values(
         members.map(item => ({

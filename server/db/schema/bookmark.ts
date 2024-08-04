@@ -1,9 +1,9 @@
-import { primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { pgTable, primaryKey, text } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { users } from './user';
 import { papers } from './paper';
 
-export const bookmarks = sqliteTable('bookmarks', {
+export const bookmarks = pgTable('bookmarks', {
   paperId: text('paper_id').notNull().references(() => papers.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
 }, t => ({

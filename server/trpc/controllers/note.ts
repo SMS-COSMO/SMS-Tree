@@ -8,7 +8,7 @@ import { usersToGroups } from '~/server/db/schema/userToGroup';
 
 export class NoteController {
   async create(newNote: TNewNote) {
-    return (await db.insert(notes).values(newNote).returning({ id: notes.id }).get()).id;
+    return (await db.insert(notes).values(newNote).returning({ id: notes.id }))[0].id;
   }
 
   async createSafe(
@@ -32,8 +32,7 @@ export class NoteController {
         .insert(notes)
         .values({ ...newNote, groupId: group.groupId })
         .returning({ id: notes.id })
-        .get()
-    ).id;
+    )[0].id;
     return insertedId;
   }
 

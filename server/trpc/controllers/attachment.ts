@@ -138,8 +138,7 @@ export class AttachmentController {
         .insert(attachments)
         .values({ ...newAttachment, S3FileId })
         .returning({ id: attachments.id })
-        .get()
-    ).id;
+    )[0].id;
     const url = await ctl.s3.getStandardUploadPresignedUrl(S3FileId);
     if (!url)
       throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: '无法获取文件上传URL' });

@@ -57,13 +57,13 @@ export const statisticsRouter = router({
                 eq(papers.isPublic, false),
                 inArray(papers.groupId, managedGroups),
               ),
-            ).get()
-        )?.count;
+            )
+        )[0]?.count;
       }
 
       // Public Paper Count
       async function getPublicPaperCount() {
-        return (await db.select({ count: count() }).from(papers).where(eq(papers.isPublic, true)).get())?.count;
+        return (await db.select({ count: count() }).from(papers).where(eq(papers.isPublic, true)))[0]?.count;
       };
 
       const [

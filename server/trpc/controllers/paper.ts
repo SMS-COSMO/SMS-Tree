@@ -10,7 +10,7 @@ import { className } from '~/utils/class';
 
 export class PaperController {
   async create(newPaper: TNewPaper) {
-    return (await db.insert(papers).values(newPaper).returning({ id: papers.id }).get()).id;
+    return (await db.insert(papers).values(newPaper).returning({ id: papers.id }))[0].id;
   }
 
   async createSafe(
@@ -34,8 +34,7 @@ export class PaperController {
         .insert(papers)
         .values({ ...newPaper, groupId: group.groupId, isPublic: false })
         .returning({ id: papers.id })
-        .get()
-    ).id;
+    )[0].id;
     return insertedId;
   }
 

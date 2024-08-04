@@ -10,7 +10,7 @@ import { users } from '~/server/db/schema/user';
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
-const ans = await rl.question(`Make changes to ${env.DATABASE_CONNECTION_TYPE} - ${env.DATABASE_URL}? [Y/n]\n`);
+const ans = await rl.question(`Make changes to ${env.DATABASE_URL}? [Y/n]\n`);
 if (ans === 'n' || ans === 'N')
   process.exit(0);
 
@@ -23,7 +23,7 @@ await ctl.uc.register({
   initialPassword: false,
 });
 
-const admin = await db.select().from(users).where(eq(users.schoolId, 'admin')).get();
+const admin = (await db.select().from(users).where(eq(users.schoolId, 'admin')))[0];
 if (!admin)
   process.exit(0);
 
@@ -60,8 +60,8 @@ function splitToNChunks<T>(array: T[], n: number) {
   return result;
 }
 
-const studentList = await ctl.uc.list('student');
-const teacherList = await ctl.uc.list('teacher');
+const studentList = await ctl.uc.list('student', true);
+const teacherList = await ctl.uc.list('teacher', true);
 const sepStudentList = splitToNChunks(studentList, classCount);
 
 await Promise.all(

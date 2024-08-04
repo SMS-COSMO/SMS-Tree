@@ -1,16 +1,16 @@
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { boolean, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { makeId } from '../../trpc/utils/shared';
 import { groups } from './group';
 import { attachments } from './attachment';
 
-export const reports = sqliteTable('reports', {
+export const reports = pgTable('reports', {
   id: text('id').primaryKey().$defaultFn(() => makeId(12)),
   groupId: text('group_id').notNull().references(() => groups.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
   category: text('category', { enum: ['thesisProposal', 'concludingReport'] }).notNull(),
-  read: integer('read', { mode: 'boolean' }).default(false).notNull(),
+  read: boolean('read').default(false).notNull(),
   comment: text('comment'),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 
 export const reportsRelations = relations(reports, ({ one, many }) => ({

@@ -13,8 +13,7 @@ export class ReportController {
         .insert(reports)
         .values(newReport)
         .returning({ id: reports.id })
-        .get()
-    ).id;
+    )[0].id;
     return insertedId;
   }
 

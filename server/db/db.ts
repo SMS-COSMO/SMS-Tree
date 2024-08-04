@@ -1,5 +1,6 @@
-import { drizzle } from 'drizzle-orm/libsql';
-import { createClient } from '@libsql/client';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+
 import { env } from '../env';
 import type { refreshTokens, users } from './schema/user';
 import type { papers } from './schema/paper';
@@ -21,14 +22,7 @@ import * as classToStudentsSchema from './schema/classToStudents';
 import * as importHistorySchema from './schema/importHistory';
 import * as bookmarkSchema from './schema/bookmark';
 
-const options = (() => {
-  switch (env.DATABASE_CONNECTION_TYPE) {
-    case 'local': return { url: env.DATABASE_URL };
-    case 'remote': return { url: env.DATABASE_URL, authToken: env.DATABASE_AUTH_TOKEN };
-  }
-})();
-
-const client = createClient(options);
+const client = postgres(env.DATABASE_URL);
 export const db = drizzle(client, {
   schema: {
     ...userSchema,
