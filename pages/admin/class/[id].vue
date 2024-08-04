@@ -176,9 +176,9 @@
         </template>
       </el-collapse-transition>
     </template>
-    <template v-if="classInfo?.groups">
+    <template v-if="sortedGroups">
       <div class="grid gap-2 md:grid-cols-2 md:gap-4">
-        <template v-for="(group, index) in classInfo.groups" :key="group.id">
+        <template v-for="(group, index) in sortedGroups" :key="group.id">
           <TeacherGroupInfo :info="group" :index="index + 1" />
         </template>
       </div>
@@ -211,6 +211,10 @@ const { data: classInfo, suspense: classInfoSuspense } = useQuery({
   queryFn: () => $api.class.infoFull.query({ id }),
 });
 await classInfoSuspense();
+
+const sortedGroups = computed(
+  () => classInfo.value?.groups.toSorted((a, b) => a.createdAt < b.createdAt ? -1 : 1),
+);
 
 useHeadSafe({
   title: `${classInfo.value?.className}· 班级管理`,

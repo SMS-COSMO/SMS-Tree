@@ -3,7 +3,7 @@
     <template #header>
       <span class="text-xl font-bold">请选择一个小组加入</span>
     </template>
-    <el-table :data="availableGroups">
+    <el-table :data="sortedAvailableGroups">
       <el-table-column prop="leader" label="组长" width="150">
         <template #default="{ row }">
           <span v-if="!row.leader" class="text-gray">还没有组长</span>
@@ -70,8 +70,13 @@ const queryClient = useQueryClient();
 const { data: availableGroups, suspense: availableGroupsSuspense } = useQuery({
   queryKey: ['group.list', { classId: userStore.classId }],
   queryFn: () => $api.group.list.query({ classId: userStore.classId }),
+  refetchInterval: 5 * 1000,
 });
 await availableGroupsSuspense();
+
+const sortedAvailableGroups = computed(
+  () => availableGroups.value?.toSorted((a, b) => a.createdAt < b.createdAt ? -1 : 1),
+);
 
 const { mutate: joinGroup } = useMutation({
   mutationFn: $api.group.join.mutate,
