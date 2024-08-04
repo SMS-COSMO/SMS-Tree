@@ -18,6 +18,7 @@
                     class="h-40 w-40 shadow transition-all rounded hover:shadow-md"
                     src="/convertToPDF/wps-to-pdf1.png"
                     :preview-src-list="wpsToPDF"
+                    :initial-index="0"
                     fit="cover"
                   />
                 </template>
@@ -28,6 +29,7 @@
                     class="h-40 w-40 shadow transition-all rounded hover:shadow-md"
                     src="/convertToPDF/wps-to-pdf2.png"
                     :preview-src-list="wpsToPDF"
+                    :initial-index="1"
                     fit="cover"
                   />
                 </template>
@@ -38,6 +40,7 @@
                     class="h-40 w-40 shadow transition-all rounded hover:shadow-md"
                     src="/convertToPDF/wps-to-pdf3.png"
                     :preview-src-list="wpsToPDF"
+                    :initial-index="2"
                     fit="cover"
                   />
                 </template>
@@ -57,6 +60,7 @@
                     class="h-40 w-40 shadow transition-all rounded hover:shadow-md"
                     src="/convertToPDF/ppt-to-pdf1.png"
                     :preview-src-list="pptToPDF"
+                    :initial-index="0"
                     fit="cover"
                   />
                 </template>
@@ -67,6 +71,7 @@
                     class="h-40 w-40 shadow transition-all rounded hover:shadow-md"
                     src="/convertToPDF/ppt-to-pdf2.png"
                     :preview-src-list="pptToPDF"
+                    :initial-index="1"
                     fit="cover"
                   />
                 </template>
@@ -77,6 +82,7 @@
                     class="h-40 w-40 shadow transition-all rounded hover:shadow-md"
                     src="/convertToPDF/ppt-to-pdf3.png"
                     :preview-src-list="pptToPDF"
+                    :initial-index="2"
                     fit="cover"
                   />
                 </template>
@@ -92,6 +98,7 @@
                     class="h-40 w-40 shadow transition-all rounded hover:shadow-md"
                     src="/convertToPDF/wps-ppt-to-pdf1.png"
                     :preview-src-list="WpsPptToPDF"
+                    :initial-index="0"
                     fit="cover"
                   />
                 </template>
@@ -102,6 +109,7 @@
                     class="h-40 w-40 shadow transition-all rounded hover:shadow-md"
                     src="/convertToPDF/wps-ppt-to-pdf2.png"
                     :preview-src-list="WpsPptToPDF"
+                    :initial-index="1"
                     fit="cover"
                   />
                 </template>
@@ -112,6 +120,7 @@
                     class="h-40 w-40 shadow transition-all rounded hover:shadow-md"
                     src="/convertToPDF/wps-ppt-to-pdf3.png"
                     :preview-src-list="WpsPptToPDF"
+                    :initial-index="2"
                     fit="cover"
                   />
                 </template>
