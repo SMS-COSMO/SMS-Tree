@@ -1,6 +1,6 @@
 import { LibsqlError } from '@libsql/client';
 import bcrypt from 'bcrypt';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, gt } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import type { TNewUser, TRawUser } from '../../db/db';
 import { db } from '../../db/db';
@@ -244,9 +244,12 @@ export class UserController {
     };
   }
 
-  async list(role: 'student' | 'teacher' | 'admin' | 'all') {
+  async list(role: 'student' | 'teacher' | 'admin' | 'all', showOld: boolean) {
     const res = await db.query.users.findMany({
-      where: role === 'all' ? undefined : eq(users.role, role as 'student' | 'teacher' | 'admin'),
+      where: and(
+        role === 'all' ? undefined : eq(users.role, role as 'student' | 'teacher' | 'admin'),
+        showOld ? undefined : gt(users.createdAt, new Date(Date.now() - 3 * 31556952000)), // 3 years
+      ),
       columns: {
         id: true,
         schoolId: true,

@@ -17,6 +17,7 @@
         class="lg:basis-5/6"
         @input="currentPage = 1"
       />
+      <el-checkbox v-model="showOld" size="large" label="显示毕业学生" border />
     </div>
     <el-scrollbar>
       <div class="pb-24 pt-4 lg:pb-16">
@@ -92,6 +93,18 @@ const { processedListData: searchListData } = await useUserSearch(searchContent,
 
 const currentPage = ref(1);
 const pageSize = ref(50);
+const showOld = ref(false);
+
+watch(showOld, async (v) => {
+  if (!v) {
+    queryClient.invalidateQueries({ queryKey: ['user.list', { role: 'student' }] });
+  } else {
+    queryClient.setQueryData(
+      ['user.list', { role: 'student' }],
+      await $api.user.list.query({ role: 'student', showOld: true }),
+    );
+  }
+});
 
 const classFilterOptions = computed(
   () => searchListData.value.map(

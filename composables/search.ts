@@ -14,6 +14,7 @@ export async function useSearch<T>(
   const { data: listData, suspense } = useQuery({
     queryKey,
     queryFn: getList,
+    refetchOnWindowFocus: false,
   });
   await suspense();
 

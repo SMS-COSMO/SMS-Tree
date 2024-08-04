@@ -11,7 +11,6 @@ const decode = TextDecoder.prototype.decode.bind(new TextDecoder());
 const encPublicKey = await jose.importSPKI(env.ENC_PUBLIC_KEY, 'RSA-OAEP-256');
 const signPrivateKey = await jose.importPKCS8(env.SIGN_PRIVATE_KEY, 'RS512');
 
-// TODO: refactor Auth class
 export class Auth {
   async produceAccessToken(id: string) {
     const jwt = await new jose.SignJWT({})

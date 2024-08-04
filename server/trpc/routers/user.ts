@@ -99,8 +99,11 @@ export const userRouter = router({
 
   list: protectedProcedure
     .use(requireRoles(['teacher', 'admin']))
-    .input(z.object({ role: roleEnumSchema.optional() }))
+    .input(z.object({
+      role: roleEnumSchema.optional(),
+      showOld: z.boolean().optional().default(false),
+    }))
     .query(async ({ ctx, input }) => {
-      return await ctx.userController.list(input.role ?? 'all');
+      return await ctx.userController.list(input.role ?? 'all', input.showOld);
     }),
 });
