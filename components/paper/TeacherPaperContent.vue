@@ -51,6 +51,21 @@
           <el-icon class="i-tabler:pencil" />
           待批改
         </el-tag>
+        <el-popconfirm
+          v-if="info"
+          title="确定要删除论文吗？"
+          width="200"
+          confirm-button-type="danger"
+          hide-icon
+          @confirm="removePaper({ id: info.id })"
+        >
+          <template #reference>
+            <el-tag type="danger" size="large" class="cursor-pointer">
+              <el-icon class="i-tabler:trash" />
+              删除论文
+            </el-tag>
+          </template>
+        </el-popconfirm>
       </div>
     </div>
 
@@ -199,6 +214,19 @@ const { mutate: scoreMutation, isPending } = useMutation({
   mutationFn: $api.paper.score.mutate,
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['paper.scoreList'] });
+  },
+  onError: err => useErrorHandler(err),
+});
+
+const { mutate: removePaper } = useMutation({
+  mutationFn: $api.paper.remove.mutate,
+  onSuccess: () => {
+    useRouterBack();
+    queryClient.invalidateQueries({ queryKey: ['class.info'] });
+    queryClient.invalidateQueries({ queryKey: ['group.list'] });
+    queryClient.invalidateQueries({ queryKey: ['paper.scoreList'] });
+    queryClient.invalidateQueries({ queryKey: ['paper.list'] });
+    useMessage({ message: '删除成功', type: 'success' });
   },
   onError: err => useErrorHandler(err),
 });

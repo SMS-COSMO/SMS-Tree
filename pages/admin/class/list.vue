@@ -12,6 +12,7 @@
     <el-scrollbar>
       <div class="pb-20 pt-4">
         <el-table
+          ref="table"
           class="cursor-pointer"
           empty-text="没有查询到数据，请检查您的筛选条件"
           :data="processedListData"
@@ -61,6 +62,14 @@ const userStore = useUserStore();
 const showMine = ref(userStore.role !== 'admin');
 const searchContent = ref('');
 
+const table = ref();
+watch(searchContent, (v) => {
+  if (v)
+    table.value.clearSort();
+  else
+    table.value.sort('className', 'ascending');
+});
+
 const { data: teacherClasses, suspense } = useQuery({
   queryKey: ['user.teacherClasses', { id: userStore.userId }],
   queryFn: () => $api.user.teacherClasses.query(userStore.userId),
@@ -69,7 +78,7 @@ await suspense();
 
 const { processedListData, listData } = await useSearch<TClassListItem>(
   searchContent,
-  templateSearchOption(['enterYear', 'teacher.username', 'index']),
+  templateSearchOption(['enterYear', 'teacher.username', 'index', 'className']),
   () => $api.class.list.query(),
   ['class.list'],
   e => e.item,
