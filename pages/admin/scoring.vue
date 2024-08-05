@@ -3,7 +3,8 @@
     <div class="lg:basis-1/4">
       <el-card class="flow h-auto h-admin-content lg:h-admin-content!">
         <el-scrollbar>
-          <div class="sticky top-0 z-10 mb-2 w-full rounded">
+          <div class="sticky top-0 z-10 mb-2 w-full flex gap-2 rounded">
+            <el-checkbox v-model="showMine" size="large" label="仅展示我的" border />
             <el-select-v2
               v-model="filterClass"
               :options="classFilterOptions"
@@ -45,6 +46,9 @@ useHeadSafe({
   title: '批改论文',
 });
 const { $api } = useNuxtApp();
+const userStore = useUserStore();
+
+const showMine = ref(userStore.role !== 'admin');
 
 const filterClass = ref<string | undefined>();
 const { data: scoringQueue, suspense } = useQuery({
@@ -54,7 +58,12 @@ const { data: scoringQueue, suspense } = useQuery({
 });
 await suspense();
 
-const userStore = useUserStore();
+const { data: classList, suspense: classListSuspense } = useQuery({
+  queryKey: ['class.list'],
+  queryFn: () => $api.class.list.query(),
+});
+await classListSuspense();
+
 const { data: teacherClasses, suspense: teacherClassesSuspense } = useQuery({
   queryKey: ['user.teacherClasses', { id: userStore.userId }],
   queryFn: () => $api.user.teacherClasses.query(userStore.userId),
@@ -65,18 +74,22 @@ const filteredScoringQueue = computed(() =>
   scoringQueue.value?.filter((x) => {
     if (filterClass.value)
       return x.class.id === filterClass.value;
-    return teacherClasses.value?.some(c => c.id === x.class.id);
+    return (showMine.value ? teacherClasses.value : classList.value)?.some(c => c.id === x.class.id);
   }),
 );
 
 const classFilterOptions = computed(() => {
   const initial: ({ label: string; value: string | undefined })[] = [{ label: '全部', value: undefined }];
   return initial.concat(
-    teacherClasses.value?.map(x => ({
+    (showMine.value ? teacherClasses.value : classList.value)?.map(x => ({
       label: x.className,
       value: x.id,
     })) ?? [],
   );
+});
+
+watch(showMine, () => {
+  filterClass.value = undefined;
 });
 
 const selectedIndex = ref(0);
