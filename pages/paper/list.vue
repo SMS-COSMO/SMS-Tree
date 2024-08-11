@@ -3,6 +3,9 @@
     <div class="hidden lg:flex lg:basis-1/4">
       <el-card class="z-10 w-full">
         <SearchOptions v-model="searchOptions" />
+        <div class="mt-3 text-sm text-zinc/80">
+          共 {{ processedListData.length }} 条结果
+        </div>
       </el-card>
     </div>
     <div class="basis-3/4">
