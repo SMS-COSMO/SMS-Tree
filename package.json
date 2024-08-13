@@ -24,8 +24,8 @@
     "chatgpt-detector-relay:dev": "pnpm run -C services/chatgpt-detector-relay dev"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.627.0",
-    "@aws-sdk/s3-request-presigner": "^3.627.0",
+    "@aws-sdk/client-s3": "^3.629.0",
+    "@aws-sdk/s3-request-presigner": "^3.629.0",
     "@nuxt/image": "^1.7.0",
     "@tanstack/vue-query": "^5.51.21",
     "@tiptap/core": "^2.5.9",
@@ -69,7 +69,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "^2.25.1",
     "@element-plus/nuxt": "^1.0.9",
-    "@iconify-json/tabler": "^1.1.119",
+    "@iconify-json/tabler": "^1.1.120",
     "@nuxt/devtools": "latest",
     "@nuxt/test-utils": "^3.14.0",
     "@nuxtjs/device": "^3.1.1",
