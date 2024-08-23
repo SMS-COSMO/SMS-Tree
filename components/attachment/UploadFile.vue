@@ -19,6 +19,8 @@
         {{ (props.category === 'paperAttachment' || props.category === 'noteAttachment') ? '40MB' : '100MB' }}
         <template v-if="category !== 'paperAttachment' && category !== 'noteAttachment' && category !== 'carousel'">
           ，仅允许上传 PDF
+          {{ (props.category === 'reportDocument') ? '和 WORD 文档' : '' }}
+          {{ (props.category === 'reportPresentation') ? '和 PPT' : '' }}
           <ConvertToPDF class="ml-1" />
         </template>
       </div>

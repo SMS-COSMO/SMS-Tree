@@ -21,13 +21,16 @@ const allFiles = [
 export const allowFileType = {
   paperDocument: [
     'application/pdf',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   ],
   paperAttachment: allFiles,
   reportDocument: [
     'application/pdf',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   ],
   reportPresentation: [
     'application/pdf',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
   ],
   noteAttachment: allFiles,
   carousel: [

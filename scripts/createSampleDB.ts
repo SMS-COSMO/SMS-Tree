@@ -15,11 +15,20 @@ if (ans === 'n' || ans === 'N')
   process.exit(0);
 
 const pwd = await rl.question('? Password(default: 12345678): ') || '12345678';
+
 await ctl.uc.register({
   schoolId: 'admin',
   username: 'admin',
   password: pwd,
   role: 'admin',
+  initialPassword: false,
+});
+
+await ctl.uc.register({
+  schoolId: 'student',
+  username: 'student',
+  password: pwd,
+  role: 'student',
   initialPassword: false,
 });
 
