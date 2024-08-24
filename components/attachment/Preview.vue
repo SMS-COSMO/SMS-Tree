@@ -46,6 +46,11 @@
       :src="`https://view.officeapps.live.com/op/embed.aspx?src=${rawFileUrl}`" frameborder="0"
       :class="`w-full ${fullHeight ? 'h-[calc(100vh-200px)]' : 'h-150'}`"
     />
+    <iframe
+      v-else-if="pptFileTypes.includes(props.attachment.fileType)"
+      :src="`https://view.officeapps.live.com/op/embed.aspx?src=${rawFileUrl}`" frameborder="0"
+      :class="`w-full ${fullHeight ? 'h-[calc(100vh-200px)]' : 'h-150'}`"
+    />
     <el-image
       v-else-if="/^image*/.test(props.attachment.fileType)"
       class="h-40 w-40 shadow transition-all rounded hover:shadow-md"
@@ -90,11 +95,18 @@ await suspense();
 
 const docxFileTypes = [
   'application/msword',
-  'application/wps-office.docx',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/wps-office.docx',
+];
+
+const pptFileTypes = [
+  'application/vnd.ms-powerpoint',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'application/wps-office.pptx',
 ];
 
 const pdfFileTypes = ['application/pdf'];
+
 const fileUrl = computed(() => encodeURIComponent(rawFileUrl.value ?? ''));
 
 const downloading = ref(false);
