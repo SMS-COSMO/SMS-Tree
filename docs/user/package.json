@@ -10,11 +10,11 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "nuxt": "^3.12.4",
+    "nuxt": "^3.13.0",
     "shadcn-docs-nuxt": "^0.5.0",
-    "tailwindcss": "^3.4.9",
+    "tailwindcss": "^3.4.10",
     "tailwindcss-animate": "^1.0.7",
-    "vue": "^3.4.37",
+    "vue": "^3.4.38",
     "vue-router": "^4.4.3"
   }
 }
