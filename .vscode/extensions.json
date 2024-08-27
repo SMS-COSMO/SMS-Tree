@@ -9,6 +9,6 @@
         "vitest.explorer",
         "vue.volar",
         "streetsidesoftware.code-spell-checker",
-        "qwtel.sqlite-viewer"
+        "nuxt.mdc"
     ]
 }

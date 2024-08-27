@@ -44,9 +44,14 @@ export default defineAppConfig({
       enable: true,
       title: 'On This Page',
       links: [{
-        icon: 'lucide:user',
-        title: '用户文档',
-        to: 'https://sms-tree-docs.netlify.app/',
+      //   icon: 'lucide:user',
+      //   title: '用户文档',
+      //   to: 'https://sms-tree-docs-user.netlify.app/',
+      //   target: '_blank',
+      // }, {
+        icon: 'lucide:flask-conical',
+        title: '测试服务器',
+        to: 'https://sms-tree.asyncfox.dev/',
         target: '_blank',
       }, {
         icon: 'lucide:github',

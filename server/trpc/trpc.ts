@@ -90,15 +90,15 @@ export const loggedProcedure = t.procedure.use(async (opts) => {
     consola.log(
       start.toLocaleString('zh-CN'),
       '|',
-    `[${result.ok ? 'ok' : 'error'}]`,
-    `[${opts.type}]`,
-    `[${durationMs}ms]`,
-    opts.path,
-    '->',
-    input,
-    '|',
-    user?.role,
-    user?.id,
+      `[${result.ok ? 'ok' : 'error'}]`,
+      `[${opts.type}]`,
+      `[${durationMs}ms]`,
+      opts.path,
+      '->',
+      input,
+      '|',
+      user?.role,
+      user?.id,
     );
   } catch {}
 
