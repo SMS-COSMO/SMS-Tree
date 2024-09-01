@@ -61,5 +61,5 @@ export default defineNuxtConfig({
       '0 0 * * *': ['cleanFiles'],
     },
   },
-  compatibilityDate: '2024-07-10',
+  compatibilityDate: '2024-08-28',
 });
