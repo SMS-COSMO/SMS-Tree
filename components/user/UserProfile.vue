@@ -99,7 +99,7 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{
+const { userId, type } = defineProps<{
   userId: string;
   type: 'normal' | 'admin';
 }>();
@@ -115,8 +115,8 @@ const roleName = {
 };
 
 const { data: userInfo, suspense } = useQuery({
-  queryKey: ['user.profile', { id: props.userId }],
-  queryFn: () => $api.user.profile.query({ id: props.userId }),
+  queryKey: ['user.profile', { id: userId }],
+  queryFn: () => $api.user.profile.query({ id: userId }),
 });
 await suspense();
 

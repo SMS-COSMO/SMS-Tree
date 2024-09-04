@@ -128,7 +128,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+const { note } = defineProps<{
   note: TNote;
   admin?: boolean;
 }>();
@@ -156,7 +156,7 @@ const oldNote = computed<TNoteCreateSafeForm>(() => {
     groupId: _groupId,
     attachments: _attachments,
     ...rest
-  } = props.note;
+  } = note;
   return { ...rest, attachments: [] };
 });
 </script>

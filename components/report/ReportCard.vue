@@ -31,12 +31,10 @@
 </template>
 
 <script setup lang="ts">
-withDefaults(defineProps<{
+const { isAdmin = true } = defineProps<{
   report: TReport;
   isAdmin?: boolean;
-}>(), {
-  isAdmin: false,
-});
+}>();
 
 const dialogVisible = ref(false);
 </script>

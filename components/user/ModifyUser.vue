@@ -40,7 +40,7 @@
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus';
 
-const props = defineProps<{
+const { userId } = defineProps<{
   userId: string;
 }>();
 
@@ -50,8 +50,8 @@ const device = useDevice();
 const formRef = ref<FormInstance>();
 
 const { data: userInfo, suspense } = useQuery({
-  queryKey: ['user.profile', { id: props.userId }],
-  queryFn: () => $api.user.profile.query({ id: props.userId }),
+  queryKey: ['user.profile', { id: userId }],
+  queryFn: () => $api.user.profile.query({ id: userId }),
 });
 await suspense();
 
@@ -84,7 +84,7 @@ async function modify(submittedForm: FormInstance | undefined) {
 
   await submittedForm.validate(async (valid) => {
     if (valid)
-      modifyMutation({ id: props.userId, ...form });
+      modifyMutation({ id: userId, ...form });
     else
       useMessage({ message: '表单内有错误，请修改后再提交', type: 'error' });
   });

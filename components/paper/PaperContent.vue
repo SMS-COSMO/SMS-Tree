@@ -114,18 +114,19 @@
 </template>
 
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
+const {
+  id,
+  allowModify = false,
+} = defineProps<{
   id: string;
   allowModify?: boolean;
-}>(), {
-  allowModify: false,
-});
+}>();
 
 const { $api } = useNuxtApp();
 
 const { data: info, suspense: infoSuspense } = useQuery({
-  queryKey: ['paper.info', { id: props.id }],
-  queryFn: () => $api.paper.info.query({ id: props.id }),
+  queryKey: ['paper.info', { id }],
+  queryFn: () => $api.paper.info.query({ id }),
 });
 await infoSuspense();
 

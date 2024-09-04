@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+const { modelValue, classId } = defineProps<{
   modelValue: string[] | string;
   classId: string;
 }>();
@@ -42,7 +42,7 @@ const emit = defineEmits(['update:modelValue']);
 
 const { $api } = useNuxtApp();
 
-const selected = ref(props.modelValue);
+const selected = ref(modelValue);
 
 const cascaderValue = ref<string[]>();
 const groupId = defineModel<string>();
@@ -52,8 +52,8 @@ watch(cascaderValue, (v) => {
 });
 
 const { data: groups, suspense: groupListSuspense } = useQuery({
-  queryKey: ['group.list', { classId: props.classId }],
-  queryFn: () => $api.group.list.query({ classId: props.classId }),
+  queryKey: ['group.list', { classId }],
+  queryFn: () => $api.group.list.query({ classId }),
 });
 await groupListSuspense();
 

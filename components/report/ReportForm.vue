@@ -37,7 +37,7 @@
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus';
 
-const props = defineProps<{
+const { type, category, reportId } = defineProps<{
   type: 'create' | 'modify';
   category: TReportCategory;
   reportId?: string;
@@ -72,14 +72,14 @@ async function create(submittedForm: FormInstance | undefined) {
     if (valid) {
       try {
         buttonLoading.value = true;
-        if (props.type === 'create') {
-          const reportId = await $api.report.createSafe.mutate({ category: props.category });
+        if (type === 'create') {
+          const reportId = await $api.report.createSafe.mutate({ category });
           await $api.attachment.batchMoveToReport.mutate({
             ids: form.documentFile.concat(form.presentationFile),
             reportId,
           });
         } else {
-          if (!props.reportId) {
+          if (!reportId) {
             useMessage({ message: '找不到报告', type: 'error' });
             return;
           }
@@ -98,13 +98,13 @@ async function create(submittedForm: FormInstance | undefined) {
 
           await $api.attachment.batchReplaceReport.mutate({
             ids: form.documentFile.concat(form.presentationFile),
-            reportId: props.reportId,
+            reportId,
             category: modifyCategory,
           });
         }
 
         queryClient.invalidateQueries({ queryKey: ['group.info'] });
-        useMessage({ message: `${props.type === 'create' ? '创建' : '修改'}成功`, type: 'success' });
+        useMessage({ message: `${type === 'create' ? '创建' : '修改'}成功`, type: 'success' });
         resetForm(submittedForm);
       } catch (err) {
         useErrorHandler(err);

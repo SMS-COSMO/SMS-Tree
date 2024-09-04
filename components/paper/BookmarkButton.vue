@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+const { paperId, bookmarked } = defineProps<{
   paperId: string;
   bookmarked: boolean | undefined;
 }>();
@@ -22,14 +22,14 @@ const { mutate } = useMutation({
   mutationFn: $api.paper.toggleBookmark.mutate,
   onSuccess: () => {
     useMessage({
-      message: props.bookmarked ? '取消收藏成功' : '收藏成功',
+      message: bookmarked ? '取消收藏成功' : '收藏成功',
       type: 'success',
     });
     queryClient.invalidateQueries({
-      queryKey: ['paper.info', { id: props.paperId }],
+      queryKey: ['paper.info', { id: paperId }],
     });
     queryClient.invalidateQueries({
-      queryKey: ['paper.infoWithClass', { id: props.paperId }],
+      queryKey: ['paper.infoWithClass', { id: paperId }],
     });
     queryClient.invalidateQueries({ queryKey: ['paper.bookmarks'] });
     queryClient.invalidateQueries({ queryKey: ['paper.bookmarksWithInfo'] });

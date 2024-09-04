@@ -80,18 +80,19 @@
 </template>
 
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
+const {
+  report,
+  isAdmin = false,
+} = defineProps<{
   report: TReport;
   isAdmin?: boolean;
-}>(), {
-  isAdmin: false,
-});
+}>();
 
 const { $api } = useNuxtApp();
-const reportDocument = computed(() => props.report?.attachments?.filter(a => a.category === 'reportDocument')[0]);
-const reportPresentation = computed(() => props.report?.attachments?.filter(a => a.category === 'reportPresentation')[0]);
+const reportDocument = computed(() => report?.attachments?.filter(a => a.category === 'reportDocument')[0]);
+const reportPresentation = computed(() => report?.attachments?.filter(a => a.category === 'reportPresentation')[0]);
 
-const comment = ref(props.report.comment);
+const comment = ref(report.comment);
 const modifyDialogVisible = ref(false);
 const modifyCommentVisible = ref(false);
 

@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="props.attachment"
+    v-if="attachment"
     class="select-none"
     :class="[fullscreen ? 'fixed left-0 top-0 z-100 h-svh w-screen p-4 lg:p-9 box-border mt-0! backdrop-blur-lg bg-black/50' : 'relative']"
   >
@@ -11,7 +11,7 @@
     >
       <div class="hidden md:block">
         <el-button
-          v-if="pdfFileTypes.includes(props.attachment.fileType)"
+          v-if="pdfFileTypes.includes(attachment.fileType)"
           size="small"
           :icon="`${fullscreen ? 'i-tabler:arrows-minimize' : 'i-tabler:maximize'}`"
           @click="fullscreen = !fullscreen"
@@ -35,24 +35,24 @@
     </div>
 
     <iframe
-      v-if="pdfFileTypes.includes(props.attachment.fileType)"
+      v-if="pdfFileTypes.includes(attachment.fileType)"
       ref="target"
       :src="`/pdfjs-dist/web/viewer.html?file=${fileUrl}`" frameborder="0"
       class="box-border w-full rounded border-normal"
       :class="[fullscreen ? 'h-full' : (fullHeight ? 'h-[calc(100vh-200px)]' : 'h-150')]"
     />
     <iframe
-      v-else-if="docxFileTypes.includes(props.attachment.fileType)"
+      v-else-if="docxFileTypes.includes(attachment.fileType)"
       :src="`https://view.officeapps.live.com/op/embed.aspx?src=${rawFileUrl}`" frameborder="0"
       :class="`w-full ${fullHeight ? 'h-[calc(100vh-200px)]' : 'h-150'}`"
     />
     <iframe
-      v-else-if="pptFileTypes.includes(props.attachment.fileType)"
+      v-else-if="pptFileTypes.includes(attachment.fileType)"
       :src="`https://view.officeapps.live.com/op/embed.aspx?src=${rawFileUrl}`" frameborder="0"
       :class="`w-full ${fullHeight ? 'h-[calc(100vh-200px)]' : 'h-150'}`"
     />
     <el-image
-      v-else-if="/^image*/.test(props.attachment.fileType)"
+      v-else-if="/^image*/.test(attachment.fileType)"
       class="h-40 w-40 shadow transition-all rounded hover:shadow-md"
       :src="rawFileUrl"
       :zoom-rate="1.2"
@@ -62,10 +62,10 @@
       :preview-src-list="[rawFileUrl!]"
       fit="cover"
     />
-    <video v-else-if="/^video*/.test(props.attachment.fileType)" controls width="100%">
-      <source :src="rawFileUrl" :type="props.attachment.fileType">
+    <video v-else-if="/^video*/.test(attachment.fileType)" controls width="100%">
+      <source :src="rawFileUrl" :type="attachment.fileType">
     </video>
-    <audio v-else-if="/^audio*/.test(props.attachment.fileType)" controls :src="rawFileUrl" />
+    <audio v-else-if="/^audio*/.test(attachment.fileType)" controls :src="rawFileUrl" />
     <el-empty v-else :image-size="100" description="暂无预览" class="h-60" />
   </div>
 </template>
@@ -74,21 +74,22 @@
 import axios from 'axios';
 import pkg from 'file-saver';
 
-const props = withDefaults(defineProps<{
+const {
+  attachment,
+  fullHeight = false,
+  admin = false,
+} = defineProps<{
   attachment?: TAttachment;
   fullHeight?: boolean;
   admin?: boolean;
-}>(), {
-  fullHeight: false,
-  admin: false,
-});
+}>();
 
 const { saveAs } = pkg;
 const { $api } = useNuxtApp();
 
 const { data: rawFileUrl, suspense } = useQuery({
-  queryKey: ['attachment.fileUrl', { id: props.attachment?.S3FileId }],
-  queryFn: () => $api.attachment.fileUrl.query(props.attachment!.id),
+  queryKey: ['attachment.fileUrl', { id: attachment?.S3FileId }],
+  queryFn: () => $api.attachment.fileUrl.query(attachment!.id),
   refetchOnWindowFocus: false,
 });
 await suspense();
@@ -116,7 +117,7 @@ async function download() {
   downloading.value = true;
   const res = await axios.get(rawFileUrl.value, { responseType: 'blob' });
   downloading.value = false;
-  saveAs(res.data, props.attachment?.name ?? 'untitled.pdf');
+  saveAs(res.data, attachment?.name ?? 'untitled.pdf');
 }
 
 const fullscreen = ref(false);

@@ -26,13 +26,13 @@
 <script lang="ts" setup>
 import SelectPlaceholder from '../utils/SelectPlaceholder.vue';
 
-const props = withDefaults(defineProps<{
+const {
+  multiple = true,
+  role = 'student',
+} = defineProps<{
   multiple?: boolean;
   role?: 'student' | 'teacher';
-}>(), {
-  multiple: true,
-  role: 'student',
-});
+}>();
 const selected = defineModel();
 
 const { $api } = useNuxtApp();
@@ -44,8 +44,8 @@ const selectProps = {
 
 // TODO: don't show all the students
 const { data: options, suspense } = useQuery({
-  queryKey: ['user.list', { role: props.role }],
-  queryFn: () => $api.user.list.query({ role: props.role }),
+  queryKey: ['user.list', { role }],
+  queryFn: () => $api.user.list.query({ role }),
 });
 await suspense();
 </script>

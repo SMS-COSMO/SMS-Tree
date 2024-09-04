@@ -170,7 +170,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+const { id, isScoring } = defineProps<{
   id: string;
   isScoring: boolean;
 }>();
@@ -178,8 +178,8 @@ const props = defineProps<{
 const { $api } = useNuxtApp();
 
 const { data: info, suspense } = useQuery({
-  queryKey: ['paper.infoWithClass', { id: props.id }],
-  queryFn: () => $api.paper.infoWithClass.query({ id: props.id }),
+  queryKey: ['paper.infoWithClass', { id }],
+  queryFn: () => $api.paper.infoWithClass.query({ id }),
 });
 await suspense();
 

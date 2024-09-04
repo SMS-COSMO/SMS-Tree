@@ -19,7 +19,11 @@
 </template>
 
 <script setup lang="ts">
-withDefaults(defineProps<{
+const {
+  type = 'text',
+  showLeader = true,
+  isAdmin = false,
+} = defineProps<{
   authors?:
     Partial<TMinimalUser | undefined>[]
     | Partial<TUserProfile>[];
@@ -27,9 +31,5 @@ withDefaults(defineProps<{
   type?: 'text' | 'link';
   showLeader?: boolean;
   isAdmin?: boolean;
-}>(), {
-  type: 'text',
-  showLeader: true,
-  isAdmin: false,
-});
+}>();
 </script>

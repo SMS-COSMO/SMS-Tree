@@ -146,7 +146,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+const { info, index } = defineProps<{
   info?: TGroup;
   index: number;
 }>();
@@ -165,11 +165,11 @@ const { mutate: removeGroup } = useMutation({
 });
 
 const sortedNotes = computed(
-  () => props.info?.notes.toSorted((a, b) => a.createdAt < b.createdAt ? -1 : 1),
+  () => info?.notes.toSorted((a, b) => a.createdAt < b.createdAt ? -1 : 1),
 );
 
 onMounted(() => {
-  newProjectName.value = props.info?.projectName;
+  newProjectName.value = info?.projectName;
 });
 
 const edit = ref(false);

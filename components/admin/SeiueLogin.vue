@@ -76,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+const { routerBack } = defineProps<{
   routerBack: boolean;
 }>();
 
@@ -97,7 +97,7 @@ const { mutate: passwordLoginMutation, isPending } = useMutation({
   mutationFn: $api.seiue.login.mutate,
   onSuccess: (res) => {
     useSeiueStore().login(res);
-    if (props.routerBack)
+    if (routerBack)
       useRouterBack('/admin');
     queryClient.invalidateQueries({ queryKey: ['seiue.me'] });
     useMessage({
@@ -112,7 +112,7 @@ const { mutate: phoneLoginMutation, isPending: phonePending } = useMutation({
   mutationFn: $api.seiue.phoneLogin.mutate,
   onSuccess: (res) => {
     useSeiueStore().login(res);
-    if (props.routerBack)
+    if (routerBack)
       useRouterBack('/admin');
     queryClient.invalidateQueries({ queryKey: ['seiue.me'] });
     useMessage({

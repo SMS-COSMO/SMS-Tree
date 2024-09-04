@@ -24,9 +24,9 @@
         size="small"
         color="#15803d"
         plain
-        :disabled="dynamicTags.length >= 8"
+        :disabled="dynamicTags.length >= maxLength"
         @click="showInput"
-        @mouseenter="tooltipVisible = dynamicTags.length >= 8"
+        @mouseenter="tooltipVisible = dynamicTags.length >= maxLength"
         @mouseleave="tooltipVisible = false"
       >
         + 添加关键词
@@ -38,13 +38,13 @@
 <script lang="ts" setup>
 import { ElInput } from 'element-plus';
 
-withDefaults(defineProps<{
+const {
+  contentMaxLength = 8,
+  maxLength = 8,
+} = defineProps<{
   contentMaxLength?: number;
   maxLength?: number;
-}>(), {
-  contentMaxLength: 8,
-  maxLength: 8,
-});
+}>();
 
 const inputValue = ref('');
 const dynamicTags = defineModel<string[]>({ required: true });

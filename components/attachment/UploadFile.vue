@@ -16,11 +16,11 @@
     <template #tip>
       <div class="el-upload__tip">
         最多上传 {{ multiple ? 10 : 1 }} 个文件，大小不超过
-        {{ (props.category === 'paperAttachment' || props.category === 'noteAttachment') ? '40MB' : '100MB' }}
+        {{ (category === 'paperAttachment' || category === 'noteAttachment') ? '40MB' : '100MB' }}
         <template v-if="category !== 'paperAttachment' && category !== 'noteAttachment' && category !== 'carousel'">
           ，仅允许上传 PDF
-          {{ (props.category === 'reportDocument') ? '和 WORD 文档' : '' }}
-          {{ (props.category === 'reportPresentation') ? '和 PPT' : '' }}
+          {{ (category === 'reportDocument') ? '和 WORD 文档' : '' }}
+          {{ (category === 'reportPresentation') ? '和 PPT' : '' }}
           <ConvertToPDF class="ml-1" />
         </template>
       </div>
@@ -32,12 +32,13 @@
 import type { UploadFile, UploadFiles, UploadRawFile, UploadRequestOptions } from 'element-plus';
 import axios from 'axios';
 
-const props = withDefaults(defineProps<{
+const {
+  category,
+  multiple = false,
+} = defineProps<{
   category: TAttachmentCategory;
   multiple?: boolean;
-}>(), {
-  multiple: false,
-});
+}>();
 
 const uploading = defineModel<boolean>('uploading');
 
@@ -68,7 +69,7 @@ async function handleUpload(option: UploadRequestOptions) {
   uploading.value = true;
   const { file } = option;
   const f = getFile(file);
-  if (!allowFileType[props.category].includes(file.type)) {
+  if (!allowFileType[category].includes(file.type)) {
     removeFileFromList(f, '不支持的文件类型');
     if (f)
       handleRemove(f);
@@ -77,7 +78,7 @@ async function handleUpload(option: UploadRequestOptions) {
   }
 
   // f.size in bytes
-  const sizeLimit = (props.category === 'paperAttachment' || props.category === 'noteAttachment')
+  const sizeLimit = (category === 'paperAttachment' || category === 'noteAttachment')
     ? 40000000 // 40mb
     : 100000000; // 100mb
   if (f?.size && f.size > sizeLimit) {
@@ -89,7 +90,7 @@ async function handleUpload(option: UploadRequestOptions) {
 
   try {
     const { id, url } = await $api.attachment.create.mutate({
-      category: props.category,
+      category,
       fileType: file.type,
       name: file.name,
     });

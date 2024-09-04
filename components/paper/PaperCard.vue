@@ -51,19 +51,19 @@
 </template>
 
 <script setup lang="ts">
-withDefaults(defineProps<{
+const {
+  showAbstract = false,
+  lineClamp = 3,
+  showAuthors = true,
+  isAdmin = false,
+} = defineProps<{
   paper: Partial<TPaperListSafeItem>;
   showAbstract?: boolean;
   lineClamp?: number;
   showAuthors?: boolean;
   isAdmin?: boolean;
   bookmarked?: boolean;
-}>(), {
-  showAbstract: false,
-  lineClamp: 3,
-  showAuthors: true,
-  isAdmin: false,
-});
+}>();
 
 const userStore = useUserStore();
 </script>

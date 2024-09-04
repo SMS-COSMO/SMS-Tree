@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+const { semesterId } = defineProps<{
   semesterId: number;
 }>();
 
@@ -54,8 +54,8 @@ defineEmits<{ back: []; next: [value: { classId: number; name: string }[]] }>();
 
 const { $api } = useNuxtApp();
 const { data: classList, isFetching } = useQuery({
-  queryKey: ['seiue.classList', props.semesterId],
-  queryFn: () => $api.seiue.classList.query({ semesterId: props.semesterId }),
+  queryKey: ['seiue.classList', semesterId],
+  queryFn: () => $api.seiue.classList.query({ semesterId }),
 });
 
 const selectedClassIds = ref<number[]>([]);

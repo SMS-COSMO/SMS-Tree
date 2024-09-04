@@ -6,15 +6,15 @@
 import { generateHTML } from '@tiptap/html';
 import { tipTapExtensions } from './extensions';
 
-const props = defineProps<{
+const { content } = defineProps<{
   content: string | undefined | null;
 }>();
 
 const html = computed(() => {
   let json = {};
-  if (props.content) {
+  if (content) {
     try {
-      json = JSON.parse(props.content);
+      json = JSON.parse(content);
     } catch {}
   }
 

@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{
+const { url } = defineProps<{
   url: string;
 }>();
 
@@ -84,7 +84,7 @@ const pdfjs = await import('pdfjs-dist/build/pdf');
 await import('pdfjs-dist/build/pdf.worker');
 pdfjs.GlobalWorkerOptions.workerSrc = `${import.meta.url}pdfjs-dist/build/pdf.worker.mjs`;
 
-const pdf = await pdfjs.getDocument(props.url).promise;
+const pdf = await pdfjs.getDocument(url).promise;
 
 const text = ref('');
 for (let i = 1; i <= pdf.numPages; i++) {
@@ -97,7 +97,7 @@ for (let i = 1; i <= pdf.numPages; i++) {
 const splitText = text.value.match(/.{1,500}/g) ?? [];
 
 const { data, isPending, isError, refetch } = useQuery({
-  queryKey: ['chatgpt-detector', props.url],
+  queryKey: ['chatgpt-detector', url],
   queryFn: () => $fetch<[{ label: 'ChatGPT' | 'Human'; score: number }][]>(useRuntimeConfig().public.CHATGPT_DETECTOR_API, {
     method: 'POST',
     body: {

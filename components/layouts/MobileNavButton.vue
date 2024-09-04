@@ -16,11 +16,11 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+const { href } = defineProps<{
   label: string;
   href: string;
 }>();
 
 const route = useRoute();
-const isHighlight = computed(() => route.fullPath === props.href);
+const isHighlight = computed(() => route.fullPath === href);
 </script>

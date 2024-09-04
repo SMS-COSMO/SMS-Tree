@@ -27,13 +27,13 @@
 <script setup lang="ts">
 import type { TImportDataResult } from '~/types';
 
-const props = defineProps<{
+const { importResult } = defineProps<{
   isFinished: boolean;
   importResult: TImportDataResult;
 }>();
 defineEmits<{ reset: [] }>();
 
 const isSuccess = computed(
-  () => props.importResult.length && props.importResult.every(item => item.success),
+  () => importResult.length && importResult.every(item => item.success),
 );
 </script>

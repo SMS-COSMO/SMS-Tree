@@ -61,7 +61,12 @@
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus';
 
-const props = defineProps<{
+const {
+  type,
+  oldNote,
+  noteId,
+  admin,
+} = defineProps<{
   type: 'create' | 'modify';
   oldNote?: TNoteCreateSafeForm;
   noteId?: string;
@@ -73,7 +78,7 @@ const emit = defineEmits(['reset']);
 const { $api } = useNuxtApp();
 const device = useDevice();
 const formRef = ref<FormInstance>();
-const form = ref<TNoteCreateSafeForm>(props.oldNote ?? {
+const form = ref<TNoteCreateSafeForm>(oldNote ?? {
   title: '',
   content: '',
   followUp: '',
@@ -125,7 +130,7 @@ async function submit(submittedForm: FormInstance | undefined) {
   await submittedForm.validate(async (valid) => {
     if (valid) {
       buttonLoading.value = true;
-      if (props.type === 'create') {
+      if (type === 'create') {
         try {
           const noteId = await $api.note.createSafe.mutate(form.value);
           if (form.value.attachments.length) {
@@ -140,16 +145,16 @@ async function submit(submittedForm: FormInstance | undefined) {
         } catch (err) {
           useErrorHandler(err);
         }
-      } else if (props.noteId) {
+      } else if (noteId) {
         try {
-          if (props.admin)
-            await $api.note.modify.mutate({ id: props.noteId, ...form.value });
+          if (admin)
+            await $api.note.modify.mutate({ id: noteId, ...form.value });
           else
-            await $api.note.modifySafe.mutate({ id: props.noteId, ...form.value });
+            await $api.note.modifySafe.mutate({ id: noteId, ...form.value });
           if (form.value.attachments.length) {
             await $api.attachment.batchReplaceNote.mutate({
               ids: form.value.attachments,
-              noteId: props.noteId,
+              noteId,
               category: 'noteAttachment',
             });
           }

@@ -87,7 +87,7 @@
 <script setup lang="ts">
 import writeXlsxFile from 'write-excel-file';
 
-const props = defineProps<{
+const { data, id } = defineProps<{
   showRemove: boolean;
   data?: Partial<TImportHistory>;
   id?: string;
@@ -104,7 +104,7 @@ const { mutate: removeMutation } = useMutation({
 });
 
 async function openDeleteDialog() {
-  if (!props.id)
+  if (!id)
     return;
 
   await ElMessageBox.confirm(
@@ -116,7 +116,7 @@ async function openDeleteDialog() {
       type: 'warning',
     },
   );
-  removeMutation({ ids: [props.id] });
+  removeMutation({ ids: [id] });
 }
 
 interface THistoryRow {
@@ -146,7 +146,7 @@ async function exportPassword(className: string, passwords: THistoryRow[]) {
 
 async function exportAll() {
   await Promise.all(
-    (props.data?.data ?? [])
+    (data?.data ?? [])
       .filter(x => x.passwords.length)
       .map(x => exportPassword(x.name, x.passwords)),
   );

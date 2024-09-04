@@ -74,7 +74,7 @@
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus';
 
-const props = defineProps<{
+const { type, oldPaper, paperId } = defineProps<{
   type: 'create' | 'modify';
   oldPaper?: TPaperCreateSafeForm;
   paperId?: string;
@@ -85,7 +85,7 @@ const { $api } = useNuxtApp();
 const device = useDevice();
 
 const formRef = ref<FormInstance>();
-const form = ref<TPaperCreateSafeForm>(props.oldPaper ?? {
+const form = ref<TPaperCreateSafeForm>(oldPaper ?? {
   title: '',
   abstract: '',
   category: 0,
@@ -107,7 +107,7 @@ const rules = reactive<FormRules<TPaperCreateSafeForm>>({
   category: [{ required: true, message: '请选择分类', trigger: 'blur' }],
   keywords: [{ required: true, message: '关键词不能为空', trigger: 'blur' }],
   canDownload: [{ required: true }],
-  paperFile: props.type === 'create' ? [{ required: true, message: '请上传论文文件' }] : undefined,
+  paperFile: type === 'create' ? [{ required: true, message: '请上传论文文件' }] : undefined,
 });
 
 const buttonLoading = ref(false);
@@ -123,7 +123,7 @@ async function create(submittedForm: FormInstance | undefined) {
   await submittedForm.validate(async (valid) => {
     if (valid && form.value.category >= 0) {
       buttonLoading.value = true;
-      if (props.type === 'create') {
+      if (type === 'create') {
         try {
           const paperId = await $api.paper.createSafe.mutate(form.value);
           await $api.attachment.batchMoveToPaper.mutate({
@@ -137,29 +137,29 @@ async function create(submittedForm: FormInstance | undefined) {
           useErrorHandler(err);
         }
       } else {
-        if (!props.paperId) {
+        if (!paperId) {
           useMessage({ message: '找不到论文', type: 'error' });
           return;
         }
 
         try {
-          await $api.paper.modifySafe.mutate({ id: props.paperId, ...form.value });
+          await $api.paper.modifySafe.mutate({ id: paperId, ...form.value });
           if (form.value.paperFile.length) {
             await $api.attachment.batchReplacePaper.mutate({
               ids: form.value.paperFile,
-              paperId: props.paperId,
+              paperId,
               category: 'paperDocument',
             });
           }
           if (form.value.attachments.length) {
             await $api.attachment.batchReplacePaper.mutate({
               ids: form.value.attachments,
-              paperId: props.paperId,
+              paperId,
               category: 'paperAttachment',
             });
           }
           useMessage({ message: '修改成功', type: 'success' });
-          await queryClient.invalidateQueries({ queryKey: ['paper.info', { id: props.paperId }] });
+          await queryClient.invalidateQueries({ queryKey: ['paper.info', { id: paperId }] });
           resetForm(submittedForm);
         } catch (err) {
           useErrorHandler(err);
@@ -176,8 +176,8 @@ function resetForm(formEl: FormInstance | undefined) {
   if (!formEl)
     return;
   formEl.resetFields();
-  if (props.oldPaper)
-    form.value = props.oldPaper;
+  if (oldPaper)
+    form.value = oldPaper;
   reset();
   emit('reset');
 }

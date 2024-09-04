@@ -138,7 +138,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+const { classState } = defineProps<{
   classState: TClassState;
 }>();
 
@@ -171,10 +171,10 @@ const sortedNotes = computed(
   () => groupInfo.value?.notes.toSorted((a, b) => a.createdAt < b.createdAt ? -1 : 1),
 );
 
-const tabState = ref(props.classState);
+const tabState = ref(classState);
 
 function reachedState(currentState: string) {
-  return classStateSteps.indexOf(props.classState) >= classStateSteps.indexOf(currentState);
+  return classStateSteps.indexOf(classState) >= classStateSteps.indexOf(currentState);
 }
 
 onMounted(() => {

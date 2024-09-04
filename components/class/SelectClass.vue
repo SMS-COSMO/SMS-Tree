@@ -14,14 +14,6 @@
 </template>
 
 <script lang="ts" setup>
-import SelectPlaceholder from '../utils/SelectPlaceholder.vue';
-
-withDefaults(defineProps<{
-  role?: 'student' | 'teacher';
-}>(), {
-  multiple: true,
-  role: 'student',
-});
 const selected = defineModel();
 
 const { $api } = useNuxtApp();

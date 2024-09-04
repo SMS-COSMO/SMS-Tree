@@ -23,21 +23,21 @@
 </template>
 
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
+const {
+  autoDetect = true,
+  parentPath = '',
+  currentName = '',
+} = defineProps<{
   autoDetect?: boolean;
   parentPath?: string;
   currentName?: string;
-}>(), {
-  autoDetect: true,
-  parentPath: '',
-  currentName: '',
-});
+}>();
 
 const route = useRoute();
-const currentNode = props.autoDetect
+const currentNode = autoDetect
   ? adminNavNodes.search(route.path)
-  : new NavNode(props.currentName, route.path);
-if (!props.autoDetect && currentNode)
-  adminNavNodes.search(props.parentPath)?.addChildren(currentNode);
+  : new NavNode(currentName, route.path);
+if (!autoDetect && currentNode)
+  adminNavNodes.search(parentPath)?.addChildren(currentNode);
 const chainList = currentNode?.getChainList();
 </script>

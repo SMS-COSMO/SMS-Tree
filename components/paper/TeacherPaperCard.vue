@@ -33,17 +33,17 @@
 </template>
 
 <script setup lang="ts">
-withDefaults(defineProps<{
+const {
+  showAbstract = false,
+  lineClamp = 3,
+  showAuthors = true,
+} = defineProps<{
   paper: Partial<TPaperScoringItem>;
   showAbstract?: boolean;
   lineClamp?: number;
   showAuthors?: boolean;
   currentSelected?: string;
-}>(), {
-  showAbstract: false,
-  lineClamp: 3,
-  showAuthors: true,
-});
+}>();
 
 defineEmits(['selected']);
 </script>

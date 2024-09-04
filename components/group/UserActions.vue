@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+const { groupId, classId, leader } = defineProps<{
   groupId?: string;
   classId: string;
   leader?: string;
@@ -105,10 +105,10 @@ function moveAction() {
   if (!user.value)
     return;
 
-  if (props.groupId) {
+  if (groupId) {
     changeGroup({
       userId: user.value.id,
-      oldGroupId: props.groupId,
+      oldGroupId: groupId,
       newGroupId: newGroupId.value,
     });
   } else {

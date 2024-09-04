@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus';
 
-const props = defineProps<{
+const { userId } = defineProps<{
   userId: string;
 }>();
 
@@ -110,7 +110,7 @@ async function modify(formEl: FormInstance | undefined) {
         useMessage({ message: '新密码不能与旧密码相同', type: 'error' });
 
       changePassword({
-        id: props.userId,
+        id: userId,
         oldPassword: form.oldPassword,
         newPassword: form.newPassword,
       });
