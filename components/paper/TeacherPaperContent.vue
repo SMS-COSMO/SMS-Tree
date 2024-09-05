@@ -139,8 +139,11 @@
       full-height
       admin
     />
-    <template v-if="attachmentDocuments?.length">
-      <h3>附件</h3>
+    <el-card v-if="attachmentDocuments?.length">
+      <template #header>
+        <el-icon class="i-tabler:pin" />
+        附件
+      </template>
       <el-collapse>
         <el-collapse-item
           v-for="attachment in attachmentDocuments"
@@ -156,7 +159,7 @@
           <Preview :attachment="attachment" admin />
         </el-collapse-item>
       </el-collapse>
-    </template>
+    </el-card>
     <el-card v-if="info?.comment">
       <template #header>
         <el-icon class="i-tabler:message" />
