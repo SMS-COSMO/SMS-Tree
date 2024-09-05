@@ -18,6 +18,10 @@ export default defineNuxtConfig({
     'notivue/animations.css',
     'notivue/notification-progress.css',
   ],
+  // May be removed in nuxt 3.13.2
+  vue: {
+    propsDestructure: true,
+  },
   components: [
     {
       path: '~/components',
