@@ -30,7 +30,7 @@
         </el-button>
       </div>
       <div>
-        <chatgpt-detector v-if="admin && rawFileUrl" :url="rawFileUrl" />
+        <chatgpt-detector v-if="admin && rawFileUrl && pdfFileTypes.includes(attachment.fileType)" :url="rawFileUrl" />
       </div>
     </div>
 
