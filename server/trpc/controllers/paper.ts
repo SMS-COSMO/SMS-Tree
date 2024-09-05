@@ -298,6 +298,7 @@ export class PaperController {
     id: string,
     newPaper: {
       isFeatured?: boolean;
+      canDownload?: boolean;
       comment?: string;
     },
   ) {

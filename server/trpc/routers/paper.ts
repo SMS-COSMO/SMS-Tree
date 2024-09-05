@@ -96,6 +96,7 @@ export const paperRouter = router({
       paperId: z.string().min(1, '论文 ID 不存在'),
       newPaper: z.object({
         comment: z.string().min(1, '评语不能为空').max(500, '评语最长为 500 字符').optional(),
+        canDownload: z.boolean().optional(),
         isFeatured: z.boolean().optional(),
       }),
     }))

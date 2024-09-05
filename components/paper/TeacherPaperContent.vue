@@ -2,14 +2,12 @@
   <div class="space-y-3 md:space-y-4">
     <el-card v-if="isScoring" class="right-0 top-0 z-10 md:absolute">
       <div class="m-[-5px] flex flex-col gap-2 md:flex-row">
-        <el-tooltip content="是否选为优秀" placement="top" :show-after="800">
-          <el-switch
-            v-model="form.isFeatured" active-text="优秀" inactive-text="普通" inline-prompt
-            size="large"
-            class="h-[34px]!"
-            style="--el-switch-on-color: #15803d; --el-switch-off-color: #409EFF;"
-          />
-        </el-tooltip>
+        <el-checkbox v-model="form.canDownload" border class="mr-0!">
+          可下载
+        </el-checkbox>
+        <el-checkbox v-model="form.isFeatured" border class="mr-0!">
+          选为优秀
+        </el-checkbox>
         <el-popover
           title="添加评语（可留空）"
           :width="600"
@@ -207,6 +205,7 @@ function searchCategory(code: number | undefined) {
 const form = reactive({
   comment: undefined,
   isFeatured: false,
+  canDownload: true,
 });
 
 const queryClient = useQueryClient();
