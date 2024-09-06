@@ -1,8 +1,9 @@
 <template>
-  <span class="break-all text-wrap space-x-1.5">
+  <span class="flex gap-1.2 break-all text-wrap md:gap-1.5">
     <span
       v-for="(author, index) of authors" :key="index"
-      :class="`${showLeader && author?.id === leader?.id ? 'font-bold!' : ''}`"
+      class="text-xs md:text-sm"
+      :class="[showLeader && author?.id === leader?.id && 'font-bold!']"
     >
       <template v-if="type === 'text'">
         {{ author?.username }}
