@@ -74,10 +74,11 @@
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus';
 
-const { type, oldPaper, paperId } = defineProps<{
+const { type, oldPaper, paperId, isAdmin = false } = defineProps<{
   type: 'create' | 'modify';
   oldPaper?: TPaperCreateSafeForm;
   paperId?: string;
+  isAdmin?: boolean;
 }>();
 const emit = defineEmits(['reset']);
 
@@ -143,7 +144,11 @@ async function create(submittedForm: FormInstance | undefined) {
         }
 
         try {
-          await $api.paper.modifySafe.mutate({ id: paperId, ...form.value });
+          if (isAdmin)
+            await $api.paper.modify.mutate({ id: paperId, ...form.value });
+          else
+            await $api.paper.modifySafe.mutate({ id: paperId, ...form.value });
+
           if (form.value.paperFile.length) {
             await $api.attachment.batchReplacePaper.mutate({
               ids: form.value.paperFile,
@@ -160,6 +165,7 @@ async function create(submittedForm: FormInstance | undefined) {
           }
           useMessage({ message: '修改成功', type: 'success' });
           await queryClient.invalidateQueries({ queryKey: ['paper.info', { id: paperId }] });
+          await queryClient.invalidateQueries({ queryKey: ['paper.infoWithClass', { id: paperId }] });
           resetForm(submittedForm);
         } catch (err) {
           useErrorHandler(err);

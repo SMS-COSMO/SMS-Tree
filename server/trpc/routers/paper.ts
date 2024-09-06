@@ -64,7 +64,7 @@ export const paperRouter = router({
   modify: protectedProcedure
     .meta({ description: '修改论文信息。要求教师及以上权限。' })
     .use(requireRoles(['admin', 'teacher']))
-    .input(createSchema.extend({ id: paperIdSchema }))
+    .input(createSchema.partial().extend({ id: paperIdSchema }))
     .mutation(async ({ ctx, input }) => {
       const { id, ...data } = input;
       return await ctx.paperController.modify(id, data);

@@ -49,6 +49,10 @@
           <el-icon class="i-tabler:pencil" />
           待批改
         </el-tag>
+        <el-tag size="large" class="cursor-pointer" @click="modifyDialogVisible = true">
+          <el-icon class="i-tabler:edit" />
+          修改论文
+        </el-tag>
         <el-popconfirm
           v-if="info"
           title="确定要删除论文吗？"
@@ -168,6 +172,17 @@
       <TiptapViewer :content="info?.comment" />
     </el-card>
   </div>
+
+  <client-only>
+    <el-dialog
+      v-model="modifyDialogVisible"
+      draggable
+      align-center
+      title="修改论文"
+    >
+      <PaperForm type="modify" :old-paper="oldPaper" :paper-id="id" is-admin @reset="modifyDialogVisible = false" />
+    </el-dialog>
+  </client-only>
 </template>
 
 <script setup lang="ts">
@@ -183,6 +198,16 @@ const { data: info, suspense } = useQuery({
   queryFn: () => $api.paper.infoWithClass.query({ id }),
 });
 await suspense();
+
+const oldPaper = computed<TPaperCreateSafeForm>(() => ({
+  title: info.value?.title ?? '',
+  abstract: info.value?.abstract ?? '',
+  category: info.value?.category ?? -1,
+  keywords: Array.from(info.value?.keywords ?? []), // Make keywords array not readonly
+  canDownload: info.value?.canDownload ?? false,
+  paperFile: [],
+  attachments: [],
+}));
 
 const paperDocuments = info.value?.attachments?.filter(a => a.category === 'paperDocument');
 const attachmentDocuments = info.value?.attachments?.filter(a => a.category !== 'paperDocument');
@@ -232,4 +257,6 @@ const { mutate: removePaper } = useMutation({
   },
   onError: err => useErrorHandler(err),
 });
+
+const modifyDialogVisible = ref(false);
 </script>
