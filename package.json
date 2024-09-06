@@ -64,6 +64,7 @@
     "notivue": "^2.4.5",
     "pdfjs-dist": "^4.6.82",
     "postgres": "^3.4.4",
+    "qrcode": "^1",
     "superjson": "^2.2.1",
     "trpc-nuxt": "^0.10.22",
     "write-excel-file": "^2.0.9",

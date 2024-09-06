@@ -3,7 +3,7 @@
     :content="bookmarked ? '取消收藏' : '收藏'"
     placement="top"
   >
-    <div class="ml-auto cursor-pointer" @click="mutate({ id: paperId })">
+    <div class="cursor-pointer" @click="mutate({ id: paperId })">
       <el-icon v-if="bookmarked" class="i-tabler:bookmark-filled" />
       <el-icon v-else class="i-tabler:bookmark" />
     </div>
