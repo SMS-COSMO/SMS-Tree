@@ -42,12 +42,11 @@
       :class="[fullscreen ? 'h-full' : (fullHeight ? 'h-[calc(100vh-200px)]' : 'h-150')]"
     />
     <iframe
-      v-else-if="docxFileTypes.includes(attachment.fileType)"
-      :src="`https://view.officeapps.live.com/op/embed.aspx?src=${rawFileUrl}`" frameborder="0"
-      :class="`w-full ${fullHeight ? 'h-[calc(100vh-200px)]' : 'h-150'}`"
-    />
-    <iframe
-      v-else-if="pptFileTypes.includes(attachment.fileType)"
+      v-else-if="
+        docxFileTypes.includes(attachment.fileType)
+          || pptFileTypes.includes(attachment.fileType)
+          || xlsxFileTypes.includes(attachment.fileType)
+      "
       :src="`https://view.officeapps.live.com/op/embed.aspx?src=${rawFileUrl}`" frameborder="0"
       :class="`w-full ${fullHeight ? 'h-[calc(100vh-200px)]' : 'h-150'}`"
     />
@@ -93,20 +92,6 @@ const { data: rawFileUrl, suspense } = useQuery({
   refetchOnWindowFocus: false,
 });
 await suspense();
-
-const docxFileTypes = [
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/wps-office.docx',
-];
-
-const pptFileTypes = [
-  'application/vnd.ms-powerpoint',
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  'application/wps-office.pptx',
-];
-
-const pdfFileTypes = ['application/pdf'];
 
 const fileUrl = computed(() => encodeURIComponent(rawFileUrl.value ?? ''));
 

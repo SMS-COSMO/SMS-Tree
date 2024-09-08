@@ -9,6 +9,7 @@
         "vitest.explorer",
         "vue.volar",
         "streetsidesoftware.code-spell-checker",
-        "nuxt.mdc"
+        "nuxt.mdc",
+        "antfu.iconify"
     ]
 }
