@@ -59,6 +59,7 @@ export class GroupController {
       where: eq(groups.id, id),
       with: {
         notes: {
+          orderBy: (notes, { asc }) => [asc(notes.time)],
           with: {
             attachments: {
               columns: {
@@ -150,6 +151,7 @@ export class GroupController {
     }
 
     const res = await db.query.groups.findMany({
+      orderBy: (groups, { asc }) => [asc(groups.createdAt)],
       where: classId ? eq(groups.classId, classId) : undefined,
       with: {
         usersToGroups: {

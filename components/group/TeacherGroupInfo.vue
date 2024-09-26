@@ -107,7 +107,7 @@
           </div>
         </template>
         <div :class="[(info?.notes?.length ?? 0) > 1 && 'grid grid-cols-2 gap-2']">
-          <template v-for="note in sortedNotes" :key="note.id">
+          <template v-for="note in info?.notes" :key="note.id">
             <NoteCard admin :note="note" />
           </template>
         </div>
@@ -163,10 +163,6 @@ const { mutate: removeGroup } = useMutation({
   },
   onError: err => useErrorHandler(err),
 });
-
-const sortedNotes = computed(
-  () => info?.notes.toSorted((a, b) => a.createdAt < b.createdAt ? -1 : 1),
-);
 
 onMounted(() => {
   newProjectName.value = info?.projectName;

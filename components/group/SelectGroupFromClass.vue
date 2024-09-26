@@ -57,12 +57,8 @@ const { data: groups, suspense: groupListSuspense } = useQuery({
 });
 await groupListSuspense();
 
-const sortedGroups = computed(
-  () => groups.value?.toSorted((a, b) => a.createdAt < b.createdAt ? -1 : 1),
-);
-
 const options = computed(
-  () => (sortedGroups.value ?? []).map(v1 => ({
+  () => (groups.value ?? []).map(v1 => ({
     value: v1.id,
     label: v1.projectName ?? '未知课题名',
   })),

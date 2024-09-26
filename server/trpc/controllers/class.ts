@@ -3,11 +3,11 @@ import { TRPCError } from '@trpc/server';
 import { db } from '../../db/db';
 import { classes } from '../../db/schema/class';
 import { classesToStudents } from '../../db/schema/classToStudents';
-import { groups } from '~/server/db/schema/group';
 import type { TClassState } from '~/types';
 import { reports } from '~/server/db/schema/report';
 import { notes } from '~/server/db/schema/note';
 import { className } from '~/utils/class';
+import { groups } from '~/server/db/schema/group';
 
 export class ClassController {
   async create(newClass: {
@@ -115,8 +115,10 @@ export class ClassController {
           },
         },
         groups: {
+          orderBy: (groups, { asc }) => [asc(groups.createdAt)],
           with: {
             notes: {
+              orderBy: (notes, { asc }) => [asc(notes.time)],
               with: {
                 attachments: {
                   columns: {
