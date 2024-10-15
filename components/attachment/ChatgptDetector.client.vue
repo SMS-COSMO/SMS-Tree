@@ -98,7 +98,7 @@ const splitText = text.value.match(/.{1,500}/g) ?? [];
 
 const { data, isPending, isError, refetch } = useQuery({
   queryKey: ['chatgpt-detector', url],
-  queryFn: () => $fetch<[{ label: 'ChatGPT' | 'Human'; score: number }][]>(useRuntimeConfig().public.CHATGPT_DETECTOR_API, {
+  queryFn: () => $fetch<[{ label: 'ChatGPT' | 'Human'; score: number }][]>(useRuntimeConfig().public.chatgptDetectorApi, {
     method: 'POST',
     body: {
       text: text.value,

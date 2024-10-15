@@ -1,5 +1,3 @@
-import process from 'node:process';
-
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
@@ -39,7 +37,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      CHATGPT_DETECTOR_API: process.env.CHATGPT_DETECTOR_API,
+      chatgptDetectorApi: '',
     },
   },
   build: {
