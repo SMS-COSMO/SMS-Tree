@@ -130,6 +130,7 @@ export class PaperController {
                 enterYear: true,
                 id: true,
                 index: true,
+                stateTimetable: true,
               },
             },
           },

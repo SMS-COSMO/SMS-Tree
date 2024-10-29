@@ -9,7 +9,7 @@
   <el-tag type="info" disable-transitions>
     {{ report.createdAt.toLocaleDateString('zh-CN') }}
   </el-tag>
-  <el-tag v-if="isAdmin && late() > 0" type="warning" disable-transitions class="ml-2">
+  <el-tag v-if="isAdmin && late() > 0" type="danger" disable-transitions class="ml-2">
     晚交 {{ late() }} 天
   </el-tag>
   <template v-if="reportDocument">

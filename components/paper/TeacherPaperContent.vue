@@ -94,7 +94,12 @@
               <GroupMembers :authors="info?.authors" :leader="info?.leader" type="link" class="inline" is-admin />
             </el-descriptions-item>
             <el-descriptions-item label="提交时间">
-              {{ info?.createdAt.toLocaleDateString('zh-CN') }}
+              <el-tag type="info" disable-transitions>
+                {{ info?.createdAt.toLocaleDateString('zh-CN') }}
+              </el-tag>
+              <el-tag v-if="late() > 0" disable-transitions type="danger" class="ml-2">
+                晚交 {{ late() }} 天
+              </el-tag>
             </el-descriptions-item>
             <el-descriptions-item label="分类">
               <el-tag effect="light" class="cursor-pointer" type="warning" @click="searchCategory(info?.category)">
@@ -262,4 +267,13 @@ const { mutate: removePaper } = useMutation({
 });
 
 const modifyDialogVisible = ref(false);
+
+function late() {
+  const submitted = info.value?.createdAt.getTime();
+  const required = info.value?.class.stateTimetable?.[4];
+
+  if (!required || !submitted)
+    return 0;
+  return Math.round((submitted - required) / (1000 * 3600 * 24));
+}
 </script>
