@@ -121,7 +121,7 @@
         </template>
         <div class="grid grid-cols-2 gap-2">
           <template v-for="report in info?.reports" :key="report.id">
-            <ReportCard :report="report" is-admin />
+            <ReportCard :report="report" is-admin :class-id="info?.classId ?? undefined" />
           </template>
         </div>
       </el-descriptions-item>

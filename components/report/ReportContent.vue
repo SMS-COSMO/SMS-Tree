@@ -4,10 +4,13 @@
     已阅
   </el-tag>
   <div class="mb-2 text-lg font-bold">
-    创建时间
+    提交时间
   </div>
   <el-tag type="info" disable-transitions>
     {{ report.createdAt.toLocaleDateString('zh-CN') }}
+  </el-tag>
+  <el-tag v-if="isAdmin && late() > 0" type="warning" disable-transitions class="ml-2">
+    晚交 {{ late() }} 天
   </el-tag>
   <template v-if="reportDocument">
     <div class="mb-2 mt-4 text-lg font-bold">
@@ -83,9 +86,11 @@
 const {
   report,
   isAdmin = false,
+  classId,
 } = defineProps<{
   report: TReport;
   isAdmin?: boolean;
+  classId?: string;
 }>();
 
 const { $api } = useNuxtApp();
@@ -106,4 +111,21 @@ const { mutate: commentMutate } = useMutation({
   },
   onError: err => useErrorHandler(err),
 });
+
+const enabled = ref(isAdmin && classId !== undefined);
+const { data: classInfo } = useQuery({
+  queryKey: ['class.info', { id: classId }],
+  queryFn: () => $api.class.infoFull.query({ id: classId! }),
+  enabled,
+  refetchOnWindowFocus: false,
+});
+
+function late() {
+  const submitted = report.createdAt?.getTime();
+  const required = classInfo.value?.stateTimetable[report.category === 'thesisProposal' ? 2 : 3];
+
+  if (!required)
+    return 0;
+  return Math.round((submitted - required) / (1000 * 3600 * 24));
+}
 </script>

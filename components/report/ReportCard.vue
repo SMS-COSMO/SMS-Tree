@@ -25,7 +25,7 @@
       :title="report.category === 'thesisProposal' ? '开题报告' : '结题报告'"
       width="1200"
     >
-      <ReportContent :report="report" :is-admin="isAdmin" />
+      <ReportContent :report="report" :is-admin="isAdmin" :class-id="classId" />
     </el-dialog>
   </client-only>
 </template>
@@ -34,6 +34,7 @@
 const { isAdmin = true } = defineProps<{
   report: TReport;
   isAdmin?: boolean;
+  classId?: string;
 }>();
 
 const dialogVisible = ref(false);
