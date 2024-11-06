@@ -10,7 +10,7 @@ const id = useRoute().params.id.toString();
 
 const { $api } = useNuxtApp();
 const { data, suspense } = useQuery({
-  queryKey: [],
+  queryKey: ['importHistory.info', { id }],
   queryFn: () => $api.importHistory.info.query({ id }),
 });
 await suspense();
